@@ -23,7 +23,7 @@ install:
           CXX=g++7
           # Install Qt5 from apt packages.
           sudo apt-get update
-          sudo apt-get install qt5-default libqt5x11extras5-dev -y
+          sudo apt-get install libncurses-dev qt5-default libqt5x11extras5-dev -y
           VER=`ls -l /usr/lib/x86_64-linux-gnu/libQt5Core.so | sed -nE $QTVER`
       fi
       echo ==================== Build on $APPVEYOR_BUILD_WORKER_IMAGE ====================

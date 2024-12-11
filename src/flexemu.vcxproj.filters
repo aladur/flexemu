@@ -180,6 +180,9 @@
     <ClCompile Include="poverhlp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="termimpc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="termimpd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -466,6 +469,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="soptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="termimpc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="termimpd.h">

@@ -262,6 +262,7 @@
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="sodiff.cpp" />
     <ClCompile Include="soptions.cpp" />
+    <ClCompile Include="termimpc.cpp" />
     <ClCompile Include="termimpd.cpp" />
     <ClCompile Include="termimps.cpp" />
     <ClCompile Include="terminal.cpp" />
@@ -490,6 +491,7 @@
     <ClInclude Include="scpulog.h" />
     <ClInclude Include="sodiff.h" />
     <ClInclude Include="soptions.h" />
+    <ClInclude Include="termimpc.h" />
     <ClInclude Include="termimpd.h" />
     <ClInclude Include="termimpf.h" />
     <ClInclude Include="termimpi.h" />

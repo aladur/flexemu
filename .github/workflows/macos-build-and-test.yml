@@ -16,7 +16,7 @@ jobs:
 
       - name: Install packages
         run: |
-          brew install gnu-sed qt@5
+          brew install gnu-sed ncurses qt@5
           echo "/opt/homebrew/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
 
@@ -44,7 +44,10 @@ jobs:
           submodules: 'true'
 
       - name: Configure
-        run: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc || cat config.log
+        run: |
+          export LDFLAGS="-L/opt/homebrew/opt/ncurses/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/ncurses/include"
+          ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc || cat config.log
       - name: Make
         run: make -j4
 

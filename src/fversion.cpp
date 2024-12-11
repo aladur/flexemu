@@ -21,6 +21,9 @@
 */
 
 
+#ifdef UNIX
+#include "config.h"
+#endif
 #include "fversion.h"
 #include <string>
 #ifdef QT_CORE_LIB
@@ -31,6 +34,9 @@
 #include "warnon.h"
 #if defined(UNIX) && defined(ADD_JSONCPP_VERSION)
 #include <json/version.h>
+#endif
+#if defined(UNIX) && defined(HAVE_NCURSES_H) && defined(ADD_NCURSES_VERSION)
+#include <ncurses.h>
 #endif
 
 
@@ -73,6 +79,11 @@ Versions_t FlexemuVersions::CreateVersions()
 
 #if defined(UNIX) && defined(ADD_JSONCPP_VERSION)
     versions.emplace("jsoncpp", JSONCPP_VERSION_STRING);
+#endif
+
+#if defined(UNIX) && defined(HAVE_NCURSES_H) && defined(ADD_NCURSES_VERSION)
+    version = fmt::format("{}.{}", NCURSES_VERSION, NCURSES_VERSION_PATCH);
+    versions.emplace("ncurses", version);
 #endif
 
     return versions;

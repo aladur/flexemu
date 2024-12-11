@@ -93,6 +93,8 @@ BLOCKHEIGHT = (YBLOCK_SIZE / RASTERLINE_SIZE),
 enum : uint16_t {
 WINDOWWIDTH = (RASTERLINE_SIZE << 3U),
 WINDOWHEIGHT = (VIDEORAM_SIZE / RASTERLINE_SIZE),
+TERM_LINES = (WINDOWHEIGHT / 10), // Terminal lines
+TERM_COLUMNS = (WINDOWWIDTH / 6), // Terminal columns
 };
 
 /* GENIO_BASE provides a general address range  */

@@ -90,7 +90,8 @@ libjsoncpp_a_CXXFLAGS= --std=c++11 $(MACOSX_VERSION_MIN) \
 libfmt_a_CXXFLAGS   = --std=c++11 $(MACOSX_VERSION_MIN) \
 			-isystem $(top_srcdir)/fmt/include
 libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-flexemu_CXXFLAGS    = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexemu_CXXFLAGS    = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h \
+		      -DADD_NCURSES_VERSION
 flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
 mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
@@ -108,7 +109,7 @@ dsktool_LDADD    = $(PTHREAD_LD) libflex.a libfmt.a
 flexemu_LDADD    = \
 	$(FLEX_RC) $(FLEXEMU_LDADD) \
 	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
-	libflex.a libfmt.a
+	libflex.a libfmt.a -lncurses
 updatemd_LDADD    = $(PTHREAD_LD) libflex.a libfmt.a libjsoncpp.a
 
 libflex_a_DEPENDENCIES  = libfmt.a
@@ -240,6 +241,7 @@ flexemu_SOURCES = \
 	schedule.cpp \
 	sodiff.cpp \
 	soptions.cpp \
+	termimpc.cpp \
 	termimpd.cpp \
 	termimps.cpp \
 	terminal.cpp \
@@ -349,6 +351,7 @@ flexemu_SOURCES = \
 	scpulog.h \
 	sodiff.h \
 	soptions.h \
+	termimpc.h \
 	termimpd.h \
 	termimpf.h \
 	termimpi.h \

@@ -26,6 +26,7 @@
 
 #include "flexerr.h"
 #include "termimpi.h"
+#include "termimpc.h"
 #include "termimpd.h"
 #include "termimps.h"
 #include <memory>
@@ -34,6 +35,7 @@ enum class TerminalType : uint8_t
 {
     Dummy,
     Scrolling,
+    NCurses,
 };
 
 struct sOptions;
@@ -50,6 +52,9 @@ public:
 
             case TerminalType::Scrolling:
                 return std::make_unique<ScrollingTerminalImpl>(options);
+
+            case TerminalType::NCurses:
+                return std::make_unique<NCursesTerminalImpl>(options);
         }
 
         throw FlexException(FERR_INVALID_TERMINAL_TYPE, static_cast<int>(type));
@@ -63,6 +68,9 @@ public:
         {
             case static_cast<T>(TerminalType::Scrolling):
                  return TerminalType::Scrolling;
+
+            case static_cast<T>(TerminalType::NCurses):
+                 return TerminalType::NCurses;
 
             default:
                  throw FlexException(FERR_INVALID_TERMINAL_TYPE, value);
