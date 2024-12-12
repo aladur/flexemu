@@ -402,6 +402,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::IsEurocom2V5:
                 case FlexemuOptionId::IsUseRtc:
                 case FlexemuOptionId::IconSize:
+                case FlexemuOptionId::TerminalType:
                 case FlexemuOptionId::IsStatusBarVisible:
                     break;
             }

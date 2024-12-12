@@ -75,6 +75,7 @@ enum class FlexemuOptionId : uint8_t
     DirectoryDiskTrkSec,
     IsDirectoryDiskActive,
     IsStatusBarVisible,
+    TerminalType,
 };
 using FlexemuOptionIds_t = std::vector<FlexemuOptionId>;
 
@@ -104,6 +105,7 @@ struct sOptions
     std::array<bool, MAX_DRIVES> canFormatDrives{};
     bool isTerminalIgnoreESC{}; // Terminal mode: Ignore ESC (0x1B) characters
     bool isTerminalIgnoreNUL{}; // Terminal mode: Ignore NUL (0x00) characters
+    int terminalType{}; // type of terminal: 1 = scrolling, 2 = ncurses
     FileTimeAccess fileTimeAccess{};
     short int reset_key{};
     int iconSize{}; // Size of icons {16, 24, 32 }.

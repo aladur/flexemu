@@ -65,6 +65,7 @@ const FlexemuOptionIds_t &GetAllFlexemuOptionIds()
         FlexemuOptionId::PrintConfigs,
         FlexemuOptionId::DirectoryDiskTrkSec,
         FlexemuOptionId::IsStatusBarVisible,
+        FlexemuOptionId::TerminalType,
     };
 
     return allFlexemuOptionIds;

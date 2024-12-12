@@ -457,6 +457,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::PrintConfigs:
             case FlexemuOptionId::IconSize:
             case FlexemuOptionId::IsStatusBarVisible:
+            case FlexemuOptionId::TerminalType:
                 break;
         }
     }
@@ -528,6 +529,11 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                     addDependent(FlexemuOptionId::Color);
                     addDependent(FlexemuOptionId::IsRamExt2x96);
                     addDependent(FlexemuOptionId::IsRamExt2x288);
+                    break;
+
+                case FlexemuOptionId::TerminalType:
+                    addDependent(FlexemuOptionId::IsTerminalIgnoreESC);
+                    addDependent(FlexemuOptionId::IsTerminalIgnoreNUL);
                     break;
 
                 case FlexemuOptionId::DiskDirectory:

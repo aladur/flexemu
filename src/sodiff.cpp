@@ -166,6 +166,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::IsTerminalIgnoreESC);
     }
 
+    if (opt1.terminalType != opt2.terminalType)
+    {
+        notEquals.push_back(FlexemuOptionId::TerminalType);
+    }
+
     if (opt1.isStatusBarVisible != opt2.isStatusBarVisible)
     {
         notEquals.push_back(FlexemuOptionId::IsStatusBarVisible);
@@ -249,6 +254,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::IsEurocom2V5:
             case FlexemuOptionId::IsUseRtc:
             case FlexemuOptionId::IsDirectoryDiskActive:
+            case FlexemuOptionId::TerminalType:
                 return true;
 
             case FlexemuOptionId::IsUseUndocumented:

@@ -100,12 +100,8 @@ int main(int argc, char *argv[])
                 options.term_mode = false;
             }
 
-#ifdef UNIX
-            const auto termType = TerminalType::Scrolling;
-#endif
-#ifdef _WIN32
-            const auto termType = TerminalType::Dummy;
-#endif
+            const auto termType =
+                static_cast<TerminalType>(options.terminalType);
             auto termImpl = TerminalImplFactory::Create(termType, options);
 
             ApplicationRunner runner(options, std::move(termImpl));

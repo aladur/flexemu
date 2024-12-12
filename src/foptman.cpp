@@ -74,6 +74,7 @@ static const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
 static const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
 static const char * const FLEXTERMINALIGNOREESC = "TerminalIgnoreESC";
 static const char * const FLEXTERMINALIGNORENUL = "TerminalIgnoreNUL";
+static const char * const FLEXTERMINALTYPE = "TerminalType";
 static const char * const FLEXPRINTFONT = "PrintFont";
 static const char * const FLEXPRINTPAGEBREAKDETECTED = "PrintPageBreakDetected";
 static const char * const FLEXPRINTORIENTATION = "PrintOrientation";
@@ -154,7 +155,11 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.isSmooth = false;
     options.isTerminalIgnoreESC = true;
     options.isTerminalIgnoreNUL = true;
+#ifdef _WIN32
+    options.terminalType = 0;
+#endif
 #ifdef UNIX
+    options.terminalType = 1;
     options.doc_dir = F_DATADIR;
     options.disk_dir = F_DATADIR;
 #endif
@@ -615,9 +620,6 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXISDIRECTORYDISKACTIVE,
                 options.isDirectoryDiskActive ? 1 : 0);
         }
-
-        reg.SetValue(FLEXVERSION, VERSION);
-        reg.DeleteValue(FLEXDOCDIR); // Deprecated option value
     }
 }
 #endif
@@ -773,6 +775,10 @@ void FlexemuOptions::WriteOptionsToFile(
                 previousOptions.isTerminalIgnoreNUL;
             break;
 
+        case FlexemuOptionId::TerminalType:
+            optionsToWrite.terminalType = previousOptions.terminalType;
+            break;
+
         case FlexemuOptionId::IsDirectoryDiskActive:
             optionsToWrite.isDirectoryDiskActive =
                 previousOptions.isDirectoryDiskActive;
@@ -873,6 +879,7 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isTerminalIgnoreESC ? 1 : 0);
     rcFile.SetValue(FLEXTERMINALIGNORENUL,
             optionsToWrite.isTerminalIgnoreNUL ? 1 : 0);
+    rcFile.SetValue(FLEXTERMINALTYPE, optionsToWrite.terminalType);
     rcFile.SetValue(FLEXDIRECTORYDISKTRACKS,
             optionsToWrite.directoryDiskTracks);
     rcFile.SetValue(FLEXDIRECTORYDISKSECTORS,
@@ -1212,6 +1219,13 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!rcFile.GetValue(FLEXTERMINALIGNORENUL, int_result))
     {
         options.isTerminalIgnoreNUL = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXTERMINALTYPE, int_result))
+    {
+        int_result = std::max(int_result, 1);
+        int_result = std::min(int_result, 2);
+        options.terminalType = int_result;
     }
 
     if (!rcFile.GetValue(FLEXDIRECTORYDISKTRACKS, int_result))
