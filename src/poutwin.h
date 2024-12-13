@@ -82,6 +82,8 @@ public:
     // Receive flexemu print output
     void write_char_serial(Byte value);
 
+    void SetIconSize(const QSize &iconSize);
+
 public slots:
     void OnClearTextBrowser();
     void OnCyclicTimer();
@@ -111,11 +113,12 @@ public slots:
 
 private:
     // Private member functions
-    void CreateEditActions(QBoxLayout &layout);
-    void CreateFileActions(QBoxLayout &layout);
+    void CreateActions(QBoxLayout &layout, const QSize &iconSize);
+    void CreateEditActions(QToolBar &p_toolBar);
+    void CreateFileActions(QToolBar &p_toolBar);
     void CreateStatusBar(QBoxLayout &layout);
     QToolBar *CreateToolBar(QWidget *parent, const QString &title,
-                            const QString &objectName);
+                            const QString &objectName, const QSize &iconSize);
     void DetectPageBreaks();
     std::string CreatePrintConfigKey() const;
     bool HasSerialInput() const;
@@ -149,8 +152,7 @@ private:
     QHBoxLayout *toolBarLayout;
     QStackedWidget *statusBarFrame;
     QMenuBar *menuBar;
-    QToolBar *fileToolBar;
-    QToolBar *editToolBar;
+    QToolBar *toolBar;
     QMenu *fileMenu;
     QMenu *editMenu;
     QStatusBar *statusBar;

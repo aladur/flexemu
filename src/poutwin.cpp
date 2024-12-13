@@ -208,8 +208,7 @@ PrintOutputWindow::PrintOutputWindow(sOptions &p_options)
     , toolBarLayout(new QHBoxLayout)
     , statusBarFrame(nullptr)
     , menuBar(new QMenuBar(this))
-    , fileToolBar(nullptr)
-    , editToolBar(nullptr)
+    , toolBar(nullptr)
     , fileMenu(nullptr)
     , editMenu(nullptr)
     , statusBar(nullptr)
@@ -232,6 +231,8 @@ PrintOutputWindow::PrintOutputWindow(sOptions &p_options)
     , options(p_options)
     , isDeferPreviewUpdate(false)
 {
+    const QSize iconSize(options.iconSize, options.iconSize);
+
     setObjectName("PrintOutputWindow");
     setWindowTitle("FLEX Print Output");
 
@@ -252,8 +253,7 @@ PrintOutputWindow::PrintOutputWindow(sOptions &p_options)
     mainLayout->addWidget(textBrowser);
     mainLayout->setStretchFactor(textBrowser, 1);
 
-    CreateFileActions(*toolBarLayout);
-    CreateEditActions(*toolBarLayout);
+    CreateActions(*toolBarLayout, iconSize);
     CreateStatusBar(*mainLayout);
 
     toolBarLayout->addStretch(1);
@@ -779,21 +779,27 @@ void PrintOutputWindow::OnUnitChanged(int index)
 ** Private member functions **
 *****************************/
 
-void PrintOutputWindow::CreateEditActions(QBoxLayout &layout)
+void PrintOutputWindow::CreateActions(QBoxLayout &layout, const QSize &iconSize)
 {
-    QAction *action;
-    QToolBar *toolBar;
+    toolBar = CreateToolBar(this, tr("ToolBar"), QStringLiteral("toolBar"),
+            iconSize);
+    layout.addWidget(toolBar, 1, Qt::AlignLeft);
 
+    CreateFileActions(*toolBar);
+    CreateEditActions(*toolBar);
+}
+
+void PrintOutputWindow::CreateEditActions(QToolBar &p_toolBar)
+{
     editMenu = menuBar->addMenu(tr("&Edit"));
-    toolBar = CreateToolBar(this, tr("Edit"), QStringLiteral("editToolBar"));
-    layout.addWidget(toolBar);
 
+    p_toolBar.addSeparator();
     const auto clearIcon = QIcon(":/resource/print-clear.png");
-    action = editMenu->addAction(clearIcon, tr("&Clear"));
+    auto *action = editMenu->addAction(clearIcon, tr("&Clear"));
     connect(action, &QAction::triggered, this,
             &PrintOutputWindow::OnClearTextBrowser);
     action->setStatusTip(tr("Clear print output"));
-    toolBar->addAction(action);
+    p_toolBar.addAction(action);
 
     const auto detectIcon = QIcon(":/resource/detect-page-break.png");
     action = editMenu->addAction(detectIcon, tr("&Autodetect page breaks"));
@@ -801,34 +807,27 @@ void PrintOutputWindow::CreateEditActions(QBoxLayout &layout)
                 "Automatically detect page breaks in print output"));
     action->setCheckable(true);
     action->setChecked(options.isPrintPageBreakDetected);
-    toolBar->addAction(action);
+    p_toolBar.addAction(action);
     pageBreakDetectorAction = action;
 
     fontComboBox = new QFontComboBox();
     fontComboBox->setEditable(false);
     fontComboBox->setFontFilters(QFontComboBox::MonospacedFonts);
-    toolBar->addWidget(fontComboBox);
+    p_toolBar.addWidget(fontComboBox);
 
     // Add signal/slot actions
     connect(fontComboBox, &QFontComboBox::currentFontChanged,
             this, &PrintOutputWindow::OnFontChanged);
     connect(pageBreakDetectorAction, &QAction::toggled,
             this, &PrintOutputWindow::OnPageBreakDetectionToggled);
-
-    editToolBar = toolBar;
 }
 
-void PrintOutputWindow::CreateFileActions(QBoxLayout &layout)
+void PrintOutputWindow::CreateFileActions(QToolBar &p_toolBar)
 {
-    QAction *action;
-    QToolBar *toolBar;
-
     fileMenu = menuBar->addMenu(tr("&File"));
-    toolBar = CreateToolBar(this, tr("File"), QStringLiteral("fileToolBar"));
-    layout.addWidget(toolBar);
 
     const auto previewIcon = QIcon(":/resource/print-preview.png");
-    action = fileMenu->addAction(previewIcon, tr("&Print Preview ..."));
+    auto *action = fileMenu->addAction(previewIcon, tr("&Print Preview ..."));
     connect(action, &QAction::triggered, this,
             &PrintOutputWindow::OnOpenPrintPreview);
     action->setStatusTip(tr("Open print preview for print output"));
@@ -856,9 +855,8 @@ void PrintOutputWindow::CreateFileActions(QBoxLayout &layout)
     connect(action, &QAction::triggered, this,
             &PrintOutputWindow::OnHideWindow);
     action->setStatusTip(tr("Close this window"));
-    toolBar->addAction(action);
-    toolBar->addAction(printPreviewAction);
-    fileToolBar = toolBar;
+    p_toolBar.addAction(action);
+    p_toolBar.addAction(printPreviewAction);
 }
 
 void PrintOutputWindow::CreateStatusBar(QBoxLayout &layout)
@@ -955,20 +953,23 @@ void PrintOutputWindow::DetectPageBreaks()
     isPageBreakDetectionFinished = true;
 }
 
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 QToolBar *PrintOutputWindow::CreateToolBar(QWidget *parent,
                                            const QString &title,
-                                           const QString &objectName)
+                                           const QString &objectName,
+                                           const QSize &iconSize)
 {
-    auto *toolBar = new QToolBar(title, parent);
-    toolBar->setObjectName(objectName);
-    toolBar->setFloatable(false);
-    toolBar->setMovable(false);
-    toolBar->setIconSize({32, 32});
+    auto *newToolBar = new QToolBar(title, parent);
+    assert(newToolBar != nullptr);
+    newToolBar->setObjectName(objectName);
+    newToolBar->setFloatable(false);
+    newToolBar->setMovable(false);
+    newToolBar->setIconSize(iconSize);
     QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    toolBar->setSizePolicy(sizePolicy);
-    toolBarLayout->addWidget(toolBar, 1, Qt::AlignLeft);
+    newToolBar->setSizePolicy(sizePolicy);
 
-    return toolBar;
+    return newToolBar;
 }
 
 void PrintOutputWindow::InitializeOrientation()
@@ -1098,6 +1099,11 @@ void PrintOutputWindow::SetMarginsInfo(bool isInvalid) const
         ui->l_marginInfo->setStyleSheet("color: red; font-weight: bold");
         ui->l_marginInfo->setText(isInvalid ? "!!!" : "");
     }
+}
+
+void PrintOutputWindow::SetIconSize(const QSize &iconSize)
+{
+    toolBar->setIconSize(iconSize);
 }
 
 void PrintOutputWindow::UpdateSpinBoxUnit(const QString &p_unit)

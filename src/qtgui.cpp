@@ -1632,6 +1632,7 @@ void QtGui::SetIconSize(const QSize &iconSize)
 
     toolBar->setIconSize(iconSize);
     statusToolBar->setIconSize(iconSize);
+    printOutputWindow->SetIconSize(iconSize);
 
     resize(size() + QSize(0, heightDiff));
 }
