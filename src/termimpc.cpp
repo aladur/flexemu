@@ -49,6 +49,7 @@ NCursesTerminalImpl::NCursesTerminalImpl(const struct sOptions &p_options)
 
 bool NCursesTerminalImpl::init(Word reset_key, fct_sigaction fct)
 {
+    (void)fct;
     const auto success = init_terminal_io(reset_key);
 
 #ifdef UNIX
@@ -223,6 +224,7 @@ Byte NCursesTerminalImpl::peek_char_serial()
 
 void NCursesTerminalImpl::write_char_serial(Byte value)
 {
+    (void)value;
 #ifdef UNIX
     // NUL characters are optionally ignored.
     // Their initial usage to wait until the teleprinter returns to the first
