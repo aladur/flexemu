@@ -186,6 +186,9 @@
     <ClCompile Include="termimpd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="termimpf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="termimps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

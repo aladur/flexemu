@@ -264,6 +264,7 @@
     <ClCompile Include="soptions.cpp" />
     <ClCompile Include="termimpc.cpp" />
     <ClCompile Include="termimpd.cpp" />
+    <ClCompile Include="termimpf.cpp" />
     <ClCompile Include="termimps.cpp" />
     <ClCompile Include="terminal.cpp" />
     <ClCompile Include="vico1.cpp" />

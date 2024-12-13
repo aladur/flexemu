@@ -24,12 +24,7 @@
 #ifndef TERMINALIMPLFACTORY_INCLUDED
 #define TERMINALIMPLFACTORY_INCLUDED
 
-#include "flexerr.h"
 #include "termimpi.h"
-#include "termimpc.h"
-#include "termimpd.h"
-#include "termimps.h"
-#include <memory>
 
 enum class TerminalType : uint8_t
 {
@@ -43,38 +38,7 @@ struct sOptions;
 class TerminalImplFactory
 {
 public:
-    static ITerminalImplPtr Create(TerminalType type, const sOptions &options)
-    {
-        switch(type)
-        {
-            case TerminalType::Dummy:
-                return std::make_unique<DummyTerminalImpl>(options);
-
-            case TerminalType::Scrolling:
-                return std::make_unique<ScrollingTerminalImpl>(options);
-
-            case TerminalType::NCurses:
-                return std::make_unique<NCursesTerminalImpl>(options);
-        }
-
-        throw FlexException(FERR_INVALID_TERMINAL_TYPE, static_cast<int>(type));
-    }
-
-    static TerminalType GetType(int value)
-    {
-        using T = std::underlying_type_t<TerminalType>;
-
-        switch (value)
-        {
-            case static_cast<T>(TerminalType::Scrolling):
-                 return TerminalType::Scrolling;
-
-            case static_cast<T>(TerminalType::NCurses):
-                 return TerminalType::NCurses;
-
-            default:
-                 throw FlexException(FERR_INVALID_TERMINAL_TYPE, value);
-        }
-    }
+    static ITerminalImplPtr Create(TerminalType type, const sOptions &options);
+    static TerminalType GetType(int value);
 };
 #endif

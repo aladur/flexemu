@@ -243,6 +243,7 @@ flexemu_SOURCES = \
 	soptions.cpp \
 	termimpc.cpp \
 	termimpd.cpp \
+	termimpf.cpp \
 	termimps.cpp \
 	terminal.cpp \
 	vico1.cpp \
