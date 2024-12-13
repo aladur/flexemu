@@ -29,6 +29,7 @@
 #include "brcfile.h"
 #include "bregistr.h"
 #include "soptions.h"
+#include "termimpf.h"
 #include <string>
 #include <vector>
 #include "warnoff.h"
@@ -73,6 +74,7 @@ private slots:
     void OnSectorChanged(int sectors);
     void OnTrkSecChanged(int tracks, int sectors);
     void OnDirectoryDiskActiveChanged(bool isActive);
+    void OnTerminalTypeChanged(TerminalType type);
 
 private:
     enum class FileType : uint8_t

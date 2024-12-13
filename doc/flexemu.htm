@@ -225,9 +225,10 @@ Print version number and exit.
 <dl>
 <dt>-t</dt>
 <dd>
-Terminal only mode. All input/output will be done on the terminal from
-which flexemu is started. All Escape-Sequences of this terminal can be
-accessed. Montior program <b>neumnt54.hex</b> is NOT needed for this any more.
+Terminal only mode. All input/output is redirected to the terminal from
+which flexemu is started.<br>
+<b>Hint:</b> Montior program <b>neumnt54.hex</b> is NOT needed for this any
+more.
 <b>neumon54.hex</b> can be used for both terminal and GUI mode.
 </dd>
 <dt>-r &lt;two_hex_digits&gt;</dt>
@@ -462,9 +463,41 @@ The following preferences can be modified.
   <th colspan="5">Terminal (Unix like OS only)</th>
  </tr>
  <tr>
+  <td>Terminal Type</td>
+  <td>
+   If <a href="#options_linux">terminal only mode</a> is active, there are
+   different terminal types available:
+   <ul>
+    <li><b>Simple Scrolling Terminal:</b> Any input or output is simply
+    redirected to the controlling terminal. It's scrolling can be used
+    to see the input and output history. It is also possible to redirect
+    the output stream into a file using Unix builtin output redirection
+    support. This example creates a log-file of the whole flexemu session:<br>
+    <b>flexemu -t | tee inout.log</b><br>
+    The escape sequences of the controlling terminal can be used (which
+    obviously creates a dependency between the executed flexemu command and
+    the controlling terminal).
+    </li>
+    <li><b>Enhanced Terminal Emulation:</b> This terminal type provides
+    an enhanced terminal emulation exactly as provided by the monitor program
+    <a href="neumon54.htm">neumon54.hex</a> with 25 lines and 84 columns.
+    All control characters and escape sequences are emulated (except for
+    CTRL-], ESC A, ESC F and ESC G).
+    This terminal type is useful for example for screen editors like
+    <a href="cedric.pdf">CEDRIC</a> or <a href="dynastar.pdf">DynaStar</a>
+    which depend on specific escape sequences.
+    </li>
+   </ul>
+  </td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
+  <td>Simple Scrolling Terminal</td>
+ </tr>
+ <tr>
   <td>Ignore output of NUL (0x00) characters</td>
   <td>
-			In terminal mode the output of NUL characters can be ignored. Their initial
+   In terminal only mode the output of NUL characters can be ignored.
+   Their initial
 			usage to wait until the teleprinter returns to the first printing position
 			is not needed any more. There are terminals which incorrectly display it as
 			a space. For details see:
@@ -479,7 +512,8 @@ The following preferences can be modified.
  <tr>
   <td>Ignore output of ESC (0x1B) characters</td>
   <td>
-			In terminal mode the output of ESC characters can be ignored. This option
+			Using simple scrolling terminal type the output of ESC characters can be
+   ignored. This option
 			has to be switched off, to send escape sequences to the terminal. When doing
 			this it is recommended to change <a href="flexmem.htm#ttyesc">TTYESC</a>
 			to a different character than ESC using

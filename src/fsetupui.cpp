@@ -25,6 +25,7 @@
 #include "e2.h"
 #include "soptions.h"
 #include "filecnts.h"
+#include "termimpf.h"
 #include "colors.h"
 #include <string>
 #include <memory>
@@ -128,6 +129,12 @@ void FlexemuOptionsUi::ConnectSignalsWithSlots()
 
     connect(c_isDirectoryDiskActive, &QCheckBox::toggled,
             this, &FlexemuOptionsUi::OnDirectoryDiskActiveChanged);
+
+    connect(r_scrollingTerminal, &QAbstractButton::toggled,
+            [&](){ OnTerminalTypeChanged(TerminalType::Scrolling); });
+
+    connect(r_ncursesTerminal, &QAbstractButton::toggled,
+            [&](){ OnTerminalTypeChanged(TerminalType::NCurses); });
 }
 
 FlexemuOptionsUi::FlexemuOptionsUi()
@@ -283,6 +290,8 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     c_isDisplaySmooth->setChecked(options.isSmooth != 0);
 
+    r_scrollingTerminal->setChecked(options.terminalType == 1);
+    r_ncursesTerminal->setChecked(options.terminalType == 2);
     c_terminalIgnoreNUL->setChecked(options.isTerminalIgnoreNUL);
     c_terminalIgnoreESC->setChecked(options.isTerminalIgnoreESC);
 
@@ -438,6 +447,11 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 c_terminalIgnoreNUL->setEnabled(false);
                 break;
 
+            case FlexemuOptionId::TerminalType:
+                r_scrollingTerminal->setEnabled(false);
+                r_ncursesTerminal->setEnabled(false);
+                break;
+
             case FlexemuOptionId::IsDirectoryDiskActive:
                 c_isDirectoryDiskActive->setEnabled(false);
                 break;
@@ -457,7 +471,6 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::PrintConfigs:
             case FlexemuOptionId::IconSize:
             case FlexemuOptionId::IsStatusBarVisible:
-            case FlexemuOptionId::TerminalType:
                 break;
         }
     }
@@ -815,6 +828,21 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
         options.isSmooth = c_isDisplaySmooth->isChecked();
     }
 
+    if (!IsReadOnly(FlexemuOptionId::TerminalType))
+    {
+        options.terminalType = 0;
+
+        if (r_scrollingTerminal->isChecked())
+        {
+            options.terminalType = 1;
+        }
+        else if (r_ncursesTerminal->isChecked())
+        {
+            options.terminalType = 2;
+        }
+    }
+
+
     if (!IsReadOnly(FlexemuOptionId::IsTerminalIgnoreNUL))
     {
         options.isTerminalIgnoreNUL = c_terminalIgnoreNUL->isChecked();
@@ -1155,6 +1183,23 @@ void FlexemuOptionsUi::OnDirectoryDiskActiveChanged(bool isActive)
     {
         e_tracks->setEnabled(isActive);
         e_sectors->setEnabled(isActive);
+    }
+}
+
+void FlexemuOptionsUi::OnTerminalTypeChanged(TerminalType type)
+{
+    switch (type)
+    {
+        case TerminalType::Scrolling:
+            c_terminalIgnoreESC->setEnabled(true);
+            break;
+
+        case TerminalType::NCurses:
+            c_terminalIgnoreESC->setEnabled(false);
+            break;
+
+        case TerminalType::Dummy:
+            break;
     }
 }
 
