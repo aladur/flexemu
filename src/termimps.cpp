@@ -158,6 +158,7 @@ bool ScrollingTerminalImpl::init(Word reset_key, fct_sigaction fct)
 void ScrollingTerminalImpl::reset_serial()
 {
     init_delay = 500;
+    was_escape = false;
     std::lock_guard<std::mutex> guard(serial_mutex);
     key_buffer_serial.clear();
 }
@@ -280,10 +281,17 @@ void ScrollingTerminalImpl::write_char_serial(Byte value)
     // incorrectly display it as a space.
     // For details see: https://en.wikipedia.org/wiki/Null_character
     // Also ESC characters are optionally ignored.
-    if ((value != '\0' || !options.isTerminalIgnoreNUL) &&
-        (value != '\x1b' || !options.isTerminalIgnoreESC))
+    // When ignoreing ESC also one character after ESC is ignored.
+    if ((value != NUL || !options.isTerminalIgnoreNUL) &&
+        (value != ESC || !options.isTerminalIgnoreESC) &&
+        (!was_escape || !options.isTerminalIgnoreESC))
     {
         write_char_serial_safe(value);
+    }
+
+    if (options.isTerminalIgnoreESC)
+    {
+        was_escape = (!was_escape && (value == ESC));
     }
 #endif // #ifdef HAVE_TERMIOS_H
 }

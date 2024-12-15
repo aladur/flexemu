@@ -46,6 +46,7 @@ class ScrollingTerminalImpl : public ITerminalImpl, public BObserved
     struct termios save_termios{};
 #endif
     bool is_termios_saved{};
+    bool was_escape{};
     Word init_delay{};
     Word input_delay{};
     std::mutex serial_mutex;
