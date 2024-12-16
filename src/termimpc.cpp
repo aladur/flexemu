@@ -32,10 +32,6 @@
 #include <csignal>
 #ifdef UNIX
 #include "config.h"
-#ifndef HAVE_NCURSES_H
-#error "libncurses-dev is not installed, aborting compilation"
-#endif
-#include <ncurses.h>
 #endif
 
 #ifdef UNIX
@@ -106,7 +102,7 @@ bool NCursesTerminalImpl::init_terminal_io(Word reset_key) const
     (void)reset_key;
 
 #ifdef UNIX
-    setlocale(LC_ALL, "en_US.UTF-8");
+    setlocale(LC_CTYPE, "");
     initscr();
     raw();
     noecho();
@@ -293,6 +289,7 @@ void NCursesTerminalImpl::write_char_serial_safe(Byte value)
     int y;
 
     getyx(win, y, x);
+#ifdef HAVE_NCURSESW
     if (is_german)
     {
         static const std::string ascii{"{|}[\\]~"};
@@ -315,6 +312,7 @@ void NCursesTerminalImpl::write_char_serial_safe(Byte value)
             return;
         }
     }
+#endif
 
     waddch(win, value);
     if ((x == TERM_COLUMNS - 1) && (y == TERM_LINES - 1))

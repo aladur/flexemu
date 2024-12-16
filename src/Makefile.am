@@ -91,7 +91,7 @@ libfmt_a_CXXFLAGS   = --std=c++11 $(MACOSX_VERSION_MIN) \
 			-isystem $(top_srcdir)/fmt/include
 libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexemu_CXXFLAGS    = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h \
-		      -DADD_NCURSES_VERSION
+			@CURSES_CFLAGS@ -DADD_NCURSES_VERSION
 flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
 mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
@@ -109,7 +109,7 @@ dsktool_LDADD    = $(PTHREAD_LD) libflex.a libfmt.a
 flexemu_LDADD    = \
 	$(FLEX_RC) $(FLEXEMU_LDADD) \
 	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
-	libflex.a libfmt.a -lncurses
+	libflex.a libfmt.a @CURSES_LIBS@
 updatemd_LDADD    = $(PTHREAD_LD) libflex.a libfmt.a libjsoncpp.a
 
 libflex_a_DEPENDENCIES  = libfmt.a

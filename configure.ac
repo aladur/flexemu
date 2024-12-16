@@ -38,7 +38,7 @@ AC_CHECK_HEADERS_ONCE([sys/time.h])
 AC_CHECK_HEADERS(stdarg.h)
 AC_CHECK_HEADERS(unistd.h inttypes.h stdint.h)
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h termios.h)
-AC_CHECK_HEADERS(sys/statvfs.h ncurses.h)
+AC_CHECK_HEADERS(sys/statvfs.h)
 AC_CHECK_HEADER(windows.h, AC_DEFINE(WIN32,1,[1 if Windows headers are available]))
 AC_CHECK_HEADER(linux/joystick.h, AC_DEFINE(LINUX_JOYSTICK_IS_PRESENT,1,[1 if Linux joystick headers are available]))
 AC_CHECK_FUNCS(gettid)
@@ -72,6 +72,11 @@ AC_LANG_POP([C++])
 
 dnl check for qt libraries and tools
 AX_HAVE_QT
+dnl check for ncursesw library and header
+AX_WITH_CURSES
+if test "x$ax_cv_ncursesw" != xyes && test "x$ax_cv_ncurses" != xyes; then
+    AC_MSG_ERROR([requires libncursesw.so or libncurses.so library])
+fi
 
 dnl Create command line options for clang-tidy
 AX_CLANG_TIDY_OPTS([$QT_CXXFLAGS])

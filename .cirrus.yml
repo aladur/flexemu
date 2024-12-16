@@ -14,8 +14,7 @@ build_task:
     - echo CIRRUS_USER_PERMISSION=$CIRRUS_USER_PERMISSION
 
   install_pkg_script:
-    - pkg install -y sudo libtool qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport
-    - ls -l /usr/local/lib/qt5/libQt5Core.so*
+    - pkg install -y sudo pkgconf libtool ncurses qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport
 
   setup_script:
     - pw groupadd -n user
