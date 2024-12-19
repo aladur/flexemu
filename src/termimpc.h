@@ -88,6 +88,7 @@ private:
     static void limit_column_and_line(int &column, int &line);
     void process_ctrl_character(Byte value);
     void process_esc_sequence(Byte value);
+    bool convert_to_pat09_key(chtype buffer, Byte &key) const;
 #endif
 };
 #endif

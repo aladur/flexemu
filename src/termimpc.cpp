@@ -30,6 +30,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <csignal>
+#include <unordered_map>
 #ifdef UNIX
 #include "config.h"
 #endif
@@ -111,7 +112,6 @@ bool NCursesTerminalImpl::init_terminal_io(Word reset_key) const
     win = newwin(TERM_LINES, TERM_COLUMNS, 0, 0);
     keypad(win, TRUE);
     nodelay(win, TRUE);
-    //scrollok(win, TRUE);
 
     return win != nullptr;
 #endif
@@ -140,27 +140,14 @@ bool NCursesTerminalImpl::has_char_serial()
     {
         count = 0;
 
-        int buffer = wgetch(win);
-        if (buffer != ERR)
+        chtype buffer = wgetch(win);
+        if (buffer != static_cast<chtype>(ERR))
         {
-            switch (buffer)
+            Byte key{};
+
+            if (convert_to_pat09_key(buffer, key))
             {
-                case KEY_RESIZE:
-                    // terminal has been resized, ignored.
-                    break;
-
-                case KEY_BACKSPACE:
-                    put_char_serial(BS);
-                    break;
-
-                default:
-                {
-                    if (buffer < 127)
-                    {
-                        put_char_serial(buffer);
-                    }
-                }
-                break;
+                put_char_serial(key);
             }
         }
     }
@@ -262,11 +249,6 @@ void NCursesTerminalImpl::put_char_serial(Byte key)
 {
     std::lock_guard<std::mutex> guard(serial_mutex);
 
-    if (key == 0x7f)
-    {
-        key = BS;
-    }
-
     key_buffer_serial.push_back(key);
 }
 
@@ -274,6 +256,12 @@ void NCursesTerminalImpl::put_char_serial(Byte key)
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void NCursesTerminalImpl::write_char_serial_safe(Byte value)
 {
+    // For Eurocom II terminal compatibilty mask output character to 7-bit.
+    if ((value & 0x80U) != 0U)
+    {
+        value &= 0x7FU;
+    }
+
     if (!esc_sequence.empty())
     {
         process_esc_sequence(value);
@@ -308,11 +296,17 @@ void NCursesTerminalImpl::write_char_serial_safe(Byte value)
         if (pos != std::string::npos)
         {
             waddstr(win, umlaut[pos]);
-            wrefresh(win);
             return;
         }
     }
 #endif
+
+    if (value == 0x7FU)
+    {
+        static const char *south_west_arrow{"\xE2\x86\x99"};
+        waddstr(win, south_west_arrow);
+        return;
+    }
 
     waddch(win, value);
     if ((x == TERM_COLUMNS - 1) && (y == TERM_LINES - 1))
@@ -544,5 +538,110 @@ void NCursesTerminalImpl::process_esc_sequence(Byte value)
     esc_sequence.clear();
     curs_set(is_cursor_visible);
     wrefresh(win);
+}
+
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+bool NCursesTerminalImpl::convert_to_pat09_key(chtype buffer, Byte &key) const
+{
+    static const std::unordered_map<chtype, Byte> key_from_code{
+        // Ente and editing keys
+        { KEY_BACKSPACE, '\x08' }, // Backspace
+        { KEY_DC, '\x7F' }, // Delete
+        { KEY_SDC, '\x7F' }, // Shift+Delete
+        { KEY_ENTER, '\x0D' },
+        // Navigation keys
+        { KEY_IC, '\xF2' }, // Insert
+        { KEY_HOME, '\xF1' }, // Home
+        { KEY_UP, '\xF8' }, // Up
+        { KEY_PPAGE, '\xF7' }, // PageUp
+        { KEY_LEFT, '\xF4' }, // Left
+        { KEY_BEG, '\xF5' }, // Begin
+        { KEY_RIGHT, '\xF6' }, // Right
+        { KEY_END, '\xF9' }, // End
+        { KEY_DOWN, '\xF2' }, // Down
+        { KEY_NPAGE, '\xF3' }, // PageDown
+        // Navigation keys with Shift
+        { KEY_SIC, '\xE2' }, // Shift+Insert
+        { KEY_SHOME, '\xE1' }, // Shift+Home
+        { KEY_SR, '\xE8' }, // Shift+Up
+        { KEY_SPREVIOUS, '\xE7' }, // Shift+PageUp
+        { KEY_SLEFT, '\xE4' }, // Shift+Left
+        { KEY_SRIGHT, '\xE6' }, // Shift+Right
+        { KEY_SEND, '\xE9' }, // Shift+End
+        { KEY_SF, '\xE2' }, // Shift+Down
+        { KEY_SNEXT, '\xE3' }, // Shift+PageDown
+        // Function keys
+        { KEY_F(1), '\xC0' },
+        { KEY_F(2), '\xC1' },
+        { KEY_F(3), '\xC2' },
+        { KEY_F(4), '\xC3' },
+        { KEY_F(5), '\xC4' },
+        { KEY_F(6), '\xC5' },
+        { KEY_F(7), '\xC6' },
+        { KEY_F(8), '\xC7' },
+        { KEY_F(9), '\xC8' },
+        { KEY_F(10), '\xC9' },
+        { KEY_F(13), '\xCA' },
+        { KEY_F(14), '\xCB' },
+        { KEY_F(15), '\xCC' },
+        { KEY_F(16), '\xCD' },
+        { KEY_F(17), '\xCE' },
+        { KEY_F(18), '\xCF' },
+        { KEY_F(19), '\xD0' },
+        { KEY_F(20), '\xD1' },
+        { KEY_F(21), '\xD2' },
+    };
+    static const std::unordered_map<std::string, Byte> key_from_name{
+        // Navigation keys
+        { "kHOM5", '\xB1' }, // Ctrl+Home
+        { "kEND5", '\xB9' }, // Ctrl+End
+        { "kPRV5", '\xB7' }, // Ctrl+PageUp
+        { "kNXT5", '\xB3' }, // Ctrl+PageDown
+        { "kHOM6", '\xA1' }, // Shift+Ctrl+Home
+        { "kEND6", '\xA9' }, // Shift+Ctrl+End
+        { "kPRV6", '\xA7' }, // Shift+Ctrl+PageUp
+        { "kNXT6", '\xA3' }, // Shift+Ctrl+PageDown
+        // Cursor navigation keys
+        { "kUP5", '\xB8' }, // Ctrl+Up
+        { "kDN5", '\xB2' }, // Ctrl+Down
+        { "kLFT5", '\xB4' }, // Ctrl+Left
+        { "kRIT5", '\xB6' }, // Ctrl+Right
+        { "kUP6", '\xA8' }, // Shift+Ctrl+Up
+        { "kDN6", '\xA2' }, // Shift+Ctrl+Down
+        { "kLFT6", '\xA4' }, // Shift+Ctrl+Left
+        { "kRIT6", '\xA6' }, // Shift+Ctrl+Right
+        // Edit keys (Insert does not work)
+        { "kDC5", '\x1F' }, // Ctrl+Delete
+        { "kDC6", '\x7F' }, // Shift+Ctrl+Delete
+        // Numeric keypad
+        { "kpADD", '\x2B' }, // Addition
+        { "kpSUB", '\x2D' }, // Subtraction
+        { "kpMUL", '\x2A' }, // Multiplication
+        { "kpDIV", '\x2F' }, // Division
+    };
+
+    if (buffer <= '~')
+    {
+        key = static_cast<Byte>(buffer);
+        return true;
+    }
+
+    const auto iter_code = key_from_code.find(buffer);
+    if (iter_code != key_from_code.end())
+    {
+        key = iter_code->second;
+        return true;
+    }
+
+    const auto name = std::string(keyname(static_cast<int>(buffer)));
+    const auto iter_name = key_from_name.find(name);
+    if (iter_name != key_from_name.end())
+    {
+        key = iter_name->second;
+        return true;
+    }
+
+    return false;
 }
 #endif
