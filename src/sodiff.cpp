@@ -22,6 +22,7 @@
 
 
 #include "sodiff.h"
+#include <algorithm>
 
 FlexemuOptionsDifference::FlexemuOptionsDifference(
         const sOptions &opt1, const sOptions &opt2)
@@ -241,54 +242,33 @@ const FlexemuOptionsDifference::Result&
 
 bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
 {
+    static const FlexemuOptionIds_t restartOptionIds{
+        FlexemuOptionId::Drive0,
+        FlexemuOptionId::Drive1,
+        FlexemuOptionId::Drive2,
+        FlexemuOptionId::Drive3,
+        FlexemuOptionId::MdcrDrive0,
+        FlexemuOptionId::MdcrDrive1,
+        FlexemuOptionId::HexFile,
+        FlexemuOptionId::DiskDirectory,
+        FlexemuOptionId::IsRamExt2x96,
+        FlexemuOptionId::IsRamExt2x288,
+        FlexemuOptionId::IsFlexibleMmu,
+        FlexemuOptionId::IsEurocom2V5,
+        FlexemuOptionId::IsUseRtc,
+        FlexemuOptionId::IsDirectoryDiskActive,
+        FlexemuOptionId::TerminalType,
+    };
+
     for (auto id : optionsDiff.GetNotEquals())
     {
-        switch (id)
+        if (std::any_of(restartOptionIds.cbegin(), restartOptionIds.cend(),
+            [&](FlexemuOptionId restartOptionId)
+            {
+                return  id == restartOptionId;
+            }))
         {
-            case FlexemuOptionId::Drive0:
-            case FlexemuOptionId::Drive1:
-            case FlexemuOptionId::Drive2:
-            case FlexemuOptionId::Drive3:
-            case FlexemuOptionId::MdcrDrive0:
-            case FlexemuOptionId::MdcrDrive1:
-            case FlexemuOptionId::HexFile:
-            case FlexemuOptionId::DiskDirectory:
-            case FlexemuOptionId::IsRamExt2x96:
-            case FlexemuOptionId::IsRamExt2x288:
-            case FlexemuOptionId::IsFlexibleMmu:
-            case FlexemuOptionId::IsEurocom2V5:
-            case FlexemuOptionId::IsUseRtc:
-            case FlexemuOptionId::IsDirectoryDiskActive:
-            case FlexemuOptionId::TerminalType:
-                return true;
-
-            case FlexemuOptionId::IsUseUndocumented:
-            case FlexemuOptionId::Frequency:
-            case FlexemuOptionId::Color:
-            case FlexemuOptionId::NColors:
-            case FlexemuOptionId::IsInverse:
-            case FlexemuOptionId::PixelSize:
-            case FlexemuOptionId::IconSize:
-            case FlexemuOptionId::CanFormatDrive0:
-            case FlexemuOptionId::CanFormatDrive1:
-            case FlexemuOptionId::CanFormatDrive2:
-            case FlexemuOptionId::CanFormatDrive3:
-            case FlexemuOptionId::FileTimeAccess:
-            case FlexemuOptionId::IsDisplaySmooth:
-            case FlexemuOptionId::IsConfirmExit:
-            case FlexemuOptionId::IsTerminalIgnoreESC:
-            case FlexemuOptionId::IsTerminalIgnoreNUL:
-            case FlexemuOptionId::PrintFont:
-            case FlexemuOptionId::IsPrintPageBreakDetected:
-            case FlexemuOptionId::PrintOrientation:
-            case FlexemuOptionId::PrintPageSize:
-            case FlexemuOptionId::PrintUnit:
-            case FlexemuOptionId::PrintOutputWindowGeometry:
-            case FlexemuOptionId::PrintPreviewDialogGeometry:
-            case FlexemuOptionId::PrintConfigs:
-            case FlexemuOptionId::DirectoryDiskTrkSec:
-            case FlexemuOptionId::IsStatusBarVisible:
-                break;
+            return true;
         }
     }
 
