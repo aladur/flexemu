@@ -1160,12 +1160,21 @@
   <tabstop>b_mdcrDrive0</tabstop>
   <tabstop>e_mdcrDrive1</tabstop>
   <tabstop>b_mdcrDrive1</tabstop>
+  <tabstop>c_isDirectoryDiskActive</tabstop>
+  <tabstop>cb_diskFormat</tabstop>
+  <tabstop>e_tracks</tabstop>
+  <tabstop>e_sectors</tabstop>
+  <tabstop>r_scrollingTerminal</tabstop>
+  <tabstop>r_ncursesTerminal</tabstop>
+  <tabstop>c_terminalIgnoreNUL</tabstop>
+  <tabstop>c_terminalIgnoreESC</tabstop>
   <tabstop>c_undocumented</tabstop>
   <tabstop>c_flexibleMmu</tabstop>
   <tabstop>c_canFormatDrive0</tabstop>
   <tabstop>c_canFormatDrive1</tabstop>
   <tabstop>c_canFormatDrive2</tabstop>
   <tabstop>c_canFormatDrive3</tabstop>
+  <tabstop>c_fileTime</tabstop>
  </tabstops>
  <resources>
   <include location="flexemu.qrc"/>
