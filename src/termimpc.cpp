@@ -256,6 +256,8 @@ void NCursesTerminalImpl::put_char_serial(Byte key)
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void NCursesTerminalImpl::write_char_serial_safe(Byte value)
 {
+    bool char_written = false;
+
     // For Eurocom II terminal compatibilty mask output character to 7-bit.
     if ((value & 0x80U) != 0U)
     {
@@ -273,10 +275,7 @@ void NCursesTerminalImpl::write_char_serial_safe(Byte value)
         process_ctrl_character(value);
         return;
     }
-    int x;
-    int y;
 
-    getyx(win, y, x);
 #ifdef HAVE_NCURSESW
     if (is_german)
     {
@@ -296,24 +295,40 @@ void NCursesTerminalImpl::write_char_serial_safe(Byte value)
         if (pos != std::string::npos)
         {
             waddstr(win, umlaut[pos]);
-            return;
+            char_written = true;
         }
     }
 #endif
 
-    if (value == 0x7FU)
+    if (!char_written)
     {
-        static const char *south_west_arrow{"\xE2\x86\x99"};
-        waddstr(win, south_west_arrow);
-        return;
+        if (value == 0x7FU)
+        {
+            static const char *south_west_arrow{"\xE2\x86\x99"};
+            waddstr(win, south_west_arrow);
+        }
+        else
+        {
+            waddch(win, value);
+        }
     }
 
-    waddch(win, value);
-    if ((x == TERM_COLUMNS - 1) && (y == TERM_LINES - 1))
+    int x;
+    int y;
+
+    getyx(win, y, x);
+    if (x >= TERM_COLUMNS - 1)
     {
-        wmove(win, 0, x);
-        wdeleteln(win);
-        wmove(win, y, 0);
+        if (y >= TERM_LINES - 1)
+        {
+            wmove(win, 0, x);
+            wdeleteln(win);
+            wmove(win, y, 0);
+        }
+        else
+        {
+            wmove(win, y + 1, 0);
+        }
     }
     wrefresh(win);
 }
