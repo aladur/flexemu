@@ -286,7 +286,14 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
+         <item row="7" column="0" colspan="2">
+          <widget class="QCheckBox" name="c_isConfirmExit">
+           <property name="text">
+            <string>Confirm exit</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
           <spacer name="verticalSpacer_5">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -1133,6 +1140,7 @@
   <tabstop>c_multiColorScheme</tabstop>
   <tabstop>c_isInverse</tabstop>
   <tabstop>c_isDisplaySmooth</tabstop>
+  <tabstop>c_isConfirmExit</tabstop>
   <tabstop>r_ramExtNone</tabstop>
   <tabstop>r_ramExt2x96</tabstop>
   <tabstop>r_ramExt2x288</tabstop>

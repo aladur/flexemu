@@ -220,6 +220,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     c_multiColorScheme->setChecked(isMultiColorSchemeChecked);
 
     c_isInverse->setChecked(options.isInverse != 0);
+    c_isConfirmExit->setChecked(options.isConfirmExit != 0);
 
     c_undocumented->setChecked(options.use_undocumented);
 
@@ -704,6 +705,11 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
     if (!IsReadOnly(FlexemuOptionId::IsInverse))
     {
         options.isInverse = c_isInverse->isChecked();
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::IsConfirmExit))
+    {
+        options.isConfirmExit = c_isConfirmExit->isChecked();
     }
 
     if (!IsReadOnly(FlexemuOptionId::IsUseUndocumented))
