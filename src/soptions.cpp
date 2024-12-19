@@ -55,6 +55,7 @@ const FlexemuOptionIds_t &GetAllFlexemuOptionIds()
         FlexemuOptionId::IconSize,
         FlexemuOptionId::FileTimeAccess,
         FlexemuOptionId::IsDisplaySmooth,
+        FlexemuOptionId::IsConfirmExit,
         FlexemuOptionId::PrintFont,
         FlexemuOptionId::IsPrintPageBreakDetected,
         FlexemuOptionId::PrintOrientation,

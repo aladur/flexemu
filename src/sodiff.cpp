@@ -156,6 +156,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::IsDisplaySmooth);
     }
 
+    if (opt1.isConfirmExit != opt2.isConfirmExit)
+    {
+        notEquals.push_back(FlexemuOptionId::IsConfirmExit);
+    }
+
     if (opt1.isTerminalIgnoreNUL != opt2.isTerminalIgnoreNUL)
     {
         notEquals.push_back(FlexemuOptionId::IsTerminalIgnoreNUL);
@@ -270,6 +275,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::CanFormatDrive3:
             case FlexemuOptionId::FileTimeAccess:
             case FlexemuOptionId::IsDisplaySmooth:
+            case FlexemuOptionId::IsConfirmExit:
             case FlexemuOptionId::IsTerminalIgnoreESC:
             case FlexemuOptionId::IsTerminalIgnoreNUL:
             case FlexemuOptionId::PrintFont:

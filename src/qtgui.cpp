@@ -404,6 +404,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::IconSize:
                 case FlexemuOptionId::TerminalType:
                 case FlexemuOptionId::IsStatusBarVisible:
+                case FlexemuOptionId::IsConfirmExit:
                     break;
             }
         }
@@ -1367,7 +1368,7 @@ void QtGui::SetStatusMessage(const QString &message) const
 // Optionally confirm to close this window.
 bool QtGui::IsClosingConfirmed()
 {
-    if (isConfirmClose)
+    if ((options.isConfirmExit && isConfirmClose) || isRestartNeeded)
     {
         auto message = isRestartNeeded ?
             tr("Do you want to restart %1 now?") :

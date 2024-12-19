@@ -72,6 +72,7 @@ static const char * const FLEXISSTATUSBARVISIBLE = "IsStatusBarVisible";
 static const char * const FLEXFREQUENCY = "Frequency";
 static const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
 static const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
+static const char * const FLEXISCONFIRMEXIT = "IsConfirmExit";
 static const char * const FLEXTERMINALIGNOREESC = "TerminalIgnoreESC";
 static const char * const FLEXTERMINALIGNORENUL = "TerminalIgnoreNUL";
 static const char * const FLEXTERMINALTYPE = "TerminalType";
@@ -153,6 +154,7 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.nColors = 2;
     options.isInverse = false;
     options.isSmooth = false;
+    options.isConfirmExit = true;
     options.isTerminalIgnoreESC = true;
     options.isTerminalIgnoreNUL = true;
 #ifdef _WIN32
@@ -564,6 +566,10 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXDISPLAYSMOOTH, options.isSmooth ? 1 : 0);
             break;
 
+        case FlexemuOptionId::IsConfirmExit:
+            reg.SetValue(FLEXISCONFIRMEXIT, options.isConfirmExit ? 1 : 0);
+            break;
+
         case FlexemuOptionId::DirectoryDiskTrkSec:
             reg.SetValue(FLEXDIRECTORYDISKTRACKS,
                 options.directoryDiskTracks);
@@ -765,6 +771,10 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isSmooth = previousOptions.isSmooth;
             break;
 
+        case FlexemuOptionId::IsConfirmExit:
+            optionsToWrite.isConfirmExit = previousOptions.isConfirmExit;
+            break;
+
         case FlexemuOptionId::IsTerminalIgnoreESC:
             optionsToWrite.isTerminalIgnoreESC =
                 previousOptions.isTerminalIgnoreESC;
@@ -841,6 +851,7 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXVERSION, VERSION);
     rcFile.SetValue(FLEXINVERSE, optionsToWrite.isInverse ? 1 : 0);
     rcFile.SetValue(FLEXDISPLAYSMOOTH, optionsToWrite.isSmooth ? 1 : 0);
+    rcFile.SetValue(FLEXISCONFIRMEXIT, optionsToWrite.isConfirmExit ? 1 : 0);
     rcFile.SetValue(FLEXCOLOR, optionsToWrite.color);
     rcFile.SetValue(FLEXNCOLORS, optionsToWrite.nColors);
     rcFile.SetValue(FLEXSCREENFACTOR, optionsToWrite.pixelSize);
@@ -1044,6 +1055,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         options.isSmooth = (int_result != 0);
     }
 
+    if (!reg.GetValue(FLEXISCONFIRMEXIT, int_result))
+    {
+        options.isConfirmExit = (int_result != 0);
+    }
+
     if (!reg.GetValue(FLEXDIRECTORYDISKTRACKS, int_result))
     {
         int_result = std::max(int_result, 2);
@@ -1209,6 +1225,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!rcFile.GetValue(FLEXDISPLAYSMOOTH, int_result))
     {
         options.isSmooth = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXISCONFIRMEXIT, int_result))
+    {
+        options.isConfirmExit = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXTERMINALIGNOREESC, int_result))

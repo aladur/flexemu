@@ -471,6 +471,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::PrintConfigs:
             case FlexemuOptionId::IconSize:
             case FlexemuOptionId::IsStatusBarVisible:
+            case FlexemuOptionId::IsConfirmExit:
                 break;
         }
     }
@@ -558,6 +559,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::PixelSize:
                 case FlexemuOptionId::FileTimeAccess:
                 case FlexemuOptionId::IsDisplaySmooth:
+                case FlexemuOptionId::IsConfirmExit:
                 case FlexemuOptionId::IsTerminalIgnoreESC:
                 case FlexemuOptionId::IsTerminalIgnoreNUL:
                 case FlexemuOptionId::PrintFont:
