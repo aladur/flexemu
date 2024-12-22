@@ -275,6 +275,7 @@ Section "Documentation" Documentation
 
   SectionIn RO
   SetOutPath $INSTDIR\Documentation
+  File /a "${BASEDIR}\doc\flexemu.css"
   File /a "${BASEDIR}\doc\flexdos.htm"
   File /a "${BASEDIR}\doc\flexemu.htm"
   File /a "${BASEDIR}\doc\flexerr.htm"
