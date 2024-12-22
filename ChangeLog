@@ -949,11 +949,227 @@ Code Maintenance:
 V3.22 (20241004)
 New Features:
 Bug Fixes:
-	Bugfix flexplorer on Windows: Don't display non-FLEX files.
-	Bugfix flexplorer: Correctly filter FLEX filenames.
-	Bugfix flexplorer: Extract files with original letter case.
-	Bugfix flexplorer, dsktool: set right file timestamp.
-	Bugfix flexemu: Avoid crash due to inconsistent random files.
-	Bugfix flexemu: Avoid read/write errors for random files in directory disk.
+ 59a25e3 Bugfix flexplorer on Windows: Don't display non-FLEX files.
+ b989fea Bugfix flexplorer: Correctly filter FLEX filenames.
+ a4a07e1 Bugfix flexplorer: Extract files with original letter case.
+ 0fbe62b Bugfix flexplorer, dsktool: set right file timestamp.
+ 93d191c Bugfix flexemu: Avoid crash due to inconsistent random files.
+ 4b7510b Bugfix flexemu: Avoid read/write errors for random files in directory disk.
 Code Maintenance:
-	Update Windows build files.
+ 5222cbf Update Windows build files.
+
+V3.25 (20241222)
+New Features:
+ 0094c3d flexemu logging: Support CSV format.
+ d3b122b flexemu logging: Add a logging enable/disable flag.
+ 755aa04 flexemu: Add command line parameter -L for CPU logging.
+ 5dd80ec flexemu CPU logging: Add loop optimization.
+ a48ee5a flexemu loop optimized logging: Support self modifying code.
+ 8f8fac1 dsktool: Explicitly support *.wta files.
+ 28d5df7 flexemu: Use parameter -V to print version number.
+ 679dbba flexemu, flexplorer: Print the same version and copyright.
+ 7358fec dsktool, disk check: File record size comparison.
+ 3d7434f Disassembler: Add file containing FLEX labels.
+ 2352114 Add utility CHECKRND.CMD to validate random files.
+ db774cf Add utility NEWRND.DAT to create a random file.
+ 8488d86 ImHex Hex Editor support.
+ 8fc987b ImHex, *.dsk; *.flx files, detect directory loops.
+ 6f993bb ImHex, *.flx files, calculate file offset right.
+ d912572 flexemu: Add EMU command to check filesystem.
+ 8d778b9 Update utility CHECKRND.CMD, improve output.
+ 4f7be0d flexplorer: Performance impr. pasting files to disk dir.
+ 9ddb335 Windows flexplorer: Performance impr. pasting files to disk dir.
+ b2d341d Performance improvement in pattern matching.
+ 60244de flexplorer Performance impr. pasting FLEX files.
+ 7533326 flexplorer: Performance improvement when copy&paste files.
+ e09cfb3 flexplorer: Performance impr. copying files from disk dir.
+ 8de3610 flexplorer: Performance impr. copy mime data.
+ 74368e9 Monitor program V5.3 also supports terminal mode.
+ b8bdcdd Update monitor program documentation.
+ f9d8a2b Add documentation for monitor pgm mon53/54.s19, monu54-6.s19.
+ df8b7b8 flexemu disassembler: Optionally support user specific label file.
+ 96e6906 flexemu about dialog: Display compiler and library versions.
+ dd2ff40 flexplorer about dialog: Display compiler and library versions.
+ abbb25a Command line tools -V: Print compiler and library versions.
+ f57986c flexplorer, reuse flexemu disk status dialog.
+ 99bf1e0 flexemu: Display sector size in disk status dialog.
+ 7c7d383 flexemu: Show latest key entered on status bar.
+ 43ec2f9 flexemu: Improve disk icon tooltip.
+ 9260e63 flexplorer: Support small, medium and large icons.
+ cb5ea9e flexemu: Persist icon size.
+ 5a26178 flexplorer: Persist icon size.
+ f3245b1 flexemu: Persist status bar visibility.
+ 5db670b flexemu: Support new terminal type using ncurses.
+ cbbdc02 flexemu: Make terminal type configurable.
+ 7f479a1 flexemu print output window: Resize icons.
+ 034e172 flexemu: Make terminal type configurable in preferences dialog.
+ 92ab64d flexemu: Add utility RAWINPUT.CMD
+ 79f5920 flexemu: Add utility RAWTERM.CMD
+ 48f788c flexemu: Add option to suppress exit confirmation dialog.
+ 85a7d88 flexemu: En-/disable exit confirmation in Preferences.
+ b731053 flexemu: Add command line parameter -T for terminal type.
+Bug Fixes:
+ 2553e28 Bugfix 6809 disassembler.
+ 64ce448 Bugfix dsktool: Avoid error when extracting a file.
+ 9256b0b Bugfix fileread.cpp
+ 63718d1 Bugfix flexemu: Correctly format a disk image file.
+ 93517fe Bugfix flexemu: Command interface, correctly detect commands.
+ 7c8d386 Bugfix disassembler: Index reg. with neg. 16-bit offset
+ d108fa3 flexemu CPU logging: Avoid spaces at end of line.
+ defe963 Bugfix csv logging: Avoid separator at end of line.
+ 621013b Bugfix disassembler: Calculate right byte size for ill. insn.
+ c57385a Bugfix flexemu logging: Avoid debug messages on stderr.
+ 4e5f510 flexemu: Avoid memory leak.
+ 889b198 Bugfix flex2hex: Writing potentially wrong intel hex format.
+ 5bc878c Bugfix flexemu: Logger CC register status on big endian CPU.
+ bef21ec Bugfix flexplorer: Avoid unhandled exception drag&drop.
+ 7a8567e Bugfix fcnffile.cpp: Correctly initialize exception object.
+ 0fbe62b Bugfix flexplorer, dsktool: set right file timestamp.
+ 49de444 Bugfix flexplorer on Windows: Display right file time.
+ 8682503 Bugfix flexplorer, dsktool: Create valid *.flx disk.
+ a34b7f9 Bugfix flexplorer: Correctly set/unset attributes.
+ 14aced7 Bugfix: Only support file time if FileTimeAccess is set.
+ 40d442a Bugfix: directory disk FindFile() consistent return values.
+ b975c9f Bugfix directory disk
+	In member function IsSectorValid() also check track validity.
+	In member function WriteTrack() unconditionally return false if disk
+	 is write protected.
+	Correctly set disk year if year >= 2000.
+ c4c5541 Bugfix flexplorer: Avoid exception when sorting size column.
+ 93d191c Bugfix flexemu: Avoid crash due to inconsistent random files.
+ 860a425 Bugfix flexemu: Don't store frequency when set on cmnd line.
+ 4b7510b Bugfix flexemu: random files in directory disk.
+ 93d191c Bugfix flexemu: Avoid crash due to inconsistent random files.
+ 4b7510b Bugfix flexemu: random files in directory disk.
+ bd18758 Bugfix flexemu: Avoid loading monitor program from invalid path.
+ 40edc47 Revert "Bugfix flexplorer: Extract files with original letter case."
+ 1b8e334 Bugfix flexemu: Avoid read errors on random files.
+ 8b5bc8e Bugfix flexplorer: Correctly format clipboard data.
+ ee93503 Windows Bugfix for directory disk.
+	Bug: On Windows only files with the first character of the file extension
+	has lowercase is accepted as valid FLEX file.
+	Bugfix: Files with any character case for file stem or file extension
+	is accepted as valid FLEX file.
+ 454895a Bugfix Flexplorer on Windows: Extract files as uppercase.
+ c8ea84c Bugfix flexemu: Update monitor program mon54.s19
+ 78c0467 Bugfix flexemu: Update monitor program monu54-6.s19
+ 1e5d277 Bugfix flexemu: Update monitor program mon53.s19
+ 4e098a8 Bugfix flexemu: Avoid receiving a NUL char. from keyboard.
+ 90ae443 Bugfix flexemu: Monitor program V5.3 can boot.
+ e5af98c Bugfix flexemu: mc146818, correctly emulate non volatile RAM.
+ c0eb16c Bugfix flexemu: Monitor program V5.3 and V5.4.
+	Support terminal mode (-t) together with a startup command
+	(-C <startup command>)
+	After receiving a character from terminal a delay is needed before
+	signalling the next character to be receivable
+c773d67 flexemu: Optionally support auto-booting FLEX.
+	Some monitor programs do not automatically support booting FLEX.
+	To boot FLEX a single character command has to be input.
+	This can be automated individually for any monitor program.
+ 3b76653 Bugfix flexemu: Monitor program U5.4.
+	Support terminal mode, -t. Support startup command, -C.
+ ff2fa89 Bugfix flexemu: Persist CPU frequency when changed.
+ a81e336 Bugfix FLEX: Disk driver DCHECK support drive 0-3.
+ 38f21e4 Bugfix flexplorer: Improved error handling creating *.mdcr file.
+ 1dcd94c Bugfix flexplorer: Use unique hotkey for disk status dlg.
+ 948f6b5 Bugfix flexemu: Avoid inverse video always is read-only.
+ 9266e5d Bugfix flexemu changing "Display inverse colors" may be ignored.
+ eacff06 flexemu preferences: Correctly en/disable disk directory.
+ b5059ce Bugfix flexemu: Correctly display disk status tooltip.
+ 6f0c61e Bugfix Windows Installer: Add flexemu.css
+Code Maintenance:
+ Comply to 209 clang-tidy rules (see .clang-tidy)
+ Use github, appveyor and cirrusCI for continuous integration (CI) on
+	Windows, Linux, MacOS and FreeBSD
+ Added unit tests for 28 classes
+ Prefer: ref parameters instead of pointer.
+ Modernize to c++17
+ Replace c-style arrays by std::array.
+ Use file stream I/O instead of FILE ptr, remove BFilePtr.
+ Replace sscanf() usage by std::stringstream.
+ Use const std::string ref instead of const char * parameter.
+ Improve const correctness.
+ Add some github readme badges.
+ Automatic update of readme badge metadata
+	Estimate lines of code for src and test.
+	Estimate number of clang-tidy rules checked.
+ Silencing build output.
+ Rename classes:
+	FileContainerIf => IFlexDiskByFile.
+	FileContainerIfBase => IFlexDiskBase.
+	FileContainerIfSector => IFlexDiskBySector.
+	FileContainerIteratorImp => IFlexDiskIteratorImp
+	FlexFileContainerIteratorImp => FlexDiskIteratorImp
+	DirectoryContainerIteratorImp => FlexDirectoryDiskIteratorImp
+	FileContainerIterator => FlexDiskIterator
+	FlexFileContainer => FlexDisk
+	NafsDirectoryContainer => FlexDirectoryDiskBySector
+	DirectoryContainer => FlexDirectoryDiskByFile
+	FlexRamFileContainer => FlexRamDisk
+	FlexContainerInfo => FlexDiskAttributes
+	FileContainerCheck => FlexDiskCheck
+	ContainerCheckResultItem => FlexDiskCheckResultItem
+ 42bc391 flexemu: Make memory mapped I/O device access faster.
+ 7aadd28 Include what you use.
+ 312cf64 flexemu: Improved error handling for command line parameters.
+ b5e9ce2 Reduce compiler warnings.
+ 3982d10 Refactoring disassembler.
+ 45a709c Refactoring disk image and disk directory classes.
+ 8328806 Class BFilePtr refactoring.
+ c1d3b2c Refactoring class FlexDirEntry.
+ e3b50dd Refactoring FLEX attributes properties.
+ 196b442 Avoid const_cast.
+ 8b9766f flexemu: Refactoring CPU View.
+ 8cb493c Improve matches() algorithm and unittests.
+ 3c85e14 Use prefix for parameter names to avoid name collisions.
+ fb8ae4e Use std::fill() algorithm.
+ f68ef02 Reduce usage of reinterpret_cast.
+ a4b486a BEnvironment: Do not force key to uppercase.
+ 3780894 Refactoring 6809 disassembler.
+ 9633298 mc6809: Add more undocumented instructions.
+ 26e25d1 Add fmt library.
+ f53ff49 Windows installer: Support Qt6.7.0
+ a54186e Avoid comments on closing braces.
+ e862847 fileread.cpp, Create intel-hex, use record-type 05 for start address.
+ 65e3930 Use QStringList instead of QVector<QString>
+ 98a7531 Don't use a union for type punning.
+ 40f11cd Update FLEXplorer copyright message.
+ dd3d2be Windows, build Qt libs: Support mirror and always do checksum validation.
+ 58f94eb Avoid standard C library strcmp().
+ 2b0be33 Add ci_string, a std::string with case insensitive comparison.
+ 8da1059 Replace stricmp().
+ 4686c66 Declare misc. utility functions in namespace flx.
+ e07eaa4 Move build of test_gccasm into test directory.
+ d9d30c6 flexemu: Move CPU logging in separate class.
+ 21e5f11 flexemu disassembler: Separate mnemonic into mnemonic and operands.
+ 5ddfb62 dsktool: Reformat usage message.
+ cd9c7d7 Disassembler: Modify interface.
+ 273a82b Avoid global static non-trivial objects.
+ e6ed570 Avoid deprecated header files.
+ 4ca8a54 Use std::min() or std::max().
+ 24d6f86 Avoid static objects which could throw an exception.
+ b5e9ce2 Reduce compiler warnings.
+ 0085c58 Add Dockerfiles to build flexemu on several linux distros.
+ 9ef7913 Avoid redundant string to c_str() conversion.
+ 90a2e23 Use same pattern for using time() and localtime().
+ eff41f4 Update Version to V3.25
+ 0f71ecb Throw exception if filename does not support wildcards.
+ 34934f3 ReadToBuffer(), throw exception if file does not exist.
+ 280202d Do not install tools: rcvflex, send2flex, testdaa.
+ 1d42b8d BProcess: Support multiple arguments when starting a process.
+ 8a5723d flexemu, flexplorer: Improve directory disk random file detection.
+ d49777d flexemu: directory disk, ignore too large random files.
+ 6b8be9d flexplorer: Improvement when writing buffer to file.
+ 5137942 Add documentation for all monitor programs.
+ 530dbca flexemu: Optionally support user specific config file.
+ 45624e6 Synchronize content of system54.dsk based on system.dsk
+ 8d44138 flexemu on Unix: Move flexemu preferences file to $HOME/.config/flexemu
+ 7d7987a flexplorer on Unix: Move flexplorer preferences file to $HOME/.config/flexemu
+ 9cda374 mc146818: Move binary config file to $HOME/.config/flexemu
+ 892fd67 Print support: Avoid sporadically opening print output win.
+ 0d41f25 Documentation: Make all HTML documents validated.
+ 5bb7752 flexemu, flexplorer: Move member fct to free fct.
+ 22521f3 Replace disk type (int) by enum classes.
+ b37f1d2 flexemu: On normal screen size limit toolbar width.
+ fce7d6f flexemu, Preferences dialog: Update tab stop order.
+ 282eff8 flexemu: Simplify checking for restart option ids.
