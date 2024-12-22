@@ -35,6 +35,8 @@ The build command is:
 303|rockylinux|1.58|5.15.9|user||
 582|slackware|2.45|5.15.3|user||
 1101|ubuntu|1.68|5.15.13|ubunutu||
+801|ubuntu18_gcc|1.88|5.9.5|ubunutu||
+574|ubuntu18_clang|1.77|5.9.5|ubunutu||
 468|voidlinux|2.68|5.15.11|user||
 
 1) use additional parameter <code>--platform=linux/s390x</code><br>
