@@ -105,9 +105,12 @@ void FlexemuOptions::PrintHelp(std::ostream &os)
           "  -F <frequency> (set CPU frequency in MHz)\n"
           "     0.0 sets maximum frequency, -1.0 sets original frequency.\n"
           "  -C <startup command>\n"
-#ifdef HAVE_TERMIOS_H
+#ifdef UNIX
           "  -t (terminal only mode)\n"
+#ifdef HAVE_TERMIOS_H
           "  -r <two-hex-digit reset key>\n"
+#endif
+          "  -T <terminal_type> ('scroll' or 'curses')\n"
 #endif
           "  -c <color> define foreground color\n"
           "  -i (display inverse video)\n"
@@ -193,7 +196,7 @@ void FlexemuOptions::GetCommandlineOptions(
     opterr = 1;
     std::string optstr("mup:f:0:1:2:3:j:F:C:O:L:");
 #ifdef HAVE_TERMIOS_H
-    optstr.append("tr:"); // terminal mode and reset key
+    optstr.append("tr:T:"); // terminal mode, reset key and terminal type
 #endif
     optstr.append("ic:n:"); // color, inverse video, # of colors
     optstr.append("Vh"); // version and help
@@ -298,6 +301,7 @@ void FlexemuOptions::GetCommandlineOptions(
             case 'C':
                 options.startup_command = optarg;
                 break;
+#ifdef UNIX
 #ifdef HAVE_TERMIOS_H
 
             case 't':
@@ -315,6 +319,30 @@ void FlexemuOptions::GetCommandlineOptions(
                             "Only a two digit hex value is allowed.\n";
                         exit(EXIT_FAILURE);
                     }
+                }
+                break;
+#endif
+            case 'T':
+                {
+                    std::string str(optarg);
+
+                    if (str.compare("scroll") != 0 &&
+                        str.compare("curses") != 0)
+                    {
+                        std::cerr << "Invalid -T value: '" << optarg << "'.\n"
+                            "Only 'scroll' and 'curses' is supported.\n";
+                        exit(EXIT_FAILURE);
+                    }
+
+                    if (str.compare("scroll") == 0)
+                    {
+                        options.terminalType = 1;
+                    }
+                    else if (str.compare("curses") == 0)
+                    {
+                        options.terminalType = 2;
+                    }
+                    setReadOnly(FlexemuOptionId::TerminalType);
                 }
                 break;
 #endif

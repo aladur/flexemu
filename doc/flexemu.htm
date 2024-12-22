@@ -17,7 +17,7 @@
 <hr>
 <h2 id="synopsis">SYNOPSIS</h2>
 <h3 id="synopsis_unix">On Unix like OS</h3>
-<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-t] [-r&nbsp;&lt;two_hex_digits&gt;] [-V] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc] [-L&nbsp;path]</p>
+<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-t] [-T (scroll|curses)] [-r&nbsp;&lt;two_hex_digits&gt;] [-V] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc] [-L&nbsp;path]</p>
 <h3 id="synopsis_windows">On Windows</h3>
 <p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-V] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc] [-L&nbsp;path]</p>
 
@@ -46,7 +46,8 @@ in Germany in the 1980ies.
 <a href="e2hwdesc.htm#E2V7">Eurocom II/V7</a> with floppy disk drives.
 <li>supporting all <a href="mc6809.htm">MC6809</a> instructions incl. CWAI and SYNC
  <li>CPU monitor with start/stop/step/next/reset, two breakpoints
- <li>continuous display of CPU frequency and cycle count
+ <li>continuous display of CPU frequency, cycle count and disassembly.
+ <li>disassembler supports configurable label names.
  <li>full interrupt support
  <li>stop processor and pop up dialog at unimplemented processor instructions
  <li>Optionally support
@@ -65,6 +66,7 @@ or original frequency
 <a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a>
  <li>MC6850 serial line used for terminal I/O
  <li>terminal only mode without graphical user interface (Unix like OS only)
+ <li>two different terminal types are supported.
  <li>WD1793 floppy disk controller support with up to 4 disk drives
  <li>support of DSK or FLX disk image files
  <li>support of virtual disks based on a host directory
@@ -76,7 +78,9 @@ or original frequency
  <li>On Unix like OS Signal SIGINT, SIGUSR1 and SIGUSR2 generate NMI,
      IRQ or FIRQ
  <li>Configurable CPU Instruction logging within address range
-     and/or Start/Stop trigger address
+     and/or Start/Stop trigger address, optional CPU register logging and
+     loop optimization.
+ <li>Support different monitor programs.
  <li>dynamic mount/unmount of disks possible
  <li>file conversion from/to FLEX ASCII file format
  <li><a href="http://www.eltec.de/">ELTEC</a> full screen editor e.cmd included
@@ -230,6 +234,12 @@ which flexemu is started.<br>
 <b>Hint:</b> Montior program <b>neumnt54.hex</b> is NOT needed for this any
 more.
 <b>neumon54.hex</b> can be used for both terminal and GUI mode.
+</dd>
+<dt>-T</dt>
+<dd>
+Terminal type. There are two different terminal types available: <b>scroll</b>
+and <b>curses</b>. See <a href="flexemu.htm#terminal">Terminal Preferences</a>
+for details.
 </dd>
 <dt>-r &lt;two_hex_digits&gt;</dt>
 <dd>
@@ -459,7 +469,7 @@ The following preferences can be modified.
   <td><b>&check;</b></td>
   <td>36</td>
  </tr>
- <tr>
+ <tr id="terminal">
   <th colspan="5">Terminal (Unix like OS only)</th>
  </tr>
  <tr>
@@ -473,7 +483,7 @@ The following preferences can be modified.
     to see the input and output history. It is also possible to redirect
     the output stream into a file using Unix builtin output redirection
     support. This example creates a log-file of the whole flexemu session:<br>
-    <b>flexemu -t | tee inout.log</b><br>
+    <b>flexemu -t -T scroll | tee inout.log</b><br>
     The escape sequences of the controlling terminal can be used (which
     obviously creates a dependency between the executed flexemu command and
     the controlling terminal).
@@ -485,9 +495,19 @@ The following preferences can be modified.
     CTRL-], ESC A, ESC F and ESC G).
     This terminal type is useful for example for screen editors like
     <a href="cedric.pdf">CEDRIC</a> or <a href="dynastar.pdf">DynaStar</a>
-    which depend on specific escape sequences.
+    which depend on specific escape sequences. This terminal emulation is
+    based on the
+    <a href="https://invisible-island.net/ncurses/ncurses-intro.html">ncurses library</a>.
+    This example starts flexemu in this terminal mode without visible user
+    interface:<br>
+    <b>flexemu -t -T curses</b><br>
     </li>
    </ul>
+   <br>
+   On the FLEX prompt it is also possible to switch between graphical user
+   interface and terminal mode.
+   See <a href="flexutil.htm#terminal_graphic">corresponding EMU commands</a>
+   for details.
   </td>
   <td><b>&check;</b></td>
   <td><b>&check;</b></td>
