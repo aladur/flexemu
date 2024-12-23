@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="fversion.cpp" />
     <ClCompile Include="mdcrtool.cpp" />
     <ClCompile Include="mdcrfs.cpp" />
   </ItemGroup>
@@ -30,6 +31,7 @@
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="fileread.h" />
     <ClInclude Include="flexerr.h" />
+    <ClInclude Include="fversion.h" />
     <ClInclude Include="mdcrfs.h" />
     <ClInclude Include="mdcrtape.h" />
     <ClInclude Include="memsrc.h" />

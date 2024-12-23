@@ -14,6 +14,9 @@
     <ClCompile Include="dsktool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fversion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bdate.h">
@@ -74,6 +77,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="filfschk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="idircnt.h">

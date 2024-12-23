@@ -11,6 +11,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="fversion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="mdcrtool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -29,6 +32,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="flexerr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mdcrfs.h">

@@ -233,7 +233,6 @@
     <ClCompile Include="fileread.cpp" />
     <ClCompile Include="filfschk.cpp" />
     <ClCompile Include="flexerr.cpp" />
-    <ClCompile Include="fversion.cpp" />
     <ClCompile Include="idircnt.cpp" />
     <ClCompile Include="iffilcnt.cpp" />
     <ClCompile Include="ifilecnt.cpp" />

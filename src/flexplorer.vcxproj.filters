@@ -51,6 +51,9 @@
     <ClCompile Include="fpwin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fversion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="winmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -236,6 +239,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="fpcnvui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fversion.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
