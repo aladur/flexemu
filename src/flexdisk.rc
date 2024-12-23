@@ -5,8 +5,8 @@
 FLEXDISK_ICON          ICON    "bitmaps/FLEXDISK.ICO"
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,25,0,0
- PRODUCTVERSION 3,25,0,0
+ FILEVERSION 3,26,0,0
+ PRODUCTVERSION 3,26,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -23,12 +23,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "\0"
             VALUE "FileDescription", "FLEXplorer\0"
-            VALUE "FileVersion", "3,25,0,0\0"
+            VALUE "FileVersion", "3,26,0,0\0"
             VALUE "InternalName", "FLEXplorer.exe\0"
             VALUE "LegalCopyright", "Copyright © 1997-2024 W. Schwotzer\0"
             VALUE "OriginalFilename", "FLEXplorer.exe\0"
             VALUE "ProductName", "FLEXplorer\0"
-            VALUE "ProductVersion", "3,25,0,0\0"
+            VALUE "ProductVersion", "3,26,0,0\0"
         END
     END
     BLOCK "VarFileInfo"
