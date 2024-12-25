@@ -822,7 +822,8 @@ unittests_CPPFLAGS = \
 	-isystem$(top_srcdir)/$(gmock_top)/include \
 	-isystem$(top_srcdir)/fmt/include \
 	-I$(top_srcdir)/test \
-	-I$(top_srcdir)/src
+	-I$(top_srcdir)/src \
+	-include pch.h
 
 TESTS_ENVIRONMENT = export GTEST_OUTPUT="xml";
 test_gccasm_SOURCES = \
@@ -886,7 +887,8 @@ test_gccasm_CXXFLAGS = \
 	-isystem$(top_srcdir)/$(gtest_top)/include \
 	-isystem$(top_srcdir)/$(gmock_top)/include \
 	-isystem$(top_srcdir)/fmt/include \
-	-I$(top_srcdir)/src
+	-I$(top_srcdir)/src \
+	-include pch.h
 
 all: all-am
 
@@ -2412,7 +2414,6 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
-	-include ../src/pch.h
 
 metadata.json: ../src/updatemd $(test_gccasm_SOURCES) $(unittests_SOURCES)
 	@set +x; \
