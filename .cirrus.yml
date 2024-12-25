@@ -13,8 +13,10 @@ build_task:
     - whoami
     - echo CIRRUS_USER_PERMISSION=$CIRRUS_USER_PERMISSION
 
+    # libfmt is not used, flexemu comes with local fmt sources as a git
+    # submodule. But it helps to detect if the wrong fmt header files are used.
   install_pkg_script:
-    - pkg install -y sudo pkgconf libtool ncurses qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport
+    - pkg install -y sudo pkgconf libtool libfmt ncurses qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport
 
   setup_script:
     - pw groupadd -n user

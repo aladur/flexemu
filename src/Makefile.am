@@ -75,8 +75,7 @@ DIRFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
 AM_CXXFLAGS = \
 	--std=c++17 \
-	$(DIRFLAGS) \
-	-isystem $(top_srcdir)/fmt/include
+	$(DIRFLAGS)
 
 # To use precompiled headers all targets have to use the same CXXFLAGS
 # (especially preprocessor directives).
@@ -86,19 +85,25 @@ ALL_TARGETS_CXXFLAGS = \
 	$(CXXWARNINGS) $(MACOSX_VERSION_MIN)
 
 libjsoncpp_a_CXXFLAGS= --std=c++11 $(MACOSX_VERSION_MIN) \
-			-isystem $(top_srcdir)/jsoncpp/include
+			-I$(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS   = --std=c++11 $(MACOSX_VERSION_MIN) \
-			-isystem $(top_srcdir)/fmt/include
-libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
-flexemu_CXXFLAGS    = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH) \
+			-I$(top_srcdir)/fmt/include
+libflex_a_CXXFLAGS  = -I$(top_srcdir)/fmt/include \
+			$(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+flexemu_CXXFLAGS    = -I$(top_srcdir)/fmt/include \
+			$(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH) \
 			@CURSES_CFLAGS@ -DADD_NCURSES_VERSION
-flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
-mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
-flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
-dsktool_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+flexplorer_CXXFLAGS = -I$(top_srcdir)/fmt/include \
+			$(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+mdcrtool_CXXFLAGS   = -I$(top_srcdir)/fmt/include \
+			$(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+flex2hex_CXXFLAGS   = -I$(top_srcdir)/fmt/include \
+			$(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+dsktool_CXXFLAGS    = -I$(top_srcdir)/fmt/include \
+			$(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
 updatemd_CXXFLAGS   = --std=c++17 $(OS_TYPE) -DADD_JSONCPP_VERSION \
 			-isystem $(top_srcdir)/jsoncpp/include \
-			-isystem $(top_srcdir)/fmt/include
+			-I$(top_srcdir)/fmt/include
 
 libflex_a_LIBADD = $(LIBOBJS)
 
