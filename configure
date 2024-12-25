@@ -691,6 +691,8 @@ QT_DIR
 QT_CXXFLAGS
 ac_ct_QMAKE
 QMAKE
+PCH_H_GCH
+INCLUDE_PCH
 IGNORE
 X_EXTRA_LIBS
 X_LIBS
@@ -846,6 +848,7 @@ enable_libtool_lock
 with_x
 enable_speed
 enable_post_install
+enable_precompiled_headers
 with_ncurses
 with_ncursesw
 enable_bitfields_bigendian
@@ -1519,6 +1522,7 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-speed    compile flexemu for optimized speed
   --disable-post-install  disable executing post installation steps
+  --disable-precompiled-headers  disable build with precompiled headers
   --enable-bitfields-bigendian
                           Enable bitfields bit ordering is bigendian, default
                           is littleendian, only needed for cross compilation
@@ -18860,6 +18864,30 @@ IGNORE="#"
 if test "x$enable_post_install" = "xyes"
 then
     IGNORE=
+fi
+
+
+
+
+
+  # Check whether --enable-precompiled-headers was given.
+if test ${enable_precompiled_headers+y}
+then :
+  enableval=$enable_precompiled_headers;
+else $as_nop
+  enable_precompiled_headers="yes"
+fi
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for using precompiled headers" >&5
+printf %s "checking for using precompiled headers... " >&6; }
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $enable_precompiled_headers" >&5
+printf "%s\n" "$enable_precompiled_headers" >&6; }
+
+INCLUDE_PCH=
+PCH_H_GCH=
+if test "x$enable_precompiled_headers" == "xyes"; then
+    INCLUDE_PCH="-include pch.h"
+    PCH_H_GCH="pch.h.gch"
 fi
 
 

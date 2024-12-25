@@ -89,13 +89,13 @@ libjsoncpp_a_CXXFLAGS= --std=c++11 $(MACOSX_VERSION_MIN) \
 			-isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS   = --std=c++11 $(MACOSX_VERSION_MIN) \
 			-isystem $(top_srcdir)/fmt/include
-libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-flexemu_CXXFLAGS    = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h \
+libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+flexemu_CXXFLAGS    = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH) \
 			@CURSES_CFLAGS@ -DADD_NCURSES_VERSION
-flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
-mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-dsktool_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+dsktool_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
 updatemd_CXXFLAGS   = --std=c++17 $(OS_TYPE) -DADD_JSONCPP_VERSION \
 			-isystem $(top_srcdir)/jsoncpp/include \
 			-isystem $(top_srcdir)/fmt/include
@@ -112,12 +112,12 @@ flexemu_LDADD    = \
 	libflex.a libfmt.a @CURSES_LIBS@
 updatemd_LDADD    = $(PTHREAD_LD) libflex.a libfmt.a libjsoncpp.a
 
-libflex_a_DEPENDENCIES  = libfmt.a
-flexemu_DEPENDENCIES    = $(FLEX_RC) libflex.a libfmt.a
-flexplorer_DEPENDENCIES = libflex.a libfmt.a
-flex2hex_DEPENDENCIES   = libflex.a libfmt.a
-dsktool_DEPENDENCIES    = libflex.a libfmt.a
-mdcrtool_DEPENDENCIES   = libflex.a libfmt.a
+libflex_a_DEPENDENCIES  = $(PCH_H_GCH) libfmt.a
+flexemu_DEPENDENCIES    = $(PCH_H_GCH) $(FLEX_RC) libflex.a libfmt.a
+flexplorer_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
+flex2hex_DEPENDENCIES   = $(PCH_H_GCH) libflex.a libfmt.a
+dsktool_DEPENDENCIES    = $(PCH_H_GCH) libflex.a libfmt.a
+mdcrtool_DEPENDENCIES   = $(PCH_H_GCH) libflex.a libfmt.a
 updatemd_DEPENDENCIES   = libflex.a libfmt.a libjsoncpp.a
 
 # Rule for precompiled header:
@@ -171,15 +171,10 @@ flexplorer_moc_hdr = \
 flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
 
 nodist_flexemu_SOURCES = \
-	$(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src) $(pch_h_gch)
+	$(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src)
 
 nodist_flexplorer_SOURCES = \
-	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src) \
-	$(pch_h_gch)
-
-nodist_flex2hex_SOURCES = $(pch_h_gch)
-nodist_dsktool_SOURCES = $(pch_h_gch)
-nodist_mdcrtool_SOURCES = $(pch_h_gch)
+	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src)
 
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
@@ -187,7 +182,8 @@ BUILT_SOURCES = \
 
 CLEANFILES = \
 	$(nodist_flexemu_SOURCES) \
-	$(nodist_flexplorer_SOURCES)
+	$(nodist_flexplorer_SOURCES) \
+	pch.h.gch
 
 flexemu_SOURCES = \
 	absgui.cpp \
@@ -617,7 +613,7 @@ metadata.json: updatemd $(libflex_a_SOURCES) \
 	$(CXX) $(DEFS) $(ALL_TARGETS_CXXFLAGS) $(CXXFLAGS) \
 	-o $@ -x c++-header -c $<
 
-pch.h.gcp: pch.h misc1.h
+pch.h.gch: pch.h misc1.h
 
 ################################################################################
 # Use traditional-style suffix rules for generic Qt support.

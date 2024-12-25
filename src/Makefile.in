@@ -105,6 +105,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/attributes.m4 \
 	$(top_srcdir)/m4/ax_with_curses.m4 \
 	$(top_srcdir)/m4/flx_bitfields_lsb_first.m4 \
 	$(top_srcdir)/m4/flx_disable_post_install.m4 \
+	$(top_srcdir)/m4/flx_precompiled_headers.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/pkg.m4 \
@@ -159,10 +160,7 @@ am_libjsoncpp_a_OBJECTS = $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_re
 libjsoncpp_a_OBJECTS = $(am_libjsoncpp_a_OBJECTS)
 am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT) \
 	dsktool-fversion.$(OBJEXT)
-am__objects_1 =
-am__objects_2 = $(am__objects_1)
-nodist_dsktool_OBJECTS = $(am__objects_2)
-dsktool_OBJECTS = $(am_dsktool_OBJECTS) $(nodist_dsktool_OBJECTS)
+dsktool_OBJECTS = $(am_dsktool_OBJECTS)
 am__DEPENDENCIES_1 =
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -173,8 +171,7 @@ dsktool_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_flex2hex_OBJECTS = flex2hex-flex2hex.$(OBJEXT) \
 	flex2hex-fversion.$(OBJEXT)
-nodist_flex2hex_OBJECTS = $(am__objects_2)
-flex2hex_OBJECTS = $(am_flex2hex_OBJECTS) $(nodist_flex2hex_OBJECTS)
+flex2hex_OBJECTS = $(am_flex2hex_OBJECTS)
 flex2hex_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(flex2hex_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -208,6 +205,8 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-termimps.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
 	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
 	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
+am__objects_1 =
+am__objects_2 = $(am__objects_1)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
@@ -217,7 +216,7 @@ am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
 	flexemu-poutwin_moc.$(OBJEXT)
 am__objects_6 = $(am__objects_5)
 nodist_flexemu_OBJECTS = $(am__objects_2) $(am__objects_4) \
-	$(am__objects_6) $(am__objects_2)
+	$(am__objects_6)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS) $(nodist_flexemu_OBJECTS)
 flexemu_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(flexemu_CXXFLAGS) \
@@ -241,7 +240,7 @@ am__objects_9 = flexplorer-drawnwid_moc.$(OBJEXT) \
 	flexplorer-fpwin_moc.$(OBJEXT)
 am__objects_10 = $(am__objects_9)
 nodist_flexplorer_OBJECTS = $(am__objects_2) $(am__objects_8) \
-	$(am__objects_10) $(am__objects_2)
+	$(am__objects_10)
 flexplorer_OBJECTS = $(am_flexplorer_OBJECTS) \
 	$(nodist_flexplorer_OBJECTS)
 flexplorer_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -249,8 +248,7 @@ flexplorer_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_mdcrtool_OBJECTS = mdcrtool-fversion.$(OBJEXT) \
 	mdcrtool-mdcrfs.$(OBJEXT) mdcrtool-mdcrtool.$(OBJEXT)
-nodist_mdcrtool_OBJECTS = $(am__objects_2)
-mdcrtool_OBJECTS = $(am_mdcrtool_OBJECTS) $(nodist_mdcrtool_OBJECTS)
+mdcrtool_OBJECTS = $(am_mdcrtool_OBJECTS)
 mdcrtool_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(mdcrtool_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -424,12 +422,10 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libflex_a_SOURCES) $(libfmt_a_SOURCES) \
-	$(libjsoncpp_a_SOURCES) $(dsktool_SOURCES) \
-	$(nodist_dsktool_SOURCES) $(flex2hex_SOURCES) \
-	$(nodist_flex2hex_SOURCES) $(flexemu_SOURCES) \
-	$(nodist_flexemu_SOURCES) $(flexplorer_SOURCES) \
-	$(nodist_flexplorer_SOURCES) $(mdcrtool_SOURCES) \
-	$(nodist_mdcrtool_SOURCES) $(updatemd_SOURCES)
+	$(libjsoncpp_a_SOURCES) $(dsktool_SOURCES) $(flex2hex_SOURCES) \
+	$(flexemu_SOURCES) $(nodist_flexemu_SOURCES) \
+	$(flexplorer_SOURCES) $(nodist_flexplorer_SOURCES) \
+	$(mdcrtool_SOURCES) $(updatemd_SOURCES)
 DIST_SOURCES = $(libflex_a_SOURCES) $(libfmt_a_SOURCES) \
 	$(libjsoncpp_a_SOURCES) $(dsktool_SOURCES) $(flex2hex_SOURCES) \
 	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(mdcrtool_SOURCES) \
@@ -575,6 +571,7 @@ FLEX_RC = @FLEX_RC@
 GREP = @GREP@
 GTK_UPDATE_ICON_CACHE = @GTK_UPDATE_ICON_CACHE@
 IGNORE = @IGNORE@
+INCLUDE_PCH = @INCLUDE_PCH@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -609,6 +606,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PCH_H_GCH = @PCH_H_GCH@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
@@ -765,14 +763,14 @@ libjsoncpp_a_CXXFLAGS = --std=c++11 $(MACOSX_VERSION_MIN) \
 libfmt_a_CXXFLAGS = --std=c++11 $(MACOSX_VERSION_MIN) \
 			-isystem $(top_srcdir)/fmt/include
 
-libflex_a_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-flexemu_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h \
+libflex_a_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+flexemu_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH) \
 			@CURSES_CFLAGS@ -DADD_NCURSES_VERSION
 
-flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
-mdcrtool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-flex2hex_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-dsktool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+mdcrtool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+flex2hex_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
+dsktool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
 updatemd_CXXFLAGS = --std=c++17 $(OS_TYPE) -DADD_JSONCPP_VERSION \
 			-isystem $(top_srcdir)/jsoncpp/include \
 			-isystem $(top_srcdir)/fmt/include
@@ -788,12 +786,12 @@ flexemu_LDADD = \
 	libflex.a libfmt.a @CURSES_LIBS@
 
 updatemd_LDADD = $(PTHREAD_LD) libflex.a libfmt.a libjsoncpp.a
-libflex_a_DEPENDENCIES = libfmt.a
-flexemu_DEPENDENCIES = $(FLEX_RC) libflex.a libfmt.a
-flexplorer_DEPENDENCIES = libflex.a libfmt.a
-flex2hex_DEPENDENCIES = libflex.a libfmt.a
-dsktool_DEPENDENCIES = libflex.a libfmt.a
-mdcrtool_DEPENDENCIES = libflex.a libfmt.a
+libflex_a_DEPENDENCIES = $(PCH_H_GCH) libfmt.a
+flexemu_DEPENDENCIES = $(PCH_H_GCH) $(FLEX_RC) libflex.a libfmt.a
+flexplorer_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
+flex2hex_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
+dsktool_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
+mdcrtool_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
 updatemd_DEPENDENCIES = libflex.a libfmt.a libjsoncpp.a
 
 # Rule for precompiled header:
@@ -850,22 +848,19 @@ flexplorer_moc_hdr = \
 
 flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
 nodist_flexemu_SOURCES = \
-	$(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src) $(pch_h_gch)
+	$(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src)
 
 nodist_flexplorer_SOURCES = \
-	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src) \
-	$(pch_h_gch)
+	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src)
 
-nodist_flex2hex_SOURCES = $(pch_h_gch)
-nodist_dsktool_SOURCES = $(pch_h_gch)
-nodist_mdcrtool_SOURCES = $(pch_h_gch)
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
 	$(nodist_flexplorer_SOURCES)
 
 CLEANFILES = \
 	$(nodist_flexemu_SOURCES) \
-	$(nodist_flexplorer_SOURCES)
+	$(nodist_flexplorer_SOURCES) \
+	pch.h.gch
 
 flexemu_SOURCES = \
 	absgui.cpp \
@@ -4265,7 +4260,7 @@ metadata.json: updatemd $(libflex_a_SOURCES) \
 	$(CXX) $(DEFS) $(ALL_TARGETS_CXXFLAGS) $(CXXFLAGS) \
 	-o $@ -x c++-header -c $<
 
-pch.h.gcp: pch.h misc1.h
+pch.h.gch: pch.h misc1.h
 
 ################################################################################
 # Use traditional-style suffix rules for generic Qt support.

@@ -51,6 +51,18 @@ dnl Check for --enable-speed flag
 FLX_ENABLE_SPEED
 dnl Check for --disable-post-install flag
 FLX_ENABLE_POST_INSTALL
+
+dnl check for --en/disable-precompiled-headers flag
+FLX_PRECOMPILED_HEADERS
+INCLUDE_PCH=
+PCH_H_GCH=
+if test "x$enable_precompiled_headers" == "xyes"; then
+    INCLUDE_PCH="-include pch.h"
+    PCH_H_GCH="pch.h.gch"
+fi
+AC_SUBST(INCLUDE_PCH)
+AC_SUBST(PCH_H_GCH)
+
 dnl Check for specific compiler warning support
 CC_CHECK_FLAGS_APPEND([CFLAGS],[CFLAGS],[\
         -std=gnu99 \

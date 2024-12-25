@@ -121,8 +121,8 @@ unittests_CPPFLAGS = \
 	-isystem$(top_srcdir)/$(gmock_top)/include \
 	-isystem$(top_srcdir)/fmt/include \
 	-I$(top_srcdir)/test \
-	-I$(top_srcdir)/src \
-	-include pch.h
+	$(INCLUDE_PCH) \
+	-I$(top_srcdir)/src
 
 TESTS = unittests
 
@@ -189,8 +189,8 @@ test_gccasm_CXXFLAGS = \
 	-isystem$(top_srcdir)/$(gtest_top)/include \
 	-isystem$(top_srcdir)/$(gmock_top)/include \
 	-isystem$(top_srcdir)/fmt/include \
-	-I$(top_srcdir)/src \
-	-include pch.h
+	$(INCLUDE_PCH) \
+	-I$(top_srcdir)/src
 
 metadata.json: ../src/updatemd $(test_gccasm_SOURCES) $(unittests_SOURCES)
 	@set +x; \
