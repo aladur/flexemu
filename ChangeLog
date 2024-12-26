@@ -1173,3 +1173,12 @@ Code Maintenance:
  b37f1d2 flexemu: On normal screen size limit toolbar width.
  fce7d6f flexemu, Preferences dialog: Update tab stop order.
  282eff8 flexemu: Simplify checking for restart option ids.
+
+V3.26 (20241226)
+New Features:
+1aa2028 Unix like os: En-/disable using precompiled headers.
+Bug Fixes:
+dbf44c1 Bugfix Windows: Display Qt Version in About Dialog
+1c6c9ac Bugfix to correctly use precompiled header in test dir.
+6d402bb Bugfix compile error 'fmt::v10::vformat()'.
+Code Maintenance:
