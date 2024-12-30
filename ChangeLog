@@ -1182,3 +1182,9 @@ dbf44c1 Bugfix Windows: Display Qt Version in About Dialog
 1c6c9ac Bugfix to correctly use precompiled header in test dir.
 6d402bb Bugfix compile error 'fmt::v10::vformat()'.
 Code Maintenance:
+
+V3.27 (20241230)
+New Features:
+Bug Fixes:
+6f2e516 Unix bugfix flexemu: Flexemu desktop launcher does not work.
+Code Maintenance:
