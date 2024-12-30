@@ -36,6 +36,7 @@ ScrollingTerminalImpl::ScrollingTerminalImpl(const sOptions &p_options)
 {
 }
 
+// Return false on fatal errors forcing to abort the application.
 bool ScrollingTerminalImpl::init(Word reset_key, fct_sigaction fct)
 {
     (void)reset_key;
@@ -147,9 +148,9 @@ bool ScrollingTerminalImpl::init(Word reset_key, fct_sigaction fct)
         }
 
         is_termios_saved = true;
-
-        return true;
     }
+
+    return true;
 #endif // #ifdef HAVE_TERMIOS_H
 
     return false;
@@ -301,7 +302,7 @@ void ScrollingTerminalImpl::write_char_serial(Byte value)
 bool ScrollingTerminalImpl::is_terminal_supported()
 {
 #ifdef HAVE_TERMIOS_H
-    return true;
+    return is_termios_saved;
 #else
     return false;
 #endif

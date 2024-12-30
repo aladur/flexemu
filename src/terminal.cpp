@@ -94,6 +94,8 @@ bool TerminalIO::init(Word reset_key)
         return false;
     }
 
+    is_initialized = true;
+
     return true;
 }
 
@@ -130,6 +132,7 @@ void TerminalIO::write_char_serial(Byte value)
 bool TerminalIO::is_terminal_supported()
 {
     assert(impl != nullptr);
+    assert(is_initialized && "TerminalIO::init() has to be called first!");
     return impl->is_terminal_supported();
 }
 

@@ -64,7 +64,7 @@ bool Inout::output_to_terminal()
 #ifdef HAVE_TERMIOS_H
     if (gui != nullptr)
     {
-        gui->output_to_terminal();
+        return gui->output_to_terminal();
     }
     return gui != nullptr;
 #else

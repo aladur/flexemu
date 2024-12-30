@@ -178,20 +178,26 @@ void AbstractGui::clear_cpuview()
     }
 }
 
-void AbstractGui::output_to_terminal()
+bool AbstractGui::output_to_terminal()
 {
     if (terminalIO.is_terminal_supported() && inout.is_serpar_address_valid())
     {
         memory.write_byte(inout.serpar_address(), 0xFFU);
+        return true;
     }
+
+    return false;
 }
 
-void AbstractGui::output_to_graphic()
+bool AbstractGui::output_to_graphic()
 {
     if (inout.is_serpar_address_valid())
     {
         memory.write_byte(inout.serpar_address(), 0);
+        return true;
     }
+
+    return false;
 }
 
 void AbstractGui::write_char_serial(Byte /*value*/)

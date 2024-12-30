@@ -33,6 +33,7 @@
 #include <unordered_map>
 #ifdef UNIX
 #include "config.h"
+#include <unistd.h>
 #endif
 
 #ifdef UNIX
@@ -44,6 +45,7 @@ NCursesTerminalImpl::NCursesTerminalImpl(const struct sOptions &p_options)
 {
 }
 
+// Return false on fatal errors forcing to abort the application.
 bool NCursesTerminalImpl::init(Word reset_key, fct_sigaction fct)
 {
     (void)fct;
@@ -104,16 +106,21 @@ bool NCursesTerminalImpl::init_terminal_io(Word reset_key) const
 
 #ifdef UNIX
     setlocale(LC_CTYPE, "");
-    initscr();
-    raw();
-    noecho();
-    nonl();
-    curs_set(is_cursor_visible);
-    win = newwin(TERM_LINES, TERM_COLUMNS, 0, 0);
-    keypad(win, TRUE);
-    nodelay(win, TRUE);
+    // Before calling initscr() isatty() has to make sure that stdin is
+    // a file descriptor referring to a terminal. If this is not the case
+    // initscr() would abort the application.
+    if (isatty(fileno(stdin)) == 1 && initscr() != nullptr)
+    {
+        raw();
+        noecho();
+        nonl();
+        curs_set(is_cursor_visible);
+        win = newwin(TERM_LINES, TERM_COLUMNS, 0, 0);
+        keypad(win, TRUE);
+        nodelay(win, TRUE);
+    }
 
-    return win != nullptr;
+    return true;
 #endif
 #ifdef _WIN32
     return false;
@@ -226,7 +233,7 @@ void NCursesTerminalImpl::write_char_serial(Byte value)
 bool NCursesTerminalImpl::is_terminal_supported()
 {
 #ifdef UNIX
-    return true;
+    return win != nullptr;
 #endif
 #ifdef _WIN32
     return false;

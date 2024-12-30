@@ -153,21 +153,11 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
 
     scheduler.set_frequency(options.frequency);
 
-    const auto path(flx::getFlexemuConfigFile());
-    FlexemuConfigFile configFile(path);
-    auto address = configFile.GetSerparAddress(options.hex_file);
-    if (address < 0 || !terminalIO.is_terminal_supported())
-    {
-        // The specified hex_file does not support switching between
-        // serial/parallel input/output or it is unknown how to switch.
-        // Or terminal mode is not support in general.
-        // In any of these cases terminal mode has to be switched off.
-        options.term_mode = false;
-    }
-    inout.serpar_address(address);
-
     if (options.isEurocom2V5)
     {
+        const auto path(flx::getFlexemuConfigFile());
+        FlexemuConfigFile configFile(path);
+
         auto logMdcr = configFile.GetDebugSupportOption("logMdcr");
         auto logFilePath = configFile.GetDebugSupportOption("logMdcrFilePath");
         pia2v5.set_debug(logMdcr, logFilePath);
@@ -289,6 +279,20 @@ int ApplicationRunner::startup(QApplication &app)
     {
         return 1;
     }
+
+    const auto path(flx::getFlexemuConfigFile());
+    FlexemuConfigFile configFile(path);
+    auto address = configFile.GetSerparAddress(options.hex_file);
+    if (address < 0 || !terminalIO.is_terminal_supported())
+    {
+        // The specified hex_file does not support switching between
+        // serial/parallel input/output or it is unknown how to switch.
+        // Or terminal mode is not support in general.
+        // In any of these cases terminal mode has to be switched off.
+        options.term_mode = false;
+    }
+    inout.serpar_address(address);
+
     inout.set_gui(&gui);
 
     if (!(options.term_mode && terminalIO.is_terminal_supported()))
@@ -306,8 +310,6 @@ int ApplicationRunner::startup(QApplication &app)
     memory.reset_io();
     cpu.reset();
 
-    const auto path(flx::getFlexemuConfigFile());
-    FlexemuConfigFile configFile(path);
     auto boot_char = configFile.GetBootCharacter(options.hex_file);
     if (options.term_mode && terminalIO.is_terminal_supported())
     {

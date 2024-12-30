@@ -119,7 +119,7 @@ public:
 
     void SetFloppy(E2floppy *fdc);
     bool HasFloppy() const;
-    void output_to_graphic() override;
+    bool output_to_graphic() override;
     void write_char_serial(Byte value) override;
     // BObserver interface
     void UpdateFrom(NotifyId id, void *param) override;

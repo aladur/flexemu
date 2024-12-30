@@ -226,13 +226,15 @@ bool QtGui::HasFloppy() const
     return fdc != nullptr;
 }
 
-void QtGui::output_to_graphic()
+bool QtGui::output_to_graphic()
 {
-    AbstractGui::output_to_graphic();
+    const auto result = AbstractGui::output_to_graphic();
     if (!isVisible())
     {
         show();
     }
+
+    return result;
 }
 
 // Implementation may change in future.

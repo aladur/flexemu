@@ -165,7 +165,21 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("terminal") == 0)
                 {
-                    inout.output_to_terminal();
+                    if (!inout.output_to_terminal())
+                    {
+                        answer_stream << "EMU error: Unable to switch to "
+                                         "terminal mode.\n"
+#ifdef UNIX
+                                         "flexemu has to be started from "
+                                         "within a terminal to support this.";
+#endif
+#ifdef _WIN32
+                                         "On Windows terminal mode is not "
+                                         "supported";
+#endif
+
+                        answer = answer_stream.str();
+                    }
                     return;
                 }
 
@@ -173,7 +187,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 {
                     if (!inout.output_to_graphic())
                     {
-                        answer_stream << "EMU error: Unable to change to "
+                        answer_stream << "EMU error: Unable to switch to "
                                          "graphic mode.";
                         answer = answer_stream.str();
                     }

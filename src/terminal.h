@@ -38,6 +38,7 @@ class TerminalIO : public BObserved
     // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
     Scheduler &scheduler;
     static TerminalIO *instance;
+    bool is_initialized{};
 #ifdef UNIX
     static bool is_atexit_initialized;
 #endif
