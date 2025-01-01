@@ -2,7 +2,7 @@
     crc.h
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2020-2024  W. Schwotzer
+    Copyright (C) 2020-2025  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
