@@ -18,7 +18,7 @@
 !addplugindir /amd64-unicode "Plugins\amd64-unicode"
 
 !define APPNAME    "Flexemu"
-!define APPVERSION "3.27"
+!define APPVERSION "3.28"
 ; Refreshing Windows Defines
 !define SHCNE_ASSOCCHANGED 0x8000000
 !define SHCNF_IDLIST 0
