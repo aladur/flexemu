@@ -159,7 +159,7 @@ constexpr const char *PATHSEPARATORSTRING = "/";
 
 /* Keep macro to be used within string literal. */
 /* NOLINTBEGIN(cppcoreguidelines-macro-usage) */
-#ifdef __LINUX
+#ifdef __linux__
 #define OSTYPE "Linux"
 #else
 #ifdef __BSD

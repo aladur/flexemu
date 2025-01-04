@@ -27,7 +27,7 @@
 #include <vector>
 #include <fstream>
 
-#ifdef __LINUX
+#ifdef __linux__
 std::string BLinuxSysInfo::ToString(BLinuxSysInfoType type)
 {
     switch (type)

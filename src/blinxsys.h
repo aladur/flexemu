@@ -24,7 +24,7 @@
 #define BLINXSYS_INCLUDED
 
 
-#ifdef __LINUX
+#ifdef __linux__
 
 #include <string>
 #include <map>

@@ -3,7 +3,7 @@
 #include <string>
 
 
-#ifdef __LINUX
+#ifdef __linux__
 
 TEST(test_blinxsys, fct_toString)
 {

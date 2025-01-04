@@ -141,7 +141,7 @@ private:
     QSize scaledScreenSize;
     QPoint origin;
     unsigned int numLockIndicatorMask;
-#ifdef __LINUX
+#ifdef __linux__
     BLinuxSysInfo sysInfo;
 #endif
 };

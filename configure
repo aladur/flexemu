@@ -21447,7 +21447,7 @@ case $host_os in
        *)         FLEX_RC="" ;;
 esac
 case $host_os in
-       *linux*)   OS_TYPE="-D__LINUX -DUNIX" ;;
+       *linux*)   OS_TYPE="-DUNIX" ;;
        *freebsd*) OS_TYPE="-D__BSD -D__FREEBSD -DUNIX" ;;
        *openbsd*) OS_TYPE="-D__OPENBSD -DUNIX" ;;
        *mingw32*) OS_TYPE="-D__MINGW32 -DWIN32" ;;
