@@ -21448,8 +21448,9 @@ case $host_os in
 esac
 case $host_os in
        *linux*)   OS_TYPE="-DUNIX" ;;
-       *freebsd*) OS_TYPE="-D__BSD -D__FREEBSD -DUNIX" ;;
-       *openbsd*) OS_TYPE="-D__OPENBSD -DUNIX" ;;
+       *freebsd*) OS_TYPE="-DUNIX" ;;
+       *openbsd*) OS_TYPE="-DUNIX" ;;
+       *netbsd*)  OS_TYPE="-DUNIX" ;;
        *mingw32*) OS_TYPE="-D__MINGW32 -DWIN32" ;;
        *cygwin*)  OS_TYPE="-D__CYGWIN32 -DWIN32" ;;
        *darwin*)  OS_TYPE="-D__MACOS -DUNIX"; MACOSX_VERSION_MIN="-mmacosx-version-min=10.15" ;;

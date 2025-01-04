@@ -162,7 +162,16 @@ constexpr const char *PATHSEPARATORSTRING = "/";
 #ifdef __linux__
 #define OSTYPE "Linux"
 #else
-#ifdef __BSD
+#ifdef __FreeBSD__
+#define OSTYPE "FreeBSD"
+#else
+#ifdef __OpenBSD__
+#define OSTYPE "OpenBSD"
+#else
+#ifdef __NetBSD__
+#define OSTYPE "NetBSD"
+#else
+#ifdef __BSD__
 #define OSTYPE "BSD"
 #else
 #ifdef _WIN32
@@ -172,6 +181,9 @@ constexpr const char *PATHSEPARATORSTRING = "/";
 #define OSTYPE "MacOS"
 #else
 #define OSTYPE "unknown"
+#endif
+#endif
+#endif
 #endif
 #endif
 #endif
