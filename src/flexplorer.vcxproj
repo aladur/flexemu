@@ -235,7 +235,7 @@
     <Image Include="bitmaps\flexdisk.ico" />
     <ResourceCompile Include="flexdisk.rc" />
     <CustomBuild Include="fpmain.qrc">
-      <Command>"$(QTDIR)\$(Platform)\bin\rcc.exe" "%(FullPath)" -name %(Filename)_qrc.cpp -o "$(IntDir)\%(Filename)_qrc.cpp"</Command>
+      <Command>"$(QTDIR)\$(Platform)\bin\rcc.exe" "%(FullPath)" -name %(Filename) -o "$(IntDir)\%(Filename)_qrc.cpp"</Command>
       <Message>Resource compile %(Filename).qrc</Message>
       <Outputs>$(IntDir)\%(Filename)_qrc.cpp</Outputs>
       <AdditionalInputs>$(QTDIR)\$(Platform)\bin\rcc.exe;%(FullPath)</AdditionalInputs>

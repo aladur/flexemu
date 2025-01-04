@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     std::set_new_handler(flexemu_new_handler);
 #endif
 
-    Q_INIT_RESOURCE(flexemu_qrc_cpp);
+    Q_INIT_RESOURCE(flexemu);
 
     FlexDisk::InitializeClass();
 

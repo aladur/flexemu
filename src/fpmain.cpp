@@ -43,7 +43,7 @@ WinApiContext winApiContext;
 
 int main(int argc, char *argv[])
 {
-    Q_INIT_RESOURCE(fpmain_qrc_cpp);
+    Q_INIT_RESOURCE(fpmain);
     sFPOptions options;
 
     FlexDisk::InitializeClass();

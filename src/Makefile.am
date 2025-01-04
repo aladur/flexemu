@@ -632,10 +632,11 @@ pch.h.gch: pch.h misc1.h
 	${QT_MOC} $< -o $@
 
 # Create a *_qrc.cpp file from a *.qrc file
+# Use file stem as resource name.
 .qrc_qrc.cpp:
 	@set +x; \
 	if $(AM_V_P); then set -x; else echo "  QTRCC    $@"; fi; \
-	${QT_RCC} $< --name $(@F) -o $@
+	${QT_RCC} $< --name $* -o $@
 
 # Create a *_ui.h file from a *.ui file
 .ui_ui.h:
