@@ -137,7 +137,7 @@ case $host_os in
        *netbsd*)  OS_TYPE="-DUNIX" ;;
        *mingw32*) OS_TYPE="-D__MINGW32 -DWIN32" ;;
        *cygwin*)  OS_TYPE="-D__CYGWIN32 -DWIN32" ;;
-       *darwin*)  OS_TYPE="-D__MACOS -DUNIX"; MACOSX_VERSION_MIN="-mmacosx-version-min=10.15" ;;
+       *darwin*)  OS_TYPE="-DUNIX"; MACOSX_VERSION_MIN="-mmacosx-version-min=10.15" ;;
        *)         OS_TYPE="";;
 esac
 AC_EXEEXT
