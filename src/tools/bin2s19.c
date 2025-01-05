@@ -25,6 +25,8 @@
 #include <unistd.h>
 #include <ctype.h>
 
+extern char *optarg;
+
 void usage(char *progpath)
 {
     char *progname = strrchr(progpath, '/');

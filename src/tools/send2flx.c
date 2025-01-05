@@ -28,6 +28,8 @@ Copyright (C) W. Schwotzer 2003
 #include <stdlib.h>
 #include <string.h>
 
+extern char *optarg;
+
 #define DEFAULT_DEVICE	"/dev/ttyS0"
 #define MAX_FILESIZE    (0xC000)
 
