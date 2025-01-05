@@ -21426,7 +21426,7 @@ printf "%s\n" "$ac_cv_prog_gcc_traditional" >&6; }
 fi
 
 
-case $host_os in
+case $build_os in
        *linux*)   OS_TYPE="-DUNIX" ;;
        *freebsd*) OS_TYPE="-DUNIX" ;;
        *openbsd*) OS_TYPE="-DUNIX" ;;
@@ -21635,7 +21635,7 @@ FLEXPLORER='flexplorer${EXEEXT}'
 
 CXXSPEED="-D__CPU=$target_cpu"
 if test "x$enable_speed" = "xyes"; then
-   case $host_os in
+   case $build_os in
       *linux*)
 	case $target_cpu in
            i*86) CXXSPEED="$CXXSPEED -Winline -O3 -finline-limit=4000 \

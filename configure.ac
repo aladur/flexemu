@@ -112,7 +112,7 @@ AC_FUNC_VPRINTF
 AC_PROG_GCC_TRADITIONAL
 
 dnl Check for system services
-case $host_os in
+case $build_os in
        *linux*)   OS_TYPE="-DUNIX" ;;
        *freebsd*) OS_TYPE="-DUNIX" ;;
        *openbsd*) OS_TYPE="-DUNIX" ;;
@@ -147,7 +147,7 @@ AC_SUBST([CXXWARNINGS])
 dnl which optimizations are possible depends on the cpu architecture
 CXXSPEED="-D__CPU=$target_cpu"
 if test "x$enable_speed" = "xyes"; then
-   case $host_os in
+   case $build_os in
       *linux*)
 	case $target_cpu in
            i*86) CXXSPEED="$CXXSPEED -Winline -O3 -finline-limit=4000 \
