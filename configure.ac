@@ -12,14 +12,6 @@ AC_CONFIG_HEADERS([src/config.h:src/config.hin])
 AM_SILENT_RULES([yes])
 
 dnl Checks for programs.
-case $host_os in
-  *cygwin* ) CYGWIN=yes;;
-         * ) CYGWIN=no;;
-esac
-case $host_os in
-  *mingw32* ) MINGW32=yes;;
-          * ) MINGW32=no;;
-esac
 AC_PROG_LN_S
 AC_PROG_CC
 AC_PROG_CXX
@@ -121,22 +113,10 @@ AC_PROG_GCC_TRADITIONAL
 
 dnl Check for system services
 case $host_os in
-       *mingw32*) FLEXEMU_LDADD="-mwindows" ;;
-       *cygwin*)  FLEXEMU_LDADD="-mwindows" ;;
-       *)         FLEXEMU_LDADD="" ;;
-esac
-case $host_os in
-       *mingw32*) FLEX_RC='flexemu.${OBJEXT}' ;;
-       *cygwin*)  FLEX_RC='flexemu.${OBJEXT}' ;;
-       *)         FLEX_RC="" ;;
-esac
-case $host_os in
        *linux*)   OS_TYPE="-DUNIX" ;;
        *freebsd*) OS_TYPE="-DUNIX" ;;
        *openbsd*) OS_TYPE="-DUNIX" ;;
        *netbsd*)  OS_TYPE="-DUNIX" ;;
-       *mingw32*) OS_TYPE="-D__MINGW32 -DWIN32" ;;
-       *cygwin*)  OS_TYPE="-D__CYGWIN32 -DWIN32" ;;
        *darwin*)  OS_TYPE="-DUNIX"; MACOSX_VERSION_MIN="-mmacosx-version-min=10.15" ;;
        *)         OS_TYPE="";;
 esac
@@ -159,8 +139,6 @@ fi
 AC_SUBST(PTHREAD_LD)
 AC_SUBST(WIN32_LIBS)
 AC_SUBST(WNO_VARIADIC_MACROS)
-AC_SUBST([FLEX_RC])
-AC_SUBST([FLEXEMU_LDADD])
 AC_SUBST([OS_TYPE])
 AC_SUBST([MACOSX_VERSION_MIN])
 AC_SUBST([FLEXPLORER], ['flexplorer${EXEEXT}'])
@@ -171,16 +149,6 @@ CXXSPEED="-D__CPU=$target_cpu"
 if test "x$enable_speed" = "xyes"; then
    case $host_os in
       *linux*)
-	case $target_cpu in
-           i*86) CXXSPEED="$CXXSPEED -Winline -O3 -finline-limit=4000 \
- -frename-registers -fomit-frame-pointer -mcpu=$target_cpu -DUSE_ASM" ;;
-        esac ;;
-      *cygwin*)
-	case $target_cpu in
-           i*86) CXXSPEED="$CXXSPEED -Winline -O3 -finline-limit=4000 \
- -frename-registers -fomit-frame-pointer -mcpu=$target_cpu -DUSE_ASM" ;;
-        esac ;;
-      *mingw32*)
 	case $target_cpu in
            i*86) CXXSPEED="$CXXSPEED -Winline -O3 -finline-limit=4000 \
  -frename-registers -fomit-frame-pointer -mcpu=$target_cpu -DUSE_ASM" ;;

@@ -112,13 +112,12 @@ mdcrtool_LDADD   = $(PTHREAD_LD) libflex.a libfmt.a
 flex2hex_LDADD   = $(PTHREAD_LD) libflex.a libfmt.a
 dsktool_LDADD    = $(PTHREAD_LD) libflex.a libfmt.a
 flexemu_LDADD    = \
-	$(FLEX_RC) $(FLEXEMU_LDADD) \
 	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
 	libflex.a libfmt.a @CURSES_LIBS@
 updatemd_LDADD    = $(PTHREAD_LD) libflex.a libfmt.a libjsoncpp.a
 
 libflex_a_DEPENDENCIES  = $(PCH_H_GCH) libfmt.a
-flexemu_DEPENDENCIES    = $(PCH_H_GCH) $(FLEX_RC) libflex.a libfmt.a
+flexemu_DEPENDENCIES    = $(PCH_H_GCH) libflex.a libfmt.a
 flexplorer_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
 flex2hex_DEPENDENCIES   = $(PCH_H_GCH) libflex.a libfmt.a
 dsktool_DEPENDENCIES    = $(PCH_H_GCH) libflex.a libfmt.a
