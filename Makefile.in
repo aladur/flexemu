@@ -114,7 +114,7 @@ CONFIG_HEADER = $(top_builddir)/src/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES = test/data/cat.cmd test/data/cat.hex \
 	test/data/cat.s19 test/data/testdisk.dsk \
-	test/data/testdisk.flx
+	test/data/testdisk.flx test/data/flexlabl.conf
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -204,6 +204,7 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/ar-lib \
 	$(top_srcdir)/config/missing $(top_srcdir)/test/data/cat.cmd \
 	$(top_srcdir)/test/data/cat.hex \
 	$(top_srcdir)/test/data/cat.s19 \
+	$(top_srcdir)/test/data/flexlabl.conf \
 	$(top_srcdir)/test/data/testdisk.dsk \
 	$(top_srcdir)/test/data/testdisk.flx AUTHORS COPYING ChangeLog \
 	INSTALL NEWS README TODO config/ar-lib config/compile \

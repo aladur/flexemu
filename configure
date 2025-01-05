@@ -21664,7 +21664,7 @@ ac_config_links="$ac_config_links test/data/testdisk.dsk:test/data/testdisk.dsk"
 
 ac_config_links="$ac_config_links test/data/testdisk.flx:test/data/testdisk.flx"
 
-ac_config_links="$ac_config_links src/flexlabl.conf:src/flexlabl.conf"
+ac_config_links="$ac_config_links test/data/flexlabl.conf:test/data/flexlabl.conf"
 
 
 ac_config_files="$ac_config_files Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile doc/Makefile doc/images/Makefile test/Makefile"
@@ -22793,7 +22793,7 @@ do
     "test/data/cat.s19") CONFIG_LINKS="$CONFIG_LINKS test/data/cat.s19:test/data/cat.s19" ;;
     "test/data/testdisk.dsk") CONFIG_LINKS="$CONFIG_LINKS test/data/testdisk.dsk:test/data/testdisk.dsk" ;;
     "test/data/testdisk.flx") CONFIG_LINKS="$CONFIG_LINKS test/data/testdisk.flx:test/data/testdisk.flx" ;;
-    "src/flexlabl.conf") CONFIG_LINKS="$CONFIG_LINKS src/flexlabl.conf:src/flexlabl.conf" ;;
+    "test/data/flexlabl.conf") CONFIG_LINKS="$CONFIG_LINKS test/data/flexlabl.conf:test/data/flexlabl.conf" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/bitmaps/Makefile") CONFIG_FILES="$CONFIG_FILES src/bitmaps/Makefile" ;;
