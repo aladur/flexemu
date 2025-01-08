@@ -179,20 +179,16 @@ static int getClangTidyRulesCount(const std::string &path, int &count)
 
 static int which(const std::string &executable)
 {
-    std::string stdoutTemp = fs::temp_directory_path() / "__which_stdout.txt";
     std::vector<std::string> arguments{{
-        "-c", "which " + executable + " >" + stdoutTemp }};
+        "-c", "which " + executable + " >/dev/null 2>&1"}};
     BProcess process("sh", "", arguments);
 
     process.Start();
-    auto exitCode = process.Wait();
-    fs::remove(stdoutTemp);
-
-    return exitCode;
+    return process.Wait();
 }
 
 static ClocMap_t cloc(const ClocKeysMap_t &keysMap,
-        const char *sumKey)
+        const char *sumKey, const std::string &jsonKey)
 {
     std::string command{"ls options.txt >/dev/null 2>&1"};
     std::vector<std::string> arguments{{ "-c", command }};
@@ -207,7 +203,8 @@ static ClocMap_t cloc(const ClocKeysMap_t &keysMap,
     }
 
     ClocMap_t resultMap;
-    std::string stdoutTemp = fs::temp_directory_path() / "__cloc_stdout.txt";
+    std::string stdoutFilename{std::string("_cloc_stdout_") + jsonKey + ".txt"};
+    std::string stdoutTemp = fs::temp_directory_path() / stdoutFilename;
     command = "cloc --config options.txt . >" + stdoutTemp;
     arguments = {{ "-c", command }};
     BProcess clocProcess("sh", "", arguments);
@@ -462,7 +459,7 @@ int main(int argc, char *argv[])
                 { "C/C++ Header", "cheader" }
             }};
 
-            clocResultMap = cloc(keysMap, "cppsum");
+            clocResultMap = cloc(keysMap, "cppsum", cfg.jsonKey);
             if (clocResultMap.empty())
             {
                 return EXIT_FAILURE;
@@ -473,8 +470,8 @@ int main(int argc, char *argv[])
                 clocResultMap);
         if (metaDataIn != metaDataOut)
         {
-            std::cout << "updatemd: Updating file '" << cfg.metaDataPath <<
-                "'...\n";
+            std::cout << "updatemd: Updating file " << cfg.jsonKey <<
+                "/" << cfg.metaDataPath << " ...\n";
         }
 
         return writeMetadata(cfg.metaDataPath, metaDataOut);
