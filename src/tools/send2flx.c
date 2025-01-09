@@ -21,6 +21,9 @@ Copyright (C) W. Schwotzer 2003
   #include <termios.h>
 #endif
 #include <fcntl.h>
+#ifdef __linux__
+#include <getopt.h>
+#endif
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>

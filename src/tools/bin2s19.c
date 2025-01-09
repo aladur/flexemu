@@ -22,6 +22,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __linux__
+#include <getopt.h>
+#endif
 #include <unistd.h>
 #include <ctype.h>
 
