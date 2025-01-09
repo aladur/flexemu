@@ -20,7 +20,23 @@ libgmock_la_CPPFLAGS = \
 	-isystem$(top_srcdir)/$(gmock_top)
 libgmock_la_LDFLAGS = -pthread
 
+# Instructions to make project targets.
+#
+SUFFIXES = .h.gch
+
+BUILT_SOURCES = $(PCH_H_GCH)
+
+DIRFLAGS = \
+	-DF_DATADIR=\"$(pkgdatadir)\" \
+	-DF_SYSCONFDIR=\"$(sysconfdir)\"
+
+ALL_TARGETS_CXXFLAGS = \
+	--std=c++17 -pipe -D_REENTRANT -pthread -fPIC \
+	$(OS_TYPE) $(DIRFLAGS) $(MACOSX_VERSION_MIN)
+
 EXTRA_DIST = \
+	pch.h \
+	pch.cpp \
 	options.txt
 
 # Instructions to make test executable.
@@ -113,10 +129,7 @@ unittests_SOURCES = \
 unittests_LDADD = libgtest.la libgmock.la ../src/libflex.a ../src/libfmt.a
 unittests_LDFLAGS = -pthread
 unittests_CPPFLAGS = \
-	-std=c++17 \
-	-DF_DATADIR=\"$(pkgdatadir)\" \
-	-DF_SYSCONFDIR=\"$(sysconfdir)\" \
-	$(OS_TYPE) \
+	$(ALL_TARGETS_CXXFLAGS) \
 	-isystem$(top_srcdir)/$(gtest_top)/include \
 	-isystem$(top_srcdir)/$(gmock_top)/include \
 	-isystem$(top_srcdir)/fmt/include \
@@ -182,15 +195,20 @@ test_gccasm_SOURCES = \
 test_gccasm_LDADD = $(PTHREAD_LD) ../src/libflex.a ../src/libfmt.a
 test_gccasm_LDFLAGS = -pthread
 test_gccasm_CXXFLAGS = \
-	-std=c++17 \
-	-DF_DATADIR=\"$(pkgdatadir)\" \
-	-DF_SYSCONFDIR=\"$(sysconfdir)\" \
-	$(OS_TYPE) \
+	$(ALL_TARGETS_CXXFLAGS) \
 	-isystem$(top_srcdir)/$(gtest_top)/include \
 	-isystem$(top_srcdir)/$(gmock_top)/include \
 	-isystem$(top_srcdir)/fmt/include \
 	$(INCLUDE_PCH) \
 	-I$(top_srcdir)/src
+
+CLEANFILES = \
+	pch.h.gch
+
+# Rule for precompiled header:
+# Build a pch.h.gch file from pch.h
+pch_h = pch.h
+pch_h_gch = $(pch_h:.h=.h.gch)
 
 metadata.json: ../src/updatemd $(test_gccasm_SOURCES) $(unittests_SOURCES)
 	@set +x; \
@@ -198,6 +216,17 @@ metadata.json: ../src/updatemd $(test_gccasm_SOURCES) $(unittests_SOURCES)
 	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
 	$(abs_top_builddir)/src/updatemd -l -k test -f $@; \
 	cd - > /dev/null
+
+################################################################################
+# Use traditional-style suffix rules for precompiled header support.
+# Also define dependencies of precompiled header file.
+.h.h.gch:
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  CXXPCH   $@"; fi; \
+	$(CXX) $(ALL_TARGETS_CXXFLAGS) $(CXXFLAGS) -I$(top_srcdir)/src \
+	-o $@ -x c++-header -c $<
+
+pch.h.gch: pch.h ../src/misc1.h
 
 clean-local:
 	rm -rf test_detail.xml

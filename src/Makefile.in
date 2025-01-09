@@ -793,12 +793,12 @@ flexemu_LDADD = \
 	libflex.a libfmt.a @CURSES_LIBS@
 
 updatemd_LDADD = $(PTHREAD_LD) libflex.a libfmt.a libjsoncpp.a
-libflex_a_DEPENDENCIES = $(PCH_H_GCH) libfmt.a
-flexemu_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
-flexplorer_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
-flex2hex_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
-dsktool_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
-mdcrtool_DEPENDENCIES = $(PCH_H_GCH) libflex.a libfmt.a
+libflex_a_DEPENDENCIES = libfmt.a
+flexemu_DEPENDENCIES = libflex.a libfmt.a
+flexplorer_DEPENDENCIES = libflex.a libfmt.a
+flex2hex_DEPENDENCIES = libflex.a libfmt.a
+dsktool_DEPENDENCIES = libflex.a libfmt.a
+mdcrtool_DEPENDENCIES = libflex.a libfmt.a
 updatemd_DEPENDENCIES = libflex.a libfmt.a libjsoncpp.a
 
 # Rule for precompiled header:
@@ -861,6 +861,7 @@ nodist_flexplorer_SOURCES = \
 	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src)
 
 BUILT_SOURCES = \
+	$(PCH_H_GCH) \
 	$(nodist_flexemu_SOURCES) \
 	$(nodist_flexplorer_SOURCES)
 

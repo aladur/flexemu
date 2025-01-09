@@ -728,7 +728,22 @@ libgmock_la_CPPFLAGS = \
 	-isystem$(top_srcdir)/$(gmock_top)
 
 libgmock_la_LDFLAGS = -pthread
+
+# Instructions to make project targets.
+#
+SUFFIXES = .h.gch
+BUILT_SOURCES = $(PCH_H_GCH)
+DIRFLAGS = \
+	-DF_DATADIR=\"$(pkgdatadir)\" \
+	-DF_SYSCONFDIR=\"$(sysconfdir)\"
+
+ALL_TARGETS_CXXFLAGS = \
+	--std=c++17 -pipe -D_REENTRANT -pthread -fPIC \
+	$(OS_TYPE) $(DIRFLAGS) $(MACOSX_VERSION_MIN)
+
 EXTRA_DIST = \
+	pch.h \
+	pch.cpp \
 	options.txt
 
 noinst_DATA = metadata.json
@@ -815,10 +830,7 @@ unittests_SOURCES = \
 unittests_LDADD = libgtest.la libgmock.la ../src/libflex.a ../src/libfmt.a
 unittests_LDFLAGS = -pthread
 unittests_CPPFLAGS = \
-	-std=c++17 \
-	-DF_DATADIR=\"$(pkgdatadir)\" \
-	-DF_SYSCONFDIR=\"$(sysconfdir)\" \
-	$(OS_TYPE) \
+	$(ALL_TARGETS_CXXFLAGS) \
 	-isystem$(top_srcdir)/$(gtest_top)/include \
 	-isystem$(top_srcdir)/$(gmock_top)/include \
 	-isystem$(top_srcdir)/fmt/include \
@@ -881,20 +893,26 @@ test_gccasm_SOURCES = \
 test_gccasm_LDADD = $(PTHREAD_LD) ../src/libflex.a ../src/libfmt.a
 test_gccasm_LDFLAGS = -pthread
 test_gccasm_CXXFLAGS = \
-	-std=c++17 \
-	-DF_DATADIR=\"$(pkgdatadir)\" \
-	-DF_SYSCONFDIR=\"$(sysconfdir)\" \
-	$(OS_TYPE) \
+	$(ALL_TARGETS_CXXFLAGS) \
 	-isystem$(top_srcdir)/$(gtest_top)/include \
 	-isystem$(top_srcdir)/$(gmock_top)/include \
 	-isystem$(top_srcdir)/fmt/include \
 	$(INCLUDE_PCH) \
 	-I$(top_srcdir)/src
 
-all: all-am
+CLEANFILES = \
+	pch.h.gch
+
+
+# Rule for precompiled header:
+# Build a pch.h.gch file from pch.h
+pch_h = pch.h
+pch_h_gch = $(pch_h:.h=.h.gch)
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .cc .cpp .lo .log .o .obj .test .test$(EXEEXT) .trs
+.SUFFIXES: .h.gch .cc .cpp .h .lo .log .o .obj .test .test$(EXEEXT) .trs
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -2175,11 +2193,14 @@ distdir-am: $(DISTFILES)
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS) $(check_LTLIBRARIES)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs:
-install: install-am
-install-exec: install-exec-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
+install-exec: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
 
@@ -2203,6 +2224,7 @@ mostlyclean-generic:
 	-test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -2217,6 +2239,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-checkLTLIBRARIES clean-checkPROGRAMS clean-generic \
@@ -2396,7 +2419,8 @@ ps-am:
 
 uninstall-am:
 
-.MAKE: check-am install-am install-strip
+.MAKE: all check check-am install install-am install-exec \
+	install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am am--depfiles check check-TESTS \
 	check-am clean clean-checkLTLIBRARIES clean-checkPROGRAMS \
@@ -2422,6 +2446,17 @@ metadata.json: ../src/updatemd $(test_gccasm_SOURCES) $(unittests_SOURCES)
 	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
 	$(abs_top_builddir)/src/updatemd -l -k test -f $@; \
 	cd - > /dev/null
+
+################################################################################
+# Use traditional-style suffix rules for precompiled header support.
+# Also define dependencies of precompiled header file.
+.h.h.gch:
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  CXXPCH   $@"; fi; \
+	$(CXX) $(ALL_TARGETS_CXXFLAGS) $(CXXFLAGS) -I$(top_srcdir)/src \
+	-o $@ -x c++-header -c $<
+
+pch.h.gch: pch.h ../src/misc1.h
 
 clean-local:
 	rm -rf test_detail.xml
