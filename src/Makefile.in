@@ -763,9 +763,11 @@ libfmt_a_CXXFLAGS = --std=c++11 $(MACOSX_VERSION_MIN) \
 libflex_a_CXXFLAGS = -I$(top_srcdir)/fmt/include \
 			$(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
 
+# Avoid using @CURSES_CFLAGS@. It causes warnings about redefining
+# _XOPEN_SOURCE when compiling with clang. Instead use _DEFAULT_SOURCE.
 flexemu_CXXFLAGS = -I$(top_srcdir)/fmt/include \
 			$(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH) \
-			@CURSES_CFLAGS@ -DADD_NCURSES_VERSION
+			-D_DEFAULT_SOURCE -DADD_NCURSES_VERSION
 
 flexplorer_CXXFLAGS = -I$(top_srcdir)/fmt/include \
 			$(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) $(INCLUDE_PCH)
