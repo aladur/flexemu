@@ -376,7 +376,7 @@ EXTRA_DIST = \
 	tounix.txt \
 	undoc.txt
 
-AM_CFLAGS = @OS_TYPE@
+AM_CFLAGS = @OS_TYPE@ -I..
 bin2s19_LINK = $(CCLD) -o $@
 fromflex_LINK = $(CCLD) -o $@
 rcvflex_LINK = $(CCLD) -o $@

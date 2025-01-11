@@ -16,7 +16,7 @@ noinst_PROGRAMS = \
 	send2flx \
 	testdaa
 
-AM_CFLAGS = @OS_TYPE@
+AM_CFLAGS = @OS_TYPE@ -I..
 
 bin2s19_LINK  = $(CCLD) -o $@
 fromflex_LINK = $(CCLD) -o $@
