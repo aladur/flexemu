@@ -4,6 +4,7 @@
     <comment>FLEX disk image</comment>
     <glob pattern="*.dsk"/>
     <glob pattern="*.wta"/>
+    <icon name="application-x-flex-diskimage"/>
   </mime-type>
   <mime-type type="application/x-flex-flxdiskimage">
     <comment>FLEX disk image</comment>
@@ -11,6 +12,7 @@
       <match value="0x339A5C48" type="big32" offset="0"/>
     </magic>
     <glob pattern="*.flx"/>
+    <icon name="application-x-flex-diskimage"/>
   </mime-type>
 </mime-info>
 
