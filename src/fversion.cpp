@@ -88,6 +88,11 @@ Versions_t FlexemuVersions::CreateVersions()
     versions.emplace("ncurses", version);
 #endif
 
+#ifdef USE_CMAKE
+    version = CMAKE_VERSION;
+    versions.emplace("cmake", version);
+#endif
+
     return versions;
 }
 
