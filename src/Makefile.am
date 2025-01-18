@@ -151,7 +151,8 @@ flexemu_ui_hdr = $(flexemu_ui:.ui=_ui.h)
 flexplorer_ui = \
 	fpnew.ui \
 	fpopt.ui \
-	fpcnv.ui
+	fpcnv.ui \
+	about.ui
 flexplorer_ui_hdr = $(flexplorer_ui:.ui=_ui.h)
 
 # Rule for Qt moc files:
