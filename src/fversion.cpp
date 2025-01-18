@@ -21,8 +21,10 @@
 */
 
 
-#ifdef UNIX
+#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
+#else
+#include "confignt.h"
 #endif
 #include "fversion.h"
 #include <string>

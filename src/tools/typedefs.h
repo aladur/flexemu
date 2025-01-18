@@ -24,10 +24,10 @@
 #ifndef TYPEDEFS_INCLUDED
 #define TYPEDEFS_INCLUDED
 
-#ifdef _MSC_VER
-    #include "confignt.h"
-#else
+#if defined(UNIX) || defined(USE_CMAKE)
     #include "config.h"
+#else
+    #include "confignt.h"
 #endif
 
 #if HAVE_INTTYPES_H

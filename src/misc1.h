@@ -25,10 +25,10 @@
 #ifndef MISC1_INCLUDED
 #define MISC1_INCLUDED
 
-#ifdef _MSC_VER
-    #include "confignt.h"
-#else
+#if defined(UNIX) || defined(USE_CMAKE)
     #include "config.h"
+#else
+    #include "confignt.h"
 #endif
 #ifdef _WIN32
     #if !defined(_UNICODE) && !defined(UNICODE)

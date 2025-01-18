@@ -23,10 +23,11 @@
 #include "benv.h"
 #ifdef _WIN32
 #include "cvtwchar.h"
-#include "confignt.h"
 #endif
-#ifdef UNIX
+#if defined(UNIX) || defined (USE_CMAKE)
 #include "config.h"
+#else
+#include "confignt.h"
 #endif
 #include <sstream>
 
