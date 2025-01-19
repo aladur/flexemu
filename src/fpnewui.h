@@ -28,7 +28,11 @@
 #include "misc1.h"
 #include "filecntb.h"
 #include "warnoff.h"
+#ifdef USE_CMAKE
+#include "ui_fpnew.h"
+#else
 #include "fpnew_ui.h"
+#endif
 #include <QObject>
 #include <QString>
 #include "warnon.h"

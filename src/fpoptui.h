@@ -28,7 +28,11 @@
 #include "misc1.h"
 #include "efiletim.h"
 #include "warnoff.h"
+#ifdef USE_CMAKE
+#include "ui_fpopt.h"
+#else
 #include "fpopt_ui.h"
+#endif
 #include <QObject>
 #include <QString>
 #include "warnon.h"

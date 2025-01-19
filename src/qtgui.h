@@ -36,7 +36,11 @@
 #include <memory>
 #include <mutex>
 #include "warnoff.h"
+#ifdef USE_CMAKE
+#include "ui_cpustat.h"
+#else
 #include "cpustat_ui.h"
+#endif
 #include <QWidget>
 #include <QIcon>
 #include <QTimer>

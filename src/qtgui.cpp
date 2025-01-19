@@ -50,7 +50,11 @@
 #include "poutwin.h"
 #include "fversion.h"
 #include "warnoff.h"
+#ifdef USE_CMAKE
+#include "ui_about.h"
+#else
 #include "about_ui.h"
+#endif
 #include <QString>
 #include <QStringList>
 #include <QPixmap>

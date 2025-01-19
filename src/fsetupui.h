@@ -33,7 +33,11 @@
 #include <string>
 #include <vector>
 #include "warnoff.h"
+#ifdef USE_CMAKE
+#include "ui_fsetup.h"
+#else
 #include "fsetup_ui.h"
+#endif
 #include <QObject>
 #include <QString>
 #include <QUrl>

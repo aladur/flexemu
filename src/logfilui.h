@@ -25,7 +25,11 @@
 #define LOGFILUI_INCLUDED
 
 #include "warnoff.h"
+#ifdef USE_CMAKE
+#include "ui_logfil.h"
+#else
 #include "logfil_ui.h"
+#endif
 #include <QObject>
 #include <array>
 #include "warnon.h"
