@@ -5,10 +5,9 @@
 #include <fstream>
 #include <filesystem>
 
-using ::testing::Throws;
 namespace fs = std::filesystem;
 
-void print(std::ostream &os, const std::string &section,
+static void print(std::ostream &os, const std::string &section,
            const std::map<std::string, std::string> &map)
 {
     os << "Section=\"" << section << "\"\n";
@@ -18,7 +17,7 @@ void print(std::ostream &os, const std::string &section,
     }
 }
 
-bool createIniFile(const std::string &path)
+static bool createIniFile(const std::string &path)
 {
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
     bool retval = false;
@@ -78,9 +77,13 @@ TEST(test_binifile, move_ctor)
     EXPECT_TRUE(iniFile1.IsValid());
     EXPECT_EQ(iniFile1.GetFileName(), path);
     auto iniFile2(std::move(iniFile1));
+    /* Intentionally test object after move. */
+    /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_FALSE(iniFile1.IsValid());
     EXPECT_TRUE(iniFile1.GetFileName().empty());
     const auto map1 = iniFile1.ReadSection("SECTION2");
+    /* Intentionally test object after move. */
+    /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(map1.empty());
     EXPECT_EQ(iniFile2.GetFileName(), path);
     const auto map2 = iniFile2.ReadSection("SECTION2");
@@ -96,9 +99,13 @@ TEST(test_binifile, move_assignment)
     EXPECT_TRUE(iniFile1.IsValid());
     EXPECT_EQ(iniFile1.GetFileName(), path);
     auto iniFile2 = std::move(iniFile1);
+    /* Intentionally test object after move. */
+    /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_FALSE(iniFile1.IsValid());
     EXPECT_TRUE(iniFile1.GetFileName().empty());
     const auto map1 = iniFile1.ReadSection("SECTION2");
+    /* Intentionally test object after move. */
+    /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(map1.empty());
     EXPECT_EQ(iniFile2.GetFileName(), path);
     const auto map2 = iniFile2.ReadSection("SECTION2");

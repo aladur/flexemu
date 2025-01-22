@@ -19,7 +19,6 @@
 #include <fmt/format.h>
 
 
-using ::testing::Throws;
 using ::testing::StartsWith;
 using ::testing::EndsWith;
 

@@ -12,8 +12,12 @@ TEST(test_ci_string, class_ci_string)
     result = ci_str1.compare(ci_str2);
     EXPECT_EQ(result, 0);
     std::string str1("aBcdEf");
+    /* False positive. */
+    /* NOLINTNEXTLINE(readability-redundant-string-cstr) */
     result = ci_str1.compare(str1.c_str());
     std::string str2("aBcdf");
+    /* False positive. */
+    /* NOLINTNEXTLINE(readability-redundant-string-cstr) */
     result = ci_str1.compare(str2.c_str());
     EXPECT_NE(result, 0);
     ci_string ci_str3("aBcdEfG");

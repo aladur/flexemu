@@ -5,7 +5,6 @@
 
 
 using ::testing::EndsWith;
-using ::testing::Throws;
 
 TEST(test_misc1, fct_strlower)
 {
@@ -54,6 +53,8 @@ TEST(test_misc1, fct_toupper)
 TEST(test_misc1, fct_getstr)
 {
     // Array NUL terminated.
+    /* This test intentionally uses a c-style array */
+    /* NOLINTBEGIN(modernize-avoid-c-arrays) */
     char arr1[]{"abcd"};
     EXPECT_EQ(sizeof(arr1), 5U);
     auto str1 = flx::getstr<>(arr1);
@@ -86,13 +87,11 @@ TEST(test_misc1, fct_getstr)
     EXPECT_EQ(str4.c_str()[str4.size()], '\0');
 
     // Tow consecutive arrays in a struct
-    // NOLINTBEGIN(modernize-avoid-c-arrays)
     struct
     {
         char arr11[8]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
         char arr12[8]{'1', '2', '3', '4', '5', '6', '7', '8'};
     } s;
-    // NOLINTEND(modernize-avoid-c-arrays)
     EXPECT_EQ(sizeof(s), 16);
     EXPECT_EQ(sizeof(s.arr11), 8U);
     EXPECT_EQ(sizeof(s.arr12), 8U);
@@ -102,6 +101,7 @@ TEST(test_misc1, fct_getstr)
     auto str12 = flx::getstr<>(s.arr12);
     EXPECT_EQ(str12, "12345678");
     EXPECT_EQ(str12.size(), 8U);
+    // NOLINTEND(modernize-avoid-c-arrays)
 }
 
 TEST(test_misc1, fct_binstr)
@@ -279,7 +279,7 @@ TEST(test_misc1, fct_getExecutablePath)
 
 TEST(test_misc1, fct_getHomeDirectory)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
     auto path = flx::getHomeDirectory();
     bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
 
@@ -299,7 +299,7 @@ TEST(test_misc1, fct_getExecutablePath)
 
 TEST(test_misc1, fct_getTempPath)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
     auto path = flx::getTempPath();
     if (path.empty())
     {
@@ -313,7 +313,7 @@ TEST(test_misc1, fct_getTempPath)
 
 TEST(test_misc1, fct_getCurrentPath)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
     auto path = flx::getCurrentPath();
     bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
 

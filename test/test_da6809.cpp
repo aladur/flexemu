@@ -81,10 +81,11 @@ TEST(test_da6809, dis_inherent)
         flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
                 operands);
 
-        const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
+        const bool is_page23 = (memory[pc] & 0xFEU) == 0x10U;
         auto size = is_page23 ? 2 : 1;
         Word opcode = memory[pc];
-        opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
+        opcode = is_page23 ?
+            static_cast<Word>(memory[pc] << 8U) | memory[pc + 1] : opcode;
         auto expected_flags = InstFlg::NONE;
         switch (opcode)
         {
@@ -166,10 +167,11 @@ TEST(test_da6809, dis_immediate)
         flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
                 operands);
 
-        const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
+        const bool is_page23 = (memory[pc] & 0xFEU) == 0x10U;
         auto size = is_page23 ? 3 : 2;
         Word opcode = memory[pc];
-        opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
+        opcode = is_page23 ?
+            static_cast<Word>(memory[pc] << 8U) | memory[pc + 1] : opcode;
         const bool is_16bit = (std::find(opcode_16bit.cbegin(),
                                opcode_16bit.cend(),
                                 opcode) != opcode_16bit.cend());
@@ -202,7 +204,8 @@ TEST(test_da6809, dis_immediate)
         EXPECT_EQ(code, expected_code);
         Word tgtaddr = memory[pc + size - 1];
         std::string expected_operands;
-        tgtaddr = is_16bit ? (memory[pc + size - 2] << 8 | tgtaddr) : tgtaddr;
+        tgtaddr = is_16bit ?
+            static_cast<Word>(memory[pc + size - 2] << 8U) | tgtaddr : tgtaddr;
         if (is_16bit)
         {
             expected_operands = fmt::format("#${:04X}", tgtaddr);
@@ -260,10 +263,11 @@ TEST(test_da6809, dis_direct)
         flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
                 operands);
 
-        const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
+        const bool is_page23 = (memory[pc] & 0xFEU) == 0x10U;
         const auto size = is_page23 ? 3 : 2;
         Word opcode = memory[pc];
-        opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
+        opcode = is_page23 ?
+            static_cast<Word>(memory[pc] << 8U) | memory[pc + 1] : opcode;
         auto expected_flags = InstFlg::NONE;
         switch (opcode)
         {
@@ -336,9 +340,8 @@ TEST(test_da6809, dis_branch_relative)
                 break;
         }
         EXPECT_EQ(flags, expected_flags);
-        const auto expected_jumpaddr = pc + 2 +
-            (static_cast<int16_t>(static_cast<int8_t>(memory[pc + 1])) &
-             0xFFFF);
+        const auto expected_jumpaddr = static_cast<Word>(pc + 2 +
+            static_cast<int16_t>(static_cast<int8_t>(memory[pc + 1])));
         EXPECT_EQ(jumpaddr, expected_jumpaddr);
         auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
@@ -464,10 +467,11 @@ TEST(test_da6809, dis_extended)
         flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
                 operands);
 
-        const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
+        const bool is_page23 = (memory[pc] & 0xFEU) == 0x10U;
         const auto size = is_page23 ? 4 : 3;
         Word opcode = memory[pc];
-        opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
+        opcode = is_page23 ?
+            static_cast<Word>(memory[pc] << 8U) | memory[pc + 1] : opcode;
         auto expected_flags = InstFlg::LabelAddr;
         switch (opcode)
         {
@@ -483,7 +487,7 @@ TEST(test_da6809, dis_extended)
                  break;
         }
         EXPECT_EQ(flags, expected_flags);
-        auto tgtaddr = (static_cast<Word>(memory[pc + size - 2] << 8) |
+        auto tgtaddr = (static_cast<Word>(memory[pc + size - 2] << 8U) |
                        static_cast<Word>(memory[pc + size - 1]));
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         auto expected_code = fmt::format("{:04X}:", pc);
@@ -548,10 +552,11 @@ TEST(test_da6809, dis_indexed)
         flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
                 operands);
 
-        const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
+        const bool is_page23 = (memory[pc] & 0xFEU) == 0x10U;
         const auto size = is_page23 ? 3 : 2;
         Word opcode = memory[pc];
-        opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
+        opcode = is_page23 ?
+            static_cast<Word>(memory[pc] << 8U) | memory[pc + 1] : opcode;
         InstFlg expected_flags = InstFlg::NONE;
         switch (opcode)
         {
@@ -632,7 +637,7 @@ TEST(test_da6809, dis_indexed_modes)
         flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
                 operands);
 
-        const auto mask = memory[pc + 1] & 0x8B;
+        const auto mask = memory[pc + 1] & 0x8BU;
         const auto is_8bit_offset =(mask == 0x88);
         const bool is_16bit_offset = (mask == 0x89) ||
             (memory[pc + 1] == 0x9F);
@@ -710,7 +715,7 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
         flags = da.Disassemble(memory.data() + offset, pc, jumpaddr, code,
                 mnemonic, operands);
 
-        const auto mask = memory[offset + 1] & 0x8B;
+        const auto mask = memory[offset + 1] & 0x8BU;
         const auto is_8bit_offset =(mask == 0x88);
         const bool is_16bit_offset = (mask == 0x89);
         auto size = is_8bit_offset ? 3 : 2;
@@ -782,7 +787,7 @@ TEST(test_da6809, dis_indexed_modes_illegal)
     }
 }
 
-std::string GetRegisterName(Byte code)
+static std::string GetRegisterName(Byte code)
 {
     static const std::array<const char *, 16> registers{
         "D", "X", "Y", "U", "S", "PC", "??", "??",
@@ -813,7 +818,7 @@ TEST(test_da6809, dis_exg_tfr)
     {
         memory[0] = opcode;
 
-        for (int postbyte = 0; postbyte < 256; ++postbyte)
+        for (unsigned postbyte = 0U; postbyte < 256U; ++postbyte)
         {
             memory[1] = static_cast<Byte>(postbyte);
 
@@ -832,8 +837,8 @@ TEST(test_da6809, dis_exg_tfr)
             EXPECT_EQ(code, expected_code);
             const std::string expected_mnemonic =
                 (opcode == 0x1E) ? "EXG" : "TFR";
-            const auto r0 = GetRegisterName(postbyte >> 4);
-            const auto r1 = GetRegisterName(postbyte & 0x0F);
+            const auto r0 = GetRegisterName(postbyte >> 4U);
+            const auto r1 = GetRegisterName(postbyte & 0x0FU);
             const auto expected_operands = fmt::format("{},{}", r0, r1);
             EXPECT_EQ(mnemonic, expected_mnemonic);
             EXPECT_EQ(operands, expected_operands);
@@ -841,7 +846,8 @@ TEST(test_da6809, dis_exg_tfr)
     }
 }
 
-std::string GetRegisterList(Byte postbyte, const std::string &nonstack_reg)
+static std::string GetRegisterList(Byte postbyte,
+        const std::string &nonstack_reg)
 {
     static const std::array<const char *, 8> reg_names{
         "CC", "A", "B", "DP", "X", "Y", "", "PC"
@@ -856,7 +862,7 @@ std::string GetRegisterList(Byte postbyte, const std::string &nonstack_reg)
 
     for (Byte i = 0; i < 8; ++i)
     {
-        if (postbyte & (1 << i))
+        if (postbyte & (1U << i))
         {
             std::string reg = reg_names[i];
             reg = (reg.empty()) ? nonstack_reg : reg;
@@ -908,7 +914,7 @@ TEST(test_da6809, dis_psh_pul)
             }
             EXPECT_EQ(code, expected_code);
             std::string expected_mnemonic = expected_mnemonics[opcode - 0x34];
-            const std::string nonstack_reg = (opcode & 0x02) ? "S" : "U";
+            const std::string nonstack_reg = (opcode & 0x02U) ? "S" : "U";
             std::string expected_operands =
                 GetRegisterList(postbyte, nonstack_reg);
             EXPECT_EQ(mnemonic, expected_mnemonic);
@@ -962,7 +968,7 @@ TEST(test_da6809, dis_undocumented)
         auto opcode = memory[pc];
         int size{};
         auto expected_flags = InstFlg::NONE;
-        switch(opcode & 0xF0)
+        switch(opcode & 0xF0U)
         {
             case 0x00:
             case 0x60:

@@ -47,9 +47,12 @@ TEST(test_fcinfo, move_ctor)
     info_src.SetPath("/tmp/disk.dsk");
     info_src.SetName("abc");
     auto info_tgt(std::move(info_src));
+    /* Intentionally test object after move. */
+    /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_TRUE(info_src.GetPath().empty());
     EXPECT_TRUE(info_src.GetName().empty());
     EXPECT_TRUE(info_src.IsValid());
+    /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_EQ(info_tgt.GetPath(), "/tmp/disk.dsk");
     EXPECT_EQ(info_tgt.GetName(), "abc");
     EXPECT_TRUE(info_tgt.IsValid());
@@ -75,9 +78,12 @@ TEST(test_fcinfo, move_assignment)
     info_src.SetPath("/tmp/disk.dsk");
     info_src.SetName("abc");
     auto info_tgt = std::move(info_src);
+    /* Intentionally test object after move. */
+    /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_TRUE(info_src.GetPath().empty());
     EXPECT_TRUE(info_src.GetName().empty());
     EXPECT_TRUE(info_src.IsValid());
+    /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_EQ(info_tgt.GetPath(), "/tmp/disk.dsk");
     EXPECT_EQ(info_tgt.GetName(), "abc");
     EXPECT_TRUE(info_tgt.IsValid());

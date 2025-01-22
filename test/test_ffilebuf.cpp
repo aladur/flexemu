@@ -14,7 +14,6 @@
 //#include <fmt/format.h>
 
 
-using ::testing::Throws;
 namespace fs = std::filesystem;
 
 /*
@@ -72,6 +71,8 @@ TEST(test_ffilebuf, fct_move_ctor)
     EXPECT_EQ(uc_test_file.compare(ffb_tgt.GetFilename()), 0);
 
     // Check source (should be all empty).
+    /* Intentionally test object after move. */
+    /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_TRUE(ffb_src.IsEmpty());
     EXPECT_EQ(ffb_src.GetFileSize(), 0U);
     EXPECT_EQ(ffb_src.GetAttributes(), 0U);
@@ -79,6 +80,7 @@ TEST(test_ffilebuf, fct_move_ctor)
     EXPECT_FALSE(ffb_src.IsRandom());
     EXPECT_EQ(ffb_src.GetDate(), BDate{});
     EXPECT_EQ(ffb_src.GetTime(), BTime{});
+    /* NOLINTEND(bugprone-use-after-move) */
     const auto *p_src = static_cast<const Byte *>(ffb_src);
     EXPECT_EQ(p_src, nullptr);
 

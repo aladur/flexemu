@@ -6,7 +6,6 @@
 #include  <vector>
 
 
-using ::testing::Throws;
 using BWInterval = BInterval<Word>;
 using BIntInterval = BInterval<int>;
 using BDWInterval = BInterval<DWord>;

@@ -106,6 +106,8 @@ TEST(test_fdirent, move_ctor)
     EXPECT_EQ(de_tgt.GetTotalFileName(), "file_mov.tst");
 
     // Source is reset.
+    /* Intentionally test object after move. */
+    /* NOLINTNEXTLINE(bugprone-use-after-move) */
     EXPECT_EQ(de_src.GetTotalFileName(), "");
 }
 
@@ -186,6 +188,8 @@ TEST(test_fdirent, move_assignment)
     EXPECT_EQ(de_tgt.GetTotalFileName(), "ass_mov.tst");
 
     // Source is reset.
+    /* Intentionally test object after move. */
+    /* NOLINTNEXTLINE(bugprone-use-after-move) */
     EXPECT_EQ(de_src.GetTotalFileName(), "");
 }
 

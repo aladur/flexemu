@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "mc6809lg.h"
 #include "scpulog.h"
-#include <string.h>
+#include <cstring>
 #include <vector>
 #include <map>
 #include <filesystem>
@@ -19,7 +19,7 @@ struct ParseResult
     std::map<std::string, int> countForMnemonic;
 };
 
-ParseResult parseFile(std::string &fileName)
+static ParseResult parseFile(std::string &fileName)
 {
     ParseResult result;
     std::string line;
@@ -65,7 +65,7 @@ ParseResult parseFile(std::string &fileName)
     return result;
 }
 
-Mc6809CpuStatus setState(const std::vector<Byte> &instruction, Word pc,
+static Mc6809CpuStatus setState(const std::vector<Byte> &instruction, Word pc,
         const char *mnemonic, const char *operands = "")
 {
     Mc6809CpuStatus state{};

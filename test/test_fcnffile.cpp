@@ -5,10 +5,9 @@
 #include <fstream>
 #include <filesystem>
 
-using ::testing::Throws;
 namespace fs = std::filesystem;
 
-bool createCnfFile(const std::string &path)
+static bool createCnfFile(const std::string &path)
 {
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
     bool retval = false;
@@ -66,8 +65,11 @@ TEST(test_bcnffile, move_ctor)
     FlexemuConfigFile cnfFile1(path1);
     auto cnfFile2(std::move(cnfFile1));
 
+    /* Intentionally test object after move. */
+    /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile1.GetFileName().empty());
     EXPECT_FALSE(cnfFile1.IsValid());
+    /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
     EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 5U);
     EXPECT_EQ(cnfFile2.GetFileName(), path1);
@@ -81,8 +83,11 @@ TEST(test_bcnffile, move_assignment)
     FlexemuConfigFile cnfFile1(path1);
     auto cnfFile2 = std::move(cnfFile1);
 
+    /* Intentionally test object after move. */
+    /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile1.GetFileName().empty());
     EXPECT_FALSE(cnfFile1.IsValid());
+    /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
     EXPECT_EQ(cnfFile2.GetFileName(), path1);
     EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 5U);

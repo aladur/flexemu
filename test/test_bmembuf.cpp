@@ -16,6 +16,8 @@ TEST(test_bmembuf, ctor)
 TEST(test_bmembuf, copy_ctor)
 {
     BMemoryBuffer buffer_src(0x7FFFU);
+    /* Intentionally use copy ctor */
+    /* NOLINTNEXTLINE(performance-unnecessary-copy-initialization) */
     auto buffer_tgt(buffer_src);
     EXPECT_EQ(buffer_tgt.GetSize(), 0x7FFFU);
     EXPECT_EQ(buffer_tgt.GetAddressRanges().size(), 0U);
@@ -31,6 +33,8 @@ TEST(test_bmembuf, move_ctor)
 TEST(test_bmembuf, copy_assignment)
 {
     BMemoryBuffer buffer_src(0x8000U);
+    /* Intentionally use copy ctor */
+    /* NOLINTNEXTLINE(performance-unnecessary-copy-initialization) */
     auto buffer_tgt = buffer_src;
     EXPECT_EQ(buffer_tgt.GetSize(), 0x8000U);
     EXPECT_EQ(buffer_tgt.GetAddressRanges().size(), 0U);
@@ -44,8 +48,11 @@ TEST(test_bmembuf, move_assignment)
     auto buffer_tgt = std::move(buffer_src);
     EXPECT_EQ(buffer_tgt.GetSize(), 0xC000U);
     EXPECT_EQ(buffer_tgt.GetAddressRanges().size(), 0U);
+    /* Intentionally test object after move. */
+    /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_EQ(buffer_src.GetSize(), 0U);
     EXPECT_EQ(buffer_src.GetAddressRanges().size(), 0U);
+    /* NOLINTEND(bugprone-use-after-move) */
 }
 
 TEST(test_bmembuf, member_fct)
@@ -84,14 +91,14 @@ TEST(test_bmembuf, member_CopyTo)
     BMemoryBuffer buffer(0x4000U);
     std::vector<Byte> buffer_src1{ 1, 2, 3, 4, 5, 6, 7, 8 };
     buffer.CopyFrom(buffer_src1.data(), 0x1000U, buffer_src1.size());
-    std::array<Byte, 10> buffer_tgt1;
+    std::array<Byte, 10> buffer_tgt1{};
     buffer.CopyTo(buffer_tgt1.data(), 0x1000U, 10);
     std::array<Byte, 10> buffer_cmp1{ 1, 2, 3, 4, 5, 6, 7, 8, 0, 0 };
     EXPECT_EQ(buffer_tgt1, buffer_cmp1);
 
     std::vector<Byte> buffer_src2{ 250, 251, 252, 253, 254, 255 };
     buffer.CopyFrom(buffer_src2.data(), 0x3FFC, buffer_src2.size());
-    std::array<Byte, 6> buffer_tgt2_1;
+    std::array<Byte, 6> buffer_tgt2_1{};
     buffer.CopyTo(buffer_tgt2_1.data(), 0x3FFC, 10);
     std::array<Byte, 6> buffer_cmp2{ 250, 251, 252, 253, 0, 0 };
     EXPECT_EQ(buffer_tgt2_1, buffer_cmp2);
