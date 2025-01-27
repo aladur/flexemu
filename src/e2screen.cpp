@@ -54,14 +54,16 @@ class JoystickIO;
 E2Screen::E2Screen(Scheduler &p_scheduler,
                    JoystickIO &p_joystickIO, KeyboardIO &p_keyboardIO,
                    Pia1 &p_pia1, sOptions &p_options,
-                   QColor p_backgroundColor,
+                   // There are differences between Qt5 and Qt6.
+                   // NOLINTNEXTLINE(modernize-pass-by-value)
+                   const QColor &p_backgroundColor,
                    QWidget *parent)
     : QWidget(parent)
     , scheduler(p_scheduler)
     , joystickIO(p_joystickIO)
     , keyboardIO(p_keyboardIO)
     , pia1(p_pia1)
-    , backgroundColor(std::move(p_backgroundColor))
+    , backgroundColor(p_backgroundColor)
     , screen(QPixmap(WINDOWWIDTH, WINDOWHEIGHT))
     , transformationMode(Qt::FastTransformation)
     , firstRasterLine(0)

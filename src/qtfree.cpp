@@ -59,8 +59,12 @@ QFont GetFont(const QString &fontName)
 
         if (ok && pointSize > 0)
         {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+            return QFontDatabase::font(family, style, pointSize);
+#else
             auto fontDatabase = QFontDatabase();
             return fontDatabase.font(family, style, pointSize);
+#endif
         }
     }
 
