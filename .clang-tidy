@@ -213,5 +213,7 @@ Checks: '-*,
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 ExcludeHeaderFilterRegex: '.*/(ui_[a-z]+|[a-z]+_ui|fmt/include/.*|jsoncpp/include/.*|google(test|mock)/include/.*)\.h'
+HeaderFileExtensions: [ 'h' ]
+ImplementationFileExtensions: [ 'cpp' ]
 UseColor: true
 FormatStyle: 'file'
