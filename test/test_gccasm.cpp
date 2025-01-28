@@ -34,8 +34,8 @@
 
 
 // LINT suppression for global variable.
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-union ucc cc;
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables, fuchsia-statically-constructed-objects)
+static union ucc cc;
 
 using FctRefByteByte_t = std::function<void(Byte &, Byte)>;
 using FctByteByte_t = std::function<void(Byte, Byte)>;
@@ -45,7 +45,8 @@ using FctRefWordWord_t = std::function<void(Word &, Word)>;
 using FctWordWord_t = std::function<void(Word, Word)>;
 
 #if defined(__GNUC__) && defined(__x86_64__)
-void addx(Byte &reg, Byte operand)
+// NOLINTBEGIN(hicpp-signed-bitwise,-warnings-as-errors)
+static void addx(Byte &reg, Byte operand)
 {
     Word sum = reg + operand;
     cc.bit.n = BTST<Word>(sum, 7U);
@@ -55,8 +56,9 @@ void addx(Byte &reg, Byte operand)
     reg = static_cast<Byte>(sum);
     cc.bit.z = !reg;
 }
+// NOLINTEND(hicpp-signed-bitwise,-warnings-as-errors)
 
-void add(Byte &reg, Byte operand)
+static void add(Byte &reg, Byte operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -83,7 +85,7 @@ void add(Byte &reg, Byte operand)
                  : "cc");
 }
 
-inline void addw(Word &reg, Word operand)
+static void addw(Word &reg, Word operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -107,7 +109,7 @@ inline void addw(Word &reg, Word operand)
                  : "cc");
 }
 
-inline void adc(Byte &reg, Byte operand)
+static void adc(Byte &reg, Byte operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -135,7 +137,7 @@ inline void adc(Byte &reg, Byte operand)
                  : "cc");
 }
 
-inline void sub(Byte &reg, Byte operand)
+static void sub(Byte &reg, Byte operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -159,7 +161,7 @@ inline void sub(Byte &reg, Byte operand)
                  : "cc");
 }
 
-inline void subw(Word &reg, Word operand)
+static void subw(Word &reg, Word operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -183,7 +185,7 @@ inline void subw(Word &reg, Word operand)
                  : "cc");
 }
 
-inline void sbc(Byte &reg, Byte operand)
+static void sbc(Byte &reg, Byte operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -208,7 +210,7 @@ inline void sbc(Byte &reg, Byte operand)
                  : "cc");
 }
 
-inline void inc(Byte &reg)
+static void inc(Byte &reg)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -231,7 +233,7 @@ inline void inc(Byte &reg)
                  : "cc");
 }
 
-inline void dec(Byte &reg)
+static void dec(Byte &reg)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -254,7 +256,7 @@ inline void dec(Byte &reg)
                  : "cc");
 }
 
-inline void neg(Byte &reg)
+static void neg(Byte &reg)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -278,7 +280,7 @@ inline void neg(Byte &reg)
                  : "cc");
 }
 
-inline void tst(Byte reg)
+static void tst(Byte reg)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -300,7 +302,7 @@ inline void tst(Byte reg)
                  : "cc");
 }
 
-inline void cmp(Byte reg, Byte operand)
+static void cmp(Byte reg, Byte operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -324,7 +326,7 @@ inline void cmp(Byte reg, Byte operand)
                  : "cc");
 }
 
-inline void cmpw(Word reg, Word operand)
+static void cmpw(Word reg, Word operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -348,7 +350,7 @@ inline void cmpw(Word reg, Word operand)
                  : "cc");
 }
 
-inline void lsl(Byte &reg)
+static void lsl(Byte &reg)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -372,7 +374,7 @@ inline void lsl(Byte &reg)
                  : "cc");
 }
 
-inline void lsr(Byte &reg)
+static void lsr(Byte &reg)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -394,7 +396,7 @@ inline void lsr(Byte &reg)
                  : "cc");
 }
 
-inline void asl(Byte &reg)
+static void asl(Byte &reg)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -418,7 +420,7 @@ inline void asl(Byte &reg)
                  : "cc");
 }
 
-inline void asr(Byte &reg)
+static void asr(Byte &reg)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -444,7 +446,7 @@ inline void asr(Byte &reg)
 /* inline assembly for rol and ror. It compiles and tests successfull on
    clang++ and g++ but it has warnings about matching constraints on g++.
    => rejected
-inline void ror(Byte &reg)
+static void ror(Byte &reg)
 {
     asm volatile(\
                  "bt $0,%1;"      // copy mc6809 carry into condition code reg.
@@ -466,7 +468,7 @@ inline void ror(Byte &reg)
                  : "cc");
 }
 
-inline void rol(Byte &reg)
+static void rol(Byte &reg)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -498,7 +500,7 @@ void init_test_gccasm(int /*argc*/, char ** /*argv*/)
 {
 }
 
-void err(const std::string& mnemonic, Word op, Byte m6809_cc,
+static void err(const std::string& mnemonic, Word op, Byte m6809_cc,
          const std::string& regname, Word cpureg, Word x86reg)
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
@@ -510,7 +512,7 @@ void err(const std::string& mnemonic, Word op, Byte m6809_cc,
               << '\n';
 }
 
-void err(const std::string& mnemonic, Word op1, Word op2, Byte m6809_cc,
+static void err(const std::string& mnemonic, Word op1, Word op2, Byte m6809_cc,
          const std::string& regname, Word cpureg, Word x86reg)
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
@@ -522,7 +524,7 @@ void err(const std::string& mnemonic, Word op1, Word op2, Byte m6809_cc,
               << '\n';
 }
 
-bool test_gccasm_fctByte(const std::string& mnemonic,
+static bool test_gccasm_fctByte(const std::string& mnemonic,
                          const FctByte_t &test_function,
                          Byte opcode)
 {
@@ -569,7 +571,7 @@ bool test_gccasm_fctByte(const std::string& mnemonic,
     return success;
 }
 
-bool test_gccasm_fctRefByte(const std::string& mnemonic,
+static bool test_gccasm_fctRefByte(const std::string& mnemonic,
                             const FctRefByte_t &test_function,
                             Byte opcode)
 {
@@ -622,7 +624,7 @@ bool test_gccasm_fctRefByte(const std::string& mnemonic,
     return success;
 }
 
-bool test_gccasm_fctByteByte(const std::string& mnemonic,
+static bool test_gccasm_fctByteByte(const std::string& mnemonic,
                              const FctByteByte_t &test_function,
                              Byte opcode)
 {
@@ -675,7 +677,7 @@ bool test_gccasm_fctByteByte(const std::string& mnemonic,
     return success;
 }
 
-bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
+static bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
                                 const FctRefByteByte_t &test_function,
                                 Byte opcode)
 {
@@ -734,7 +736,7 @@ bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
     return success;
 }
 
-bool test_gccasm_fctWordWord(const std::string& mnemonic,
+static bool test_gccasm_fctWordWord(const std::string& mnemonic,
                              const FctWordWord_t &test_function,
                              Byte opcode1,
                              Byte opcode2)
@@ -764,7 +766,7 @@ bool test_gccasm_fctWordWord(const std::string& mnemonic,
             for (op2 = 0; op2 < 65536; op2 += 30)
             {
                 cpu.get_status(&status);
-                status.a = static_cast<Byte>(op1 >> 8);
+                status.a = static_cast<Byte>(op1 >> 8U);
                 status.b = static_cast<Byte>(op1);
                 addr = 0x0000;
                 status.pc = addr;
@@ -773,7 +775,7 @@ bool test_gccasm_fctWordWord(const std::string& mnemonic,
                 memory.write_byte(addr++, opcode1);
                 memory.write_byte(addr++, opcode2);
                 // Write immediate value high.
-                memory.write_byte(addr++, static_cast<Byte>(op2 >> 8));
+                memory.write_byte(addr++, static_cast<Byte>(op2 >> 8U));
                 // Write immediate value low.
                 memory.write_byte(addr++, static_cast<Byte>(op2));
                 cpu.run(RunMode::SingleStepInto);
@@ -795,7 +797,7 @@ bool test_gccasm_fctWordWord(const std::string& mnemonic,
     return success;
 }
 
-bool test_gccasm_fctRefWordWord(const std::string& mnemonic,
+static bool test_gccasm_fctRefWordWord(const std::string& mnemonic,
                                 const FctRefWordWord_t &test_function,
                                 Byte opcode)
 {
@@ -824,19 +826,19 @@ bool test_gccasm_fctRefWordWord(const std::string& mnemonic,
             for (op2 = 0; op2 < 65536; op2 += 30)
             {
                 cpu.get_status(&status);
-                status.a = static_cast<Byte>(op1 >> 8);
+                status.a = static_cast<Byte>(op1 >> 8U);
                 status.b = static_cast<Byte>(op1);
                 status.pc = 0x0000;
                 status.cc = regcc;
                 cpu.set_status(&status);
                 memory.write_byte(0x0000, opcode);
                 // Write immediate value high.
-                memory.write_byte(0x0001, static_cast<Byte>(op2 >> 8));
+                memory.write_byte(0x0001, static_cast<Byte>(op2 >> 8U));
                 // Write immediate value low.
                 memory.write_byte(0x0002, static_cast<Byte>(op2));
                 cpu.run(RunMode::SingleStepInto);
                 cpu.get_status(&status);
-                cpuregd = (static_cast<Word>(status.a) << 8) | status.b;
+                cpuregd = static_cast<Word>(status.a << 8U) | status.b;
 
                 regd = static_cast<Word>(op1);
                 cc.all = regcc;
