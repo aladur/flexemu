@@ -672,10 +672,26 @@ executed instruction. Configuring the
 allows to log all executed instructions.
 Addresses having a special meaning in the FLEX Operating System can be
 displayed as label instead of the hex-address. These labels are defined in
-the file
-<b>flexlabl.conf</b>. On Unix like OS the file get's installed in path
-<b>/etc/flexlabl.conf</b>. On Windows it is located in the installation
-directory.
+a system wide flexemu label file <b>flexlabl.conf</b>. It's location depends
+on the operating system.<p>
+<table class="invisible compact">
+ <tr>
+  <td>Windows:</td>
+  <td>&lt;INSTDIR&gt;\flexlabl.conf</td>
+ </tr>
+ <tr>
+  <td>Unix like OS:</td>
+  <td>/etc/flexlabl.conf</td>
+ </tr>
+</table><p>
+ On Unix like OS the path depends on the <b>sysconfdir</b> directory.
+ Before compiling flexemu this path can be adapted (see
+ <b>./configure --help</b>).<p>
+ A user specific flexemu label file can be defined by creating the
+ file (for example by copying it from the system wide configuration file):<p>
+ $HOME/.config/flexemu/flexlabl.conf<p>
+ The user specific configuration file has precedence over the system wide
+ configuration file.
 </div>
 
 <h3 id="logging">CPU Instruction Logging</h3>
@@ -853,6 +869,39 @@ other frequencies can be specified. See
 <a href="flexutil.htm">FLEX Utilities</a> for details.
 </div>
 
+<h3 id="flexemu_con">Flexemu configuration file</h3>
+<div class="justify">
+ There is a system wide configuration file <b>flexemu.conf</b>. It's location
+ depends on the operating system.<p>
+<table class="invisible compact">
+ <tr>
+  <td>Windows:</td>
+  <td>&lt;INSTDIR&gt;\flexemu.conf</td>
+ </tr>
+ <tr>
+  <td>Unix like OS:</td>
+  <td>/etc/flexemu.conf</td>
+ </tr>
+</table><p>
+ On Unix like OS the path depends on the <b>sysconfdir</b> directory.
+ Before compiling flexemu this path can be adapted (see
+ <b>./configure --help</b>).<p>
+ This file allows to configure:
+<ul>
+ <li>The base address and byte size of all memory mapped I/O devices.
+ <li>I/O device debug logging.
+  <li>Configure the <a href="flexutil.htm#terminal_graphic">SERPAR flag</a>
+   for each monitor program.
+ <li>Define a boot character for automatic boot.
+ <li>Some more debug suppot options.
+</ul><p>
+ Usually these setting do not have to be changed.<p>
+ A user specific flexemu configuration file can be defined by creating the
+ file (for example by copying it from the system wide configuration file):<p>
+ $HOME/.config/flexemu/flexemu.conf<p>
+ The user specific configuration file has precedence over the system wide
+ configuration file.
+</div>
 <h2 id="keyboard">KEYBOARD</h2>
 <h3 id="keyboard_pat09">Eurocom PAT09 keyboard</h3>
 <div class="justify">

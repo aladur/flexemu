@@ -6,7 +6,7 @@ Flexemu supports configure scripts. So there are four steps to compile and
 install it:
 
         - export QT_SELECT=qt5
-        - ./configure --prefix=/usr --sysconfdir=/etc
+        - ./configure
         - make
         - sudo make install
 
@@ -23,6 +23,18 @@ prerequisites:
 
 remarks:
 
+        - By default configure uses the install prefix /usr/local. This can
+          be changed by the configure option --prefix=DIR. For example to
+          install flexemu in /usr use the configure option --prefix=/usr
+          See also: ./configure --help for details.
+
+        - By default configure uses the install system configuration
+          directory /usr/local/etc. This can be changed by the configure
+          option --sysconfdir=DIR. For example to install the system wide
+          flexemu configuration file in /etc use the configure option
+          --sysconfdir=/etc
+          See also: ./configure --help for details.
+
         - flexemu project compiles on almost every linux distribution. In
           subdirectory docker there are some example Dockerfiles how to build
           and execute all flexemu executables using docker. There are examples
@@ -37,6 +49,7 @@ remarks:
           Most important prerequisite to build flexemu project are the qt5 or
           qt6 libraries and development files.
           See file docker/readme.md how these docker images can be build.
+
         - When using configure with --prefix=/usr flexemu also get's
           integrated into the desktop and appears in the System menu
           category, Emulator sub category. If --prefix is not specified
@@ -44,10 +57,24 @@ remarks:
           icon files may not be correctly integrated into the desktop.
           This has been exprienced with Linux Mint. It may behave
           differently for other Linux distributions.
+
         - If You don't want the disassembler to substitute some FLEX jump
           vectors to print as labels comment out the following switch in
           src/misc1.h:
-          #define FLEX_LABEL
+
+              #define FLEX_LABEL
+
+        - flexemu by default compiles using precompiled headers. This can be
+          switched off by the flexemu specific configure option
+          --disable-precompiled-headers
+          Using precompiled headers slightly decreases the build time by using
+          a large increase of disk space.
+
+        - The endianness of C bitfields is automatically detected. For cross
+          compilation it is set to little endian which works for most modern
+          CPU architectures. It can be explicitly defined as big endian by
+          the flexemu specific configure option --enable-bitfields-bigendian.
+
         - There are two MC6809 processor implementations. One of them is
           about 20% slower but a very well structured implementation. Each
           instruction is executed in it's own function. So it can easily be
@@ -56,11 +83,14 @@ remarks:
           inline-function. The processor cycles are only aproximated
           (4.8 cycles for each instruction). The faster processor can
           be compiled with uncommenting the following switch in src/misc1.h:
-          /* #define FASTFLEX */
+
+              /* #define FASTFLEX */
+
         - There are post installation steps executed to provide desktop
           icons and adding mime types for support of *.dsk, *.flx and *.wta
           files. If they do not work as expected they can be disabled with
-          the configure option --disable-post-install
+          the flexemu specific configure option --disable-post-install
+
           The post installation steps are (assuming --prefix=/usr):
 
              gtk-update-icon-cache /usr/share/icons/hicolor
