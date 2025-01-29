@@ -37,11 +37,16 @@ jobs:
           sudo apt-get install build-essential qtbase5-dev qtbase5-dev-tools libqt5x11extras5-dev $CLANG_TIDY
 
       - name: Context
-        run: echo "clang-tidy version:" `$CLANG_TIDY --version`
+        run: |
+          echo `lscpu | grep "^CPU(s):"`
+          echo `lscpu | grep "Thread(s)"`
+          echo "clang-tidy version:" `$CLANG_TIDY --version`
+          echo "CPUs:" `python/cpus.py`
+          cmake --version
 
       - name: Configure
-        run: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc
+        run: mkdir bld; cd bld; cmake ..
 
       - name: Clang-tidy check
-        run: make -j8 && make clang-tidy-check
+        run: cd bld; make -j8 && make fast-clang-tidy-check
 

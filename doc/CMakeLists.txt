@@ -1,0 +1,44 @@
+add_subdirectory(images)
+
+set(install_FILES
+    flexemu.css
+    e2hwdesc.htm
+    flexdos.htm
+    flexemu.htm
+    flexerr.htm
+    flexfcb.htm
+    flexfms.htm
+    flexfs.htm
+    flexmem.htm
+    flexuser.htm
+    flexutil.htm
+    mc6809.htm
+    mon24.htm
+    mon53_54.htm
+    monu54.htm
+    neumon54.htm
+    6809diag.pdf
+    6809fadg.pdf
+    6x09_Instruction_Sets.pdf
+    asmb.pdf
+    ba2bqs.pdf
+    basic_um.pdf
+    basprec.pdf
+    cedric.pdf
+    crasmb.pdf
+    debug.pdf
+    dynamite.pdf
+    dynastar.pdf
+    f77.pdf
+    flex2um.pdf
+    flexapg.pdf
+    just.pdf
+    linkload.pdf
+    relasmb.pdf
+    swflexum.pdf
+    tedit.pdf
+    TSC_Text_Processor.pdf
+    util_man.pdf
+)
+
+install(FILES ${install_FILES} DESTINATION ${FLEXEMU_DATADIR})

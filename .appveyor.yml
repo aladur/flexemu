@@ -17,6 +17,7 @@ install:
       CXX=g++
       LDD=ldd
       CCVER='/[^0-9]([0-9]+\.[0-9]+\.[0-9]+)/p;q'
+      CMAKEVER='/([0-9]+\.[0-9]+\.[0-9]+)/p;q'
       QTVER='s|([A-Za-z0-9.>/_[:space:]:-]+)([0-9]+\.[0-9]+\.[0-9]+).*|\2|p'
       if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu1604" ]; then
           # Install Qt5 from apt packages.
@@ -34,6 +35,8 @@ install:
       echo "C compiler version:" $VER
       VER=`$CXX --version | sed -nE $CCVER`
       echo "C++ compiler version:" $VER
+      VER=`cmake --version | sed -nE $CMAKEVER`
+      echo "cmake version:" $VER
       git submodule update --init --recursive
 
 for:
@@ -42,18 +45,18 @@ for:
       only:
         - image: Ubuntu1604
     before_build:
-      - sh: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc
+      - sh: mkdir bld; cd bld; cmake ..
     build_script:
-      - make -j5
+      - sh: make -j5
     after_build:
-      - make install
+      - sh: sudo make install
     test_script:
       - $LDD src/flexemu
       - $LDD src/flexplorer
-      - make -j5 check && cat test/unittests.log
+      - make -j5 test
       - test/test_gccasm
-      - src/dsktool -l disks/games.dsk
+      - src/dsktool -l ../disks/games.dsk
       - src/dsktool -f new.dsk -S 80dsdd
-      - src/dsktool -C disks/system.dsk -T new.dsk
+      - src/dsktool -C ../disks/system.dsk -T new.dsk
       - src/dsktool -l new.dsk
 

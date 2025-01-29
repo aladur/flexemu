@@ -2,4 +2,4 @@
 # cloc source: https://github.com/AlDanial/cloc.git
 # ignore generated files.
 
---not-match-f="^([a-z][a-z0-9]*_(moc\.cpp|qrc\.cpp|ui\.h)|config\.h)$"
+--not-match-f="^([a-z][a-z0-9]*_(moc\.cpp|qrc\.cpp|ui\.h)|config\.h|bitfield.cpp)$"
