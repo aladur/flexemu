@@ -20,6 +20,7 @@ jobs:
         shell: bash -leo pipefail {0}
     env:
       CLANG_TIDY: clang-tidy
+      RUN_CLANG_TIDY_PROCESSES: 5
 
     steps:
       - name: Checkout
@@ -48,5 +49,5 @@ jobs:
         run: mkdir bld; cd bld; cmake ..
 
       - name: Clang-tidy check
-        run: cd bld; make -j8 && make fast-clang-tidy-check
+        run: cd bld; make -j5 && make fast-clang-tidy-check
 

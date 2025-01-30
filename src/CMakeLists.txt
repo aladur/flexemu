@@ -811,6 +811,15 @@ add_custom_target(
 set(ARGUMENTS -clang-tidy-binary=${CLANG_TIDY_CMD})
 list(APPEND ARGUMENTS -config-file=${CMAKE_SOURCE_DIR}/.clang-tidy)
 list(APPEND ARGUMENTS -p=${CMAKE_BINARY_DIR})
+set(PROCESSES "")
+if(DEFINED ENV{RUN_CLANG_TIDY_PROCESSES})
+    list(APPEND ARGUMENTS -j=$ENV{RUN_CLANG_TIDY_PROCESSES})
+    if("$ENV{RUN_CLANG_TIDY_PROCESSES}" EQUAL "1")
+        set(PROCESSES "(1 process)")
+    else()
+        set(PROCESSES "($ENV{RUN_CLANG_TIDY_PROCESSES} processes)")
+    endif()
+endif()
 list(APPEND ARGUMENTS -source-filter= ".*/(test/test_[a-z][a-z0-9]+\.cpp|src/[a-z][a-z0-9]+\.cpp)")
 list(APPEND ARGUMENTS -extra-arg=-I${CMAKE_CURRENT_BINARY_DIR})
 list(APPEND ARGUMENTS -extra-arg=-I${CMAKE_CURRENT_BINARY_DIR}/flexemu_autogen/include)
@@ -823,7 +832,7 @@ add_custom_target(
     fast-clang-tidy-check
     ${RUN_CLANG_TIDY_CMD} ${ARGUMENTS}
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    COMMENT "Executing fast clang-tidy checks"
+    COMMENT "Executing fast clang-tidy checks ${PROCESSES}"
     USES_TERMINAL
     VERBATIM
 )
