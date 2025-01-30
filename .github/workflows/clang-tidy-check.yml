@@ -19,8 +19,10 @@ jobs:
         # Use bash login shell sourcing ~/.bash_profile
         shell: bash -leo pipefail {0}
     env:
-      CLANG_TIDY: clang-tidy
+      CLANG_TIDY: clang-tidy-21
+      RUN_CLANG_TIDY: run-clang-tidy-21
       RUN_CLANG_TIDY_PROCESSES: 5
+      MAKE_PROCESSES: 5
 
     steps:
       - name: Checkout
@@ -28,7 +30,8 @@ jobs:
         with:
           submodules: 'true'
 
-      - name: Install packages
+      - name: Install packages (Linux)
+        if: runner.os == 'Linux'
         # Avoid 'apt-get upgrade'. It takes a long time.
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
@@ -36,18 +39,62 @@ jobs:
           sudo apt-get update
           sudo apt list --upgradable
           sudo apt-get install build-essential qtbase5-dev qtbase5-dev-tools libqt5x11extras5-dev $CLANG_TIDY
-
-      - name: Context
+      - name: Install packages (MacOS)
+        if: runner.os == 'macOS'
         run: |
+          echo "CLANG_TIDY=clang-tidy" >> $GITHUB_ENV
+          echo "RUN_CLANG_TIDY=run-clang-tidy" >> $GITHUB_ENV
+          echo "RUN_CLANG_TIDY_PROCESSES=5" >> $GITHUB_ENV
+          echo "MAKE_PROCESSES=5" >> $GITHUB_ENV
+          brew install gnu-sed ncurses qt@5 llvm@19
+          export PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/qt@5/lib/pkgconfig"
+          echo "$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+          echo "$HOMEBREW_PREFIX/opt/qt@5/bin" >> $GITHUB_PATH
+          echo "$HOMEBREW_PREFIX/opt/llvm@19/bin" >> $GITHUB_PATH
+
+      - name: Context (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          uname -a
           echo `lscpu | grep "^CPU(s):"`
           echo `lscpu | grep "Thread(s)"`
           echo "clang-tidy version:" `$CLANG_TIDY --version`
           echo "CPUs:" `python/cpus.py`
           cmake --version
+      - name: Context (MacOS)
+        if: runner.os == 'macOS'
+        run: |
+          uname -a
+          sysctl hw.physicalcpu
+          sysctl hw.logicalcpu
+          echo "PATH:" $PATH
+          echo "GITHUB_PATH:" $GITHUB_PATH
+          echo "HOMEBREW_PREFIX:" $HOMEBREW_PREFIX
+          echo "clang-tidy version:" `$CLANG_TIDY --version`
+          echo "CPUs:" `python/cpus.py`
+          cmake --version
 
-      - name: Configure
-        run: mkdir bld; cd bld; cmake ..
+      - name: Configure (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          mkdir bld
+          cd bld
+          cmake ..
+          cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON
+      - name: Configure (MacOS)
+        if: runner.os == 'macOS'
+        run: |
+          mkdir bld
+          cd bld
+          cmake .. -DCMAKE_PREFIX_PATH=$HOMEBREW_PREFIX/opt/ncurses -DCMAKE_VERBOSE_MAKEFILE=ON
+
+      - name: Make
+        run: |
+          cd bld
+          make -j$MAKE_PROCESSES
 
       - name: Clang-tidy check
-        run: cd bld; make -j5 && make fast-clang-tidy-check
+        run: |
+          cd bld
+          make fast-clang-tidy-check
 

@@ -20,12 +20,13 @@ if(NOT DEFINED FLEXEMU_USE_PRECOMPILE_HEADERS)
     set(FLEXEMU_USE_PRECOMPILE_HEADERS OFF)
 endif()
 
-# Optionally disable post install steps on Unix like OS. Default is ON.
+# Optionally disable post install steps on Unix like OS. Default is ON,
+# on Apple systems the default is OFF.
 # This is about mime file type support and desktop icons.
 # For details see:
 # https://specifications.freedesktop.org/desktop-entry-spec/latest/
 # https://specifications.freedesktop.org/mime-apps-spec/latest/
-if(NOT DEFINED FLEXEMU_POST_INSTALL)
+if(NOT DEFINED FLEXEMU_POST_INSTALL AND NOT APPLE)
     set(FLEXEMU_POST_INSTALL ON)
 endif()
 

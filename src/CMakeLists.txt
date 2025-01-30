@@ -147,12 +147,8 @@ set(flex_HEADER
 add_library(flex STATIC ${flex_SOURCES} ${flex_HEADER})
 add_library(flexemu::libflex ALIAS flex)
 
-target_include_directories(flex PRIVATE SYSTEM
-    ${fmt_INCLUDE_DIR}
-)
-target_include_directories(flex PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
+target_include_directories(flex PRIVATE SYSTEM ${fmt_INCLUDE_DIR})
+target_include_directories(flex PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(flex PRIVATE pch.h)
 endif()
@@ -187,9 +183,7 @@ target_include_directories(updatemd PRIVATE SYSTEM
     ${fmt_INCLUDE_DIR}
     ${jsoncpp_INCLUDE_DIR}
 )
-target_include_directories(updatemd PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
+target_include_directories(updatemd PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(updatemd REUSE_FROM flexemu::libflex)
 endif()
@@ -229,21 +223,15 @@ typedefs.h
 )
 add_executable(flex2hex ${flex2hex_SOURCES} ${flex2hex_HEADER})
 
-target_include_directories(flex2hex PRIVATE SYSTEM
-    ${fmt_INCLUDE_DIR}
-)
-target_include_directories(flex2hex PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
+target_include_directories(flex2hex PRIVATE SYSTEM ${fmt_INCLUDE_DIR})
+target_include_directories(flex2hex PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(flex2hex REUSE_FROM flexemu::libflex)
 endif()
 if(UNIX)
     target_compile_definitions(flex2hex PRIVATE UNIX)
 endif()
-target_compile_definitions(flex2hex PRIVATE
-    USE_CMAKE
-)
+target_compile_definitions(flex2hex PRIVATE USE_CMAKE)
 target_link_libraries(flex2hex PRIVATE
     flexemu::libflex
     fmt::fmt
@@ -276,21 +264,15 @@ set(mdcrtool_HEADER
 )
 add_executable(mdcrtool ${mdcrtool_SOURCES} ${mdcrtool_HEADER})
 
-target_include_directories(mdcrtool PRIVATE SYSTEM
-    ${fmt_INCLUDE_DIR}
-)
-target_include_directories(mdcrtool PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
+target_include_directories(mdcrtool PRIVATE SYSTEM ${fmt_INCLUDE_DIR})
+target_include_directories(mdcrtool PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(mdcrtool REUSE_FROM flexemu::libflex)
 endif()
 if(UNIX)
     target_compile_definitions(mdcrtool PRIVATE UNIX)
 endif()
-target_compile_definitions(mdcrtool PRIVATE
-    USE_CMAKE
-)
+target_compile_definitions(mdcrtool PRIVATE USE_CMAKE)
 target_link_libraries(mdcrtool PRIVATE
     flexemu::libflex
     fmt::fmt
@@ -336,21 +318,15 @@ typedefs.h
 )
 add_executable(dsktool ${dsktool_SOURCES} ${dsktool_HEADER})
 
-target_include_directories(dsktool PRIVATE SYSTEM
-    ${fmt_INCLUDE_DIR}
-)
-target_include_directories(dsktool PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
+target_include_directories(dsktool PRIVATE SYSTEM ${fmt_INCLUDE_DIR})
+target_include_directories(dsktool PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(dsktool REUSE_FROM flexemu::libflex)
 endif()
 if(UNIX)
     target_compile_definitions(dsktool PRIVATE UNIX)
 endif()
-target_compile_definitions(dsktool PRIVATE
-    USE_CMAKE
-)
+target_compile_definitions(dsktool PRIVATE USE_CMAKE)
 target_link_libraries(dsktool PRIVATE
     flexemu::libflex
     fmt::fmt
@@ -363,10 +339,20 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
-    find_package(Qt5 REQUIRED Core Widgets Gui X11Extras PrintSupport)
+    find_package(Qt5 REQUIRED Core Widgets Gui PrintSupport)
+    if (UNIX)
+        if (APPLE)
+            find_package(Qt5 REQUIRED MacExtras)
+        else()
+            find_package(Qt5 REQUIRED X11Extras)
+        endif()
+    endif()
 endif()
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 6)
     find_package(Qt6 REQUIRED Core Widgets Gui PrintSupport)
+    if (UNIX AND APPLE)
+        find_package(Qt6 REQUIRED MacExtras)
+    endif()
 endif()
 
 #################################
@@ -564,21 +550,29 @@ set(flexemu_HEADER
 )
 add_executable(flexemu ${flexemu_gen_SOURCES} ${flexemu_SOURCES} ${flexemu_HEADER})
 
-target_include_directories(flexemu PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
+target_include_directories(flexemu PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(flexemu PRIVATE SYSTEM
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Core_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Widgets_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Gui_INCLUDE_DIRS}
-    ${Qt${FLEXEMU_QT_MAJOR_VERSION}X11Extras_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}PrintSupport_INCLUDE_DIRS}
+)
+if(UNIX)
+    if(APPLE)
+        target_include_directories(flexemu PRIVATE SYSTEM
+            ${Qt${FLEXEMU_QT_MAJOR_VERSION}MacExtras_INCLUDE_DIRS}
+        )
+    else()
+        target_include_directories(flexemu PRIVATE SYSTEM
+            ${Qt${FLEXEMU_QT_MAJOR_VERSION}X11Extras_INCLUDE_DIRS}
+        )
+    endif()
+endif()
+target_include_directories(flexemu PRIVATE SYSTEM
     ${X11_INCLUDE_DIR}
     ${fmt_INCLUDE_DIR}
     ${CURSES_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
-)
-target_include_directories(flexemu PRIVATE SYSTEM
 )
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(flexemu REUSE_FROM flexemu::libflex)
@@ -593,8 +587,15 @@ target_compile_definitions(flexemu PRIVATE
     F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
 )
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
+
+    if(UNIX)
+        if(APPLE)
+            target_link_libraries(flexemu PRIVATE Qt5::MacExtras)
+        else()
+            target_link_libraries(flexemu PRIVATE Qt5::X11Extras)
+        endif()
+    endif()
     target_link_libraries(flexemu PRIVATE
-        Qt5::X11Extras
         Qt5::PrintSupport
         Qt5::Gui
         Qt5::Widgets
@@ -602,6 +603,9 @@ if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
     )
 endif()
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 6)
+    if(UNIX AND APPLE)
+        target_link_libraries(flexemu PRIVATE Qt6::MacExtras)
+    endif()
     target_link_libraries(flexemu PRIVATE
         Qt6::PrintSupport
         Qt6::Gui
@@ -702,9 +706,7 @@ set(flexplorer_HEADER
 )
 add_executable(flexplorer ${flexplorer_gen_SOURCES} ${flexplorer_SOURCES} ${flexplorer_HEADER})
 
-target_include_directories(flexplorer PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
+target_include_directories(flexplorer PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(flexplorer PRIVATE SYSTEM
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Core_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Widgets_INCLUDE_DIRS}
@@ -762,81 +764,80 @@ endif()
 #################################
 
 if(UNIX)
-
-set(ARGUMENTS bitfield.cpp)
-list(APPEND ARGUMENTS
-    ${updatemd_SOURCES}
-    ${flex_SOURCES}
-    ${flex2hex_SOURCES}
-    ${dsktool_SOURCES}
-    ${mdcrtool_SOURCES}
-    ${flexemu_SOURCES}
-    ${flexplorer_SOURCES}
-)
-list(APPEND ARGUMENTS -p ${CMAKE_BINARY_DIR})
-list(APPEND ARGUMENTS --config-file=${CMAKE_SOURCE_DIR}/.clang-tidy)
-list(APPEND ARGUMENTS --header-filter=.*)
-list(APPEND ARGUMENTS --)
-list(APPEND ARGUMENTS -isystem${CMAKE_CURRENT_BINARY_DIR})
-list(APPEND ARGUMENTS -isystem${CMAKE_CURRENT_BINARY_DIR}/flexemu_autogen/include)
-list(APPEND ARGUMENTS -isystem${CMAKE_CURRENT_BINARY_DIR}/flexplorer_autogen/include)
-list(APPEND ARGUMENTS -isystem${fmt_INCLUDE_DIR})
-list(APPEND ARGUMENTS -isystem${jsoncpp_INCLUDE_DIR})
-foreach(QT_INCLUDE_DIR ${Qt${FLEXEMU_QT_MAJOR_VERSION}PrintSupport_INCLUDE_DIRS})
-    list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
-endforeach()
-if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
-    foreach(QT_INCLUDE_DIR ${Qt5X11Extras_INCLUDE_DIRS})
+    set(ARGUMENTS bitfield.cpp)
+    list(APPEND ARGUMENTS
+        ${updatemd_SOURCES}
+        ${flex_SOURCES}
+        ${flex2hex_SOURCES}
+        ${dsktool_SOURCES}
+        ${mdcrtool_SOURCES}
+        ${flexemu_SOURCES}
+        ${flexplorer_SOURCES}
+    )
+    list(APPEND ARGUMENTS -p=${CMAKE_BINARY_DIR})
+    list(APPEND ARGUMENTS --)
+    list(APPEND ARGUMENTS -isystem${CMAKE_CURRENT_BINARY_DIR})
+    list(APPEND ARGUMENTS -isystem${CMAKE_CURRENT_BINARY_DIR}/flexemu_autogen/include)
+    list(APPEND ARGUMENTS -isystem${CMAKE_CURRENT_BINARY_DIR}/flexplorer_autogen/include)
+    list(APPEND ARGUMENTS -isystem${fmt_INCLUDE_DIR})
+    list(APPEND ARGUMENTS -isystem${jsoncpp_INCLUDE_DIR})
+    foreach(QT_INCLUDE_DIR ${Qt${FLEXEMU_QT_MAJOR_VERSION}PrintSupport_INCLUDE_DIRS})
         list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
     endforeach()
-endif()
-list(APPEND ARGUMENTS -DF_DATADIR=\"${FLEXEMU_DATADIR}\")
-list(APPEND ARGUMENTS -DF_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\")
-list(APPEND ARGUMENTS -DUSE_CMAKE)
-list(APPEND ARGUMENTS -D_REENTRANT)
-if(UNIX)
-    list(APPEND ARGUMENTS -DUNIX)
-endif()
-
-# Add custom target to execute clang-tidy, called clang-tidy-check.
-add_custom_target(
-    clang-tidy-check
-    ${CLANG_TIDY_CMD} ${ARGUMENTS}
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    COMMENT "Executing clang-tidy checks"
-    USES_TERMINAL
-    VERBATIM
-)
-
-set(ARGUMENTS -clang-tidy-binary=${CLANG_TIDY_CMD})
-list(APPEND ARGUMENTS -config-file=${CMAKE_SOURCE_DIR}/.clang-tidy)
-list(APPEND ARGUMENTS -p=${CMAKE_BINARY_DIR})
-set(PROCESSES "")
-if(DEFINED ENV{RUN_CLANG_TIDY_PROCESSES})
-    list(APPEND ARGUMENTS -j=$ENV{RUN_CLANG_TIDY_PROCESSES})
-    if("$ENV{RUN_CLANG_TIDY_PROCESSES}" EQUAL "1")
-        set(PROCESSES "(1 process)")
-    else()
-        set(PROCESSES "($ENV{RUN_CLANG_TIDY_PROCESSES} processes)")
+    if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5 AND NOT APPLE)
+        foreach(QT_INCLUDE_DIR ${Qt5X11Extras_INCLUDE_DIRS})
+            list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
+        endforeach()
     endif()
-endif()
-list(APPEND ARGUMENTS -source-filter= ".*/(test/test_[a-z][a-z0-9]+\.cpp|src/[a-z][a-z0-9]+\.cpp)")
-list(APPEND ARGUMENTS -extra-arg=-I${CMAKE_CURRENT_BINARY_DIR})
-list(APPEND ARGUMENTS -extra-arg=-I${CMAKE_CURRENT_BINARY_DIR}/flexemu_autogen/include)
-list(APPEND ARGUMENTS -extra-arg=-I${CMAKE_CURRENT_BINARY_DIR}/flexplorer_autogen/include)
+    if(APPLE)
+        foreach(QT_INCLUDE_DIR ${Qt${FLEXEMU_QT_MAJOR_VERSION}MacExtras_INCLUDE_DIRS})
+            list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
+        endforeach()
+    endif()
+    list(APPEND ARGUMENTS -DF_DATADIR=\"${FLEXEMU_DATADIR}\")
+    list(APPEND ARGUMENTS -DF_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\")
+    list(APPEND ARGUMENTS -DUSE_CMAKE)
+    list(APPEND ARGUMENTS -D_REENTRANT)
+    list(APPEND ARGUMENTS -DUNIX)
 
-# Add custom target to execute run-clang-tidy. It is called
-# fast-clang-tidy-check because it automatically distributes the clang-tidy
-# checks among the available CPU cores.
-add_custom_target(
-    fast-clang-tidy-check
-    ${RUN_CLANG_TIDY_CMD} ${ARGUMENTS}
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    COMMENT "Executing fast clang-tidy checks ${PROCESSES}"
-    USES_TERMINAL
-    VERBATIM
-)
+    # Add custom target to execute clang-tidy, called clang-tidy-check.
+    add_custom_target(
+        clang-tidy-check
+        ${CLANG_TIDY_CMD} ${ARGUMENTS}
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMENT "Executing clang-tidy checks"
+        USES_TERMINAL
+        VERBATIM
+    )
 
+    set(PROCESSES "")
+    if(DEFINED ENV{RUN_CLANG_TIDY_PROCESSES})
+        list(APPEND ARGUMENTS -j=$ENV{RUN_CLANG_TIDY_PROCESSES})
+        if("$ENV{RUN_CLANG_TIDY_PROCESSES}" EQUAL "1")
+            set(PROCESSES "(1 process)")
+        else()
+            set(PROCESSES "($ENV{RUN_CLANG_TIDY_PROCESSES} processes)")
+        endif()
+    endif()
+
+    set(ARGUMENTS -clang-tidy-binary=${CLANG_TIDY_CMD})
+    list(APPEND ARGUMENTS -p=${CMAKE_BINARY_DIR})
+    list(APPEND ARGUMENTS -source-filter= ".*/(test/test_[a-z][a-z0-9]+\.cpp|src/[a-z][a-z0-9]+\.cpp)")
+    list(APPEND ARGUMENTS -extra-arg=-I${CMAKE_CURRENT_BINARY_DIR})
+    list(APPEND ARGUMENTS -extra-arg=-I${CMAKE_CURRENT_BINARY_DIR}/flexemu_autogen/include)
+    list(APPEND ARGUMENTS -extra-arg=-I${CMAKE_CURRENT_BINARY_DIR}/flexplorer_autogen/include)
+
+    # Add custom target to execute run-clang-tidy. It is called
+    # fast-clang-tidy-check because it automatically distributes the clang-tidy
+    # checks among the available CPU cores.
+    add_custom_target(
+        fast-clang-tidy-check
+        ${RUN_CLANG_TIDY_CMD} ${ARGUMENTS}
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMENT "Executing fast clang-tidy checks ${PROCESSES}"
+        USES_TERMINAL
+        VERBATIM
+    )
 endif()
 
 set(APPLICATIONS_DIR "${CMAKE_INSTALL_FULL_DATADIR}/applications")

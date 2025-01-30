@@ -41,7 +41,7 @@
 #include <QGuiApplication>
 #include "warnon.h"
 #if defined(UNIX) && !defined(X_DISPLAY_MISSING)
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0)) && !defined(__APPLE__)
 #include <QX11Info>
 #endif
     // Qt < 6.0.0
@@ -481,8 +481,10 @@ bool E2Screen::IsNumLockOn() const
 #error Only Qt6 versions 6.2.0 or higher are supported
 #endif // Qt >= 6.2.0
 #else
+#if !defined(__APPLE__)
         // Qt < 6.0.0
         display = QX11Info::display();
+#endif
 #endif // Qt >= 6.0.0
     }
 
@@ -848,8 +850,10 @@ void E2Screen::InitializeNumLockIndicatorMask()
 #error Only Qt6 versions 6.2.0 or higher are supported
 #endif // Qt >= 6.2.0
 #else
+#if !defined(__APPLE__)
         // Qt < 6.0.0
         display = QX11Info::display();
+#endif
 #endif // Qt >= 6.0.0
     }
 
