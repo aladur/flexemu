@@ -22,7 +22,6 @@ jobs:
       CLANG_TIDY: clang-tidy-21
       RUN_CLANG_TIDY: run-clang-tidy-21
       RUN_CLANG_TIDY_PROCESSES: 5
-      MAKE_PROCESSES: 5
 
     steps:
       - name: Checkout
@@ -45,7 +44,6 @@ jobs:
           echo "CLANG_TIDY=clang-tidy" >> $GITHUB_ENV
           echo "RUN_CLANG_TIDY=run-clang-tidy" >> $GITHUB_ENV
           echo "RUN_CLANG_TIDY_PROCESSES=5" >> $GITHUB_ENV
-          echo "MAKE_PROCESSES=5" >> $GITHUB_ENV
           brew install gnu-sed ncurses qt@5 llvm@19
           export PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/qt@5/lib/pkgconfig"
           echo "$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
@@ -87,11 +85,6 @@ jobs:
           mkdir bld
           cd bld
           cmake .. -DCMAKE_PREFIX_PATH=$HOMEBREW_PREFIX/opt/ncurses -DCMAKE_VERBOSE_MAKEFILE=ON
-
-      - name: Make
-        run: |
-          cd bld
-          make -j$MAKE_PROCESSES
 
       - name: Clang-tidy check
         run: |

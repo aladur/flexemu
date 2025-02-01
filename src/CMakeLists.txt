@@ -809,6 +809,10 @@ if(UNIX)
         USES_TERMINAL
         VERBATIM
     )
+    add_dependencies(clang-tidy-check
+        flexemu_autogen
+        flexplorer_autogen
+    )
 
     set(PROCESSES "")
     if(DEFINED ENV{RUN_CLANG_TIDY_PROCESSES})
@@ -837,6 +841,10 @@ if(UNIX)
         COMMENT "Executing fast clang-tidy checks ${PROCESSES}"
         USES_TERMINAL
         VERBATIM
+    )
+    add_dependencies(fast-clang-tidy-check
+        flexemu_autogen
+        flexplorer_autogen
     )
 endif()
 
