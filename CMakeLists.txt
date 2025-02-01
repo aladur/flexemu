@@ -90,7 +90,7 @@ if (${STR_INDEX} EQUAL -1)
     # The compile commands file is needed for clang-tidy support.
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 else()
-    message(WARNING "${CLANG_TIDY_STR} or clang-tidy not found, 'make clang-tidy' will not work.")
+    message(WARNING "${CLANG_TIDY_STR} or clang-tidy not found, 'make clang-tidy-check' will not work.")
 endif()
 
 # The run-clang-tidy command can be defined in environment variable CLANG_TIDY.
@@ -103,7 +103,7 @@ if (${STR_INDEX} EQUAL -1)
     # The compile commands file is needed for clang-tidy support.
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 else()
-    message(WARNING "${RUN_CLANG_TIDY_STR} or run-clang-tidy not found, 'make run-clang-tidy' will not work.")
+    message(WARNING "${RUN_CLANG_TIDY_STR} or run-clang-tidy not found, 'make fast-clang-tidy-check' will not work.")
 endif()
 endif()
 
