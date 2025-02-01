@@ -127,10 +127,11 @@ if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(unittests PRIVATE pch.h)
 endif()
 if(UNIX)
-target_compile_definitions(unittests PRIVATE UNIX)
+    target_compile_definitions(unittests PRIVATE UNIX)
 endif()
 target_compile_definitions(unittests PRIVATE
-    F_DATADIR=\"${FLEXEMU_DATADIR}\"
+    USE_CMAKE
+    F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
     F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
 )
 target_link_libraries(unittests PRIVATE
@@ -210,7 +211,8 @@ if(UNIX)
     target_compile_definitions(test_gccasm PRIVATE UNIX)
 endif()
 target_compile_definitions(test_gccasm PRIVATE
-    F_DATADIR=\"${FLEXEMU_DATADIR}\"
+    USE_CMAKE
+    F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
     F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
 )
 target_link_libraries(test_gccasm PRIVATE

@@ -8,4 +8,4 @@ set(install_FILES
     neumon54.hex
 )
 
-install(FILES ${install_FILES} DESTINATION ${FLEXEMU_DATADIR})
+install(FILES ${install_FILES} DESTINATION ${CMAKE_INSTALL_DATADIR}/flexemu)

@@ -17,4 +17,4 @@ set(install_FILES
     tsc_man.dsk
 )
 
-install(FILES ${install_FILES} DESTINATION ${FLEXEMU_DATADIR})
+install(FILES ${install_FILES} DESTINATION ${CMAKE_INSTALL_DATADIR}/flexemu)

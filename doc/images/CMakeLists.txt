@@ -21,4 +21,4 @@ set(install_FILES
     pat09_numpad.png
 )
 
-install(FILES ${install_FILES} DESTINATION ${FLEXEMU_DATADIR}/images)
+install(FILES ${install_FILES} DESTINATION ${CMAKE_INSTALL_DATADIR}/flexemu/images)

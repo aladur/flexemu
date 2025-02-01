@@ -41,4 +41,4 @@ set(install_FILES
     util_man.pdf
 )
 
-install(FILES ${install_FILES} DESTINATION ${FLEXEMU_DATADIR})
+install(FILES ${install_FILES} DESTINATION ${CMAKE_INSTALL_DATADIR}/flexemu)

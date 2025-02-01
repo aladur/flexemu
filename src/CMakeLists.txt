@@ -34,12 +34,23 @@ add_subdirectory(tools)
 
 set(CURSES_NEED_NCURSES TRUE)
 set(CURSES_NEED_WIDE TRUE)
-find_package(Curses REQUIRED)
+find_package(Curses)
+if(NOT CURSES_FOUND)
+    # Having a second try is at least needed for FreeBSD for
+    # non wide character support which never the less results in
+    # wide character support :-)).
+    unset(CURSES_INCLUDE_DIRS)
+    unset(CURSES_LIBRARIES)
+    unset(CURSES_CFLAGS)
+    unset(CURSES_HAVE_CURSES_H)
+    unset(CURSES_HAVE_NCURSES_H)
+    unset(CURSES_HAVE_NCURSES_CURSES_H)
+    unset(CURSES_HAVE_NCURSES_NCURSES_H)
+    set(CURSES_NEED_WIDE FALSE)
+    find_package(Curses REQUIRED)
+endif()
 
 find_package(X11 REQUIRED)
-
-include(GNUInstallDirs)
-set(FLEXEMU_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/flexemu")
 
 # Enable compiler warnings
 if (MSVC)
@@ -147,7 +158,7 @@ set(flex_HEADER
 add_library(flex STATIC ${flex_SOURCES} ${flex_HEADER})
 add_library(flexemu::libflex ALIAS flex)
 
-target_include_directories(flex PRIVATE SYSTEM ${fmt_INCLUDE_DIR})
+target_include_directories(flex SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
 target_include_directories(flex PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(flex PRIVATE pch.h)
@@ -157,7 +168,7 @@ if(UNIX)
 endif()
 target_compile_definitions(flex PRIVATE
     USE_CMAKE
-    F_DATADIR=\"${FLEXEMU_DATADIR}\"
+    F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
     F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
 )
 
@@ -179,7 +190,7 @@ misc1.h
 )
 add_executable(updatemd ${updatemd_SOURCES} ${updatemd_HEADER})
 
-target_include_directories(updatemd PRIVATE SYSTEM
+target_include_directories(updatemd SYSTEM PRIVATE
     ${fmt_INCLUDE_DIR}
     ${jsoncpp_INCLUDE_DIR}
 )
@@ -223,7 +234,7 @@ typedefs.h
 )
 add_executable(flex2hex ${flex2hex_SOURCES} ${flex2hex_HEADER})
 
-target_include_directories(flex2hex PRIVATE SYSTEM ${fmt_INCLUDE_DIR})
+target_include_directories(flex2hex SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
 target_include_directories(flex2hex PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(flex2hex REUSE_FROM flexemu::libflex)
@@ -264,7 +275,7 @@ set(mdcrtool_HEADER
 )
 add_executable(mdcrtool ${mdcrtool_SOURCES} ${mdcrtool_HEADER})
 
-target_include_directories(mdcrtool PRIVATE SYSTEM ${fmt_INCLUDE_DIR})
+target_include_directories(mdcrtool SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
 target_include_directories(mdcrtool PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(mdcrtool REUSE_FROM flexemu::libflex)
@@ -318,7 +329,7 @@ typedefs.h
 )
 add_executable(dsktool ${dsktool_SOURCES} ${dsktool_HEADER})
 
-target_include_directories(dsktool PRIVATE SYSTEM ${fmt_INCLUDE_DIR})
+target_include_directories(dsktool SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
 target_include_directories(dsktool PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(dsktool REUSE_FROM flexemu::libflex)
@@ -551,7 +562,8 @@ set(flexemu_HEADER
 add_executable(flexemu ${flexemu_gen_SOURCES} ${flexemu_SOURCES} ${flexemu_HEADER})
 
 target_include_directories(flexemu PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(flexemu PRIVATE SYSTEM
+target_include_directories(flexemu SYSTEM PRIVATE
+    ${fmt_INCLUDE_DIR}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Core_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Widgets_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Gui_INCLUDE_DIRS}
@@ -559,20 +571,18 @@ target_include_directories(flexemu PRIVATE SYSTEM
 )
 if(UNIX)
     if(APPLE)
-        target_include_directories(flexemu PRIVATE SYSTEM
+        target_include_directories(flexemu SYSTEM PRIVATE
             ${Qt${FLEXEMU_QT_MAJOR_VERSION}MacExtras_INCLUDE_DIRS}
         )
     else()
-        target_include_directories(flexemu PRIVATE SYSTEM
+        target_include_directories(flexemu SYSTEM PRIVATE
             ${Qt${FLEXEMU_QT_MAJOR_VERSION}X11Extras_INCLUDE_DIRS}
         )
     endif()
 endif()
-target_include_directories(flexemu PRIVATE SYSTEM
+target_include_directories(flexemu SYSTEM PRIVATE
     ${X11_INCLUDE_DIR}
-    ${fmt_INCLUDE_DIR}
     ${CURSES_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_BINARY_DIR}
 )
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(flexemu REUSE_FROM flexemu::libflex)
@@ -583,7 +593,7 @@ endif()
 target_compile_definitions(flexemu PRIVATE
     USE_CMAKE
     ADD_NCURSES_VERSION
-    F_DATADIR=\"${FLEXEMU_DATADIR}\"
+    F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
     F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
 )
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
@@ -707,13 +717,12 @@ set(flexplorer_HEADER
 add_executable(flexplorer ${flexplorer_gen_SOURCES} ${flexplorer_SOURCES} ${flexplorer_HEADER})
 
 target_include_directories(flexplorer PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(flexplorer PRIVATE SYSTEM
+target_include_directories(flexplorer SYSTEM PRIVATE
+    ${fmt_INCLUDE_DIR}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Core_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Widgets_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Gui_INCLUDE_DIRS}
-    ${fmt_INCLUDE_DIR}
     ${X11_INCLUDE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
 )
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(flexplorer REUSE_FROM flexemu::libflex)
@@ -723,7 +732,7 @@ if(UNIX)
 endif()
 target_compile_definitions(flexplorer PRIVATE
     USE_CMAKE
-    F_DATADIR=\"${FLEXEMU_DATADIR}\"
+    F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
 )
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
     target_link_libraries(flexplorer PRIVATE
@@ -794,7 +803,7 @@ if(UNIX)
             list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
         endforeach()
     endif()
-    list(APPEND ARGUMENTS -DF_DATADIR=\"${FLEXEMU_DATADIR}\")
+    list(APPEND ARGUMENTS -DF_DATADIR=\"${FLEXEMU_FULL_DATADIR}\")
     list(APPEND ARGUMENTS -DF_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\")
     list(APPEND ARGUMENTS -DUSE_CMAKE)
     list(APPEND ARGUMENTS -D_REENTRANT)
@@ -848,13 +857,13 @@ if(UNIX)
     )
 endif()
 
-set(APPLICATIONS_DIR "${CMAKE_INSTALL_FULL_DATADIR}/applications")
+set(APPLICATIONS_FULL_DIR "${CMAKE_INSTALL_FULL_DATADIR}/applications")
 
 install(TARGETS flex2hex mdcrtool dsktool flexemu flexplorer)
-install(FILES boot DESTINATION ${FLEXEMU_DATADIR})
+install(FILES boot DESTINATION ${CMAKE_INSTALL_DATADIR}/flexemu)
 install(FILES flexemu.conf flexlabl.conf TYPE SYSCONF)
 install(FILES flexemu.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
-install(FILES flexemu.desktop flexemu-flexplorer.desktop DESTINATION ${APPLICATIONS_DIR})
+install(FILES flexemu.desktop flexemu-flexplorer.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 if(UNIX AND FLEXEMU_POST_INSTALL)
 
@@ -876,7 +885,7 @@ if(UNIX AND FLEXEMU_POST_INSTALL)
     # target used in the upper directory.
     set(HICOLOR_DIR "${HICOLOR_DIR}" PARENT_SCOPE)
     set(MIME_DIR "${MIME_DIR}" PARENT_SCOPE)
-    set(APPLICATIONS_DIR "${APPLICATIONS_DIR}" PARENT_SCOPE)
+    set(APPLICATIONS_FULL_DIR "${APPLICATIONS_FULL_DIR}" PARENT_SCOPE)
 
     install(CODE "file(MAKE_DIRECTORY \"${HICOLOR_DIR}\" \"${APPLICATION_DIR}\")")
 
@@ -899,7 +908,7 @@ if(UNIX AND FLEXEMU_POST_INSTALL)
     string(FIND ${XDG_UPDATE_DESKTOP_DATABASE} "NOTFOUND" STR_INDEX)
     if (${STR_INDEX} EQUAL -1)
         install(CODE "execute_process(COMMAND echo \"-- Updating: desktop database\")")
-        install(CODE "execute_process(COMMAND ${XDG_UPDATE_DESKTOP_DATABASE} \"${APPLICATIONS_DIR}\")")
+        install(CODE "execute_process(COMMAND ${XDG_UPDATE_DESKTOP_DATABASE} \"${APPLICATIONS_FULL_DIR}\")")
     else()
         message(WARNING "${UPDATE_DESKTOP_DB_EXE} executable not found - desktop database will not be updated.")
     endif()

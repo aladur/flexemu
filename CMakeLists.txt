@@ -108,7 +108,7 @@ endif()
 endif()
 
 include(GNUInstallDirs)
-set(FLEXEMU_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/flexemu")
+set(FLEXEMU_FULL_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/flexemu")
 
 set(install_FILES
     imhex/patterns/flex_binary.hexpat
@@ -116,7 +116,7 @@ set(install_FILES
     imhex/patterns/flex_random.hexpat
 )
 
-install(FILES ${install_FILES} DESTINATION ${FLEXEMU_DATADIR}/imhex/patterns)
+install(FILES ${install_FILES} DESTINATION ${CMAKE_INSTALL_DATADIR}/flexemu/imhex/patterns)
 
 # Build libraries and executables of this project
 add_subdirectory(disks)

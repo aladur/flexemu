@@ -29,7 +29,7 @@ if(UNIX AND FLEXEMU_POST_INSTALL)
     string(FIND "@XDG_UPDATE_DESKTOP_DATABASE@" "NOTFOUND" STR_INDEX)
     if (${STR_INDEX} EQUAL -1)
         execute_process(COMMAND echo "-- Updating desktop database")
-        execute_process(COMMAND "@XDG_UPDATE_DESKTOP_DATABASE@" "@APPLICATIONS_DIR@")
+        execute_process(COMMAND "@XDG_UPDATE_DESKTOP_DATABASE@" "@APPLICATIONS_FULL_DIR@")
     endif()
 
     string(FIND "@XDG_UPDATE_MIME_DATABASE@" "NOTFOUND" STR_INDEX)

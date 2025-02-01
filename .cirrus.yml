@@ -6,17 +6,18 @@ build_task:
   env:
     CIRRUS_CLONE_SUBMODULES: true
 
+    # libfmt is not used, flexemu comes with local fmt sources as a git
+    # submodule. But it helps to detect if the wrong fmt header files are used.
+  install_pkg_script:
+    - pkg install -y sudo pkgconf libtool libfmt ncurses cmake qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport
+
   context_script:
     - sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu|threads_per_core'
     - clang --version
     - clang++ --version
+    - cmake --version
     - whoami
     - echo CIRRUS_USER_PERMISSION=$CIRRUS_USER_PERMISSION
-
-    # libfmt is not used, flexemu comes with local fmt sources as a git
-    # submodule. But it helps to detect if the wrong fmt header files are used.
-  install_pkg_script:
-    - pkg install -y sudo pkgconf libtool libfmt ncurses qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport
 
   setup_script:
     - pw groupadd -n user
@@ -24,30 +25,37 @@ build_task:
     - mkdir -p /home/user
     - chown -R user:user /home/user
     - chown -R user:user .
+    - sudo -u user mkdir bld
 
-  configure_script: sudo -u user ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc
+  configure_script: sudo -u user sh -c "cd bld; cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$HOME/usr -DCMAKE_INSTALL_SYSCONFDIR=$HOME/etc; ls -lRa >ls-lRa.txt"
 
-  make_script: sudo -u user make -j4
+  make_script: sudo -u user sh -c "cd bld; make -j4"
 
-  install_script: make install
+  install_script: cd bld; make install
 
   test_script:
-    - sudo -u user ldd src/flexemu
-    - sudo -u user ldd src/flexplorer
-    - sudo -u user make -j4 check
-    - sudo -u user test/test_gccasm
-    - sudo -u user src/dsktool -V
-    - sudo -u user src/mdcrtool -V
-    - sudo -u user src/flex2hex -V
-    - sudo -u user src/dsktool -l disks/games.dsk
-    - sudo -u user src/dsktool -f new.dsk -S 80dsdd
-    - sudo -u user src/dsktool -C disks/system.dsk -T new.dsk
-    - sudo -u user src/dsktool -l new.dsk
+    - sudo -u user sh -c "cd bld; make test ARGS=-V | tee unittests.log"
+    - sudo -u user bld/test/test_gccasm
+    - sudo -u user ldd bld/src/flexemu
+    - sudo -u user ldd bld/src/flexplorer
+    - sudo -u user bld/src/dsktool -V
+    - sudo -u user bld/src/mdcrtool -V
+    - sudo -u user bld/src/flex2hex -V
+    - sudo -u user bld/src/dsktool -l disks/games.dsk
+    - sudo -u user bld/src/dsktool -f new.dsk -S 80dsdd
+    - sudo -u user bld/src/dsktool -C disks/system.dsk -T new.dsk
+    - sudo -u user bld/src/dsktool -l new.dsk
 
   always:
-    config_log_artifacts:
-      path: config.log
+    build_dir_list_artifacts:
+      path: bld/ls-lRa.txt
       type: text/plain
-    unittest_log_artifacts:
-      path: test/unittests.log
+    cmake_cache_artifacts:
+      path: bld/CMakeCache.txt
+      type: text/plain
+    compile_commands_artifacts:
+      path: bld/compile_commands.json
+      type: application/json
+    unittests_log_artifacts:
+      path: bld/unittests.log
       type: text/plain
