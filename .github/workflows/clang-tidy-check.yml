@@ -77,7 +77,6 @@ jobs:
         run: |
           mkdir bld
           cd bld
-          cmake ..
           cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON
       - name: Configure (MacOS)
         if: runner.os == 'macOS'
