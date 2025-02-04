@@ -1,136 +1,313 @@
-********************************************
-* Compiling/Install flexemu on Unix/Linux  *
-********************************************
+*************************************************
+* Compiling and install flexemu on Unix like OS *
+*************************************************
 
-Flexemu supports configure scripts. So there are four steps to compile and
-install it:
+**********************************
+* 1. Using autoconf and automake *
+**********************************
 
-        - export QT_SELECT=qt5
-        - ./configure
-        - make
-        - sudo make install
+  To build flexemu configure scripts are supported, also known as GNU Autoconf
+  and Automake. There are four steps to compile and install it:
 
-prerequisites:
+      $ export QT_SELECT=qt5
+      $ ./configure
+      $ make
+      $ sudo make install
 
-        On a debian based system (Debian / Ubuntu / Linux Mint / Raspbian ...)
-        install the following deb-packages:
+  HINT: To decrease the build time make has a command line parameter -j<n>
+  where <n> is the number of parallel working (j)obs or commands used to run a
+  compiler or linker. Depending on the used hardware this can significantly
+  decrease the build time. Example using 8 jobs in parallel:
 
-        Using Qt5 libraries:
-            sudo apt-get install build-essential libncurses-dev qtbase5-dev qtbase5-dev-tools libqt5x11extras5-dev
+      $ make -j8
 
-        Using Qt6 libraries:
-            sudo apt-get install build-essential libncurses-dev qt6-base-dev qt6-base-dev-tools
+  REMARK: To the favour of cmake the support of configure scripts will be
+  discontinued in one of the next flexemu releases.
 
-remarks:
+******************
+* 2. Using cmake *
+******************
 
-        - By default configure uses the install prefix /usr/local. This can
-          be changed by the configure option --prefix=DIR. For example to
-          install flexemu in /usr use the configure option --prefix=/usr
-          See also: ./configure --help for details.
+  To build flexemu cmake is supported. There are four steps to compile and
+  install it:
 
-        - By default configure uses the install system configuration
-          directory /usr/local/etc. This can be changed by the configure
-          option --sysconfdir=DIR. For example to install the system wide
-          flexemu configuration file in /etc use the configure option
-          --sysconfdir=/etc
-          See also: ./configure --help for details.
+      $ cmake -S . -B bld
+      $ cd bld
+      $ make
+      $ sudo make install
 
-        - flexemu project compiles on almost every linux distribution. In
-          subdirectory docker there are some example Dockerfiles how to build
-          and execute all flexemu executables using docker. There are examples
-          using different package managers like:
-             apt (debian)
-             dnf, tdnf (fedora)
-             zypper (opensuse)
-             apk (alpine)
-             pacman (archlinux)
-             slackpkg (slackware)
-             xbps (voidlinux)
-          Most important prerequisite to build flexemu project are the qt5 or
-          qt6 libraries and development files.
-          See file docker/readme.md how these docker images can be build.
+  HINT: To decrease the build time make has a command line parameter -j<n>
+  where <n> is the number of parallel working (j)obs or commands used to run a
+  compiler or linker. Depending on the used hardware this can significantly
+  decrease the build time. Example using 8 jobs in parallel:
 
-        - When using configure with --prefix=/usr flexemu also get's
-          integrated into the desktop and appears in the System menu
-          category, Emulator sub category. If --prefix is not specified
-          the default prefix is /usr/local. For this prefix desktop or
-          icon files may not be correctly integrated into the desktop.
-          This has been exprienced with Linux Mint. It may behave
-          differently for other Linux distributions.
+      $ make -j8
 
-        - If You don't want the disassembler to substitute some FLEX jump
-          vectors to print as labels comment out the following switch in
-          src/misc1.h:
+***********************************************
+* 3. Options and macros to control the build  *
+***********************************************
 
-              #define FLEX_LABEL
+- Prerequisites: On a debian based system (Debian / Ubuntu /
+  Linux Mint / Raspbian ...) the following deb-packages have to be
+  installed:
 
-        - flexemu by default compiles using precompiled headers. This can be
-          switched off by the flexemu specific configure option
-          --disable-precompiled-headers
-          Using precompiled headers slightly decreases the build time by using
-          a large increase of disk space.
+  Using Qt5 libraries:
 
-        - The endianness of C bitfields is automatically detected. For cross
-          compilation it is set to little endian which works for most modern
-          CPU architectures. It can be explicitly defined as big endian by
-          the flexemu specific configure option --enable-bitfields-bigendian.
+      $ sudo apt-get install build-essential cmake libncurses-dev qtbase5-dev qtbase5-dev-tools libqt5x11extras5-dev
 
-        - There are two MC6809 processor implementations. One of them is
-          about 20% slower but a very well structured implementation. Each
-          instruction is executed in it's own function. So it can easily be
-          debuged with gdb. The processor cycles are exactly calculated.
-          The second is faster, the complete processor is emulated in one
-          inline-function. The processor cycles are only aproximated
-          (4.8 cycles for each instruction). The faster processor can
-          be compiled with uncommenting the following switch in src/misc1.h:
+  Using Qt6 libraries:
 
-              /* #define FASTFLEX */
+      $ sudo apt-get install build-essential cmake libncurses-dev qt6-base-dev qt6-base-dev-tools
 
-        - There are post installation steps executed to provide desktop
-          icons and adding mime types for support of *.dsk, *.flx and *.wta
-          files. If they do not work as expected they can be disabled with
-          the flexemu specific configure option --disable-post-install
+  HINT: cmake package is only needed when used as build tool.
 
-          The post installation steps are (assuming --prefix=/usr):
+- flexemu project compiles on almost every linux distribution. In
+  subdirectory docker there are some example Dockerfiles how to build
+  and execute all flexemu executables using docker. There are examples
+  using different package managers like:
 
-             gtk-update-icon-cache /usr/share/icons/hicolor
-             update-mime-database /usr/share/mime
-             update-desktop-database /usr/share/applications
+     apt (debian)
+     dnf, tdnf (fedora)
+     zypper (opensuse)
+     apk (alpine)
+     pacman (archlinux)
+     slackpkg (slackware)
+     xbps (voidlinux)
 
-        - For static code analysis there is a target 'clang-tidy-check'
-          available. It can be used as:
+  Most important prerequisite to build flexemu project are the qt5 or
+  qt6 libraries and development files.
+  See file docker/readme.md how these docker images can be build.
 
-             make clang-tidy-check
+- By default configure and cmake use the install prefix /usr/local.
+  This can be changed.
 
-          By default the used executable name is 'clang-tidy'. With the
-          environment variable CLANG_TIDY a different executable can be chosen.
-          For example:
+  configure: For example to install flexemu in /usr use the configure
+  option
 
-             export CLANG_TIDY=clang-tidy-16
+      $ ./configure --prefix=/usr
 
-          The executed checks are located in file '.clang-tidy' in the base
-          directory. When executing ./configure the existance of clang-tidy
-          executable intentionally is not checked so it is an optional feature.
+  See also: ./configure --help for details about more directories to
+  change.
 
-***********************
-* help, Documentation *
-***********************
+  cmake: For example to install flexemu in /usr use the cmake option
 
-There are some html-pages for flexemu:
+      $ cmake -S . -B bld -DCMAKE_INSTALL_PREFIX:PATH=/usr
 
-mc6809.htm      Microprocessor MC6809 documentation
-e2hwdesc.htm    Eurocom II hardware description
-flexemu.htm     general description, command line options
-flexuser.htm    the FLEX users manual
-flexutil.htm    some FLEX utilities
-flexdos.htm     description of the FLEX disk operating system
-flexfms.htm     description of the FLEX file management system
-flexfs.htm      'filesystems' supported by flexemu
-flexerr.htm     description of the FLEX error messages
-flexfcb.htm     description of a FLEX file control block
-flexmem.htm     the FLEX memory map
-neumon54.htm    Flexemu monitor program V5.4 spec for Eurocom II/V7
-mon53_54.htm    Flexemu monitor program V5.3 and V5.4 for Eurocom II/V7
-monu54.htm      Flexemu monitor program U5.4 for Eurocom II/V7
-mon24.htm       Flexemu monitor program for Eurocom II/V5
+- By default configure and cmake uses the install system configuration
+  directory (= sysconfdir) /usr/local/etc. This can be changed.
 
+  configure: For example to install the system wide flexemu configuration
+  file in /etc use the configure option
+
+      $ ./configure --sysconfdir=/etc
+
+  See also: ./configure --help for details about more directories to
+  change.
+
+  cmake: For example to install the system wide flexemu configuration
+  file in /etc use the cmake option
+
+      $ cmake -S . -B bld -DCMAKE_INSTALL_SYSCONFDIR:PATH=/etc
+
+  See also: https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
+  for details about more directories to change.
+
+- Use a specific compiler. On Linux distributions the default compiler
+  usually is gcc/g++. On MacOS and FreeBSD it is clang/clang++. This can be
+  changed. flexemu is mostly written in C++ but also contains some tools
+  written in C. So both C (= CC) or C++ (= CXX) variables should be changed.
+
+  configure:
+
+     $ CC=clang-16 CXX=clang++-16 ./configure
+     $ make
+
+  cmake:
+
+     $ cmake -S . -B bld -DCMAKE_C_COMPILER=clang-16 -DCMAKE_CXX_COMPILER=clang++-16
+     $ cd bld
+     $ make
+
+- The build type can be Release or Debug. The default is Release. Using cmake
+  the build type can be set.
+
+     $ cmake -S . -B bld -DCMAKE_BUILD_TYPE=Debug
+     $ cd bld
+     $ make
+
+  See also: https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html
+
+- Define used Qt version. Using configure the Qt version can be specified:
+
+      $ export QT_SELECT=qt5
+      $ ./configure
+      $ make
+      $ make install
+
+  There may be some other tweaks to be set. It may depend on the distribution.
+  The docker examples in the docker subdirectory may give a hint what is
+  needed for which Linux distribution to compile with Qt6.
+
+  Using cmake the Qt major version can be set as a flexemu specific command
+  line option. The default is to use Qt5.
+
+     $ cmake -S . -B bld -DFLEXEMU_QT_MAJOR_VERSION=5
+     or
+     $ cmake -S . -B bld -DFLEXEMU_QT_MAJOR_VERSION=6
+
+  As described above the distribution specific packages have to be installed
+  before using cmake or configure. It tries to find the installed packages
+  with the given Qt major number.
+
+- When installing flexemu with the prefix /usr or /usr/local
+  it also get's integrated into the desktop and appears in the
+  System menu category, Emulator sub category.
+  It has been exprienced that when using prefix /usr/local desktop or
+  icon files may not be correctly integrated into the desktop.
+  This happened for example with Linux Mint. It may behave differently
+  for other Linux distributions.
+
+- By default the disassembler substitutes some FLEX jump addresses to
+  be printed as labels. This can be disabled by commenting out the
+  following switch in src/misc1.h:
+
+      #define FLEX_LABEL
+
+- Using precompiled headers slightly decreases the build time by using
+  a large increase of disk space.
+
+  configure: The usage of precompiled headers by default is switched
+  ON. It can be switched off by the flexemu specific configure option
+
+      $ ./configure --disable-precompiled-headers
+      or explicitly switching on:
+      $ ./configure --enable-precompiled-headers
+
+  cmake: The usage of precompiled headers by default is switched
+  OFF. It can be switched on by the flexemu specific cmake option
+
+      $ cmake -S . -B bld -DFLEXEMU_USE_PRECOMPILE_HEADERS=ON
+      or explicitly switching off:
+      $ cmake -S . -B bld -DFLEXEMU_USE_PRECOMPILE_HEADERS=OFF
+
+- The endianness of C bitfields is automatically detected. For cross
+  compilation it is set to little endian which works for most modern
+  CPU architectures. It can be explicitly set as big endian by a
+  flexemu specific option.
+  configure:
+
+      $ ./configure --enable-bitfields-bigendian
+      or explicitly using little endian:
+      $ ./configure --disable-bitfields-bigendian
+
+  cmake:
+
+      $ cmake -S . -B bld -DFLEXEMU_BITFIELD_BYTE_ORDER=BIG_ENDIAN
+      or explicitly using little endian:
+      $ cmake -S . -B bld -DFLEXEMU_BITFIELD_BYTE_ORDER=LITTLE_ENDIAN
+
+- There are two MC6809 processor implementations. One of them is
+  about 20% slower but a very well structured implementation. Each
+  instruction is executed in it's own function. So it can easily be
+  debuged with gdb. The processor cycles are exactly calculated.
+  The second is faster, the complete processor is emulated in one
+  inline-function. The processor cycles are only aproximated
+  (4.8 cycles for each instruction). The faster processor can
+  be compiled with uncommenting the following switch in src/misc1.h:
+
+      /* #define FASTFLEX */
+
+- There are post installation steps executed to provide desktop
+  icons and adding mime types for support of *.dsk, *.flx and *.wta
+  files. If they do not work as expected they can be disabled.
+
+  configure: There is a flexemu specific option.
+
+      $ ./configure --disable-post-install
+      or explicitly switching on:
+      $ ./configure --enable-post-install
+
+  cmake: There is a flexemu specific option. On Unix like OS the
+  default is ON. For MacOS the default is OFF.
+
+      $ cmake -S . -B bld -DFLEXEMU_POST_INSTALL=OFF
+      or explicitly switching on:
+      $ cmake -S . -B bld -DFLEXEMU_POST_INSTALL=ON
+
+  The post installation steps are (assuming install prefix is /usr):
+
+     $ gtk-update-icon-cache /usr/share/icons/hicolor
+     $ update-mime-database /usr/share/mime
+     $ update-desktop-database /usr/share/applications
+
+- flexemu provides unittests. They can be executed in the following way.
+
+  configure:
+
+     $ ./configure
+     $ make all check
+
+  cmake:
+
+     $ cmake -S . -B bld
+     $ cd bld
+     $ make all test
+
+- For static code analysis there is a make target 'clang-tidy-check'
+  available. It uses 'clang-tidy'. The minimum supported clang-tidy
+  version is 19.0.0.
+  How to use it:
+
+  configure:
+
+     $ ./configure
+     $ make all
+     $ make clang-tidy-check
+
+  cmake:
+
+     $ cmake -S . -B bld
+     $ cd bld
+     $ make clang-tidy-check
+
+  By default the used executable name for target 'clang-tidy-check' is
+  'clang-tidy'. The environment variable CLANG_TIDY can be used to
+  change this. For example:
+
+     $ cmake -S . -B bld
+     $ cd bld
+     $ export CLANG_TIDY=clang-tidy-19
+     $ make clang-tidy-check
+
+  Using cmake there is another target 'fast-clang-tidy-check' available.
+  It uses 'run-clang-tidy' which automatically makes use of all available
+  CPU cores. This results in a decreased execution time. Example:
+
+     $ cmake -S . -B bld
+     $ cd bld
+     $ make fast-clang-tidy-check
+
+  The executed clang-tidy checks are located in file '.clang-tidy' in the base
+  directory.
+
+**************************
+* 4. Help, Documentation *
+**************************
+
+  The following flexemu html documentation is available:
+
+  mc6809.htm      Microprocessor MC6809 documentation
+  e2hwdesc.htm    Eurocom II hardware description
+  flexemu.htm     general description, command line options
+  flexuser.htm    the FLEX users manual
+  flexutil.htm    some FLEX utilities
+  flexdos.htm     description of the FLEX disk operating system
+  flexfms.htm     description of the FLEX file management system
+  flexfs.htm      'filesystems' supported by flexemu
+  flexerr.htm     description of the FLEX error messages
+  flexfcb.htm     description of a FLEX file control block
+  flexmem.htm     the FLEX memory map
+  neumon54.htm    Flexemu monitor program V5.4 spec for Eurocom II/V7
+  mon53_54.htm    Flexemu monitor program V5.3 and V5.4 for Eurocom II/V7
+  monu54.htm      Flexemu monitor program U5.4 for Eurocom II/V7
+  mon24.htm       Flexemu monitor program for Eurocom II/V5
