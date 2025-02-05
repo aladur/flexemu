@@ -155,6 +155,7 @@ fi
 qtversion=$match
 qtmamiversion=`echo $qtversion | sed -e "s/\([56]\.[0-9]\+\).*/\1/"`
 qtmaversion=`echo $qtversion | sed -e "s/\([56]\).*/\1/"`
+qtmiversion=`echo $qtversion | sed -e "s/^[56]\.\([0-9]\+\)\.[0-9]\+$/\1/"`
 qtpatch=`echo $qtversion | sed -e "s/^[56]\.[0-9]\+\.\([0-9]\+\)$/\1/"`
 
 check_value() {
@@ -255,15 +256,6 @@ else
     usage
     exit 1
 fi
-
-# Create the url from which to download a specific version (Supported: Qt5.minor.patch)
-qtos=""
-if [ "$qtmamiversion" == "5.15" ] && [ $qtpatch -ge 3 ]; then
-    qtos="-opensource"
-fi
-qtfile=`echo "qtbase-everywhere${qtos}-src-${qtversion}.zip"`
-qturl=`echo "${baseurl}/archive/qt/${qtmamiversion}/${qtversion}/submodules/${qtfile}"`
-md5sums=`echo "${baseurl}/archive/qt/${qtmamiversion}/${qtversion}/submodules/md5sums.txt"`
 
 MSBUILDDISABLENODEREUSE=1
 export MSBUILDDISABLENODEREUSE
@@ -397,6 +389,50 @@ else
     fi
 fi
 
+# Create the url from which to download a specific version
+# (Supported: Qt(5|6).minor.patch)
+
+qtos=""
+# In qtosversions define an array with major.minor versions.
+# In qtospatchver define an array with the minimum patch version,
+# for which to use the "-opensource" substring.
+qtosversions=("5.15" "6.2" "6.5")
+qtospatchver=( 3      5     4   )
+for (( i=0; i<${#qtosversions[@]}; i++ ))
+do
+    if [ "${qtosversions[$i]}" == "$qtmamiversion" ] && [ $qtpatch -ge ${qtospatchver[$i]} ]; then
+        qtos="-opensource"
+        break
+    fi
+done
+
+# There is a default name containing all md5sums of a directory.
+# For some versions it has a different name.
+md5sumfile='md5sums.txt'
+check_value "$qtversion" "6.2.5 5.15.3"
+if [ $? -eq 0 ]; then
+    md5sumfile='md5sum.txt'
+fi
+
+# Since January 2025 the files are located in a "src" subdirectory.
+# In qtsubdirversions define an array with major.minor versions.
+# In qtsubdirpatchver define an array with the minimum patch version,
+# for which to use the subdirectory "src".
+subdir=""
+qtsubdirversions=("6.2" "6.5")
+qtsubdirpatchver=( 11    4   )
+for (( i=0; i<${#qtsubdir[@]}; i++ ))
+do
+    if [ "${qtsubdirversions[$i]}" == "$qtmamiversion" ] && [ $qtpatch -ge ${qtsubdirpatchver[$i]} ]; then
+        subdir="/src"
+        break
+    fi
+done
+
+qtfile=`echo "qtbase-everywhere${qtos}-src-${qtversion}.zip"`
+qturl=`echo "https://download.qt.io/archive/qt/${qtmamiversion}/${qtversion}${subdir}/submodules/${qtfile}"`
+md5sums=`echo "${baseurl}/archive/qt/${qtmamiversion}/${qtversion}${subdir}/submodules/${md5sumfile}"`
+
 urls=`echo "$qturl"`
 qtdir=Qt
 if [ ! -d $qtdir ]; then
@@ -440,22 +476,23 @@ do
     if [ ! -r $qtdir/$file ]; then
         echo download site: $baseurl
         echo downloading $file...
-        curl $curl_progress -# -L $url > "$qtdir/$file"
+        curl $curl_progress -# -f -L $url > "$qtdir/$file"
         ret1="$?"
         if [ ! "$?" == "0" ]; then
             echo "**** Error: Download of $file failed. Aborted." >&2
+            echo "**** URL: $url" >&2
             rm -f $qtdir/$file
             exit 1
         fi
-        file=$(basename "$md5sums")
-        echo downloading $file...
-        curl $curl_progress -# -L $md5sums > $file
+        echo downloading $md5sumfile...
+        curl $curl_progress -# -f -L -O --remove-on-error $md5sums
         if [ ! "$?" == "0" ]; then
-            echo "**** Error: Download of $file failed. Aborted." >&2
+            echo "**** Error: Download of $md5sumfile failed. Aborted." >&2
+            echo "**** URL: $md5sums" >&2
             rm -f $file
             exit 1
         fi
-        md5sum=`cat $file | sed -n "s/\([0-9a-z]\+\) \+${qtfile}$/\1/p"`
+        md5sum=`cat $md5sumfile | sed -n "s/\([0-9a-z]\+\) \+${qtfile}$/\1/p"`
         expected=`md5sum ${qtdir}/${qtfile} | sed "s/ .*//"`
         if [ "$md5sum" != "$expected" ]; then
             echo "Checksum error:"
@@ -465,7 +502,7 @@ do
         else
             echo "Checksum verification passed."
         fi
-        rm $file
+        rm $md5sumfile
     fi
 done
 
@@ -498,6 +535,24 @@ do
         fi
     fi
 done
+
+# Since Qt 6.8.0 only MSVC 2022 is supported.
+# A cmake flag -DQT_NO_MSVC_MIN_VERSION_CHECK:BOOL=ON
+# can be set to avoid the compiler version check to still
+# build with MSVC 2019. So these are inofficial versions.
+# See also:
+# https://doc.qt.io/qt-6.8/windows.html
+# https://doc.qt.io/qt-6.7/windows.html
+# https://www.qt.io/blog/moving-to-msvc-2022-in-qt-68
+# Enable cmake flag by patching a cmake file.
+if [ "$qtmaversion" == "6" ] && [ ${qtmiversion} -ge 8 ] && [ "$vsversion" == "2019" ]; then
+    filetopatch=${qtsrcdir}/cmake/QtProcessConfigureArgs.cmake
+    count=`sed -n "/push.*QT_NO_MSVC_MIN_VERSION_CHECK/p" $filetopatch | wc -l`
+    if [ $count -eq 0 ]; then
+        sed -i '/DQT_INTERNAL_CALLED_FROM_CONFIGURE:BOOL=TRUE/a push("-DQT_NO_MSVC_MIN_VERSION_CHECK=ON")' $filetopatch
+    fi
+    echo "==== REMARK: Building Qt ${qtversion} with Visual Studio ${vsversion} is an inofficial version."
+fi
 
 if [ ! -d $qtdir/$builddir ]; then
     mkdir $qtdir/$builddir;
