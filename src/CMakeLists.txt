@@ -14,14 +14,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Build 3rd party libraries.
-# Hide all warnings for 3rdparty code
-if (MSVC)
-    add_compile_options(/W0)
-else()
-    add_compile_options(-w)
-endif()
-
 #################################
 # Find libraries.
 #################################
@@ -32,6 +24,7 @@ find_package(Threads REQUIRED)
 add_subdirectory(bitmaps)
 add_subdirectory(tools)
 
+if(UNIX)
 set(CURSES_NEED_NCURSES TRUE)
 set(CURSES_NEED_WIDE TRUE)
 find_package(Curses)
@@ -51,12 +44,13 @@ if(NOT CURSES_FOUND)
 endif()
 
 find_package(X11 REQUIRED)
+endif()
 
 # Enable compiler warnings
-if (MSVC)
-    add_compile_options(/W4)
+if(MSVC)
+    add_compile_options(/W4 /wd"4996")
 endif()
-if (UNIX)
+if(UNIX)
     add_compile_options(
         -Wall
         -Wextra
@@ -242,6 +236,9 @@ endif()
 if(UNIX)
     target_compile_definitions(flex2hex PRIVATE UNIX)
 endif()
+if(WIN32)
+    target_compile_definitions(flex2hex PRIVATE _CONSOLE)
+endif()
 target_compile_definitions(flex2hex PRIVATE USE_CMAKE)
 target_link_libraries(flex2hex PRIVATE
     flexemu::libflex
@@ -282,6 +279,9 @@ if(FLEXEMU_USE_PRECOMPILE_HEADERS)
 endif()
 if(UNIX)
     target_compile_definitions(mdcrtool PRIVATE UNIX)
+endif()
+if(WIN32)
+    target_compile_definitions(mdcrtool PRIVATE _CONSOLE)
 endif()
 target_compile_definitions(mdcrtool PRIVATE USE_CMAKE)
 target_link_libraries(mdcrtool PRIVATE
@@ -336,6 +336,9 @@ if(FLEXEMU_USE_PRECOMPILE_HEADERS)
 endif()
 if(UNIX)
     target_compile_definitions(dsktool PRIVATE UNIX)
+endif()
+if(WIN32)
+    target_compile_definitions(dsktool PRIVATE _CONSOLE)
 endif()
 target_compile_definitions(dsktool PRIVATE USE_CMAKE)
 target_link_libraries(dsktool PRIVATE
@@ -559,7 +562,7 @@ set(flexemu_HEADER
     winctxt.h
     winmain.h
 )
-add_executable(flexemu ${flexemu_gen_SOURCES} ${flexemu_SOURCES} ${flexemu_HEADER})
+add_executable(flexemu WIN32 ${flexemu_gen_SOURCES} ${flexemu_SOURCES} ${flexemu_HEADER})
 
 target_include_directories(flexemu PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(flexemu SYSTEM PRIVATE
@@ -579,16 +582,19 @@ if(UNIX)
             ${Qt${FLEXEMU_QT_MAJOR_VERSION}X11Extras_INCLUDE_DIRS}
         )
     endif()
+    target_include_directories(flexemu SYSTEM PRIVATE
+        ${X11_INCLUDE_DIR}
+        ${CURSES_INCLUDE_DIRS}
+    )
 endif()
-target_include_directories(flexemu SYSTEM PRIVATE
-    ${X11_INCLUDE_DIR}
-    ${CURSES_INCLUDE_DIRS}
-)
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(flexemu REUSE_FROM flexemu::libflex)
 endif()
 if(UNIX)
     target_compile_definitions(flexemu PRIVATE UNIX)
+endif()
+if(WIN32)
+    target_compile_definitions(flexemu PRIVATE _WINDOWS)
 endif()
 target_compile_definitions(flexemu PRIVATE
     USE_CMAKE
@@ -626,11 +632,15 @@ endif()
 target_link_libraries(flexemu PRIVATE
     flexemu::libflex
     fmt::fmt
-    X11::Xkb
-    X11::X11
-    ${CURSES_LIBRARIES}
-    Threads::Threads
 )
+if(UNIX)
+    target_link_libraries(flexemu PRIVATE
+        X11::Xkb
+        X11::X11
+        ${CURSES_LIBRARIES}
+        Threads::Threads
+    )
+endif()
 
 #################################
 # Build flexplorer executable.
@@ -714,7 +724,7 @@ set(flexplorer_HEADER
     warnoff.h
     warnon.h
 )
-add_executable(flexplorer ${flexplorer_gen_SOURCES} ${flexplorer_SOURCES} ${flexplorer_HEADER})
+add_executable(flexplorer WIN32 ${flexplorer_gen_SOURCES} ${flexplorer_SOURCES} ${flexplorer_HEADER})
 
 target_include_directories(flexplorer PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(flexplorer SYSTEM PRIVATE
@@ -729,6 +739,9 @@ if(FLEXEMU_USE_PRECOMPILE_HEADERS)
 endif()
 if(UNIX)
     target_compile_definitions(flexplorer PRIVATE UNIX)
+endif()
+if(WIN32)
+    target_compile_definitions(flexplorer PRIVATE _WINDOWS)
 endif()
 target_compile_definitions(flexplorer PRIVATE
     USE_CMAKE
@@ -751,9 +764,13 @@ endif()
 target_link_libraries(flexplorer PRIVATE
     flexemu::libflex
     fmt::fmt
-    X11::X11
-    Threads::Threads
 )
+if(UNIX)
+    target_link_libraries(flexplorer PRIVATE
+        X11::X11
+        Threads::Threads
+    )
+endif()
 
 if(UNIX)
 # Add custom target always executed to update src/metadata.json.

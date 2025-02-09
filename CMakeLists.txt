@@ -41,23 +41,6 @@ else()
     endif()
 endif()
 
-# Specify compiler settings.
-if(NOT DEFINED CMAKE_BUILD_TYPE OR NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
-endif()
-set(CMAKE_DEBUG_POSTFIX d)
-if (MSVC)
-    set(CMAKE_C_FLAGS_DEBUG "")
-    set(CMAKE_C_FLAGS_RELEASE "/O2")
-    set(CMAKE_CXX_FLAGS_DEBUG "")
-    set(CMAKE_CXX_FLAGS_RELEASE "/O2")
-else()
-    set(CMAKE_C_FLAGS_DEBUG "-g")
-    set(CMAKE_C_FLAGS_RELEASE "-O2")
-    set(CMAKE_CXX_FLAGS_DEBUG "-g")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-endif()
-
 # Build 3rd party libraries.
 # Hide all warnings for 3rdparty code
 if (MSVC)
@@ -117,6 +100,32 @@ set(install_FILES
 )
 
 install(FILES ${install_FILES} DESTINATION ${CMAKE_INSTALL_DATADIR}/flexemu/imhex/patterns)
+
+# Specify general compiler settings.
+if(NOT DEFINED CMAKE_BUILD_TYPE OR NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+set(CMAKE_DEBUG_POSTFIX d)
+if(WIN32)
+    add_compile_definitions(UNICODE _UNICODE)
+    add_compile_definitions($<$<CONFIG:DEBUG>:_DEBUG>)
+    add_compile_definitions($<$<NOT:$<CONFIG:DEBUG>>:NDEBUG>)
+    string (REPLACE "/D_WINDOWS" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+endif()
+if(MSVC)
+    set(CMAKE_GENERATOR_TOOLSET "v142,version=14.29.30133" CACHE INTERNAL "The MSVC toolset version")
+    set(CMAKE_CXX_FLAGS_DEBUG "/Od /RTC1")
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /GL")
+    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "/INCREMENTAL")
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/OPT:REF /INCREMENTAL:NO /OPT:ICF")
+    add_link_options(/DEBUG)
+    add_compile_options(/sdl /FC /GR /Gm- /MP /Zi)
+    add_compile_options(/Zc:__cplusplus /permissive- /utf-8 )
+endif()
+if(UNIX)
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+endif()
 
 # Build libraries and executables of this project
 add_subdirectory(disks)

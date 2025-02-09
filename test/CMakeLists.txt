@@ -2,6 +2,7 @@
 # Common declarations.
 #################################
 
+if(UNIX)
 enable_testing()
 
 # Compiler tests
@@ -234,4 +235,5 @@ if(UNIX)
         USES_TERMINAL
         VERBATIM
     )
+endif()
 endif()
