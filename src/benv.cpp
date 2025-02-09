@@ -20,14 +20,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "misc1.h"
 #include "benv.h"
 #ifdef _WIN32
 #include "cvtwchar.h"
-#endif
-#if defined(UNIX) || defined (USE_CMAKE)
-#include "config.h"
-#else
-#include "confignt.h"
 #endif
 #include <sstream>
 
