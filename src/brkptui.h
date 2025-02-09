@@ -33,6 +33,7 @@
 #endif
 #include <QObject>
 #include <optional>
+#include <array>
 #include "warnon.h"
 
 class QDialog;
