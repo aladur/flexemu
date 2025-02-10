@@ -87,6 +87,90 @@ echo "Using Qt V${qtversion}"
 cd ../..
 vsmsbuilddir=$( as_mingw_path "$VSMSBUILDDIR")
 
+# Convert an absolute path with MINGW syntax into a path
+# with Windows syntax.
+as_windows_path() {
+    path=`echo $1 | sed "s/^.//"`
+    expr='s:/:\\:g'
+    path=`echo $path | sed $expr`
+    drive=`echo $path | sed "s:\(^.\).*:\U\1:"`
+    path=`echo $path | sed "s/^.//"`
+    echo $drive:$path
+}
+
+# Convert a MINGW path relative to the current directory
+# into an absolute path with Windows syntax.
+as_absolute_windows_path() {
+    absdir=`pwd`
+    absdir="$absdir/$1"
+    absdir=$( as_windows_path $absdir )
+    echo $absdir
+}
+
+# Function to copy the Qt libraries.
+# $1: Qt directory (source directory for copy)
+# $2: qtversion (major.minor.patch)
+# $3: platform (Win32 or x64)
+# $4: configuration (Debug or Release)
+copy_files() {
+    echo ==== Copy files ...
+    qtmaver=`echo $2 | sed -e "s/\([56]\).*/\1/"`
+    qtmiver=`echo $qtversion | sed -e "s/[0-9]\+.\([0-9]\+\).*/\1/"`
+    postfix=
+    if [ "x$4" = "xDebug" ]; then
+        postfix=d
+    fi
+    targetdir=bin/Qt$2/$3
+    if [ ! -d $targetdir ]; then
+        mkdir $targetdir
+    fi
+    targetdir=${targetdir}/$4
+    if [ ! -d $targetdir ]; then
+        mkdir $targetdir
+    fi
+    if [ "$qtmaver" = "5" ]; then
+        qtlibs="Qt5Core Qt5Gui Qt5Widgets Qt5PrintSupport"
+    else
+        qtlibs="Qt6Core Qt6Gui Qt6Widgets Qt6PrintSupport"
+    fi
+    for file in $qtlibs
+    do
+        cp -f $1/$3/bin/${file}${postfix}.dll $targetdir
+    done
+    if [ ! -d $targetdir/platforms ]; then
+        mkdir $targetdir/platforms
+    fi
+    for file in qdirect2d qminimal qoffscreen qwindows
+    do
+        cp -f $1/$3/plugins/platforms/${file}${postfix}.dll $targetdir/platforms
+    done
+    if [ ! -d $targetdir/styles ]; then
+        mkdir $targetdir/styles
+    fi
+    if [[ "$qtmaver" = "6" && "$qtmiver" -ge 7 ]]; then
+        qtstyles="qmodernwindowsstyle"
+    else
+        qtstyles="qwindowsvistastyle"
+    fi
+    for file in $qtstyles
+    do
+        cp -f $1/$3/plugins/styles/${file}${postfix}.dll $targetdir/styles
+    done
+    if [ "$qtmaver" = "5" ]; then
+        if [ ! -d $targetdir/printsupport ]; then
+            mkdir $targetdir/printsupport
+        fi
+        for file in windowsprintersupport
+        do
+            cp -f $1/$3/plugins/printsupport/${file}${postfix}.dll $targetdir/printsupport
+        done
+    fi
+    abspath=$( as_absolute_windows_path $targetdir )
+    echo ==== to $abspath
+    cp -f src/flexemu.conf $targetdir
+    cp -f src/flexlabl.conf $targetdir
+}
+
 # Rebuild flexemu solution for all platforms and configurations.
 # Check existence of result files and copy them to corresponding
 # flexemu build directory.
@@ -112,58 +196,7 @@ do
             echo "**** There was a build error. Aborted."
             exit_code=1
         fi
-        echo ==== Copy libraries ...
-        postfix=
-        if [ "x$configuration" = "xDebug" ]; then
-            postfix=d
-        fi
-        targetdir=bin/Qt${qtversion}/$platform
-        if [ ! -d $targetdir ]; then
-            mkdir $targetdir
-        fi
-        targetdir=${targetdir}/$configuration
-        if [ ! -d $targetdir ]; then
-            mkdir $targetdir
-        fi
-        if [ "$qtmaversion" = "5" ]; then
-            qtlibs="Qt5Core Qt5Gui Qt5Widgets Qt5PrintSupport"
-        else
-            qtlibs="Qt6Core Qt6Gui Qt6Widgets Qt6PrintSupport"
-        fi
-        for file in $qtlibs
-        do
-            cp -f ${QTDIR}/${platform}/bin/${file}${postfix}.dll $targetdir
-        done
-        if [ ! -d $targetdir/platforms ]; then
-            mkdir $targetdir/platforms
-        fi
-        for file in qdirect2d qminimal qoffscreen qwindows
-        do
-            cp -f ${QTDIR}/${platform}/plugins/platforms/${file}${postfix}.dll $targetdir/platforms
-        done
-        if [ ! -d $targetdir/styles ]; then
-            mkdir $targetdir/styles
-        fi
-        if [[ "$qtmaversion" = "6" && "$qtmiversion" -ge 7 ]]; then
-            qtstyles="qmodernwindowsstyle"
-        else
-            qtstyles="qwindowsvistastyle"
-        fi
-        for file in $qtstyles
-        do
-            cp -f ${QTDIR}/${platform}/plugins/styles/${file}${postfix}.dll $targetdir/styles
-        done
-        if [ "$qtmaversion" = "5" ]; then
-            if [ ! -d $targetdir/printsupport ]; then
-                mkdir $targetdir/printsupport
-            fi
-            for file in windowsprintersupport
-            do
-                cp -f ${QTDIR}/${platform}/plugins/printsupport/${file}${postfix}.dll $targetdir/printsupport
-            done
-        fi
-        cp -f src/flexemu.conf $targetdir
-        cp -f src/flexlabl.conf $targetdir
+        copy_files "$QTDIR" $qtversion $platform $configuration
     done
 done
 cd build/windows
