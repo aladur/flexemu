@@ -53,7 +53,7 @@ for:
     test_script:
       - $LDD src/flexemu
       - $LDD src/flexplorer
-      - make -j5 test
+      - make -j5 test ARGS=-V | tee unittests.log
       - test/test_gccasm
       - src/dsktool -l ../disks/games.dsk
       - src/dsktool -f new.dsk -S 80dsdd
