@@ -523,6 +523,7 @@ Section "Uninstall" Uninstall
   Delete $INSTDIR\platforms\*.*
   Delete $INSTDIR\styles\*.*
   Delete $INSTDIR\printsupport\*.*
+  Delete $INSTDIR\ImHex\patterns\*.*
   Delete $INSTDIR\*.*
 
   ; Remove shortcuts, if any
@@ -539,6 +540,8 @@ Section "Uninstall" Uninstall
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\styles"
   RMDir "$INSTDIR\printsupport"
+  RMDir "$INSTDIR\ImHex\patterns"
+  RMDir "$INSTDIR\ImHex"
   RMDir "$INSTDIR"
 
   ; Remove install directory from PATH environment variable
