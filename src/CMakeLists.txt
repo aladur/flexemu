@@ -563,6 +563,9 @@ set(flexemu_HEADER
     winmain.h
 )
 add_executable(flexemu WIN32 ${flexemu_gen_SOURCES} ${flexemu_SOURCES} ${flexemu_HEADER})
+if(WIN32)
+    target_sources(flexemu PRIVATE flexemu.rc)
+endif()
 
 target_include_directories(flexemu PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(flexemu SYSTEM PRIVATE
@@ -725,6 +728,9 @@ set(flexplorer_HEADER
     warnon.h
 )
 add_executable(flexplorer WIN32 ${flexplorer_gen_SOURCES} ${flexplorer_SOURCES} ${flexplorer_HEADER})
+if(WIN32)
+    target_sources(flexplorer PRIVATE flexdisk.rc)
+endif()
 
 target_include_directories(flexplorer PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(flexplorer SYSTEM PRIVATE
