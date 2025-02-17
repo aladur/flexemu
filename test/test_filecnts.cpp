@@ -42,7 +42,7 @@ namespace fs = std::filesystem;
 class test_IFlexDiskBySector : public test_FlexDiskFixture
 {
 protected:
-    std::array<std::array<IFlexDiskBySectorPtr, 3>, 6> disks;
+    std::array<std::array<IFlexDiskBySectorPtr, 3>, 6> disks{};
 
      int GetMaxDiskIndex() override
      {
@@ -69,23 +69,27 @@ protected:
 
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
+                const auto diskPath =
+                    (temp_dir / diskFiles[idx][tidx]).u8string();
                 pdisk = (idx == RAM || idx == ROM) ?
-                    new FlexRamDisk(diskPaths[idx][tidx], ios_mode, ft) :
-                    new FlexDisk(diskPaths[idx][tidx], ios_mode, ft);
+                    new FlexRamDisk(diskPath, ios_mode, ft) :
+                    new FlexDisk(diskPath, ios_mode, ft);
                 disks[idx][tidx].reset(cast(pdisk));
                 ASSERT_NE(disks[idx][tidx].get(), nullptr)
-                    << "path=" << diskPaths[idx][tidx];
+                    << "path=" << diskPath;
             }
         }
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
+            const auto diskPath =
+                (temp_dir / diskFiles[idx][DIR]).u8string();
             const auto &ft = (idx == FT) ? with_ft : no_ft;
-            auto *pdir = new FlexDirectoryDiskBySector(diskPaths[idx][DIR],
+            auto *pdir = new FlexDirectoryDiskBySector(diskPath,
                     ft, tracks, sectors);
             disks[idx][DIR].reset(cast(pdir));
             ASSERT_NE(disks[idx][DIR].get(), nullptr)
-                << "path=" << diskPaths[idx][DIR];
+                << "path=" << diskPath;
         }
     }
 
@@ -208,8 +212,14 @@ TEST_F(test_IFlexDiskBySector, fct_WriteSector)
         for (int tidx = DSK; tidx <= DIR; ++tidx)
         {
             // Writing 0 to all available sectors is too much for a directory
-            // disk => test intentionally skipped.
-            if (idx != RO && tidx == DIR)
+            // disk => test intentionally skipped (except for read-only disk).
+            bool isSkipTest = (idx != RO && tidx == DIR);
+#ifdef _WIN32
+            // On Windows directories always have write access.
+            // Test intentionally skipped for all directory disks.
+            isSkipTest = (tidx == DIR);
+#endif
+            if (isSkipTest)
             {
                 continue;
             }
@@ -264,13 +274,12 @@ TEST_F(test_IFlexDiskBySector, fct_FormatSector)
     const auto ft_access = FileTimeAccess::Get | FileTimeAccess::Set;
     const std::ios::openmode mode = std::ios::out | std::ios::trunc |
         std::ios::binary;
-    const std::string filename = "format_sector.flx";
-    const std::string path = fs::temp_directory_path() / filename;
-    std::fstream fs(path, mode);
+    const auto path = temp_dir / "format_sector.flx";
+    std::ofstream fs(path, mode);
     ASSERT_TRUE(fs.is_open());
     fs.close();
-    auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path, mode,
-                ft_access));
+    auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path.u8string(),
+        mode, ft_access));
 
     EXPECT_FALSE(disk->FormatSector(buffer.data(), -1, 1, 0, 1));
     EXPECT_FALSE(disk->FormatSector(buffer.data(), 256, 1, 0, 1));
@@ -295,7 +304,7 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_flex_disk)
     const std::ios::openmode newmode = std::ios::in | std::ios::out |
         std::ios::binary | std::ios::trunc;
     const std::string filename = "format_flex.flx";
-    const std::string path = fs::temp_directory_path() / filename;
+    const auto path = temp_dir / filename;
 
     // Format disk with all standard formats (except for harddisk).
     for (const auto &flex_format : flex_formats)
@@ -313,7 +322,7 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_flex_disk)
         ASSERT_TRUE(fs.is_open());
         fs.close();
 
-        auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path,
+        auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path.u8string(),
                     newmode, ft_access));
         for (int track = 0; track < trcks; ++track)
         {
@@ -365,14 +374,14 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_flex_disk_interleave)
     const std::ios::openmode newmode = std::ios::in | std::ios::out |
         std::ios::binary | std::ios::trunc;
     const std::string filename = "format_interleave.flx";
-    const std::string path = fs::temp_directory_path() / filename;
+    const auto path = temp_dir / filename;
     const int interleave = 3;
 
     std::fstream fs(path, newmode);
     ASSERT_TRUE(fs.is_open());
     fs.close();
 
-    auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path,
+    auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path.u8string(),
                 newmode, ft_access));
     for (int track = 0; track < tracks; ++track)
     {
@@ -428,7 +437,7 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_cpm_disk)
     const std::ios::openmode newmode = std::ios::in | std::ios::out |
         std::ios::binary | std::ios::trunc;
     const std::string filename = "format_cpm.flx";
-    const std::string path = fs::temp_directory_path() / filename;
+    const auto path = temp_dir / filename;
     const int trcks = 40;
     const int secs = 5;
     struct stat sbuf{};
@@ -438,7 +447,7 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_cpm_disk)
     fs.close();
 
     std::fill(buffer.begin(), buffer.end(), '\xE5');
-    auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path,
+    auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path.u8string(),
                 newmode, ft_access));
     for (int track = 0; track < trcks; ++track)
     {
@@ -452,7 +461,7 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_cpm_disk)
     }
 
     EXPECT_FALSE(disk->IsFlexFormat());
-    ASSERT_TRUE(stat(path.c_str(), &sbuf) == 0);
+    ASSERT_TRUE(stat(path.u8string().c_str(), &sbuf) == 0);
     EXPECT_EQ(sbuf.st_size, trcks * secs * 2 * sector_size + 16);
     disk.reset();
     fs::remove(path);

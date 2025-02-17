@@ -2,7 +2,6 @@
 # Common declarations.
 #################################
 
-if(UNIX)
 enable_testing()
 
 # Compiler tests
@@ -19,9 +18,20 @@ endif()
 if (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "")
     set(CMAKE_CXX_FLAGS_RELEASE "/O2")
-else()
+    add_compile_options(/W4 /wd"4996")
+endif()
+if(UNIX)
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Wshadow
+        -Wswitch-enum
+        -Wfloat-conversion
+        -Wundef
+    )
 endif()
 
 #################################
@@ -32,7 +42,7 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
 # Copy files to binary dir. They are needed when executing tests.
-file(COPY data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY data DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 set(unittests_SOURCES
     test_benv.cpp
@@ -119,10 +129,12 @@ set(unittests_HEADER
 add_executable(unittests ${unittests_SOURCES} ${unittests_HEADER})
 target_include_directories(unittests PRIVATE
     "../src"
+    ${CMAKE_BINARY_DIR}/src
+)
+target_include_directories(unittests SYSTEM PRIVATE
     ${gtest_SOURCE_DIR}/include
     ${gmock_SOURCE_DIR}/include
     ${fmt_INCLUDE_DIR}
-    ${CMAKE_BINARY_DIR}/src
 )
 if(FLEXEMU_USE_PRECOMPILE_HEADERS)
     target_precompile_headers(unittests PRIVATE pch.h)
@@ -140,100 +152,101 @@ target_link_libraries(unittests PRIVATE
     fmt::fmt
     Threads::Threads
     gtest
-    gtest_main
 )
-add_test(unittests unittests)
-
-set(test_gccasm_SOURCES
-    ../src/clogfile.cpp 
-    ../src/colors.cpp
-    ../src/command.cpp
-    ../src/da6809.cpp
-    ../src/flblfile.cpp
-    ../src/foptman.cpp
-    ../src/fversion.cpp
-    ../src/inout.cpp
-    ../src/mc6809.cpp
-    ../src/mc6809in.cpp
-    ../src/mc6809lg.cpp
-    ../src/mc6809st.cpp
-    ../src/schedule.cpp
-    ../src/soptions.cpp
-    test_gccasm.cpp
-    testmain.cpp
-)
-set(test_gccasm_HEADER
-    ../src/bdate.h
-    ../src/bobserv.h
-    ../src/bobservd.h
-    ../src/bobshelp.h
-    ../src/breltime.h
-    ../src/btime.h
-    ../src/clogfile.h
-    ../src/command.h
-    ../src/config.h
-    ../src/cpustate.h
-    ../src/csetfreq.h
-    ../src/da6809.h
-    ../src/debug.h
-    ../src/e2.h
-    ../src/engine.h
-    ../src/fcinfo.h
-    ../src/flblfile.h
-    ../src/flexerr.h
-    ../src/foptman.h
-    ../src/fversion.h
-    ../src/inout.h
-    ../src/mc6809.h
-    ../src/mc6809lg.h
-    ../src/mc6809st.h
-    ../src/memory.h
-    ../src/misc1.h
-    ../src/schedcpu.h
-    ../src/schedule.h
-    ../src/soptions.h
-    test_gccasm.h
-    ../src/typedefs.h
-    ../src/warnoff.h
-    ../src/warnon.h
-)
-add_executable(test_gccasm ${test_gccasm_SOURCES} ${test_gccasm_HEADER})
-target_include_directories(test_gccasm PRIVATE
-    "../src"
-    ${gtest_SOURCE_DIR}/include
-    ${gmock_SOURCE_DIR}/include
-    ${fmt_INCLUDE_DIR}
-    ${CMAKE_BINARY_DIR}/src
-)
-if(FLEXEMU_USE_PRECOMPILE_HEADERS)
-    target_precompile_headers(test_gccasm REUSE_FROM unittests)
-endif()
-if(UNIX)
-    target_compile_definitions(test_gccasm PRIVATE UNIX)
-endif()
-target_compile_definitions(test_gccasm PRIVATE
-    USE_CMAKE
-    F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
-    F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
-)
-target_link_libraries(test_gccasm PRIVATE
-    flexemu::libflex
-    fmt::fmt
-    Threads::Threads
-    gtest
-    gtest_main
+add_test(NAME unittests
+    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/unittests
+    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 )
 
 if(UNIX)
+    set(test_gccasm_SOURCES
+        ../src/clogfile.cpp
+        ../src/colors.cpp
+        ../src/command.cpp
+        ../src/da6809.cpp
+        ../src/flblfile.cpp
+        ../src/foptman.cpp
+        ../src/fversion.cpp
+        ../src/inout.cpp
+        ../src/mc6809.cpp
+        ../src/mc6809in.cpp
+        ../src/mc6809lg.cpp
+        ../src/mc6809st.cpp
+        ../src/schedule.cpp
+        ../src/soptions.cpp
+        test_gccasm.cpp
+        testmain.cpp
+    )
+    set(test_gccasm_HEADER
+        ../src/bdate.h
+        ../src/bobserv.h
+        ../src/bobservd.h
+        ../src/bobshelp.h
+        ../src/breltime.h
+        ../src/btime.h
+        ../src/clogfile.h
+        ../src/command.h
+        ../src/config.h
+        ../src/cpustate.h
+        ../src/csetfreq.h
+        ../src/da6809.h
+        ../src/debug.h
+        ../src/e2.h
+        ../src/engine.h
+        ../src/fcinfo.h
+        ../src/flblfile.h
+        ../src/flexerr.h
+        ../src/foptman.h
+        ../src/fversion.h
+        ../src/inout.h
+        ../src/mc6809.h
+        ../src/mc6809lg.h
+        ../src/mc6809st.h
+        ../src/memory.h
+        ../src/misc1.h
+        ../src/schedcpu.h
+        ../src/schedule.h
+        ../src/soptions.h
+        test_gccasm.h
+        ../src/typedefs.h
+        ../src/warnoff.h
+        ../src/warnon.h
+    )
+    add_executable(test_gccasm ${test_gccasm_SOURCES} ${test_gccasm_HEADER})
+    target_include_directories(test_gccasm PRIVATE
+        "../src"
+        ${CMAKE_BINARY_DIR}/src
+    )
+    target_include_directories(test_gccasm SYSTEM PRIVATE
+        ${gtest_SOURCE_DIR}/include
+        ${gmock_SOURCE_DIR}/include
+        ${fmt_INCLUDE_DIR}
+    )
+    if(FLEXEMU_USE_PRECOMPILE_HEADERS)
+        target_precompile_headers(test_gccasm REUSE_FROM unittests)
+    endif()
+    if(UNIX)
+        target_compile_definitions(test_gccasm PRIVATE UNIX)
+    endif()
+    target_compile_definitions(test_gccasm PRIVATE
+        USE_CMAKE
+        F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
+        F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
+    )
+    target_link_libraries(test_gccasm PRIVATE
+        flexemu::libflex
+        fmt::fmt
+        Threads::Threads
+    )
+
 # Add custom target always executed to update test/metadata.json.
     add_custom_target(
         metadata_test ALL
-        ${CMAKE_BINARY_DIR}/src/updatemd -l -k test -f metadata.json
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/updatemd -l -k test -f metadata.json
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
         DEPENDS updatemd ${test_gccasm_SOURCES} ${unittests_SOURCES}
         COMMENT "Updating test/metadata.json"
         USES_TERMINAL
         VERBATIM
     )
-endif()
 endif()

@@ -58,16 +58,16 @@ jobs:
       - name: Test
         run: |
           cd bld; make -j5 test ARGS=-V | tee unittests.log; cd ..
-          bld/test/test_gccasm
-          otool -L bld/src/flexemu
-          otool -L bld/src/flexplorer
-          bld/src/dsktool -V
-          bld/src/mdcrtool -V
-          bld/src/flex2hex -V
-          bld/src/dsktool -l disks/games.dsk
-          bld/src/dsktool -f new.dsk -S 80dsdd
-          bld/src/dsktool -C disks/system.dsk -T new.dsk
-          bld/src/dsktool -l new.dsk
+          bld/bin/test_gccasm
+          otool -L bld/bin/flexemu
+          otool -L bld/bin/flexplorer
+          bld/bin/dsktool -V
+          bld/bin/mdcrtool -V
+          bld/bin/flex2hex -V
+          bld/bin/dsktool -l disks/games.dsk
+          bld/bin//dsktool -f new.dsk -S 80dsdd
+          bld/bin/dsktool -C disks/system.dsk -T new.dsk
+          bld/bin/dsktool -l new.dsk
 
       - name: Create artifacts
         if: always()

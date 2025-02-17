@@ -38,9 +38,11 @@ namespace fs = std::filesystem;
 class test_filfschk : public ::testing::Test
 {
 protected:
-    const std::string diskPath{"/tmp/disk.dsk"};
-    const std::string subdir{"data/"};
-    const std::string fileNameOnDisk{"cat.cmd"};
+    const std::string fileNameOnDisk{ "cat.cmd" };
+    const std::string diskPath =
+        (fs::temp_directory_path() / "disk.dsk").u8string();
+    const std::string filePath =
+        (fs::current_path() / "data" / fileNameOnDisk).u8string();
     std::unique_ptr<FlexDisk> disk;
 
     void SetUp() override
@@ -49,15 +51,15 @@ protected:
                     DiskType::DSK));
         ASSERT_NE(disk.get(), nullptr);
         FlexFileBuffer buffer;
-        ASSERT_TRUE(buffer.ReadFromFile(subdir + fileNameOnDisk,
-                    FileTimeAccess::NONE));
+        ASSERT_TRUE(buffer.ReadFromFile(filePath, FileTimeAccess::NONE));
         ASSERT_TRUE(disk->WriteFromBuffer(buffer));
     }
 
     void TearDown() override
     {
+        disk.reset(nullptr);
         fs::remove(diskPath);
-        fs::remove(fs::current_path() / subdir / ".random");
+        fs::remove(fs::current_path() / "data" / ".random");
     }
 
     using dirfct_t = void (s_dir_sector &);

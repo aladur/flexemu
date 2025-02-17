@@ -144,6 +144,9 @@ TEST(test_mc6809logger, fct_doLogging)
     EXPECT_FALSE(logger.doLogging(0x4000));
     EXPECT_FALSE(logger.doLogging(0x8000));
     EXPECT_FALSE(logger.doLogging(0x8001));
+    config.logFileName.clear();
+    config.isEnabled = false;
+    logger.setLoggerConfig(config);
 
     fs::remove(config.logFileName);
 }

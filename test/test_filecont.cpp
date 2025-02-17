@@ -68,9 +68,11 @@ protected:
 
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
+                const auto diskPath =
+                    (temp_dir / diskFiles[idx][tidx]).u8string();
                 pdisk = (idx == RAM || idx == ROM) ?
-                    new FlexRamDisk(diskPaths[idx][tidx], ios_mode, ft) :
-                    new FlexDisk(diskPaths[idx][tidx], ios_mode, ft);
+                    new FlexRamDisk(diskPath, ios_mode, ft) :
+                    new FlexDisk(diskPath, ios_mode, ft);
                 disks[idx][tidx].reset(cast(pdisk));
                 ASSERT_NE(disks[idx][tidx].get(), nullptr);
             }
@@ -79,9 +81,10 @@ protected:
         std::vector<int> dirIndices{RO, RW, FT, TGT};
         for (int idx : dirIndices)
         {
+            const auto diskPath = (temp_dir / diskFiles[idx][DIR]).u8string();
             const auto &ft = (idx == FT) ? with_ft : no_ft;
             auto *pdir =
-                    new FlexDirectoryDiskByFile(diskPaths[idx][DIR], ft);
+                    new FlexDirectoryDiskByFile(diskPath, ft);
             disks[idx][DIR].reset(cast(pdir));
             ASSERT_NE(disks[idx][DIR].get(), nullptr);
         }
@@ -244,7 +247,7 @@ TEST_F(test_IFlexDiskByFile, fct_RenameFile)
                 continue;
             }
 
-            std::string filename = "TEST01.TXT";
+            std::string filename = "TEST03.TXT";
             EXPECT_TRUE(disk->FindFile(filename, dirEntry));
             EXPECT_TRUE(disk->RenameFile(filename, "TEST99.TXT"));
             EXPECT_FALSE(disk->FindFile(filename, dirEntry));
@@ -283,7 +286,10 @@ TEST_F(test_IFlexDiskByFile, fct_RenameFile)
 
 TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
 {
+    static const auto diskPathDsk = (temp_dir / diskFiles[RW][DSK]).u8string();
+    static const auto diskPathFlx = (temp_dir / diskFiles[RW][FLX]).u8string();
     const std::vector<int> indices{RW, RAM};
+
     for (int idx : indices)
     {
         for (auto &disk : disks[idx])
@@ -329,7 +335,8 @@ TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
                 EXPECT_EQ(dirEntry.GetAttributes(), 0);
             }
 
-            if (disk->GetPath() == diskPaths[RW][DSK])
+            if (disk->GetPath() == diskPathDsk ||
+                disk->GetPath() == diskPathFlx)
             {
                 // FLX_NODELETE, FLX_NOREAD and FLX_NOCAT is only supported
                 // with FlexDiskByFile (but not FlexDirectoryByFile).
@@ -414,7 +421,7 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
 {
     std::string filename{"test.txt"};
     auto ft = FileTimeAccess::Get | FileTimeAccess::Set;
-    auto path = createFile("/tmp", filename, true, 22);
+    auto path = createFile(temp_dir, filename, true, 22);
     setDateTime(path, BDate(11, 8, 2024), BTime(22, 1), ft);
 
     for (auto &disk : disks[FT])
@@ -465,8 +472,14 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
         {
             FlexFileBuffer buffer;
             FlexDirEntry dirEntry;
-
-            if (!disk)
+            bool isWinDirDisk = false;
+#ifdef _WIN32
+            // Windows directories always have write access.
+            // A read-only check makes no sense.
+            isWinDirDisk = (disk != nullptr &&
+                disk->GetFlexDiskType() == DiskType::Directory);
+#endif
+            if (!disk || isWinDirDisk)
             {
                 continue;
             }
@@ -546,9 +559,10 @@ TEST_F(test_IFlexDiskByFile, fct_FileCopy)
 
 TEST_F(test_IFlexDiskByFile, fct_GetSupportedAttributes)
 {
+    static const auto diskPath = (temp_dir / diskFiles[RW][DIR]).u8string();
     for (auto &disk : disks[RW])
     {
-        const std::string attr = (disk->GetPath() == diskPaths[RW][DIR]) ?
+        const std::string attr = (disk->GetPath() == diskPath) ?
             "W" : "WDRC";
         EXPECT_EQ(disk->GetSupportedAttributes(), attr);
     }
@@ -617,8 +631,15 @@ TEST_F(test_IFlexDiskByFile, fcts_ReadOnly)
         for (auto &disk : disks[idx])
         {
             FlexDirEntry dirEntry;
+            bool isWinDirDisk = false;
+#ifdef _WIN32
+            // Windows directories always have write access.
+            // A read-only check makes no sense.
+            isWinDirDisk = (disk != nullptr &&
+                disk->GetFlexDiskType() == DiskType::Directory);
+#endif
 
-            if (!disk)
+            if (!disk || isWinDirDisk)
             {
                 continue;
             }

@@ -37,7 +37,12 @@ TEST(test_benv, get_set_int)
     EXPECT_FALSE(BEnvironment::SetValue("FLEXEMU_=_NOT_ALLOWED", 0));
 
     EXPECT_TRUE(BEnvironment::GetValue("FLEXEMU_TEST_VALUE", value));
+#ifdef _WIN32
+    // On Windows environment variables are not case sensitive.
+    EXPECT_EQ(value, 3722);
+#else
     EXPECT_EQ(value, 4711);
+#endif
     EXPECT_TRUE(BEnvironment::GetValue("flexemu_test_value", value));
     EXPECT_EQ(value, 3722);
     EXPECT_TRUE(BEnvironment::GetValue("FlexemuTestValue", value));
@@ -64,7 +69,12 @@ TEST(test_benv, get_set_string)
     EXPECT_FALSE(BEnvironment::SetValue("Flexemu=NotAllowed", "equal_char"));
 
     EXPECT_TRUE(BEnvironment::GetValue("FLEXEMU_TEST_VALUE", value));
+#ifdef _WIN32
+    // On Windows environment variables are not case sensitive.
+    EXPECT_EQ(value, "3722");
+#else
     EXPECT_EQ(value, "4711");
+#endif
     EXPECT_TRUE(BEnvironment::GetValue("flexemu_test_value", value));
     EXPECT_EQ(value, "3722");
     EXPECT_TRUE(BEnvironment::GetValue("FlexemuTestValue", value));

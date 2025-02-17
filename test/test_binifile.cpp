@@ -40,9 +40,9 @@ static void print(std::ostream &os, const std::string &section,
     }
 }
 
-static bool createIniFile(const std::string &path)
+static bool createIniFile(const fs::path &path)
 {
-    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    std::ofstream ofs(path);
     bool retval = false;
 
     if (ofs.is_open())
@@ -84,9 +84,9 @@ static bool createIniFile(const std::string &path)
 
 TEST(test_binifile, ctor)
 {
-    const std::string path{"/tmp/ini_file1.ini"};
+    const auto path = fs::temp_directory_path() / "ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile(path);
+    BIniFile iniFile(path.u8string());
     EXPECT_TRUE(iniFile.IsValid());
     EXPECT_EQ(iniFile.GetFileName(), path);
     fs::remove(path);
@@ -94,9 +94,9 @@ TEST(test_binifile, ctor)
 
 TEST(test_binifile, move_ctor)
 {
-    const std::string path{"/tmp/ini_file1.ini"};
+    const auto path = fs::temp_directory_path() / "ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile1(path);
+    BIniFile iniFile1(path.u8string());
     EXPECT_TRUE(iniFile1.IsValid());
     EXPECT_EQ(iniFile1.GetFileName(), path);
     auto iniFile2(std::move(iniFile1));
@@ -116,9 +116,9 @@ TEST(test_binifile, move_ctor)
 
 TEST(test_binifile, move_assignment)
 {
-    const std::string path{"/tmp/ini_file1.ini"};
+    const auto path = fs::temp_directory_path() / "ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile1(path);
+    BIniFile iniFile1(path.u8string());
     EXPECT_TRUE(iniFile1.IsValid());
     EXPECT_EQ(iniFile1.GetFileName(), path);
     auto iniFile2 = std::move(iniFile1);
@@ -138,9 +138,9 @@ TEST(test_binifile, move_assignment)
 
 TEST(test_binifile, fct_ReadSection)
 {
-    const std::string path{"/tmp/ini_file1.ini"};
+    const auto path = fs::temp_directory_path() / "ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile(path);
+    BIniFile iniFile(path.u8string());
     std::string section;
     const auto map1 = iniFile.ReadSection(section);
     EXPECT_EQ(map1.size(), 2U);
@@ -169,9 +169,9 @@ TEST(test_binifile, fct_ReadSection)
 }
 TEST(test_binifile, fct_GetLineNumber)
 {
-    const std::string path{"/tmp/ini_file1.ini"};
+    const auto path = fs::temp_directory_path() / "ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile(path);
+    BIniFile iniFile(path.u8string());
     auto lineNumber = iniFile.GetLineNumber("", "key12");
     EXPECT_EQ(lineNumber, 2);
     lineNumber = iniFile.GetLineNumber("SECTION2", "key21");
@@ -188,63 +188,63 @@ TEST(test_binifile, fct_GetLineNumber)
 }
 TEST(test_binifile, fct_ReadSection_exceptions)
 {
-    const std::string path1{"/tmp/ini_file2.ini"};
-    std::fstream ofs(path1, std::ios::out | std::ios::trunc);
+    const auto path1 = fs::temp_directory_path() / "ini_file1.ini";
+    std::ofstream ofs(path1);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
         " [SectionWithIndentation]\n"
         "key11=value11\n";
     ofs.close();
-    BIniFile iniFile1(path1);
+    BIniFile iniFile1(path1.u8string());
     EXPECT_THAT([&](){ iniFile1.ReadSection("SectionWithIndentation"); },
             testing::Throws<FlexException>());
     fs::remove(path1);
 
-    const std::string path2{"/tmp/ini_file3.ini"};
-    ofs.open(path2, std::ios::out | std::ios::trunc);
+    const auto path2 = fs::temp_directory_path() / "ini_file2.ini";
+    ofs.open(path2);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
         "[SectionWithIndentedKey]\n"
         " key11=value11\n";
     ofs.close();
-    BIniFile iniFile2(path2);
+    BIniFile iniFile2(path2.u8string());
     EXPECT_THAT([&](){ iniFile2.ReadSection("SectionWithIndentedKey"); },
             testing::Throws<FlexException>());
     fs::remove(path2);
 
-    const std::string path3{"/tmp/ini_file4.ini"};
-    ofs.open(path3, std::ios::out | std::ios::trunc);
+    const auto path3 = fs::temp_directory_path() / "ini_file3.ini";
+    ofs.open(path3);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
         "[SectionWithIdenticalKeys]\n"
         "key11=value11a\n"
         "key11=value11b\n";
     ofs.close();
-    BIniFile iniFile3(path3);
+    BIniFile iniFile3(path3.u8string());
     EXPECT_THAT([&](){ iniFile3.ReadSection("SectionWithIdenticalKeys"); },
             testing::Throws<FlexException>());
     fs::remove(path3);
 
-    const std::string path4{"/tmp/ini_file5.ini"};
-    ofs.open(path4, std::ios::out | std::ios::trunc);
+    const auto path4 = fs::temp_directory_path() / "ini_file4.ini";
+    ofs.open(path4);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
         "[SectionWithWhitespaceLine]\n"
         "   \t\t    \t  \t   \t\t\t\n";
     ofs.close();
-    BIniFile iniFile4(path4);
+    BIniFile iniFile4(path4.u8string());
     EXPECT_THAT([&](){ iniFile4.ReadSection("SectionWithWhitespaceLine"); },
             testing::Throws<FlexException>());
     fs::remove(path4);
 
-    const std::string path5{"/tmp/ini_file6.ini"};
-    ofs.open(path5, std::ios::out | std::ios::trunc);
+    const auto path5 = fs::temp_directory_path() / "ini_file5.ini";
+    ofs.open(path5);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
         "[SectionWithEmptyLine]\n"
         "\n";
     ofs.close();
-    BIniFile iniFile5(path5);
+    BIniFile iniFile5(path5.u8string());
     EXPECT_THAT([&](){ iniFile5.ReadSection("SectionWithEmptyLine"); },
             testing::Throws<FlexException>());
     fs::remove(path5);

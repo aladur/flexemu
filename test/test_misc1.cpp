@@ -25,9 +25,11 @@
 #include "gmock/gmock.h"
 #include "misc1.h"
 #include <sys/stat.h>
+#include <filesystem>
 
 
 using ::testing::EndsWith;
+namespace fs = std::filesystem;
 
 TEST(test_misc1, fct_strlower)
 {
@@ -309,17 +311,6 @@ TEST(test_misc1, fct_getHomeDirectory)
     EXPECT_TRUE(result);
 }
 
-#ifdef _WIN32
-TEST(test_misc1, fct_getExecutablePath)
-{
-    struct stat sbuf;
-    auto path = flx::getExecutablePath();
-    bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
-
-    EXPECT_TRUE(result);
-}
-#endif
-
 TEST(test_misc1, fct_getTempPath)
 {
     struct stat sbuf{};
@@ -345,16 +336,13 @@ TEST(test_misc1, fct_getCurrentPath)
 
 TEST(test_misc1, fct_toAbsolutePath)
 {
+    const auto path = fs::temp_directory_path().u8string();
+    auto result = flx::toAbsolutePath(path);
+    EXPECT_EQ(result, path);
+    result = flx::toAbsolutePath("tmp");
 #ifdef _WIN32
-    auto result = flx::toAbsolutePath("C:\\Temp");
-    EXPECT_EQ(result, "C:\\Temp");
-    result = flx::toAbsolutePath("tmp");
     EXPECT_THAT(result, EndsWith("\\tmp"));
-#endif
-#ifdef UNIX
-    auto result = flx::toAbsolutePath("/tmp");
-    EXPECT_EQ(result, "/tmp");
-    result = flx::toAbsolutePath("tmp");
+#else
     EXPECT_THAT(result, EndsWith("/tmp"));
 #endif
 }
@@ -379,7 +367,7 @@ TEST(test_misc1, fct_getFileName)
     EXPECT_EQ(result, ".ext");
 #ifdef _WIN32
     result = flx::getFileName("C:\\");
-    EXPECT_EQ(result, "\\");
+    EXPECT_EQ(result, ".");
     result = flx::getFileName("C:\\dir1\\dir2\\.");
     EXPECT_EQ(result, ".");
     result = flx::getFileName("C:\\dir1\\dir2\\..");
@@ -390,8 +378,7 @@ TEST(test_misc1, fct_getFileName)
     EXPECT_EQ(result, "dir2");
     result = flx::getFileName("C:\\dir\\filename.ext");
     EXPECT_EQ(result, "filename.ext");
-#endif
-#ifdef UNIX
+#else
     result = flx::getFileName("/");
     EXPECT_EQ(result, "/");
     result = flx::getFileName("/dir1/dir2/.");
@@ -432,8 +419,7 @@ TEST(test_misc1, fct_getFileExtension)
     EXPECT_EQ(result, "");
     result = flx::getFileExtension("C:\\dir\\filename.ext");
     EXPECT_EQ(result, ".ext");
-#endif
-#ifdef UNIX
+#else
     result = flx::getFileExtension("/");
     EXPECT_EQ(result, "");
     result = flx::getFileExtension("/dir1/dir2/.");
@@ -483,19 +469,18 @@ TEST(test_misc1, fct_getFileStem)
     EXPECT_EQ(result, "filename..");
 #ifdef _WIN32
     result = flx::getFileStem("C:\\");
-    EXPECT_EQ(result, "\\");
+    EXPECT_EQ(result, ".");
     result = flx::getFileStem("C:\\dir1\\dir2\\.");
     EXPECT_EQ(result, ".");
-    result = flx::getFileStem("C:\\dir1\\dir2\..");
+    result = flx::getFileStem("C:\\dir1\\dir2\\..");
     EXPECT_EQ(result, "..");
     result = flx::getFileStem("C:\\dir1\\dir2\\");
     EXPECT_EQ(result, ".");
-    result = flx::getFileStem("C:\\dir1\dir2");
+    result = flx::getFileStem("C:\\dir1\\dir2");
     EXPECT_EQ(result, "dir2");
     result = flx::getFileStem("C:\\dir\\filename.ext");
     EXPECT_EQ(result, "filename");
-#endif
-#ifdef UNIX
+#else
     result = flx::getFileStem("/");
     EXPECT_EQ(result, "/");
     result = flx::getFileStem("/dir1/dir2/.");
@@ -521,7 +506,7 @@ TEST(test_misc1, fct_getParentPath)
     EXPECT_EQ(result, "");
 #ifdef _WIN32
     result = flx::getParentPath("C:\\");
-    EXPECT_EQ(result, "");
+    EXPECT_EQ(result, "C:");
     result = flx::getParentPath("C:\\dir1\\dir2\\.");
     EXPECT_EQ(result, "C:\\dir1\\dir2");
     result = flx::getParentPath("C:\\dir1\\dir2\\..");
@@ -532,8 +517,7 @@ TEST(test_misc1, fct_getParentPath)
     EXPECT_EQ(result, "C:\\dir1");
     result = flx::getParentPath("C:\\dir\\filename.ext");
     EXPECT_EQ(result, "C:\\dir");
-#endif
-#ifdef UNIX
+#else
     result = flx::getParentPath("/");
     EXPECT_EQ(result, "");
     result = flx::getParentPath("/dir1/dir2/.");
@@ -551,18 +535,6 @@ TEST(test_misc1, fct_getParentPath)
 
 TEST(test_misc1, fct_isAbsolutePath)
 {
-#ifdef UNIX
-    auto result = flx::isAbsolutePath("");
-    EXPECT_FALSE(result);
-    result = flx::isAbsolutePath("/usr");
-    EXPECT_TRUE(result);
-    result = flx::isAbsolutePath("//SERVER/SHARE/rootdir");
-    EXPECT_TRUE(result);
-    result = flx::isAbsolutePath("dir1/dir2");
-    EXPECT_FALSE(result);
-    result = flx::isAbsolutePath(".");
-    EXPECT_FALSE(result);
-#endif
 #ifdef _WIN32
     auto result = flx::isAbsolutePath("");
     EXPECT_FALSE(result);
@@ -576,6 +548,17 @@ TEST(test_misc1, fct_isAbsolutePath)
     EXPECT_FALSE(result);
     result = flx::isAbsolutePath(".");
     EXPECT_FALSE(result);
+#else
+    auto result = flx::isAbsolutePath("");
+    EXPECT_FALSE(result);
+    result = flx::isAbsolutePath("/usr");
+    EXPECT_TRUE(result);
+    result = flx::isAbsolutePath("//SERVER/SHARE/rootdir");
+    EXPECT_TRUE(result);
+    result = flx::isAbsolutePath("dir1/dir2");
+    EXPECT_FALSE(result);
+    result = flx::isAbsolutePath(".");
+    EXPECT_FALSE(result);
 #endif
 }
 
@@ -586,8 +569,7 @@ TEST(test_misc1, fct_endsWithPathSeparator)
     EXPECT_TRUE(result);
     result = flx::endsWithPathSeparator("C:\\abc");
     EXPECT_FALSE(result);
-#endif
-#ifdef UNIX
+#else
     auto result = flx::endsWithPathSeparator("/abc/");
     EXPECT_TRUE(result);
     result = flx::endsWithPathSeparator("/abc");
@@ -602,8 +584,7 @@ TEST(test_misc1, fct_isPathsEqual)
     EXPECT_TRUE(result);
     result = flx::isPathsEqual("C:\\Temp\\test.txt", "C:\\Temp\\Test1.txt");
     EXPECT_FALSE(result);
-#endif
-#ifdef UNIX
+#else
     auto result = flx::isPathsEqual("/usr/lib/libtest.so", "/usr/lib/libtest.so");
     EXPECT_TRUE(result);
     result = flx::isPathsEqual("/usr/lib/libtest.so", "/usr/lib/libTest.so");
@@ -682,28 +663,28 @@ TEST(test_misc1, fct_isFlexFilename)
     EXPECT_TRUE(result);
     result = flx::isFlexFilename("a.a");
     EXPECT_TRUE(result);
-#ifdef UNIX
+#ifdef _WIN32
     result = flx::isFlexFilename("A.s");
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
     result = flx::isFlexFilename("a.S");
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
     result = flx::isFlexFilename("abcdefgH.abc");
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
     result = flx::isFlexFilename("abcde123.abC");
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
     result = flx::isFlexFilename("AbcDefG.AbC");
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
 #else
     result = flx::isFlexFilename("A.s");
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
     result = flx::isFlexFilename("a.S");
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
     result = flx::isFlexFilename("abcdefgH.abc");
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
     result = flx::isFlexFilename("abcde123.abC");
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
     result = flx::isFlexFilename("AbcDefG.AbC");
-    EXPECT_TRUE(result);
+    EXPECT_FALSE(result);
 #endif
 }
 
@@ -773,6 +754,32 @@ TEST(test_misc1, fct_updateFilename)
     EXPECT_EQ(result, "stem.tar.xz");
     result = flx::updateFilename("file.tar.gz", "stem", ".xz");
     EXPECT_EQ(result, "file.tar.xz");
+#ifdef _WIN32
+    result = flx::updateFilename("C:\\Temp\\sub.dir\\test", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\sub.dir\\test.ext");
+    result = flx::updateFilename("C:\\Temp\\sub.dir\\test.", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\sub.dir\\test.ext");
+    result = flx::updateFilename("C:\\Temp\\sub.dir\\test.tar", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\sub.dir\\test.ext");
+    result = flx::updateFilename("C:\\Temp\\sub.dir\\.", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\sub.dir\\stem.ext");
+    result = flx::updateFilename("C:\\Temp\\sub.dir\\..", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\sub.dir\\stem.ext");
+    result = flx::updateFilename("C:\\Temp\\sub.dir\\.x", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\sub.dir\\stem.ext");
+    result = flx::updateFilename("C:\\Temp\\sub.dir\\.tar.gz", "stem", ".xz");
+    EXPECT_EQ(result, "C:\\Temp\\sub.dir\\stem.tar.xz");
+    result = flx::updateFilename("C:\\Temp\\", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\stem.ext");
+    result = flx::updateFilename("C:\\Temp\\.", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\stem.ext");
+    result = flx::updateFilename("C:\\Temp\\..", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\stem.ext");
+    result = flx::updateFilename("C:\\Temp\\.x", "stem", ".ext");
+    EXPECT_EQ(result, "C:\\Temp\\stem.ext");
+    result = flx::updateFilename("C:\\Temp\\.tar.gz", "stem", ".xz");
+    EXPECT_EQ(result, "C:\\Temp\\stem.tar.xz");
+#else
     result = flx::updateFilename("/tmp/sub.dir/test", "stem", ".ext");
     EXPECT_EQ(result, "/tmp/sub.dir/test.ext");
     result = flx::updateFilename("/tmp/sub.dir/test.", "stem", ".ext");
@@ -797,6 +804,7 @@ TEST(test_misc1, fct_updateFilename)
     EXPECT_EQ(result, "/tmp/stem.ext");
     result = flx::updateFilename("/tmp/.tar.gz", "stem", ".xz");
     EXPECT_EQ(result, "/tmp/stem.tar.xz");
+#endif
 }
 
 TEST(test_misc1, fct_BTST)

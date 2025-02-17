@@ -26,6 +26,7 @@
 #include "misc1.h"
 #include "filecnts.h"
 #include "rndcheck.h"
+#include "cvtwchar.h"
 #include <numeric>
 #include <fstream>
 #include <filesystem>
@@ -49,33 +50,40 @@ protected:
                       // list file (.random).
     const int RWA{5}; // read-write disk directory with attributes.
 
-    const std::array<const char *, 6> diskPaths{
-        {"/tmp/testdir_ro", "/tmp/testdir_rw", "/tmp/testdir_rwo",
-         "/tmp/testdir_rwd", "/tmp/testdir_rwdo", "/tmp/testdir_rwa"},
-    };
+    const std::array<const char *, 6> diskdirs{{
+        "testdir_ro", "testdir_rw", "testdir_rwo",
+        "testdir_rwd", "testdir_rwdo", "testdir_rwa"
+    }};
     std::vector<std::string> randomListFiles;
+    const fs::path temp_dir{ fs::temp_directory_path() };
+#ifdef _WIN32
+    static const auto perms = fs::perms::all;
+#else
+    static const auto perms = fs::perms::owner_write;
+#endif
 
 public:
     void SetUp() override
     {
         std::array<std::ofstream, 6> streams;
 
-        ASSERT_EQ(diskPaths.size(), streams.size());
+        ASSERT_EQ(diskdirs.size(), streams.size());
         for (int idx = RO; idx <= RWA; ++idx)
         {
-            ASSERT_TRUE(fs::create_directory(diskPaths[idx])) <<
-                "path=" << diskPaths[idx];
-            fs::permissions(diskPaths[idx],
+            const auto diskdir = temp_dir / diskdirs[idx];
+            ASSERT_TRUE(fs::create_directory(diskdir)) <<
+                "dir=" << diskdir;
+            fs::permissions(diskdir,
                 fs::perms::owner_write, fs::perm_options::add);
 
             if (idx != RWA)
             {
-                fs::path path = diskPaths[idx];
-                path /= (idx == RWD || idx == RWDO) ?
+                auto filePath = diskdir;
+                filePath /= (idx == RWD || idx == RWDO) ?
                     RANDOM_FILE_LIST_NEW : RANDOM_FILE_LIST;
-                randomListFiles.emplace_back(std::string(path));
-                streams[idx].open(path);
-                ASSERT_TRUE(streams[idx].is_open()) << "path=" << path;
+                randomListFiles.emplace_back(filePath.u8string());
+                streams[idx].open(filePath);
+                ASSERT_TRUE(streams[idx].is_open()) << "path=" << filePath;
             }
             else
             {
@@ -85,11 +93,12 @@ public:
 
         for (int idx = RO; idx <= RWA; ++idx)
         {
+            const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
             for (int val = 3; val <= 11; ++val)
             {
                 const auto filename = fmt::format("random{:02}.dat", val);
                 const auto path =
-                    createFile(diskPaths[idx], filename, true, val);
+                    createFile(diskdir, filename, true, val);
                 // Random file "random11.dat" is not in random list file
                 // instead has file attributes.
                 if (val != 11)
@@ -107,7 +116,7 @@ public:
             {
                 const auto filename = fmt::format("nornd{:02}.dat", val);
                 const auto path =
-                    createFile(diskPaths[idx], filename, false, val);
+                    createFile(diskdir, filename, false, val);
                 if (val == 4)
                 {
                     setFileAttribute(path);
@@ -117,43 +126,49 @@ public:
             if ((idx == RWO || idx == RWDO))
             {
                 fs::permissions(randomListFiles[idx],
-                    fs::perms::owner_write, fs::perm_options::remove);
+                    perms, fs::perm_options::remove);
             }
 
+#ifndef _WIN32
+            // Directories on Windows have nothing like POSIX permissions.
+            // RO has same behavior as RW.
             if (idx == RO)
             {
-                fs::permissions(diskPaths[idx],
+                fs::permissions(diskdir,
                     fs::perms::owner_write, fs::perm_options::remove);
             }
+#endif
         }
 
-        ASSERT_EQ(diskPaths.size(), randomListFiles.size());
+        ASSERT_EQ(diskdirs.size(), randomListFiles.size());
     }
 
     void TearDown() override
     {
         for (int idx = RO; idx <= RWA; ++idx)
         {
-            struct stat sbuf{};
+            const auto diskdir = temp_dir / diskdirs[idx];
 
-            if (stat(randomListFiles[idx].c_str(), &sbuf) == 0)
+            if (fs::exists(randomListFiles[idx]))
             {
                 fs::permissions(randomListFiles[idx],
-                    fs::perms::owner_write, fs::perm_options::add);
+                    perms, fs::perm_options::add);
             }
 
-            fs::permissions(diskPaths[idx],
+#ifndef _WIN32
+            fs::permissions(diskdir,
                 fs::perms::owner_write, fs::perm_options::add);
-            fs::remove_all(diskPaths[idx]);
+#endif
+            fs::remove_all(diskdir);
         }
     }
 
     static std::string createFile(
-            const std::string &directory,
+            const fs::path &directory,
             const std::string &filename,
             bool isRandom, int sectors)
     {
-        const auto path = directory + PATHSEPARATOR + filename;
+        const auto path = directory / filename;
         const auto mode =
             isRandom ? (std::ios::out | std::ios::binary) : std::ios::out;
         std::array<Byte, 63> line{};
@@ -183,14 +198,14 @@ public:
             ofs.write(reinterpret_cast<const char *>(line.data()), line.size());
         }
 
-        return path;
+        return path.u8string();
     }
 
     static void setFileAttribute(const std::string &path)
     {
 #ifdef _WIN32
-        const auto wPath = ConvertToUtf16String(path);
-        DWord attributes = GetFileAttributes(wFilePath.c_str());
+        const auto wPath = ConvertToUtf16String(path.c_str());
+        DWord attributes = GetFileAttributes(wPath.c_str());
 
         if (attributes != INVALID_FILE_ATTRIBUTES)
         {
@@ -213,38 +228,40 @@ TEST_F(test_FlexRandomFileFixture, fct_IsRandomFile)
 {
     for (int idx = RO; idx <= RWDO; ++idx)
     {
-        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        RandomFileCheck randomFileCheck(diskdir);
 
         for (int val = 3; val <= 11; ++val)
         {
             const auto filename = fmt::format("random{:02}.dat", val);
             bool status = val != 11 || idx == RWA;
             EXPECT_EQ(randomFileCheck.IsRandomFile(filename), status) <<
-                "dir=" << diskPaths[idx] << " file=" << filename << "\n";
+                "dir=" << diskdir << " file=" << filename << "\n";
         }
 
         for (int val = 1; val <= 4; ++val)
         {
             const auto filename = fmt::format("nornd{:02}.dat", val);
             EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-                "dir=" << diskPaths[idx] << " file=" << filename << "\n";
+                "dir=" << diskdir << " file=" << filename << "\n";
         }
     }
 
-    RandomFileCheck randomFileCheck(diskPaths[RWA]);
+    const auto diskdir = (temp_dir / diskdirs[RWA]).u8string();
+    RandomFileCheck randomFileCheck(diskdir);
 
     for (int val = 3; val <= 11; ++val)
     {
         const auto filename = fmt::format("random{:02}.dat", val);
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-                "dir=" << diskPaths[RWA] << " file=" << filename << "\n";
+                "dir=" << diskdir << " file=" << filename << "\n";
     }
 
     for (int val = 1; val <= 4; ++val)
     {
         const auto filename = fmt::format("nornd{:02}.dat", val);
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-                "dir=" << diskPaths[RWA] << " file=" << filename << "\n";
+                "dir=" << diskdir << " file=" << filename << "\n";
     }
 }
 
@@ -252,7 +269,8 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckForRandom)
 {
     for (int idx = RO; idx <= RWA; ++idx)
     {
-        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        RandomFileCheck randomFileCheck(diskdir);
 
         for (int val = 3; val <= 11; ++val)
         {
@@ -273,7 +291,8 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckForRandomAndUpdate)
 {
     for (int idx = RO; idx <= RWA; ++idx)
     {
-        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        RandomFileCheck randomFileCheck(diskdir);
 
         for (int val = 3; val <= 11; ++val)
         {
@@ -295,22 +314,23 @@ TEST_F(test_FlexRandomFileFixture, fct_AddToRandomList)
 {
     for (int idx = RO; idx <= RWA; ++idx)
     {
-        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        RandomFileCheck randomFileCheck(diskdir);
         std::string filename{"newrnd1.dat"};
         EXPECT_EQ(randomFileCheck.AddToRandomList(filename), true) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), true) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         filename = "NEWRND2.DAT";
         EXPECT_EQ(randomFileCheck.AddToRandomList(filename), true) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), true) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         filename = "RANDOM03.DAT";
         EXPECT_EQ(randomFileCheck.AddToRandomList(filename), idx == RWA) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), true) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
     }
 }
 
@@ -318,22 +338,23 @@ TEST_F(test_FlexRandomFileFixture, fct_RemoveFromRandomList)
 {
     for (int idx = RO; idx <= RWA; ++idx)
     {
-        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        RandomFileCheck randomFileCheck(diskdir);
         std::string filename{"newrnd1.dat"};
         EXPECT_EQ(randomFileCheck.RemoveFromRandomList(filename), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         filename = "RANDOM03.DAT";
         EXPECT_EQ(randomFileCheck.RemoveFromRandomList(filename), idx != RWA) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         filename = "random04.dat";
         EXPECT_EQ(randomFileCheck.RemoveFromRandomList(filename), idx != RWA) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
     }
 }
 
@@ -343,33 +364,34 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckForFileAttributeAndUpdate)
 
     for (int idx : indices)
     {
+        const auto diskdir = temp_dir / diskdirs[idx];
         if (idx == RW)
         {
-            fs::remove(fs::path(diskPaths[idx]) / "random");
+            fs::remove(diskdir / "random");
         }
-        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        RandomFileCheck randomFileCheck(diskdir.u8string());
         std::string filename{"random03.dat"};
         const bool expected = (idx == RWA);
         auto result = randomFileCheck.CheckForFileAttributeAndUpdate(filename);
-        EXPECT_EQ(result, expected) << "path=" << diskPaths[idx];
+        EXPECT_EQ(result, expected) << "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), expected) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
 
         filename = "nornd01.dat";
         result = randomFileCheck.CheckForFileAttributeAndUpdate(filename);
-        EXPECT_EQ(result, false) << "path=" << diskPaths[idx];
+        EXPECT_EQ(result, false) << "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         filename = "nornd02.dat";
         result = randomFileCheck.CheckForFileAttributeAndUpdate(filename);
-        EXPECT_EQ(result, false) << "path=" << diskPaths[idx];
+        EXPECT_EQ(result, false) << "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         filename = "nornd03.dat";
         result = randomFileCheck.CheckForFileAttributeAndUpdate(filename);
-        EXPECT_EQ(result, false) << "path=" << diskPaths[idx];
+        EXPECT_EQ(result, false) << "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
     }
 }
 
@@ -416,30 +438,44 @@ TEST_F(test_FlexRandomFileFixture, fct_UpdateRandomListToFile)
 
     for (int idx = RO; idx <= RWA; ++idx)
     {
-        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        const auto diskdir = temp_dir / diskdirs[idx];
+        RandomFileCheck randomFileCheck(diskdir.u8string());
+#ifdef _WIN32
+        // Directories on Windows have nothing like POSIX permissions.
+        // RO has same behavior as RW.
+        const bool noUpdate = (idx == RWO || idx == RWDO);
+#else
         const bool noUpdate = (idx == RO || idx == RWO || idx == RWDO);
+#endif
 
         EXPECT_EQ(randomFileCheck.UpdateRandomListToFile(), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         std::string filename{"newrnd1.dat"};
         EXPECT_EQ(randomFileCheck.AddToRandomList(filename), true) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.UpdateRandomListToFile(), !noUpdate) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         filename = "random04.dat";
         EXPECT_EQ(randomFileCheck.AddToRandomList(filename), idx == RWA) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         EXPECT_EQ(randomFileCheck.UpdateRandomListToFile(), idx == RWA) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
 
-        auto randomListFile = fs::path(diskPaths[idx]) / randomListFiles[idx];
-        struct stat sbuf{};
-
-        EXPECT_TRUE(stat(randomListFile.c_str(), &sbuf) == 0);
+        auto randomListFile = diskdir / randomListFiles[idx];
+        bool isExecuteTest = true;
+#ifdef _WIN32
+        // Directories on Windows have nothing like POSIX permissions.
+        // RO has same behavior as RW.
+        isExecuteTest = (idx != RO);
+#endif
+        if (isExecuteTest)
+        {
+            EXPECT_TRUE(fs::exists(randomListFile));
+        }
         if (idx == RW)
         {
-            randomListFile = fs::path(diskPaths[idx]) / "random";
-            EXPECT_TRUE(stat(randomListFile.c_str(), &sbuf) != 0);
+            randomListFile = diskdir / "random";
+            EXPECT_TRUE(!fs::exists(randomListFile));
         }
     }
 }
@@ -449,12 +485,19 @@ TEST_F(test_FlexRandomFileFixture, fct_IsWriteProtected)
     const std::array<bool, 6> expectedWP{
         true, false, true, false, true, false
     };
-
-    for (int idx = RO; idx <= RWA; ++idx)
+    int idx = RO;
+#ifdef _WIN32
+    // Directories on Windows have nothing like POSIX permissions.
+    // RO has same behavior as RW, means RO can be skipped.
+    idx = RW;
+#endif
+    for ( ; idx <= RWA; ++idx)
     {
-        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        RandomFileCheck randomFileCheck(diskdir);
 
-        EXPECT_EQ(randomFileCheck.IsWriteProtected(), expectedWP[idx]);
+        EXPECT_EQ(randomFileCheck.IsWriteProtected(), expectedWP[idx]) <<
+            "dir=" << diskdir;
     }
 }
 
@@ -464,25 +507,26 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckAllFilesAttributeAndUpdate)
 
     for (int idx : indices)
     {
+        const auto diskdir = temp_dir / diskdirs[idx];
         if (idx == RW)
         {
-            fs::remove(fs::path(diskPaths[idx]) / "random");
+            fs::remove(diskdir / "random");
         }
-        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        RandomFileCheck randomFileCheck(diskdir.u8string());
         randomFileCheck.CheckAllFilesAttributeAndUpdate();
         std::string filename{"random03.dat"};
         const bool expected = (idx == RWA);
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), expected) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         filename = "random04.dat";
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), expected) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
 
         filename = "nornd01.dat";
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
         filename = "nornd03.dat";
         EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
-            "path=" << diskPaths[idx];
+            "dir=" << diskdir;
     }
 }

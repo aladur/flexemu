@@ -25,7 +25,9 @@
 #include "fcinfo.h"
 #include "filecntb.h"
 #include <iostream>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 
 TEST(test_fcinfo, default_ctor)
 {
@@ -53,13 +55,14 @@ TEST(test_fcinfo, default_ctor)
 TEST(test_fcinfo, copy_ctor)
 {
     FlexDiskAttributes info_src;
-    info_src.SetPath("/tmp/disk.dsk");
+    const auto path = (fs::temp_directory_path() / "disk.dsk").u8string();
+    info_src.SetPath(path);
     info_src.SetName("abc");
     auto info_tgt(info_src);
-    EXPECT_EQ(info_src.GetPath(), "/tmp/disk.dsk");
+    EXPECT_EQ(info_src.GetPath(), path);
     EXPECT_EQ(info_src.GetName(), "abc");
     EXPECT_TRUE(info_src.IsValid());
-    EXPECT_EQ(info_tgt.GetPath(), "/tmp/disk.dsk");
+    EXPECT_EQ(info_tgt.GetPath(), path);
     EXPECT_EQ(info_tgt.GetName(), "abc");
     EXPECT_TRUE(info_tgt.IsValid());
 }
@@ -67,7 +70,8 @@ TEST(test_fcinfo, copy_ctor)
 TEST(test_fcinfo, move_ctor)
 {
     FlexDiskAttributes info_src;
-    info_src.SetPath("/tmp/disk.dsk");
+    const auto path = (fs::temp_directory_path() / "disk.dsk").u8string();
+    info_src.SetPath(path);
     info_src.SetName("abc");
     auto info_tgt(std::move(info_src));
     /* Intentionally test object after move. */
@@ -76,7 +80,7 @@ TEST(test_fcinfo, move_ctor)
     EXPECT_TRUE(info_src.GetName().empty());
     EXPECT_TRUE(info_src.IsValid());
     /* NOLINTEND(bugprone-use-after-move) */
-    EXPECT_EQ(info_tgt.GetPath(), "/tmp/disk.dsk");
+    EXPECT_EQ(info_tgt.GetPath(), path);
     EXPECT_EQ(info_tgt.GetName(), "abc");
     EXPECT_TRUE(info_tgt.IsValid());
 }
@@ -84,13 +88,14 @@ TEST(test_fcinfo, move_ctor)
 TEST(test_fcinfo, copy_assignment)
 {
     FlexDiskAttributes info_src;
-    info_src.SetPath("/tmp/disk.dsk");
+    const auto path = (fs::temp_directory_path() / "disk.dsk").u8string();
+    info_src.SetPath(path);
     info_src.SetName("abc");
     auto info_tgt = info_src;
-    EXPECT_EQ(info_src.GetPath(), "/tmp/disk.dsk");
+    EXPECT_EQ(info_src.GetPath(), path);
     EXPECT_EQ(info_src.GetName(), "abc");
     EXPECT_TRUE(info_src.IsValid());
-    EXPECT_EQ(info_tgt.GetPath(), "/tmp/disk.dsk");
+    EXPECT_EQ(info_tgt.GetPath(), path);
     EXPECT_EQ(info_tgt.GetName(), "abc");
     EXPECT_TRUE(info_tgt.IsValid());
 }
@@ -98,7 +103,8 @@ TEST(test_fcinfo, copy_assignment)
 TEST(test_fcinfo, move_assignment)
 {
     FlexDiskAttributes info_src;
-    info_src.SetPath("/tmp/disk.dsk");
+    const auto path = (fs::temp_directory_path() / "disk.dsk").u8string();
+    info_src.SetPath(path);
     info_src.SetName("abc");
     auto info_tgt = std::move(info_src);
     /* Intentionally test object after move. */
@@ -107,7 +113,7 @@ TEST(test_fcinfo, move_assignment)
     EXPECT_TRUE(info_src.GetName().empty());
     EXPECT_TRUE(info_src.IsValid());
     /* NOLINTEND(bugprone-use-after-move) */
-    EXPECT_EQ(info_tgt.GetPath(), "/tmp/disk.dsk");
+    EXPECT_EQ(info_tgt.GetPath(), path);
     EXPECT_EQ(info_tgt.GetName(), "abc");
     EXPECT_TRUE(info_tgt.IsValid());
 }

@@ -51,17 +51,30 @@ protected:
     const int FLX{1};// *.flx disk image file index.
     const int DIR{2};// directory disk index.
 
-    const std::array<std::array<const char *, 3>, 6> diskPaths{{
-        {"/tmp/testdisk_ro.dsk", "/tmp/testdisk_ro.flx", "/tmp/testdir_ro"},
-        {"/tmp/testdisk_rw.dsk", "/tmp/testdisk_rw.flx", "/tmp/testdir_rw"},
-        {"/tmp/testdisk_ft.dsk", "/tmp/testdisk_ft.flx", "/tmp/testdir_ft"},
-        {"/tmp/testdisk_tgt.dsk", "/tmp/testdisk_tgt.flx", "/tmp/testdir_tgt"},
-        {"/tmp/testdisk_rom.dsk", "/tmp/testdisk_rom.flx", ""},
-        {"/tmp/testdisk_ram.dsk", "/tmp/testdisk_ram.flx", ""},
+    const std::array<std::array<const char *, 3>, 6> diskFiles{{
+        {"testdisk_ro.dsk", "testdisk_ro.flx", "testdir_ro"},
+        {"testdisk_rw.dsk", "testdisk_rw.flx", "testdir_rw"},
+        {"testdisk_ft.dsk", "testdisk_ft.flx", "testdir_ft"},
+        {"testdisk_tgt.dsk", "testdisk_tgt.flx", "testdir_tgt"},
+        {"testdisk_rom.dsk", "testdisk_rom.flx", ""},
+        {"testdisk_ram.dsk", "testdisk_ram.flx", ""},
     }};
 
     const int tracks = 35;
     const int sectors = 10;
+    const fs::path temp_dir{ fs::temp_directory_path() };
+
+    // Windows does not have the POSIX concept of owner, owner's group, or everybody.
+    // Files only can be read-only or "all" access. Directories always have "all" access.
+    // (not taking ACL features into account).
+    // For details see:
+    // https://docs.microsoft.com/en-us/cpp/standard-library/filesystem-enumerations?view=vs-2017#perms
+    // https://docs.microsoft.com/en-us/cpp/standard-library/filesystem?view=vs-2017
+#ifdef _WIN32
+    static const auto perms = fs::perms::all;
+#else
+    static const auto perms = fs::perms::owner_write;
+#endif
 
     virtual int GetMaxDiskIndex()
     {
@@ -79,34 +92,32 @@ protected:
         {
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
+                const auto diskPath = (temp_dir / diskFiles[idx][tidx]).u8string();
                 if (idx == TGT)
                 {
-                    auto *pdisk = FlexDisk::Create(diskPaths[idx][tidx],
+                    auto *pdisk = FlexDisk::Create(diskPath,
                             no_ft, tracks, sectors, DiskType::DSK);
                     ASSERT_NE(pdisk, nullptr);
                     delete pdisk;
                 }
                 else
                 {
-                    auto ext = flx::getFileExtension(diskPaths[idx][tidx]);
-                    ASSERT_TRUE(fs::copy_file(fs::current_path() /
-                            (std::string("data/testdisk" + ext)),
-                            diskPaths[idx][tidx]));
-                    fs::permissions(diskPaths[idx][tidx],
-                            fs::perms::owner_write, fs::perm_options::add);
+                    auto ext = flx::getFileExtension(diskPath);
+                    const auto srcFile = fs::current_path() / "data" /
+                        (std::string("testdisk") + ext);
+                    ASSERT_TRUE(fs::copy_file(srcFile, diskPath));
+                    fs::permissions(diskPath, perms, fs::perm_options::add);
                 }
             }
         }
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
-            if (diskPaths[idx][DIR][0] != '\0')
-            {
-                ASSERT_TRUE(fs::create_directory(diskPaths[idx][DIR])) <<
-                    "path=" << diskPaths[idx][DIR];
-                fs::permissions(diskPaths[idx][DIR],
-                        fs::perms::owner_write, fs::perm_options::add);
-            }
+            const auto diskPath = (temp_dir / diskFiles[idx][DIR]).u8string();
+            ASSERT_TRUE(fs::create_directory(diskPath)) << "path=" << diskPath;
+#ifndef _WIN32
+            fs::permissions(diskPath, perms, fs::perm_options::add);
+#endif
         }
 
         std::array<int, 20> indices{};
@@ -118,36 +129,35 @@ protected:
             const auto filename = fmt::format("test{:02}.{}", fi, ext);
             for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
             {
-                if (idx != TGT)
+                const auto diskPath = temp_dir / diskFiles[idx][DIR];
+                if (idx == TGT)
                 {
-                    const auto &ft = (idx == FT) ? with_ft : no_ft;
-
-                    const auto path = createFile(diskPaths[idx][DIR], filename,
-                            isTxt, fi);
-                    setDateTime(path, BDate(11, 8, 2024), BTime(22, 1), ft);
+                    continue;
                 }
+
+                const auto &ft = (idx == FT) ? with_ft : no_ft;
+                const auto filePath =
+                    createFile(diskPath, filename, isTxt, fi);
+                setDateTime(filePath, BDate(11, 8, 2024), BTime(22, 1), ft);
             }
         });
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
-            auto path = std::string(diskPaths[idx][DIR]) + PATHSEPARATOR;
-            path = path += "test01.txt";
-            struct stat sbuf{};
-            static const auto perms = fs::perms::owner_write |
-                                      fs::perms::group_write |
-                                      fs::perms::others_write;
+            const auto diskPath = temp_dir / diskFiles[idx][DIR];
+            const auto filePath = diskPath / "test01.txt";
 
-            if (!stat(path.c_str(), &sbuf))
+            if (fs::exists(filePath))
             {
-                fs::permissions(path, perms, fs::perm_options::remove);
+                fs::permissions(filePath, perms, fs::perm_options::remove);
             }
 
-            if (idx == RO && !stat(diskPaths[idx][DIR], &sbuf))
+#ifndef _WIN32
+            if (idx == RO && fs::exists(diskPath))
             {
-                fs::permissions(diskPaths[idx][DIR], perms,
-                        fs::perm_options::remove);
+                fs::permissions(diskPath, perms, fs::perm_options::remove);
             }
+#endif
         }
     }
 
@@ -155,31 +165,32 @@ protected:
     {
         for (int idx = RO; idx <= GetMaxDiskIndex(); ++idx)
         {
-            fs::remove(diskPaths[idx][DSK]);
-            fs::remove(diskPaths[idx][FLX]);
+            fs::remove(temp_dir / diskFiles[idx][DSK]);
+            fs::remove(temp_dir / diskFiles[idx][FLX]);
         }
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
-            fs::permissions(diskPaths[idx][DIR], fs::perms::owner_write,
-                    fs::perm_options::add);
-            auto path = std::string(diskPaths[idx][DIR]) + PATHSEPARATOR;
-            path += "test01.txt";
-            if (fs::exists(path))
+            const auto diskPath = temp_dir / diskFiles[idx][DIR];
+            const auto filePath = diskPath / "test01.txt";
+
+#ifndef _WIN32
+            fs::permissions(diskPath, perms, fs::perm_options::add);
+#endif
+            if (fs::exists(filePath))
             {
-                fs::permissions(path, fs::perms::owner_write,
-                        fs::perm_options::add);
+                fs::permissions(filePath, perms, fs::perm_options::add);
             }
-            fs::remove_all(diskPaths[idx][DIR]);
+            fs::remove_all(diskPath);
         }
     }
 
     static std::string createFile(
-            const std::string &directory,
+            const fs::path &directory,
             const std::string &filename,
             bool isText, int sectors)
     {
-        const auto path = directory + PATHSEPARATOR + filename;
+        const auto path = (directory / filename).u8string();
         const auto mode =
             isText ? std::ios::out : (std::ios::out | std::ios::binary);
         std::array<Byte, 63> line{};

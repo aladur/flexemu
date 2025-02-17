@@ -41,21 +41,21 @@ auto print_fct = [](const Byte b){
 
 TEST(test_brcfile, fct_Initialize)
 {
-    std::string test_file("test.rc");
-    auto path = fs::temp_directory_path() / test_file;
-    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    auto path = fs::temp_directory_path() / "test1.rc";
+    std::ofstream ofs(path);
 
     ASSERT_TRUE(ofs.is_open());
     ofs << "Generate some file content\n";
     ofs.close();
 
-    BRcFile rcf(path.c_str());
+    BRcFile rcf(path.u8string());
     // Check the Initialize truncates the existing file.
     EXPECT_EQ(rcf.Initialize(), BRC_NO_ERROR);
 
-    std::fstream ifs(path, std::ios::in);
+    std::ifstream ifs(path);
     std::string contents;
     ifs >> contents;
+    ifs.close();
     EXPECT_TRUE(contents.empty());
     fs::remove(path);
 }
@@ -64,9 +64,8 @@ TEST(test_brcfile, fct_GetValue)
 {
     std::string svalue;
     int ivalue;
-    std::string test_file("test.rc");
-    auto path = fs::temp_directory_path() / test_file;
-    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    auto path = fs::temp_directory_path() / "test2.rc";
+    std::ofstream ofs(path);
 
     ASSERT_TRUE(ofs.is_open());
     ofs << "Key" << ' ' << "\"Value1\"\n";
@@ -79,7 +78,7 @@ TEST(test_brcfile, fct_GetValue)
     ofs << "KeyForPosIntValue" << "      " << 577901267 << "\n";
     ofs.close();
 
-    BRcFile rcf(path.c_str());
+    BRcFile rcf(path.u8string());
     EXPECT_EQ(rcf.GetValue("Key", svalue), BRC_NO_ERROR);
     EXPECT_EQ(svalue, "Value1");
     EXPECT_EQ(rcf.GetValue("Key.postfix", svalue), BRC_NO_ERROR);
@@ -102,9 +101,8 @@ TEST(test_brcfile, fct_GetValue)
 
 TEST(test_brcfile, fct_GetValues)
 {
-    std::string test_file("test.rc");
-    auto path = fs::temp_directory_path() / test_file;
-    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    auto path = fs::temp_directory_path() / "test3.rc";
+    std::ofstream ofs(path);
 
     ASSERT_TRUE(ofs.is_open());
     ofs << "KeyPrefixIndividualKey1" << ' ' << "\"Value1\"" << "\n";
@@ -115,7 +113,7 @@ TEST(test_brcfile, fct_GetValues)
     ofs.close();
 
     std::map<std::string, std::string> result_map;
-    BRcFile rcf(path.c_str());
+    BRcFile rcf(path.u8string());
     EXPECT_EQ(rcf.GetValues("KeyPrefix", result_map), BRC_NO_ERROR);
     EXPECT_EQ(result_map.size(), 5U);
     EXPECT_EQ(result_map.at("IndividualKey1"), "Value1");
@@ -128,9 +126,8 @@ TEST(test_brcfile, fct_GetValues)
 
 TEST(test_brcfile, fct_SetValue)
 {
-    std::string test_file("test.rc");
-    auto path = fs::temp_directory_path() / test_file;
-    BRcFile rcf(path.c_str());
+    auto path = fs::temp_directory_path() / "test4.rc";
+    BRcFile rcf(path.u8string());
 
     EXPECT_EQ(rcf.SetValue("Key", "Value1"), BRC_NO_ERROR);
     EXPECT_EQ(rcf.SetValue("Key.postfix", "Value2"), BRC_NO_ERROR);
@@ -143,7 +140,7 @@ TEST(test_brcfile, fct_SetValue)
 
     // Now parse and check the created rc-file.
     std::map<std::string, std::string> result_map;
-    std::fstream ifs(path, std::ios::in);
+    std::ifstream ifs(path);
     ASSERT_TRUE(ifs.is_open());
     while (!ifs.eof())
     {

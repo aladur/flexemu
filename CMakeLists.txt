@@ -53,13 +53,14 @@ endif()
 add_subdirectory(fmt EXCLUDE_FROM_ALL)
 set(fmt_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/fmt/include")
 
-option(INSTALL_GTEST OFF)
-add_subdirectory(googletest EXCLUDE_FROM_ALL)
-enable_testing()
-
 option(JSONCPP_WITH_TESTS OFF)
 add_subdirectory(jsoncpp EXCLUDE_FROM_ALL)
 set(jsoncpp_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/jsoncpp/include")
+
+option(INSTALL_GTEST OFF)
+option(BUILD_SHARED_LIBS OFF)
+add_subdirectory(googletest EXCLUDE_FROM_ALL)
+enable_testing()
 
 # Prepare for clang-tidy.
 if(UNIX)
@@ -102,8 +103,18 @@ set(install_FILES
 install(FILES ${install_FILES} DESTINATION ${CMAKE_INSTALL_DATADIR}/flexemu/imhex/patterns)
 
 # Specify general compiler settings.
-if(NOT DEFINED CMAKE_BUILD_TYPE OR NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
+
+# Set the output directory identical to googletest.
+# This allows to execute unittests target without copying
+# gtest.dll
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+if(NOT MSVC)
+    # Only used by single-configuration targets (makefile or ninja).
+    # Set default build type to Release.
+    if(NOT DEFINED CMAKE_BUILD_TYPE OR NOT CMAKE_BUILD_TYPE)
+        set(CMAKE_BUILD_TYPE Release)
+    endif()
 endif()
 set(CMAKE_DEBUG_POSTFIX d)
 if(WIN32)
@@ -138,7 +149,7 @@ if(UNIX)
 # Add custom target always executed to update metadata.json.
 add_custom_target(
     metadata ALL
-    ${CMAKE_BINARY_DIR}/src/updatemd -c .clang-tidy -f metadata.json
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/updatemd -c .clang-tidy -f metadata.json
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
     DEPENDS updatemd .clang-tidy
     COMMENT "Updating metadata.json"

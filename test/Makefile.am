@@ -203,7 +203,8 @@ test_gccasm_CXXFLAGS = \
 	-I$(top_srcdir)/src
 
 CLEANFILES = \
-	pch.h.gch
+	pch.h.gch \
+	test.log
 
 # Rule for precompiled header:
 # Build a pch.h.gch file from pch.h

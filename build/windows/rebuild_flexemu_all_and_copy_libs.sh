@@ -145,7 +145,7 @@ copy_files() {
         # cmake only: copy built *.exe files.
         for file in flex2hex.exe dsktool.exe mdcrtool.exe flexemu.exe flexplorer.exe
         do
-            cp -f $5/src/$4/$file $targetdir
+            cp -f $5/bin/$4/$file $targetdir
         done
     fi
     abspath=$( as_absolute_windows_path $targetdir )

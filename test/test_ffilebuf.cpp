@@ -72,7 +72,7 @@ TEST(test_ffilebuf, fct_move_ctor)
     ofs.close();
 
     FlexFileBuffer ffb_src;
-    ASSERT_TRUE(ffb_src.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb_src.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     ffb_src.SetAttributes(25);
     ffb_src.SetSectorMap(899);
     ffb_src.SetDateTime(BDate{2, 11, 2004}, BTime{18, 26});
@@ -121,7 +121,7 @@ TEST(test_ffilebuf, fct_copy_ctor)
     ofs.close();
 
     FlexFileBuffer ffb_src;
-    ASSERT_TRUE(ffb_src.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb_src.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     ffb_src.SetAttributes(99);
     ffb_src.SetSectorMap(7825);
     ffb_src.SetDateTime(BDate{13, 3, 2244}, BTime{9, 28});
@@ -169,7 +169,7 @@ TEST(test_ffilebuf, fct_ReadFromFile)
     ofs.close();
 
     FlexFileBuffer ffb;
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     // Check properties.
     EXPECT_EQ(ffb.GetFileSize(), 29U);
     EXPECT_FALSE(ffb.IsEmpty());
@@ -177,11 +177,11 @@ TEST(test_ffilebuf, fct_ReadFromFile)
     EXPECT_EQ(uc_test_file.compare(ffb.GetFilename()), 0);
     fs::remove(path);
     ffb.SetDateTime(BDate{13, 12, 2003}, BTime{10, 34});
-    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::NONE));
     ffb.SetDateTime(BDate{}, BTime{});
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     struct stat sbuf{};
-    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
     struct tm *time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 2003);
@@ -194,10 +194,10 @@ TEST(test_ffilebuf, fct_ReadFromFile)
 
     // Read file using time, a date without daylight saving.
     ffb.SetDateTime(BDate{13, 12, 2003}, BTime{10, 34});
-    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
+    ASSERT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::Set));
     ffb.SetDateTime(BDate{}, BTime{});
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::Get));
-    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::Get));
+    ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
     time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 2003);
@@ -209,10 +209,10 @@ TEST(test_ffilebuf, fct_ReadFromFile)
 
     // Read file using time, a date with daylight saving.
     ffb.SetDateTime(BDate{16, 8, 2008}, BTime{13, 19});
-    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
+    ASSERT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::Set));
     ffb.SetDateTime(BDate{}, BTime{});
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::Get));
-    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::Get));
+    ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
     time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 2008);
@@ -235,7 +235,7 @@ TEST(test_ffilebuf, fct_WriteToFile)
     fs::remove(path);
 
     // Write file to temp directory.
-    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::NONE));
     // Check file on filesystem.
     EXPECT_TRUE(fs::exists(path));
     EXPECT_FALSE(fs::is_empty(path));
@@ -243,7 +243,7 @@ TEST(test_ffilebuf, fct_WriteToFile)
     auto status = fs::status(path);
     EXPECT_TRUE(fs::is_regular_file(status));
     struct stat sbuf{};
-    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
     struct tm *time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 1985);
@@ -255,14 +255,14 @@ TEST(test_ffilebuf, fct_WriteToFile)
     fs::remove(path);
 
     // Write to file using time, a date without daylight saving.
-    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
+    ASSERT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::Set));
     // Check file on filesystem.
     EXPECT_TRUE(fs::exists(path));
     EXPECT_FALSE(fs::is_empty(path));
     EXPECT_EQ(fs::file_size(path), ffb.GetFileSize());
     status = fs::status(path);
     EXPECT_TRUE(fs::is_regular_file(status));
-    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
     time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 1985);
@@ -274,14 +274,14 @@ TEST(test_ffilebuf, fct_WriteToFile)
 
     // Write to file using time, a date with daylight saving.
     ffb.SetDateTime(BDate(30, 7, 1992), BTime(11, 42));
-    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
+    ASSERT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::Set));
     // Check file on filesystem.
     EXPECT_TRUE(fs::exists(path));
     EXPECT_FALSE(fs::is_empty(path));
     EXPECT_EQ(fs::file_size(path), ffb.GetFileSize());
     status = fs::status(path);
     EXPECT_TRUE(fs::is_regular_file(status));
-    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
     time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 1992);
@@ -291,18 +291,19 @@ TEST(test_ffilebuf, fct_WriteToFile)
     EXPECT_EQ(time->tm_min, 42);
     fs::remove(path);
 
+#ifndef _WIN32
     // Try to write file to a directory with read-only access.
-    const std::string directory = "testdir";
-    path = fs::temp_directory_path() / directory;
+    path = fs::temp_directory_path() / "testdir";
     fs::create_directory(path);
-    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
-    chmod(path.c_str(), sbuf.st_mode & static_cast<unsigned>(~S_IWUSR));
+    ASSERT_TRUE(fs::exists(path));
+    fs::permissions(path, fs::perms::owner_write, fs::perm_options::remove);
     auto test_path = path / test_file;
-    ASSERT_FALSE(ffb.WriteToFile(test_path, FileTimeAccess::NONE));
+    ASSERT_FALSE(ffb.WriteToFile(test_path.u8string(), FileTimeAccess::NONE));
     EXPECT_FALSE(fs::exists(test_path));
-    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
-    chmod(path.c_str(), sbuf.st_mode | S_IWUSR);
+    ASSERT_TRUE(fs::exists(path));
+    fs::permissions(path, fs::perms::owner_write, fs::perm_options::add);
     fs::remove(path);
+#endif
 }
 
 TEST(test_ffilebuf, fct_get_set)
@@ -444,15 +445,14 @@ TEST(test_ffilebuf, fct_buffer_CopyTo)
     std::string data;
     data.resize(16);
     std::iota(data.begin(), data.end(), '\0');
-    std::string test_file("test");
-    auto path = fs::temp_directory_path() / test_file;
-    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    auto path = fs::temp_directory_path() / "test";
+    std::fstream ofs(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     ofs << data;
     ofs.close();
 
     // Check host text file.
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), static_cast<DWord>(data.size()));
     std::vector<Byte> target(16U);
     std::vector<Byte> expected(16U);
@@ -489,66 +489,70 @@ TEST(test_ffilebuf, fct_buffer_CopyTo)
 TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
 {
     FlexFileBuffer ffb;
-    std::string test_file("test.txt");
-    auto path = fs::temp_directory_path() / test_file;
+    auto path = fs::temp_directory_path() / "test.txt";
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
     EXPECT_TRUE(ofs.is_open());
     ofs << "This    is\tline1\nline3\nAnd this is the last line\n";
     ofs.close();
+    unsigned winOffset = 0U;
+#ifdef _WIN32
+    // Windows uses CR + LF for end of line.
+    winOffset = 3U;
+#endif
 
     // Check host text file.
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
-    EXPECT_EQ(ffb.GetFileSize(), 49U);
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
+    EXPECT_EQ(ffb.GetFileSize(), 49U + winOffset);
     EXPECT_TRUE(ffb.IsTextFile());
     EXPECT_TRUE(ffb.IsFlexTextFile()); // Could also be a FLEX text file.
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
 
     // Check conversion from host to FLEX text file.
     ffb.ConvertToFlexTextFile();
-    EXPECT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    EXPECT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), 48U);
     EXPECT_FALSE(ffb.IsTextFile());
     EXPECT_TRUE(ffb.IsFlexTextFile());
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
 
     // Check FLEX space compression (ending without new line).
-    ofs.open(path, std::ios::out | std::ios::trunc);
+    ofs.open(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     std::string much_spaces(128, ' ');
     ofs << much_spaces;
     //ofs << much_spaces << "\n";
     ofs.close();
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     ffb.ConvertToFlexTextFile();
-    EXPECT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    EXPECT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), 3U);
     EXPECT_TRUE(ffb.IsTextFile()); // Could also be a host text file.
     EXPECT_TRUE(ffb.IsFlexTextFile());
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
 
     // Check FLEX space compression (ending with new line).
-    ofs.open(path, std::ios::out | std::ios::trunc);
+    ofs.open(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     ofs << "text" << much_spaces << "text\n";
     ofs.close();
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     ffb.ConvertToFlexTextFile();
-    EXPECT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    EXPECT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), 12U);
     EXPECT_TRUE(ffb.IsTextFile()); // Could also be a host text file.
     EXPECT_TRUE(ffb.IsFlexTextFile());
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
 
     // Check FLEX text file.
-    ofs.open(path, std::ios::out | std::ios::trunc);
+    ofs.open(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     ofs << "text" << '\x9' << '\x4' << "text" << "\n" << "next line" <<
         '\r' << '\x18' << '\x0c' << "text\r\x1a";
     ofs.close();
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), 29U);
     EXPECT_FALSE(ffb.IsTextFile());
     EXPECT_TRUE(ffb.IsFlexTextFile());
@@ -556,9 +560,13 @@ TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
 
     // Check conversion from FLEX to host text file.
     ffb.ConvertToTextFile();
-    EXPECT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    EXPECT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
+#ifdef _WIN32
+    EXPECT_EQ(ffb.GetFileSize(), 29U);
+#else
     EXPECT_EQ(ffb.GetFileSize(), 27U);
+#endif
     EXPECT_TRUE(ffb.IsTextFile());
     EXPECT_TRUE(ffb.IsFlexTextFile()); // Could also be a FLEX text file
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
@@ -571,14 +579,14 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
     FlexFileBuffer ffb;
     std::string test_file("test");
     auto path = fs::temp_directory_path() / test_file;
-    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    std::fstream ofs(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     ofs << '\x02' << '\xC1' << '\x00' << '\x03' <<
            '\x7E' << '\xF0' << '\x2D' <<
            '\x16' << '\xC1' << '\x00';
     ofs.close();
     // Check FLEX CMD file.
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), 10U);
     EXPECT_FALSE(ffb.IsTextFile());
     EXPECT_FALSE(ffb.IsFlexTextFile());
@@ -586,18 +594,21 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
 
     // Check conversion from FLEX CMD file to dump file.
     ffb.ConvertToDumpFile(16U);
-    EXPECT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    EXPECT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
+#ifdef _WIN32
+    EXPECT_EQ(ffb.GetFileSize(), 67U);
+#else
     EXPECT_EQ(ffb.GetFileSize(), 66U);
+#endif
     EXPECT_TRUE(ffb.IsTextFile());
     EXPECT_TRUE(ffb.IsFlexTextFile());
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
     fs::remove(path);
 
-    test_file = "data/cat.cmd";
-    path = fs::current_path() / test_file;
+    path = fs::current_path() / "data" / "cat.cmd";
     // Check cat.cmd file.
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), 756U);
     EXPECT_FALSE(ffb.IsTextFile());
     EXPECT_FALSE(ffb.IsFlexTextFile());
@@ -607,9 +618,13 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
     path = fs::temp_directory_path() / test_file;
     // Check conversion of cat.cmd to dump file.
     ffb.ConvertToDumpFile(16U);
-    EXPECT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    EXPECT_TRUE(ffb.WriteToFile(path.u8string(), FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
+#ifdef _WIN32
+    EXPECT_EQ(ffb.GetFileSize(), 3492U);
+#else
     EXPECT_EQ(ffb.GetFileSize(), 3444U);
+#endif
     EXPECT_TRUE(ffb.IsTextFile());
     EXPECT_TRUE(ffb.IsFlexTextFile());
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
@@ -620,16 +635,15 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
 TEST(test_ffilebuf, fct_bin_file)
 {
     FlexFileBuffer ffb;
-    std::string test_file("test");
-    auto path = fs::temp_directory_path() / test_file;
-    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    auto path = fs::temp_directory_path() / "test";
+    std::fstream ofs(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     ofs << '\x05' << '\x44' << '\x02' << '\x43' <<
            '\xA5' << '\x5A' << '\x9C' << '\x66' <<
            '\x76' << '\x81' << '\x09' << '\x9E';
     ofs.close();
     // Check unspecified FLEX binary file.
-    ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
+    ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), 12U);
     EXPECT_FALSE(ffb.IsTextFile());
     EXPECT_FALSE(ffb.IsFlexTextFile());

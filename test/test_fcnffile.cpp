@@ -32,7 +32,7 @@ namespace fs = std::filesystem;
 
 static bool createCnfFile(const std::string &path)
 {
-    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    std::ofstream ofs(path);
     bool retval = false;
 
     if (ofs.is_open())
@@ -65,7 +65,7 @@ static bool createCnfFile(const std::string &path)
 
 TEST(test_bcnffile, ctor)
 {
-    const std::string path1{"/tmp/cnf_file1.ini"};
+    const auto path1 = (fs::temp_directory_path() / "cnf1.conf").u8string();
     EXPECT_TRUE(createCnfFile(path1));
     FlexemuConfigFile cnfFile1(path1);
     EXPECT_TRUE(cnfFile1.IsValid());
@@ -76,16 +76,17 @@ TEST(test_bcnffile, ctor)
     EXPECT_THAT([&](){ FlexemuConfigFile cnfFile2(path2); },
             testing::Throws<FlexException>());
 
-    const std::string path3 = "/tmp/not_existent_file.conf";
+    const auto path3 =
+        (fs::temp_directory_path() / "not_existent_file.conf").u8string();
     EXPECT_THAT([&](){ FlexemuConfigFile cnfFile3(path3); },
             testing::Throws<FlexException>());
 }
 
 TEST(test_bcnffile, move_ctor)
 {
-    const std::string path1{"/tmp/cnf_file1.ini"};
-    EXPECT_TRUE(createCnfFile(path1));
-    FlexemuConfigFile cnfFile1(path1);
+    const auto path = (fs::temp_directory_path() / "cnf2.conf").u8string();
+    EXPECT_TRUE(createCnfFile(path));
+    FlexemuConfigFile cnfFile1(path);
     auto cnfFile2(std::move(cnfFile1));
 
     /* Intentionally test object after move. */
@@ -95,15 +96,15 @@ TEST(test_bcnffile, move_ctor)
     /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
     EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 5U);
-    EXPECT_EQ(cnfFile2.GetFileName(), path1);
-    fs::remove(path1);
+    EXPECT_EQ(cnfFile2.GetFileName(), path);
+    fs::remove(path);
 }
 
 TEST(test_bcnffile, move_assignment)
 {
-    const std::string path1{"/tmp/cnf_file1.ini"};
-    EXPECT_TRUE(createCnfFile(path1));
-    FlexemuConfigFile cnfFile1(path1);
+    const auto path = (fs::temp_directory_path() / "cnf3.conf").u8string();
+    EXPECT_TRUE(createCnfFile(path));
+    FlexemuConfigFile cnfFile1(path);
     auto cnfFile2 = std::move(cnfFile1);
 
     /* Intentionally test object after move. */
@@ -112,14 +113,14 @@ TEST(test_bcnffile, move_assignment)
     EXPECT_FALSE(cnfFile1.IsValid());
     /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
-    EXPECT_EQ(cnfFile2.GetFileName(), path1);
+    EXPECT_EQ(cnfFile2.GetFileName(), path);
     EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 5U);
-    fs::remove(path1);
+    fs::remove(path);
 }
 
 TEST(test_bcnffile, fct_ReadIoDevices)
 {
-    const std::string path{"/tmp/cnf_file1.ini"};
+    const auto path = (fs::temp_directory_path() / "cnf4.conf").u8string();
     ASSERT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile(path);
     ASSERT_TRUE(cnfFile.IsValid());
@@ -162,7 +163,7 @@ TEST(test_bcnffile, fct_ReadIoDevices)
 
 TEST(test_bcnffile, fct_GetDebugSupportOption)
 {
-    const std::string path{"/tmp/cnf_file2.ini"};
+    const auto path = (fs::temp_directory_path() / "cnf5.conf").u8string();
     ASSERT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile(path);
     ASSERT_TRUE(cnfFile.IsValid());
@@ -179,7 +180,7 @@ TEST(test_bcnffile, fct_GetDebugSupportOption)
 
 TEST(test_bcnffile, fct_ReadIoDevices_exceptions)
 {
-    const std::string path{"/tmp/cnf_file3.ini"};
+    const auto path = (fs::temp_directory_path() / "cnf6.conf").u8string();
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
@@ -255,7 +256,7 @@ TEST(test_bcnffile, fct_ReadIoDevices_exceptions)
 
 TEST(test_bcnffile, fct_GetDebugSupportOption_exceptions)
 {
-    const std::string path{"/tmp/cnf_file3.ini"};
+    const auto path = (fs::temp_directory_path() / "cnf7.conf").u8string();
         std::fstream ofs(path, std::ios::out | std::ios::trunc);
     ASSERT_TRUE(ofs.is_open());
     ofs <<

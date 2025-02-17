@@ -782,7 +782,7 @@ if(UNIX)
 # Add custom target always executed to update src/metadata.json.
 add_custom_target(
     metadata_src ALL
-    ${CMAKE_BINARY_DIR}/src/updatemd -l -k src -f metadata.json
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/updatemd -l -k src -f metadata.json
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
     DEPENDS updatemd ${flex_SOURCES} ${flex2hex_SOURCES} ${dsktool_SOURCES} ${mdcrtool_SOURCES} ${flexemu_SOURCES} ${flexplorer_SOURCES}
     COMMENT "Updating src/metadata.json"
