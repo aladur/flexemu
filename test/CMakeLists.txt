@@ -41,8 +41,8 @@ endif()
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
-# Copy files to binary dir. They are needed when executing tests.
-file(COPY data DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+# Copy test files to binary dir. They are needed when executing unittests.
+file(COPY data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 set(unittests_SOURCES
     test_benv.cpp
@@ -153,9 +153,10 @@ target_link_libraries(unittests PRIVATE
     Threads::Threads
     gtest
 )
+# Working directory of the unittests executable is test subdirectory
+# of the cmake build directory.
 add_test(NAME unittests
     COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/unittests
-    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 )
 
 if(UNIX)
