@@ -65,6 +65,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
     pia2v5(cpu),
     drisel(fdc),
     command(inout, scheduler, fdc, options),
+    tstdev(512U),
     gui(cpu, memory, scheduler, inout, vico1, vico2,
         joystickIO, keyboardIO, terminalIO, pia1, p_options)
 {
@@ -150,6 +151,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
         ioDevices.insert({ rtc.getName(), rtc });
         inout.set_rtc(&rtc);
     }
+    ioDevices.insert({ tstdev.getName(), tstdev });
 
     scheduler.set_frequency(options.frequency);
 

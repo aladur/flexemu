@@ -46,6 +46,7 @@
 #include "mc146818.h"
 #include "qtgui.h"
 #include "drisel.h"
+#include "tstdev.h"
 #include "iodevdbg.h"
 #include <string>
 #include <map>
@@ -89,6 +90,7 @@ private:
     Command command;
     VideoControl1 vico1;
     VideoControl2 vico2;
+    TestDevice tstdev;
     QtGui gui;
     std::map<std::string, IoDevice &> ioDevices;
     std::vector<IoDeviceDebug> debugLogDevices;

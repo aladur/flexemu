@@ -250,6 +250,7 @@ flexemu_SOURCES = \
 	termimpf.cpp \
 	termimps.cpp \
 	terminal.cpp \
+	tstdev.cpp \
 	vico1.cpp \
 	vico2.cpp \
 	wd1793.cpp \
@@ -362,6 +363,7 @@ flexemu_SOURCES = \
 	termimpi.h \
 	termimps.h \
 	terminal.h \
+	tstdev.h \
 	typedefs.h \
 	vico1.h \
 	vico2.h \

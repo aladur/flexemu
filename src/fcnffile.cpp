@@ -34,7 +34,8 @@ static const std::set<std::string> &GetValidDevices()
     static const std::set<std::string> validDevices
     {
          "mmu", "acia1", "pia1", "pia2", "fdc",
-         "drisel", "command", "vico1", "vico2", "rtc"
+         "drisel", "command", "vico1", "vico2", "rtc",
+         "tstdev",
     };
 
     return validDevices;

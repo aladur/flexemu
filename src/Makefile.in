@@ -203,8 +203,9 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-soptions.$(OBJEXT) flexemu-termimpc.$(OBJEXT) \
 	flexemu-termimpd.$(OBJEXT) flexemu-termimpf.$(OBJEXT) \
 	flexemu-termimps.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
-	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
-	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
+	flexemu-tstdev.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
+	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
+	flexemu-winmain.$(OBJEXT)
 am__objects_1 =
 am__objects_2 = $(am__objects_1)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
@@ -324,9 +325,9 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/flexemu-termimpd.Po \
 	./$(DEPDIR)/flexemu-termimpf.Po \
 	./$(DEPDIR)/flexemu-termimps.Po \
-	./$(DEPDIR)/flexemu-terminal.Po ./$(DEPDIR)/flexemu-vico1.Po \
-	./$(DEPDIR)/flexemu-vico2.Po ./$(DEPDIR)/flexemu-wd1793.Po \
-	./$(DEPDIR)/flexemu-winmain.Po \
+	./$(DEPDIR)/flexemu-terminal.Po ./$(DEPDIR)/flexemu-tstdev.Po \
+	./$(DEPDIR)/flexemu-vico1.Po ./$(DEPDIR)/flexemu-vico2.Po \
+	./$(DEPDIR)/flexemu-wd1793.Po ./$(DEPDIR)/flexemu-winmain.Po \
 	./$(DEPDIR)/flexplorer-drawnwid.Po \
 	./$(DEPDIR)/flexplorer-drawnwid_moc.Po \
 	./$(DEPDIR)/flexplorer-fpattrui.Po \
@@ -930,6 +931,7 @@ flexemu_SOURCES = \
 	termimpf.cpp \
 	termimps.cpp \
 	terminal.cpp \
+	tstdev.cpp \
 	vico1.cpp \
 	vico2.cpp \
 	wd1793.cpp \
@@ -1042,6 +1044,7 @@ flexemu_SOURCES = \
 	termimpi.h \
 	termimps.h \
 	terminal.h \
+	tstdev.h \
 	typedefs.h \
 	vico1.h \
 	vico2.h \
@@ -1543,6 +1546,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-termimpf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-termimps.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-terminal.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-tstdev.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico2.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-wd1793.Po@am__quote@ # am--include-marker
@@ -2995,6 +2999,20 @@ flexemu-terminal.obj: terminal.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-terminal.obj `if test -f 'terminal.cpp'; then $(CYGPATH_W) 'terminal.cpp'; else $(CYGPATH_W) '$(srcdir)/terminal.cpp'; fi`
 
+flexemu-tstdev.o: tstdev.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-tstdev.o -MD -MP -MF $(DEPDIR)/flexemu-tstdev.Tpo -c -o flexemu-tstdev.o `test -f 'tstdev.cpp' || echo '$(srcdir)/'`tstdev.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-tstdev.Tpo $(DEPDIR)/flexemu-tstdev.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tstdev.cpp' object='flexemu-tstdev.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-tstdev.o `test -f 'tstdev.cpp' || echo '$(srcdir)/'`tstdev.cpp
+
+flexemu-tstdev.obj: tstdev.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-tstdev.obj -MD -MP -MF $(DEPDIR)/flexemu-tstdev.Tpo -c -o flexemu-tstdev.obj `if test -f 'tstdev.cpp'; then $(CYGPATH_W) 'tstdev.cpp'; else $(CYGPATH_W) '$(srcdir)/tstdev.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-tstdev.Tpo $(DEPDIR)/flexemu-tstdev.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tstdev.cpp' object='flexemu-tstdev.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-tstdev.obj `if test -f 'tstdev.cpp'; then $(CYGPATH_W) 'tstdev.cpp'; else $(CYGPATH_W) '$(srcdir)/tstdev.cpp'; fi`
+
 flexemu-vico1.o: vico1.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-vico1.o -MD -MP -MF $(DEPDIR)/flexemu-vico1.Tpo -c -o flexemu-vico1.o `test -f 'vico1.cpp' || echo '$(srcdir)/'`vico1.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-vico1.Tpo $(DEPDIR)/flexemu-vico1.Po
@@ -3952,6 +3970,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-termimpf.Po
 	-rm -f ./$(DEPDIR)/flexemu-termimps.Po
 	-rm -f ./$(DEPDIR)/flexemu-terminal.Po
+	-rm -f ./$(DEPDIR)/flexemu-tstdev.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico1.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po
 	-rm -f ./$(DEPDIR)/flexemu-wd1793.Po
@@ -4136,6 +4155,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-termimpf.Po
 	-rm -f ./$(DEPDIR)/flexemu-termimps.Po
 	-rm -f ./$(DEPDIR)/flexemu-terminal.Po
+	-rm -f ./$(DEPDIR)/flexemu-tstdev.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico1.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po
 	-rm -f ./$(DEPDIR)/flexemu-wd1793.Po

@@ -268,6 +268,7 @@
     <ClCompile Include="termimpf.cpp" />
     <ClCompile Include="termimps.cpp" />
     <ClCompile Include="terminal.cpp" />
+    <ClCompile Include="tstdev.cpp" />
     <ClCompile Include="vico1.cpp" />
     <ClCompile Include="vico2.cpp" />
     <ClCompile Include="wd1793.cpp" />
@@ -500,6 +501,7 @@
     <ClInclude Include="termimpi.h" />
     <ClInclude Include="termimps.h" />
     <ClInclude Include="terminal.h" />
+    <ClInclude Include="tstdev.h" />
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="vico1.h" />
     <ClInclude Include="vico2.h" />

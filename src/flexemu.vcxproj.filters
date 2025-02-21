@@ -195,6 +195,9 @@
     <ClCompile Include="termimps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tstdev.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="flexemu.rc">
@@ -496,6 +499,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="terminal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tstdev.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="typedefs.h">
