@@ -64,7 +64,7 @@ static bool createCnfFile(const std::string &path)
     return retval;
 }
 
-TEST(test_bcnffile, ctor)
+TEST(test_fcnffile, ctor)
 {
     const auto path1 = (fs::temp_directory_path() / "cnf1.conf").u8string();
     EXPECT_TRUE(createCnfFile(path1));
@@ -83,7 +83,7 @@ TEST(test_bcnffile, ctor)
             testing::Throws<FlexException>());
 }
 
-TEST(test_bcnffile, move_ctor)
+TEST(test_fcnffile, move_ctor)
 {
     const auto path = (fs::temp_directory_path() / "cnf2.conf").u8string();
     EXPECT_TRUE(createCnfFile(path));
@@ -101,7 +101,7 @@ TEST(test_bcnffile, move_ctor)
     fs::remove(path);
 }
 
-TEST(test_bcnffile, move_assignment)
+TEST(test_fcnffile, move_assignment)
 {
     const auto path = (fs::temp_directory_path() / "cnf3.conf").u8string();
     EXPECT_TRUE(createCnfFile(path));
@@ -119,7 +119,7 @@ TEST(test_bcnffile, move_assignment)
     fs::remove(path);
 }
 
-TEST(test_bcnffile, fct_ReadIoDevices)
+TEST(test_fcnffile, fct_ReadIoDevices)
 {
     const auto path = (fs::temp_directory_path() / "cnf4.conf").u8string();
     ASSERT_TRUE(createCnfFile(path));
@@ -167,7 +167,7 @@ TEST(test_bcnffile, fct_ReadIoDevices)
     fs::remove(path);
 }
 
-TEST(test_bcnffile, fct_GetDebugSupportOption)
+TEST(test_fcnffile, fct_GetDebugSupportOption)
 {
     const auto path = (fs::temp_directory_path() / "cnf5.conf").u8string();
     ASSERT_TRUE(createCnfFile(path));
@@ -184,7 +184,7 @@ TEST(test_bcnffile, fct_GetDebugSupportOption)
     fs::remove(path);
 }
 
-TEST(test_bcnffile, fct_ReadIoDevices_exceptions)
+TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
 {
     const auto path = (fs::temp_directory_path() / "cnf6.conf").u8string();
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
@@ -248,7 +248,7 @@ TEST(test_bcnffile, fct_ReadIoDevices_exceptions)
     fs::remove(path);
 }
 
-TEST(test_bcnffile, fct_GetDebugSupportOption_exceptions)
+TEST(test_fcnffile, fct_GetDebugSupportOption_exceptions)
 {
     const auto path = (fs::temp_directory_path() / "cnf7.conf").u8string();
         std::fstream ofs(path, std::ios::out | std::ios::trunc);
