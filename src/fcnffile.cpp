@@ -98,7 +98,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
             mapping.byteSize = -1;
             addressStream << std::hex << addressString;
             addressStream >> baseAddress;
-            if (baseAddress < GENIO_BASE || baseAddress > 0xffff)
+            if (baseAddress > 0xffff)
             {
                 auto lineNumber = iniFile.GetLineNumber(section, iter.first);
                 throw FlexException(FERR_INVALID_LINE_IN_FILE,
@@ -112,7 +112,8 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
                 std::stringstream byteSizeStream;
                 byteSizeStream << std::hex << byteSizeString;
                 byteSizeStream >> mapping.byteSize;
-                if (mapping.byteSize <= 0 || mapping.byteSize > 64)
+                if (mapping.byteSize <= 0 || mapping.byteSize > 4096 ||
+                        baseAddress + mapping.byteSize - 1U > 0xffff)
                 {
                     auto lineNumber =
                         iniFile.GetLineNumber(section, iter.first);

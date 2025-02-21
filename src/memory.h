@@ -50,7 +50,7 @@ struct sOptions;
 struct ioDeviceAccess
 {
     Byte deviceIndex{0};
-    Byte addressOffset{0};
+    Word addressOffset{0};
 };
 
 class Memory : public MemoryTarget<DWord>, public BObserver
@@ -68,6 +68,7 @@ private:
                               // (instead of Eurocom II/V7)
     DWord memory_size{0x10000};
     DWord video_ram_size{0};
+    Word genio_base{0xFFF0U};
     Byte ramBank{0};
     std::vector<Byte> memory;
     std::vector<Byte> video_ram;
@@ -116,9 +117,9 @@ public:
     // inlined for optimized performance.
     inline void write_byte(Word address, Byte value)
     {
-        if (address >= GENIO_BASE)
+        if (address >= genio_base)
         {
-            auto access = deviceAccess[address - GENIO_BASE];
+            auto access = deviceAccess[address - genio_base];
 
             if (access.deviceIndex != NO_DEVICE)
             {
@@ -154,9 +155,9 @@ public:
 
     inline Byte read_byte(Word address)
     {
-        if (address >= GENIO_BASE)
+        if (address >= genio_base)
         {
-            auto access = deviceAccess[address - GENIO_BASE];
+            auto access = deviceAccess[address - genio_base];
 
             if (access.deviceIndex != NO_DEVICE)
             {

@@ -97,14 +97,9 @@ TERM_LINES = (WINDOWHEIGHT / 10), // Terminal lines
 TERM_COLUMNS = (WINDOWWIDTH / 6), // Terminal columns
 };
 
-/* GENIO_BASE provides a general address range  */
-/* where memory mapped I/O is placed            */
-/* the range is: $fc00 - ffff                   */
-/* It has to be a multiple of 1024              */
 /* ROM_BASE defines the base address where ROM  */
 /* memory is locatad (read-only memory).        */
 enum : uint16_t {
-GENIO_BASE = 0xfc00, /* Start addr. of mm-I/O up to 0xffff */
 ROM_BASE = 0xf000, /* Start addr. of ROM up to 0xffff */
 };
 

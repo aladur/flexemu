@@ -27,6 +27,7 @@
 #include "soptions.h"
 #include <cstring>
 #include <iostream>
+#include <cassert>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
@@ -39,8 +40,7 @@ Memory::Memory(const struct sOptions &options) :
     isHiMem(options.isHiMem),
     isFlexibleMmu(options.isFlexibleMmu),
     isEurocom2V5(options.isEurocom2V5),
-
-    deviceAccess(0x10000 - GENIO_BASE, ioDeviceAccess{NO_DEVICE, 0U})
+    deviceAccess(0x10000U - genio_base, ioDeviceAccess{NO_DEVICE, 0U})
 
 {
     memory.resize(memory_size);
@@ -224,10 +224,20 @@ bool Memory::add_io_device(
         size = sizeOfIo;
     }
 
-    if (base_address < GENIO_BASE ||
-        (static_cast<int>(base_address) + size > 0xffff))
+    if (static_cast<int>(base_address) + size > 0xffff)
     {
         return false;
+    }
+
+    if (base_address < genio_base)
+    {
+        // Increase deviceAccess vector for lower addresses down to
+        // base_address.
+        deviceAccess.insert(deviceAccess.begin(),
+                genio_base - base_address,
+                ioDeviceAccess{NO_DEVICE, 0U});
+        genio_base = base_address;
+        assert((0x10000U - genio_base) == deviceAccess.size());
     }
 
     auto deviceIndex = static_cast<Byte>(ioDevices.size());
@@ -238,15 +248,15 @@ bool Memory::add_io_device(
     ioDevices.push_back(std::ref(device));
 
     // To access a device store the device index and it's byte offset
-    // in a vector. The vector index is the address - GENIO_BASE.
+    // in a vector. The vector index is the address - genio_base.
     // If device index contains NO_DEVICE there is no memory mapped device
     // at this address location.
     for (Word offset = 0; offset < static_cast<Word>(size); ++offset)
     {
-        auto byteOffset = static_cast<Byte>(offset % sizeOfIo);
+        auto byteOffset = static_cast<Word>(offset % sizeOfIo);
         ioDeviceAccess access{ deviceIndex, byteOffset };
 
-        deviceAccess[base_address + offset - GENIO_BASE] = access;
+        deviceAccess[base_address + offset - genio_base] = access;
     }
 
     return true;

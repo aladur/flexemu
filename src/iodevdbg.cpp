@@ -57,7 +57,7 @@ Byte IoDeviceDebug::readIo(Word offset)
     if (fstream.is_open())
     {
         fstream << fmt::format(
-                "mode=read  offset={:2} result={:02X} device={}\n",
+                "mode=read  offset={:4} result={:02X} device={}\n",
                 offset, static_cast<Word>(result), device.getName());
         fstream.close();
     }
@@ -74,7 +74,7 @@ void IoDeviceDebug::writeIo(Word offset, Byte value)
     if (fstream.is_open())
     {
         fstream << fmt::format(
-                "mode=write offset={:2} value={:02X}  device={}\n",
+                "mode=write offset={:4} value={:02X}  device={}\n",
                 offset, static_cast<Word>(value), device.getName());
         fstream.close();
     }

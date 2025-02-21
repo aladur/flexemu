@@ -44,6 +44,7 @@ static bool createCnfFile(const std::string &path)
             "acia1=FC00\n"
             "vico1=FD20\n"
             "rtc=FDD0,25\n"
+            "pia2=0,1000\n"
             "[IoDeviceLogging]\n"
             "logFilePath=/dir/subdir/subdir/file.log\n"
             "devices=mmu,pia1,acia1\n"
@@ -95,7 +96,7 @@ TEST(test_bcnffile, move_ctor)
     EXPECT_FALSE(cnfFile1.IsValid());
     /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
-    EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 5U);
+    EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 6U);
     EXPECT_EQ(cnfFile2.GetFileName(), path);
     fs::remove(path);
 }
@@ -114,7 +115,7 @@ TEST(test_bcnffile, move_assignment)
     /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
     EXPECT_EQ(cnfFile2.GetFileName(), path);
-    EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 5U);
+    EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 6U);
     fs::remove(path);
 }
 
@@ -125,7 +126,7 @@ TEST(test_bcnffile, fct_ReadIoDevices)
     FlexemuConfigFile cnfFile(path);
     ASSERT_TRUE(cnfFile.IsValid());
     const auto deviceMappings = cnfFile.ReadIoDevices();
-    EXPECT_EQ(deviceMappings.size(), 5U);
+    EXPECT_EQ(deviceMappings.size(), 6U);
     for (const auto &deviceParams : deviceMappings)
     {
         if (deviceParams.name == "mmu")
@@ -152,6 +153,11 @@ TEST(test_bcnffile, fct_ReadIoDevices)
         {
             EXPECT_EQ(deviceParams.baseAddress, 0xFDD0);
             EXPECT_EQ(deviceParams.byteSize, 0x25);
+        }
+        else if (deviceParams.name == "pia2")
+        {
+            EXPECT_EQ(deviceParams.baseAddress, 0x0000);
+            EXPECT_EQ(deviceParams.byteSize, 4096);
         }
         else
         {
@@ -197,18 +203,6 @@ TEST(test_bcnffile, fct_ReadIoDevices_exceptions)
     ASSERT_TRUE(ofs.is_open());
     ofs <<
         "[IoDevices]\n"
-        "mmu=FBFF\n";
-    ofs.close();
-    FlexemuConfigFile cnfFile2(path);
-    ASSERT_TRUE(cnfFile2.IsValid());
-    EXPECT_THAT([&](){ cnfFile2.ReadIoDevices(); },
-            testing::Throws<FlexException>());
-    fs::remove(path);
-
-    ofs.open(path, std::ios::out | std::ios::trunc);
-    ASSERT_TRUE(ofs.is_open());
-    ofs <<
-        "[IoDevices]\n"
         "mmu=10000\n";
     ofs.close();
     FlexemuConfigFile cnfFile3(path);
@@ -233,7 +227,7 @@ TEST(test_bcnffile, fct_ReadIoDevices_exceptions)
     ASSERT_TRUE(ofs.is_open());
     ofs <<
         "[IoDevices]\n"
-        "mmu=FD00,41\n";
+        "mmu=FD00,1001\n";
     ofs.close();
     FlexemuConfigFile cnfFile5(path);
     ASSERT_TRUE(cnfFile5.IsValid());
