@@ -27,13 +27,14 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <optional>
 
 
 struct sIoDeviceMapping
 {
     std::string name;
     Word baseAddress{};
-    int byteSize{};
+    std::optional<Word> byteSize;
 };
 
 

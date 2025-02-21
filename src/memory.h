@@ -37,6 +37,7 @@
 #include "bobserv.h"
 #include <array>
 #include <iostream>
+#include <optional>
 
 // Maximum number of video RAM pointers supported.
 // Each video RAM page has as size of 16KByte.
@@ -92,7 +93,8 @@ private:
 
 public:
 
-    bool add_io_device(IoDevice &device, Word base_address, int size = -1);
+    bool add_io_device(IoDevice &device, Word base_address,
+            std::optional<Word> size = std::nullopt);
 
     // memory interface
 public:

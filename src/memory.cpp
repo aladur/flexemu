@@ -215,16 +215,16 @@ void Memory::init_blocks_to_update()
 bool Memory::add_io_device(
         IoDevice &device,
         Word base_address,
-        int size /* = -1 */)
+        std::optional<Word> size)
 {
     Word sizeOfIo = device.sizeOfIo();
 
-    if (size < 0)
+    if (!size.has_value())
     {
         size = sizeOfIo;
     }
 
-    if (static_cast<int>(base_address) + size > 0xffff)
+    if (static_cast<int>(base_address) + size.value() > 0xffff)
     {
         return false;
     }
@@ -251,7 +251,7 @@ bool Memory::add_io_device(
     // in a vector. The vector index is the address - genio_base.
     // If device index contains NO_DEVICE there is no memory mapped device
     // at this address location.
-    for (Word offset = 0; offset < static_cast<Word>(size); ++offset)
+    for (Word offset = 0; offset < size.value(); ++offset)
     {
         auto byteOffset = static_cast<Word>(offset % sizeOfIo);
         ioDeviceAccess access{ deviceIndex, byteOffset };

@@ -132,32 +132,34 @@ TEST(test_fcnffile, fct_ReadIoDevices)
         if (deviceParams.name == "mmu")
         {
             EXPECT_EQ(deviceParams.baseAddress, 0xFFFF);
-            EXPECT_EQ(deviceParams.byteSize, -1);
+            EXPECT_FALSE(deviceParams.byteSize.has_value());
         }
         else if (deviceParams.name == "pia1")
         {
             EXPECT_EQ(deviceParams.baseAddress, 0xFE00);
-            EXPECT_EQ(deviceParams.byteSize, -1);
+            EXPECT_FALSE(deviceParams.byteSize.has_value());
         }
         else if (deviceParams.name == "acia1")
         {
             EXPECT_EQ(deviceParams.baseAddress, 0xFC00);
-            EXPECT_EQ(deviceParams.byteSize, -1);
+            EXPECT_FALSE(deviceParams.byteSize.has_value());
         }
         else if (deviceParams.name == "vico1")
         {
             EXPECT_EQ(deviceParams.baseAddress, 0xFD20);
-            EXPECT_EQ(deviceParams.byteSize, -1);
+            EXPECT_FALSE(deviceParams.byteSize.has_value());
         }
         else if (deviceParams.name == "rtc")
         {
             EXPECT_EQ(deviceParams.baseAddress, 0xFDD0);
-            EXPECT_EQ(deviceParams.byteSize, 0x25);
+            EXPECT_TRUE(deviceParams.byteSize.has_value() &&
+                    deviceParams.byteSize.value() == 0x25);
         }
         else if (deviceParams.name == "pia2")
         {
             EXPECT_EQ(deviceParams.baseAddress, 0x0000);
-            EXPECT_EQ(deviceParams.byteSize, 4096);
+            EXPECT_TRUE(deviceParams.byteSize.has_value() &&
+                    deviceParams.byteSize.value() == 4096);
         }
         else
         {

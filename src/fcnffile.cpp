@@ -96,7 +96,6 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
             std::stringstream addressStream;
 
             mapping.name = iter.first;
-            mapping.byteSize = -1;
             addressStream << std::hex << addressString;
             addressStream >> baseAddress;
             if (baseAddress > 0xffff)
@@ -111,10 +110,11 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
             if (std::getline(stream, byteSizeString))
             {
                 std::stringstream byteSizeStream;
+                int byteSize;
                 byteSizeStream << std::hex << byteSizeString;
-                byteSizeStream >> mapping.byteSize;
-                if (mapping.byteSize <= 0 || mapping.byteSize > 4096 ||
-                        baseAddress + mapping.byteSize - 1U > 0xffff)
+                byteSizeStream >> byteSize;
+                if (byteSize <= 0 || byteSize > 4096 ||
+                        baseAddress + byteSize - 1U > 0xffff)
                 {
                     auto lineNumber =
                         iniFile.GetLineNumber(section, iter.first);
@@ -123,6 +123,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
                                         iter.first + "=" + iter.second,
                                         iniFile.GetFileName());
                 }
+                mapping.byteSize = static_cast<Word>(byteSize);
             }
 
             mapping.baseAddress = static_cast<Word>(baseAddress);
