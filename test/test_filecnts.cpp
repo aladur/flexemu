@@ -440,7 +440,6 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_cpm_disk)
     const auto path = temp_dir / filename;
     const int trcks = 40;
     const int secs = 5;
-    struct stat sbuf{};
 
     std::fstream fs(path, newmode);
     ASSERT_TRUE(fs.is_open());
@@ -461,8 +460,8 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_cpm_disk)
     }
 
     EXPECT_FALSE(disk->IsFlexFormat());
-    ASSERT_TRUE(stat(path.u8string().c_str(), &sbuf) == 0);
-    EXPECT_EQ(sbuf.st_size, trcks * secs * 2 * sector_size + 16);
+    ASSERT_TRUE(fs::exists(path));
+    EXPECT_EQ(fs::file_size(path), trcks * secs * 2 * sector_size + 16);
     disk.reset();
     fs::remove(path);
 }

@@ -214,11 +214,9 @@ public:
         }
 #endif
 #ifdef UNIX
-        struct stat sbuf{};
-
-        if (stat(path.c_str(), &sbuf) == 0)
+        if (fs::exists(path))
         {
-            chmod(path.c_str(), sbuf.st_mode | S_IXUSR);
+            fs::permissions(path, fs::perms::owner_exec, fs::perm_options::add);
         }
 #endif
     }

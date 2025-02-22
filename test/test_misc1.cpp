@@ -24,7 +24,6 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "misc1.h"
-#include <sys/stat.h>
 #include <filesystem>
 
 
@@ -294,9 +293,9 @@ TEST(test_misc1, fct_multimatches)
 #ifdef _WIN32
 TEST(test_misc1, fct_getExecutablePath)
 {
-    struct stat sbuf;
-    auto path = flx::getExecutablePath();
-    bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
+    const auto path = flx::getExecutablePath();
+    const auto status = fs::status(path);
+    bool result = fs::exists(path) && fs::is_directory(status);
 
     EXPECT_TRUE(result);
 }
@@ -304,32 +303,32 @@ TEST(test_misc1, fct_getExecutablePath)
 
 TEST(test_misc1, fct_getHomeDirectory)
 {
-    struct stat sbuf{};
-    auto path = flx::getHomeDirectory();
-    bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
+    const auto path = flx::getHomeDirectory();
+    const auto status = fs::status(path);
+    bool result = fs::exists(path) && fs::is_directory(status);
 
     EXPECT_TRUE(result);
 }
 
 TEST(test_misc1, fct_getTempPath)
 {
-    struct stat sbuf{};
     auto path = flx::getTempPath();
     if (path.empty())
     {
         return;
     }
 
-    bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
+    const auto status = fs::status(path);
+    bool result = fs::exists(path) && fs::is_directory(status);
 
     EXPECT_TRUE(result);
 }
 
 TEST(test_misc1, fct_getCurrentPath)
 {
-    struct stat sbuf{};
     auto path = flx::getCurrentPath();
-    bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
+    const auto status = fs::status(path);
+    bool result = fs::exists(path) && fs::is_directory(status);
 
     EXPECT_TRUE(result);
 }
