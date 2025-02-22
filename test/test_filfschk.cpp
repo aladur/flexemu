@@ -23,6 +23,7 @@
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include "misc1.h"
 #include "ffilecnt.h"
 #include "ffilebuf.h"
 #include "filfschk.h"
@@ -59,7 +60,7 @@ protected:
     {
         disk.reset(nullptr);
         fs::remove(diskPath);
-        fs::remove(fs::current_path() / "data" / ".random");
+        fs::remove(fs::current_path() / "data" / RANDOM_FILE_LIST_NEW);
     }
 
     using dirfct_t = void (s_dir_sector &);

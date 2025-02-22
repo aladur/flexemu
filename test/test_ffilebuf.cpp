@@ -629,7 +629,7 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
     EXPECT_TRUE(ffb.IsFlexTextFile());
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
     fs::remove(path);
-    fs::remove(fs::current_path() / "data" / ".random");
+    fs::remove(fs::current_path() / "data" / RANDOM_FILE_LIST_NEW);
 }
 
 TEST(test_ffilebuf, fct_bin_file)

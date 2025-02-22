@@ -367,7 +367,7 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckForFileAttributeAndUpdate)
         const auto diskdir = temp_dir / diskdirs[idx];
         if (idx == RW)
         {
-            fs::remove(diskdir / "random");
+            fs::remove(diskdir / RANDOM_FILE_LIST);
         }
         RandomFileCheck randomFileCheck(diskdir.u8string());
         std::string filename{"random03.dat"};
@@ -433,7 +433,12 @@ TEST_F(test_FlexRandomFileFixture, fct_IsValidSectorMap)
 TEST_F(test_FlexRandomFileFixture, fct_UpdateRandomListToFile)
 {
     const std::array<const char *, 6> randomListFiles{
-        "random", ".random", "random", ".random", ".random", ".random"
+        RANDOM_FILE_LIST,
+        RANDOM_FILE_LIST_NEW,
+        RANDOM_FILE_LIST,
+        RANDOM_FILE_LIST_NEW,
+        RANDOM_FILE_LIST_NEW,
+        RANDOM_FILE_LIST_NEW,
     };
 
     for (int idx = RO; idx <= RWA; ++idx)
@@ -474,7 +479,7 @@ TEST_F(test_FlexRandomFileFixture, fct_UpdateRandomListToFile)
         }
         if (idx == RW)
         {
-            randomListFile = diskdir / "random";
+            randomListFile = diskdir / RANDOM_FILE_LIST;
             EXPECT_TRUE(!fs::exists(randomListFile));
         }
     }
@@ -510,7 +515,7 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckAllFilesAttributeAndUpdate)
         const auto diskdir = temp_dir / diskdirs[idx];
         if (idx == RW)
         {
-            fs::remove(diskdir / "random");
+            fs::remove(diskdir / RANDOM_FILE_LIST);
         }
         RandomFileCheck randomFileCheck(diskdir.u8string());
         randomFileCheck.CheckAllFilesAttributeAndUpdate();
