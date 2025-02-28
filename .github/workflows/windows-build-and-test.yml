@@ -106,14 +106,17 @@ jobs:
       - name: Qt x64 Directory Artifact
         shell: cmd
         run: |
-          mkdir result
-          dir /s %QTDIR%\x64 >result/qt${{ env.QT_VERSION }}-x64-dirlist.log
+          mkdir result\x64\Release
+          mkdir result\x64\Debug
+          dir /s %QTDIR%\x64 >result\x64\qt${{ env.QT_VERSION }}-x64-dirlist.log
 
       - name: Qt5 Win32 Directory Artifact
         if: ${{ matrix.qt-version == 5 }}
         shell: cmd
         run: |
-          dir /s %QTDIR%\Win32 >result/qt${{ env.QT_VERSION }}-win32-dirlist.log
+          mkdir result\Win32\Release
+          mkdir result\Win32\Debug
+          dir /s %QTDIR%\Win32 >result\Win32\qt${{ env.QT_VERSION }}-win32-dirlist.log
 
       - name: Test Win32
         if: ${{ matrix.qt-version == 5 }}
@@ -126,7 +129,8 @@ jobs:
           %BINPATH%\flex2hex.exe -V
           %BINPATH%\dsktool.exe -l disks\games.dsk
           %BINPATH%\dsktool.exe -f new_r.dsk -S 80dsdd
-          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r.dsk
+          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r5.dsk
+          IF EXIST new_r.dsk COPY /Y new_r.dsk result\Win32\Release\new_r5.dsk
           %BINPATH%\dsktool.exe -l new_r.dsk
           echo ===== Debug =====
           set BINPATH=bin\Qt${{ env.QT_VERSION }}\Win32\Debug
@@ -134,11 +138,12 @@ jobs:
           %BINPATH%\mdcrtool.exe -V
           %BINPATH%\flex2hex.exe -V
           %BINPATH%\dsktool.exe -l disks\games.dsk
-          %BINPATH%\dsktool.exe -f new_d.dsk -S 80dsdd
-          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_d.dsk
+          %BINPATH%\dsktool.exe -f new_d5.dsk -S 80dsdd
+          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_d5.dsk
+          IF EXIST new_d5.dsk COPY /Y new_d5.dsk result\Win32\Debug\new_d5.dsk
           %BINPATH%\dsktool.exe -l new_d.dsk
 
-      - name: Test x64 Release
+      - name: Test x64
         shell: cmd
         run: |
           echo ===== Release =====
@@ -149,6 +154,7 @@ jobs:
           %BINPATH%\dsktool.exe -l disks\games.dsk
           %BINPATH%\dsktool.exe -f new_r.dsk -S 80dsdd -y
           %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r.dsk
+          IF EXIST new_r.dsk COPY /Y new_r.dsk result\x64\Release\new_r${{ matrix.qt-version }}.dsk
           %BINPATH%\dsktool.exe -l new_r.dsk
           echo ===== Debug =====
           set BINPATH=bin\Qt${{ env.QT_VERSION }}\x64\Debug
@@ -158,6 +164,7 @@ jobs:
           %BINPATH%\dsktool.exe -l disks\games.dsk
           %BINPATH%\dsktool.exe -f new_d.dsk -S 80dsdd -y
           %BINPATH%\dsktool.exe -C disks\system.dsk -T new_d.dsk
+          IF EXIST new_d.dsk COPY /Y new_d.dsk result\x64\Release\new_d${{ matrix.qt-version }}.dsk
           %BINPATH%\dsktool.exe -l new_d.dsk
 
       - name: Create Windows installer

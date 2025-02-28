@@ -45,6 +45,7 @@
 #include "iffilcnt.h"
 #include <cstring>
 #include <utility>
+#include <algorithm>
 
 static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
 
@@ -1353,19 +1354,10 @@ void FlexDisk::Create_sys_info_sector(s_sys_info_sector &sis,
 
     memset(&sis, 0, sizeof(sis));
 
-    int i = 0;
-
-    for (const char ch : name)
-    {
-        if (i == FLEX_DISKNAME_LENGTH || ch == '.' || ch == '\0')
-        {
-            break;
-        }
-
-        sis.sir.disk_name[i] = static_cast<char>(std::toupper(ch));
-        ++i;
-    }
-
+    auto diskname = getDiskName(name);
+    diskname.resize(FLEX_DISKNAME_LENGTH);
+    std::copy_n(diskname.cbegin(), FLEX_DISKNAME_LENGTH,
+            std::begin(sis.sir.disk_name));
     start = format.sectors;
     free = (format.sectors * format.tracks) - start;
     const auto time_now = time(nullptr);

@@ -303,6 +303,7 @@ extern Word getTrack0SectorCount(int tracks, int sectors);
 extern Word getSides(int tracks, int sectors);
 extern Word getBytesPerSector(uint32_t sizecode);
 extern size_t getFileSize(const s_flex_header &header);
+extern std::string getDiskName(const std::string &filename);
 
 #endif /* #ifndef __fromflex__ */
 

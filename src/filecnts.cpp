@@ -21,6 +21,8 @@
 
 #include "filecnts.h"
 #include <ostream>
+#include <codecvt>
+#include <locale>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
@@ -116,5 +118,42 @@ size_t getFileSize(const s_flex_header &header)
                ((header.sectors0 * header.sides0) +
                 ((header.tracks - 1) * (header.sectors * header.sides))) *
                  getBytesPerSector(header.sizecode);
+}
+
+std::string getDiskName(const std::string &filename)
+{
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
+    const auto u32name = convert.from_bytes(filename);
+    std::string diskname;
+    int i = 0;
+
+    if (!filename.empty() && filename[0] == '.')
+    {
+        return "FLEXDISK";
+    }
+
+    for (auto ch : u32name)
+    {
+        if (i == FLEX_DISKNAME_LENGTH || ch == '.' || ch == '\0')
+        {
+            break;
+        }
+
+        if (ch < ' ')
+        {
+            continue;
+        }
+
+        if (ch > '~')
+        {
+            ch = '_';
+        }
+
+        const auto ascii_ch = std::toupper(static_cast<int>(ch));
+        diskname.push_back(static_cast<char>(ascii_ch));
+         ++i;
+    }
+
+    return diskname;
 }
 
