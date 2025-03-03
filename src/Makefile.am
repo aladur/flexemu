@@ -446,6 +446,7 @@ mdcrtool_SOURCES = \
 	fversion.cpp \
 	mdcrfs.cpp \
 	mdcrtool.cpp \
+	wmain.cpp \
 	bdir.h \
 	bintervl.h \
 	bmembuf.h \
@@ -458,11 +459,13 @@ mdcrtool_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
-	typedefs.h
+	typedefs.h \
+	wmain.h
 
 flex2hex_SOURCES = \
 	flex2hex.cpp \
 	fversion.cpp \
+	wmain.cpp \
 	bintervl.h \
 	bmembuf.h \
 	config.h \
@@ -473,11 +476,13 @@ flex2hex_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
-	typedefs.h
+	typedefs.h \
+	wmain.h
 
 dsktool_SOURCES = \
 	dsktool.cpp \
 	fversion.cpp \
+	wmain.cpp \
 	bdate.h \
 	bdir.h \
 	btime.h \
@@ -504,7 +509,8 @@ dsktool_SOURCES = \
 	ifilecnt.h \
 	misc1.h \
 	rfilecnt.h \
-	typedefs.h
+	typedefs.h \
+	wmain.h
 
 libflex_a_SOURCES = \
 	bdate.cpp \

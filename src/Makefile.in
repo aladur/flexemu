@@ -159,7 +159,7 @@ am_libjsoncpp_a_OBJECTS = $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_re
 	$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.$(OBJEXT)
 libjsoncpp_a_OBJECTS = $(am_libjsoncpp_a_OBJECTS)
 am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT) \
-	dsktool-fversion.$(OBJEXT)
+	dsktool-fversion.$(OBJEXT) dsktool-wmain.$(OBJEXT)
 dsktool_OBJECTS = $(am_dsktool_OBJECTS)
 am__DEPENDENCIES_1 =
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -170,7 +170,7 @@ dsktool_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(dsktool_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_flex2hex_OBJECTS = flex2hex-flex2hex.$(OBJEXT) \
-	flex2hex-fversion.$(OBJEXT)
+	flex2hex-fversion.$(OBJEXT) flex2hex-wmain.$(OBJEXT)
 flex2hex_OBJECTS = $(am_flex2hex_OBJECTS)
 flex2hex_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(flex2hex_CXXFLAGS) \
@@ -248,7 +248,8 @@ flexplorer_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(flexplorer_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_mdcrtool_OBJECTS = mdcrtool-fversion.$(OBJEXT) \
-	mdcrtool-mdcrfs.$(OBJEXT) mdcrtool-mdcrtool.$(OBJEXT)
+	mdcrtool-mdcrfs.$(OBJEXT) mdcrtool-mdcrtool.$(OBJEXT) \
+	mdcrtool-wmain.$(OBJEXT)
 mdcrtool_OBJECTS = $(am_mdcrtool_OBJECTS)
 mdcrtool_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(mdcrtool_CXXFLAGS) \
@@ -280,10 +281,10 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	../fmt/src/$(DEPDIR)/libfmt_a-format.Po \
 	../fmt/src/$(DEPDIR)/libfmt_a-os.Po \
 	./$(DEPDIR)/dsktool-dsktool.Po ./$(DEPDIR)/dsktool-fversion.Po \
-	./$(DEPDIR)/flex2hex-flex2hex.Po \
-	./$(DEPDIR)/flex2hex-fversion.Po ./$(DEPDIR)/flexemu-absgui.Po \
-	./$(DEPDIR)/flexemu-acia1.Po ./$(DEPDIR)/flexemu-apprun.Po \
-	./$(DEPDIR)/flexemu-bjoystck.Po \
+	./$(DEPDIR)/dsktool-wmain.Po ./$(DEPDIR)/flex2hex-flex2hex.Po \
+	./$(DEPDIR)/flex2hex-fversion.Po ./$(DEPDIR)/flex2hex-wmain.Po \
+	./$(DEPDIR)/flexemu-absgui.Po ./$(DEPDIR)/flexemu-acia1.Po \
+	./$(DEPDIR)/flexemu-apprun.Po ./$(DEPDIR)/flexemu-bjoystck.Po \
 	./$(DEPDIR)/flexemu-blinxsys.Po ./$(DEPDIR)/flexemu-brkptui.Po \
 	./$(DEPDIR)/flexemu-brkptui_moc.Po ./$(DEPDIR)/flexemu-bui.Po \
 	./$(DEPDIR)/flexemu-bytereg.Po ./$(DEPDIR)/flexemu-cacttrns.Po \
@@ -382,7 +383,7 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/libflex_a-rndcheck.Po \
 	./$(DEPDIR)/mdcrtool-fversion.Po \
 	./$(DEPDIR)/mdcrtool-mdcrfs.Po \
-	./$(DEPDIR)/mdcrtool-mdcrtool.Po \
+	./$(DEPDIR)/mdcrtool-mdcrtool.Po ./$(DEPDIR)/mdcrtool-wmain.Po \
 	./$(DEPDIR)/updatemd-fversion.Po \
 	./$(DEPDIR)/updatemd-updatemd.Po
 am__mv = mv -f
@@ -1127,6 +1128,7 @@ mdcrtool_SOURCES = \
 	fversion.cpp \
 	mdcrfs.cpp \
 	mdcrtool.cpp \
+	wmain.cpp \
 	bdir.h \
 	bintervl.h \
 	bmembuf.h \
@@ -1139,11 +1141,13 @@ mdcrtool_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
-	typedefs.h
+	typedefs.h \
+	wmain.h
 
 flex2hex_SOURCES = \
 	flex2hex.cpp \
 	fversion.cpp \
+	wmain.cpp \
 	bintervl.h \
 	bmembuf.h \
 	config.h \
@@ -1154,11 +1158,13 @@ flex2hex_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
-	typedefs.h
+	typedefs.h \
+	wmain.h
 
 dsktool_SOURCES = \
 	dsktool.cpp \
 	fversion.cpp \
+	wmain.cpp \
 	bdate.h \
 	bdir.h \
 	btime.h \
@@ -1185,7 +1191,8 @@ dsktool_SOURCES = \
 	ifilecnt.h \
 	misc1.h \
 	rfilecnt.h \
-	typedefs.h
+	typedefs.h \
+	wmain.h
 
 libflex_a_SOURCES = \
 	bdate.cpp \
@@ -1479,8 +1486,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../fmt/src/$(DEPDIR)/libfmt_a-os.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-dsktool.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-fversion.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-wmain.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-flex2hex.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-fversion.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-wmain.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-absgui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-acia1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-apprun.Po@am__quote@ # am--include-marker
@@ -1608,6 +1617,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-fversion.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-mdcrfs.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-mdcrtool.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-wmain.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/updatemd-fversion.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/updatemd-updatemd.Po@am__quote@ # am--include-marker
 
@@ -2187,6 +2197,20 @@ dsktool-fversion.obj: fversion.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
 
+dsktool-wmain.o: wmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-wmain.o -MD -MP -MF $(DEPDIR)/dsktool-wmain.Tpo -c -o dsktool-wmain.o `test -f 'wmain.cpp' || echo '$(srcdir)/'`wmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-wmain.Tpo $(DEPDIR)/dsktool-wmain.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wmain.cpp' object='dsktool-wmain.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-wmain.o `test -f 'wmain.cpp' || echo '$(srcdir)/'`wmain.cpp
+
+dsktool-wmain.obj: wmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-wmain.obj -MD -MP -MF $(DEPDIR)/dsktool-wmain.Tpo -c -o dsktool-wmain.obj `if test -f 'wmain.cpp'; then $(CYGPATH_W) 'wmain.cpp'; else $(CYGPATH_W) '$(srcdir)/wmain.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-wmain.Tpo $(DEPDIR)/dsktool-wmain.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wmain.cpp' object='dsktool-wmain.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-wmain.obj `if test -f 'wmain.cpp'; then $(CYGPATH_W) 'wmain.cpp'; else $(CYGPATH_W) '$(srcdir)/wmain.cpp'; fi`
+
 flex2hex-flex2hex.o: flex2hex.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-flex2hex.o -MD -MP -MF $(DEPDIR)/flex2hex-flex2hex.Tpo -c -o flex2hex-flex2hex.o `test -f 'flex2hex.cpp' || echo '$(srcdir)/'`flex2hex.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-flex2hex.Tpo $(DEPDIR)/flex2hex-flex2hex.Po
@@ -2214,6 +2238,20 @@ flex2hex-fversion.obj: fversion.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fversion.cpp' object='flex2hex-fversion.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
+
+flex2hex-wmain.o: wmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-wmain.o -MD -MP -MF $(DEPDIR)/flex2hex-wmain.Tpo -c -o flex2hex-wmain.o `test -f 'wmain.cpp' || echo '$(srcdir)/'`wmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-wmain.Tpo $(DEPDIR)/flex2hex-wmain.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wmain.cpp' object='flex2hex-wmain.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-wmain.o `test -f 'wmain.cpp' || echo '$(srcdir)/'`wmain.cpp
+
+flex2hex-wmain.obj: wmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-wmain.obj -MD -MP -MF $(DEPDIR)/flex2hex-wmain.Tpo -c -o flex2hex-wmain.obj `if test -f 'wmain.cpp'; then $(CYGPATH_W) 'wmain.cpp'; else $(CYGPATH_W) '$(srcdir)/wmain.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-wmain.Tpo $(DEPDIR)/flex2hex-wmain.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wmain.cpp' object='flex2hex-wmain.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-wmain.obj `if test -f 'wmain.cpp'; then $(CYGPATH_W) 'wmain.cpp'; else $(CYGPATH_W) '$(srcdir)/wmain.cpp'; fi`
 
 flexemu-absgui.o: absgui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-absgui.o -MD -MP -MF $(DEPDIR)/flexemu-absgui.Tpo -c -o flexemu-absgui.o `test -f 'absgui.cpp' || echo '$(srcdir)/'`absgui.cpp
@@ -3545,6 +3583,20 @@ mdcrtool-mdcrtool.obj: mdcrtool.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -c -o mdcrtool-mdcrtool.obj `if test -f 'mdcrtool.cpp'; then $(CYGPATH_W) 'mdcrtool.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtool.cpp'; fi`
 
+mdcrtool-wmain.o: wmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -MT mdcrtool-wmain.o -MD -MP -MF $(DEPDIR)/mdcrtool-wmain.Tpo -c -o mdcrtool-wmain.o `test -f 'wmain.cpp' || echo '$(srcdir)/'`wmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mdcrtool-wmain.Tpo $(DEPDIR)/mdcrtool-wmain.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wmain.cpp' object='mdcrtool-wmain.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -c -o mdcrtool-wmain.o `test -f 'wmain.cpp' || echo '$(srcdir)/'`wmain.cpp
+
+mdcrtool-wmain.obj: wmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -MT mdcrtool-wmain.obj -MD -MP -MF $(DEPDIR)/mdcrtool-wmain.Tpo -c -o mdcrtool-wmain.obj `if test -f 'wmain.cpp'; then $(CYGPATH_W) 'wmain.cpp'; else $(CYGPATH_W) '$(srcdir)/wmain.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mdcrtool-wmain.Tpo $(DEPDIR)/mdcrtool-wmain.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wmain.cpp' object='mdcrtool-wmain.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -c -o mdcrtool-wmain.obj `if test -f 'wmain.cpp'; then $(CYGPATH_W) 'wmain.cpp'; else $(CYGPATH_W) '$(srcdir)/wmain.cpp'; fi`
+
 updatemd-fversion.o: fversion.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(updatemd_CXXFLAGS) $(CXXFLAGS) -MT updatemd-fversion.o -MD -MP -MF $(DEPDIR)/updatemd-fversion.Tpo -c -o updatemd-fversion.o `test -f 'fversion.cpp' || echo '$(srcdir)/'`fversion.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/updatemd-fversion.Tpo $(DEPDIR)/updatemd-fversion.Po
@@ -3903,8 +3955,10 @@ distclean: distclean-recursive
 	-rm -f ../fmt/src/$(DEPDIR)/libfmt_a-os.Po
 	-rm -f ./$(DEPDIR)/dsktool-dsktool.Po
 	-rm -f ./$(DEPDIR)/dsktool-fversion.Po
+	-rm -f ./$(DEPDIR)/dsktool-wmain.Po
 	-rm -f ./$(DEPDIR)/flex2hex-flex2hex.Po
 	-rm -f ./$(DEPDIR)/flex2hex-fversion.Po
+	-rm -f ./$(DEPDIR)/flex2hex-wmain.Po
 	-rm -f ./$(DEPDIR)/flexemu-absgui.Po
 	-rm -f ./$(DEPDIR)/flexemu-acia1.Po
 	-rm -f ./$(DEPDIR)/flexemu-apprun.Po
@@ -4032,6 +4086,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/mdcrtool-fversion.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrfs.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrtool.Po
+	-rm -f ./$(DEPDIR)/mdcrtool-wmain.Po
 	-rm -f ./$(DEPDIR)/updatemd-fversion.Po
 	-rm -f ./$(DEPDIR)/updatemd-updatemd.Po
 	-rm -f Makefile
@@ -4088,8 +4143,10 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ../fmt/src/$(DEPDIR)/libfmt_a-os.Po
 	-rm -f ./$(DEPDIR)/dsktool-dsktool.Po
 	-rm -f ./$(DEPDIR)/dsktool-fversion.Po
+	-rm -f ./$(DEPDIR)/dsktool-wmain.Po
 	-rm -f ./$(DEPDIR)/flex2hex-flex2hex.Po
 	-rm -f ./$(DEPDIR)/flex2hex-fversion.Po
+	-rm -f ./$(DEPDIR)/flex2hex-wmain.Po
 	-rm -f ./$(DEPDIR)/flexemu-absgui.Po
 	-rm -f ./$(DEPDIR)/flexemu-acia1.Po
 	-rm -f ./$(DEPDIR)/flexemu-apprun.Po
@@ -4217,6 +4274,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/mdcrtool-fversion.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrfs.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrtool.Po
+	-rm -f ./$(DEPDIR)/mdcrtool-wmain.Po
 	-rm -f ./$(DEPDIR)/updatemd-fversion.Po
 	-rm -f ./$(DEPDIR)/updatemd-updatemd.Po
 	-rm -f Makefile

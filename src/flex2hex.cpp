@@ -26,6 +26,7 @@
 #include "bmembuf.h"
 #include "fileread.h"
 #include "flexerr.h"
+#include "wmain.h"
 #include <cctype>
 #include <limits>
 #include <iostream>
@@ -122,7 +123,9 @@ static int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
     return 0;
 }
 
-int main(int argc, char *argv[])
+// Compatiblitity to main function parameters.
+// NOLINTNEXTLINE(modernize-avoid-c-arrays)
+int flx::main(int argc, char *argv[])
 {
     static const std::map<int, FileType> fileTypes{
         { 'm', FileType::MotorolaSRec },
@@ -136,6 +139,13 @@ int main(int argc, char *argv[])
     bool isOverwriteAlways = false;
     int verbose = 0;
     int result;
+
+#ifdef _WIN32
+    // Set console input and output code page to UTF-8. This makes the
+    // remaining code portable between Unix like OS and Windows.
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
+#endif
 
     opterr = 1;
     while ((result = getopt(argc, argv, optstr.c_str())) != -1)
@@ -256,7 +266,7 @@ int main(int argc, char *argv[])
 
                 // User confirmation to overwrite file.
                 while (input.empty() ||
-                       (tolower(input[0]) != 'y' && tolower(input[0]) != 'n'))
+                       (::tolower(input[0]) != 'y' && ::tolower(input[0]) != 'n'))
                 {
                     std::cout << "File " << ofile
                               << " already exists. Overwrite [Y,n]: ";
@@ -264,7 +274,7 @@ int main(int argc, char *argv[])
                     input = flx::ltrim(std::move(input));
                 }
 
-                if (!input.empty() && tolower(input[0]) == 'n')
+                if (!input.empty() && ::tolower(input[0]) == 'n')
                 {
                     if (verbose > 0)
                     {

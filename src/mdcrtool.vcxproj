@@ -22,6 +22,7 @@
     <ClCompile Include="fversion.cpp" />
     <ClCompile Include="mdcrtool.cpp" />
     <ClCompile Include="mdcrfs.cpp" />
+    <ClCompile Include="wmain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bdir.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="memtgt.h" />
     <ClInclude Include="misc1.h" />
     <ClInclude Include="typedefs.h" />
+    <ClInclude Include="wmain.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="libflex.vcxproj">

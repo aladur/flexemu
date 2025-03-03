@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="flex2hex.cpp" />
     <ClCompile Include="fversion.cpp" />
+    <ClCompile Include="wmain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cvtwchar.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="confignt.h" />
     <ClInclude Include="flexerr.h" />
     <ClInclude Include="fversion.h" />
+    <ClInclude Include="wmain.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="libflex.vcxproj">

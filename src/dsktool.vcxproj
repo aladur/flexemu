@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="dsktool.cpp" />
     <ClCompile Include="fversion.cpp" />
+    <ClCompile Include="wmain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bdate.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="misc1.h" />
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="typedefs.h" />
+    <ClInclude Include="wmain.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="libflex.vcxproj">

@@ -212,6 +212,7 @@ endif()
 set(flex2hex_SOURCES
 flex2hex.cpp
 fversion.cpp
+wmain.cpp
 )
 set(flex2hex_HEADER
 bintervl.h
@@ -225,6 +226,7 @@ memsrc.h
 memtgt.h
 misc1.h
 typedefs.h
+wmain.h
 )
 add_executable(flex2hex ${flex2hex_SOURCES} ${flex2hex_HEADER})
 
@@ -254,6 +256,7 @@ set(mdcrtool_SOURCES
     fversion.cpp
     mdcrfs.cpp
     mdcrtool.cpp
+    wmain.cpp
 )
 set(mdcrtool_HEADER
     bdir.h
@@ -269,6 +272,7 @@ set(mdcrtool_HEADER
     memtgt.h
     misc1.h
     typedefs.h
+    wmain.h
 )
 add_executable(mdcrtool ${mdcrtool_SOURCES} ${mdcrtool_HEADER})
 
@@ -297,6 +301,7 @@ target_link_libraries(mdcrtool PRIVATE
 set(dsktool_SOURCES
 dsktool.cpp
 fversion.cpp
+wmain.cpp
 )
 set(dsktool_HEADER
 bdate.h
@@ -326,6 +331,7 @@ ifilecnt.h
 misc1.h
 rfilecnt.h
 typedefs.h
+wmain.h
 )
 add_executable(dsktool ${dsktool_SOURCES} ${dsktool_HEADER})
 

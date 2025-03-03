@@ -27,6 +27,7 @@
 #include "bmembuf.h"
 #include "fileread.h"
 #include "flexerr.h"
+#include "wmain.h"
 #include "bdir.h"
 #include <cctype>
 #include <iostream>
@@ -274,7 +275,9 @@ static int ListContentOfMdcrFile(const char *ifile)
     return 0;
 }
 
-int main(int argc, char *argv[])
+// Compatiblitity to main function parameters.
+// NOLINTNEXTLINE(modernize-avoid-c-arrays)
+int flx::main(int argc, char *argv[])
 {
     std::string optstr("o:c:x:l:tuhd:V");
     std::vector<const char *>ifiles;
@@ -286,6 +289,13 @@ int main(int argc, char *argv[])
     int command = 0;
     int result;
     int index;
+
+#ifdef _WIN32
+    // Set console input and output code page to UTF-8. This makes the
+    // remaining code portable between Unix like OS and Windows.
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
+#endif
 
     while ((result = getopt(argc, argv, optstr.c_str())) != -1)
     {

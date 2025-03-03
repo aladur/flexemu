@@ -17,6 +17,9 @@
     <ClCompile Include="fversion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bdate.h">
@@ -95,6 +98,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="typedefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

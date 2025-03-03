@@ -43,6 +43,7 @@
 #include "filfschk.h"
 #include "ffilebuf.h"
 #include "filecnts.h"
+#include "wmain.h"
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
@@ -1128,7 +1129,9 @@ static bool addToRegexList(const std::vector<std::string> &regexLines,
     return result;
 }
 
-int main(int argc, char *argv[])
+// Compatiblitity to main function parameters.
+// NOLINTNEXTLINE(modernize-avoid-c-arrays)
+int flx::main(int argc, char *argv[])
 {
     std::string optstr("f:X:x:L:l:s:c:C:i:r:R:T:d:o:S:F:B:DhmntvVyz");
     std::string target_dir;
@@ -1153,6 +1156,13 @@ int main(int argc, char *argv[])
     int result;
     char command = '\0';
     int index;
+
+#ifdef _WIN32
+    // Set console input and output code page to UTF-8. This makes the
+    // remaining code portable between Unix like OS and Windows.
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
+#endif
 
     FlexDisk::InitializeClass();
 
@@ -1334,7 +1344,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if ((tolower(command == 'l') && verbose) ||
+    if ((command == 'l' && verbose) ||
         (command == 'i' && files.empty()) ||
         (command == 'C' && dst_dsk_file.empty()) ||
         (command != 'X' && command != 'x' && !target_dir.empty()) ||
@@ -1420,5 +1430,7 @@ int main(int argc, char *argv[])
     {
         std::cerr << "   *** Error: " << ex.what() << ". Aborted.\n";
     }
+
+    return 1;
 }
 
