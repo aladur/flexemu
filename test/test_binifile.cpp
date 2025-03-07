@@ -84,7 +84,7 @@ static bool createIniFile(const fs::path &path)
 
 TEST(test_binifile, ctor)
 {
-    const auto path = fs::temp_directory_path() / "ini_file1.ini";
+    const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
     BIniFile iniFile(path.u8string());
     EXPECT_TRUE(iniFile.IsValid());
@@ -94,7 +94,7 @@ TEST(test_binifile, ctor)
 
 TEST(test_binifile, move_ctor)
 {
-    const auto path = fs::temp_directory_path() / "ini_file1.ini";
+    const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
     BIniFile iniFile1(path.u8string());
     EXPECT_TRUE(iniFile1.IsValid());
@@ -116,7 +116,7 @@ TEST(test_binifile, move_ctor)
 
 TEST(test_binifile, move_assignment)
 {
-    const auto path = fs::temp_directory_path() / "ini_file1.ini";
+    const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
     BIniFile iniFile1(path.u8string());
     EXPECT_TRUE(iniFile1.IsValid());
@@ -138,7 +138,7 @@ TEST(test_binifile, move_assignment)
 
 TEST(test_binifile, fct_ReadSection)
 {
-    const auto path = fs::temp_directory_path() / "ini_file1.ini";
+    const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
     BIniFile iniFile(path.u8string());
     std::string section;
@@ -169,7 +169,7 @@ TEST(test_binifile, fct_ReadSection)
 }
 TEST(test_binifile, fct_GetLineNumber)
 {
-    const auto path = fs::temp_directory_path() / "ini_file1.ini";
+    const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
     BIniFile iniFile(path.u8string());
     auto lineNumber = iniFile.GetLineNumber("", "key12");
@@ -188,7 +188,7 @@ TEST(test_binifile, fct_GetLineNumber)
 }
 TEST(test_binifile, fct_ReadSection_exceptions)
 {
-    const auto path1 = fs::temp_directory_path() / "ini_file1.ini";
+    const auto path1 = fs::temp_directory_path() / u8"ini_file1.ini";
     std::ofstream ofs(path1);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
@@ -200,7 +200,7 @@ TEST(test_binifile, fct_ReadSection_exceptions)
             testing::Throws<FlexException>());
     fs::remove(path1);
 
-    const auto path2 = fs::temp_directory_path() / "ini_file2.ini";
+    const auto path2 = fs::temp_directory_path() / u8"ini_file2.ini";
     ofs.open(path2);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
@@ -212,7 +212,7 @@ TEST(test_binifile, fct_ReadSection_exceptions)
             testing::Throws<FlexException>());
     fs::remove(path2);
 
-    const auto path3 = fs::temp_directory_path() / "ini_file3.ini";
+    const auto path3 = fs::temp_directory_path() / u8"ini_file3.ini";
     ofs.open(path3);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
@@ -225,7 +225,7 @@ TEST(test_binifile, fct_ReadSection_exceptions)
             testing::Throws<FlexException>());
     fs::remove(path3);
 
-    const auto path4 = fs::temp_directory_path() / "ini_file4.ini";
+    const auto path4 = fs::temp_directory_path() / u8"ini_file4.ini";
     ofs.open(path4);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
@@ -237,7 +237,7 @@ TEST(test_binifile, fct_ReadSection_exceptions)
             testing::Throws<FlexException>());
     fs::remove(path4);
 
-    const auto path5 = fs::temp_directory_path() / "ini_file5.ini";
+    const auto path5 = fs::temp_directory_path() / u8"ini_file5.ini";
     ofs.open(path5);
     ASSERT_TRUE(ofs.is_open());
     ofs <<

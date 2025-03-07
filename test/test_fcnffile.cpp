@@ -66,7 +66,7 @@ static bool createCnfFile(const std::string &path)
 
 TEST(test_fcnffile, ctor)
 {
-    const auto path1 = (fs::temp_directory_path() / "cnf1.conf").u8string();
+    const auto path1 = (fs::temp_directory_path() / u8"cnf1.conf").u8string();
     EXPECT_TRUE(createCnfFile(path1));
     FlexemuConfigFile cnfFile1(path1);
     EXPECT_TRUE(cnfFile1.IsValid());
@@ -78,14 +78,14 @@ TEST(test_fcnffile, ctor)
             testing::Throws<FlexException>());
 
     const auto path3 =
-        (fs::temp_directory_path() / "not_existent_file.conf").u8string();
+        (fs::temp_directory_path() / u8"not_existent_file.conf").u8string();
     EXPECT_THAT([&](){ FlexemuConfigFile cnfFile3(path3); },
             testing::Throws<FlexException>());
 }
 
 TEST(test_fcnffile, move_ctor)
 {
-    const auto path = (fs::temp_directory_path() / "cnf2.conf").u8string();
+    const auto path = (fs::temp_directory_path() / u8"cnf2.conf").u8string();
     EXPECT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile1(path);
     auto cnfFile2(std::move(cnfFile1));
@@ -103,7 +103,7 @@ TEST(test_fcnffile, move_ctor)
 
 TEST(test_fcnffile, move_assignment)
 {
-    const auto path = (fs::temp_directory_path() / "cnf3.conf").u8string();
+    const auto path = (fs::temp_directory_path() / u8"cnf3.conf").u8string();
     EXPECT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile1(path);
     auto cnfFile2 = std::move(cnfFile1);
@@ -121,7 +121,7 @@ TEST(test_fcnffile, move_assignment)
 
 TEST(test_fcnffile, fct_ReadIoDevices)
 {
-    const auto path = (fs::temp_directory_path() / "cnf4.conf").u8string();
+    const auto path = (fs::temp_directory_path() / u8"cnf4.conf").u8string();
     ASSERT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile(path);
     ASSERT_TRUE(cnfFile.IsValid());
@@ -171,7 +171,7 @@ TEST(test_fcnffile, fct_ReadIoDevices)
 
 TEST(test_fcnffile, fct_GetDebugSupportOption)
 {
-    const auto path = (fs::temp_directory_path() / "cnf5.conf").u8string();
+    const auto path = (fs::temp_directory_path() / u8"cnf5.conf").u8string();
     ASSERT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile(path);
     ASSERT_TRUE(cnfFile.IsValid());
@@ -188,7 +188,7 @@ TEST(test_fcnffile, fct_GetDebugSupportOption)
 
 TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
 {
-    const auto path = (fs::temp_directory_path() / "cnf6.conf").u8string();
+    const auto path = (fs::temp_directory_path() / u8"cnf6.conf").u8string();
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
@@ -252,7 +252,7 @@ TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
 
 TEST(test_fcnffile, fct_GetDebugSupportOption_exceptions)
 {
-    const auto path = (fs::temp_directory_path() / "cnf7.conf").u8string();
+    const auto path = (fs::temp_directory_path() / u8"cnf7.conf").u8string();
         std::fstream ofs(path, std::ios::out | std::ios::trunc);
     ASSERT_TRUE(ofs.is_open());
     ofs <<

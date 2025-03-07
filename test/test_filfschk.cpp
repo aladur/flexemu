@@ -41,9 +41,9 @@ class test_filfschk : public ::testing::Test
 protected:
     const std::string fileNameOnDisk{ "cat.cmd" };
     const std::string diskPath =
-        (fs::temp_directory_path() / "disk.dsk").u8string();
+        (fs::temp_directory_path() / u8"disk.dsk").u8string();
     const std::string filePath =
-        (fs::current_path() / "data" / fileNameOnDisk).u8string();
+        (fs::current_path() / u8"data" / fileNameOnDisk).u8string();
     std::unique_ptr<FlexDisk> disk;
 
     void SetUp() override
@@ -60,7 +60,7 @@ protected:
     {
         disk.reset(nullptr);
         fs::remove(diskPath);
-        fs::remove(fs::current_path() / "data" / RANDOM_FILE_LIST_NEW);
+        fs::remove(fs::current_path() / u8"data" / RANDOM_FILE_LIST_NEW);
     }
 
     using dirfct_t = void (s_dir_sector &);

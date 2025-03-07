@@ -69,12 +69,7 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
     }
     else
     {
-        directory = flx::getCurrentPath();
-        if (!directory.empty() && !flx::endsWithPathSeparator(directory))
-        {
-            directory += PATHSEPARATORSTRING;
-        }
-        directory += path;
+        directory = (flx::getCurrentPath() / fs::u8path(path)).u8string();
     }
 
     if (flx::endsWithPathSeparator(directory))

@@ -36,8 +36,8 @@ static const std::array<Byte, 12> days_per_month{
     31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 
-static const char * const OLDCONFIGBIN = ".mc146818";
-static const char * const CONFIGBIN = "mc146818.bin";
+static const auto * const OLDCONFIGBIN = u8".mc146818";
+static const auto * const CONFIGBIN = u8"mc146818.bin";
 
 Mc146818::Mc146818()
 {
@@ -79,8 +79,7 @@ Mc146818::Mc146818()
 
 std::string Mc146818::getConfigFilePath(Mc146818::Config type)
 {
-    auto newPath = flx::getFlexemuUserConfigPath() + PATHSEPARATORSTRING +
-        CONFIGBIN;
+    auto newPath = (flx::getFlexemuUserConfigPath() / CONFIGBIN).u8string();
     struct stat sbuf{};
 
     if ((type == Config::New) ||
@@ -90,19 +89,7 @@ std::string Mc146818::getConfigFilePath(Mc146818::Config type)
         return newPath;
     }
 
-    auto path = flx::getHomeDirectory();
-
-    if (!path.empty())
-    {
-        if (!flx::endsWithPathSeparator(path))
-        {
-            path.append(PATHSEPARATORSTRING);
-        }
-
-        path.append(OLDCONFIGBIN);
-    }
-
-    return path;
+    return (flx::getHomeDirectory() / OLDCONFIGBIN).u8string();
 }
 
 Mc146818::~Mc146818()

@@ -298,7 +298,8 @@ std::pair<std::string, std::set<std::string> >
     {
         if (logFilePath.empty())
         {
-            logFilePath = flx::getTempPath() + "/flexemu_device.log";
+            logFilePath =
+                (flx::getTempPath() / u8"flexemu_device.log").u8string();
         }
 
         result.first = logFilePath;

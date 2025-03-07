@@ -97,7 +97,8 @@ TEST(test_fileread, fct_load_hexfile)
     {
         TestMemory memory{};
         DWord start_addr = 0U;
-        const auto path = (fs::current_path() / "data" / test_file).u8string();
+        const auto path =
+            (fs::current_path() / u8"data" / test_file).u8string();
         auto result = load_hexfile(path, memory, start_addr);
         ASSERT_EQ(result, 0);
         if (test_file.find("hex") == std::string::npos)
@@ -152,7 +153,7 @@ TEST(test_fileread, fct_load_hexfile__intel)
     for (const auto &file_content : file_contents)
     {
         const auto path =
-            fs::temp_directory_path() / "test_intel_hex_file.hex";
+            fs::temp_directory_path() / u8"test_intel_hex_file.hex";
         std::ofstream ofs(path);
         ASSERT_TRUE(ofs.is_open());
         ofs << file_content;
@@ -203,7 +204,7 @@ TEST(test_fileread, fct_load_hexfile__motorola)
     for (const auto &file_content : file_contents)
     {
         const auto path =
-            fs::temp_directory_path() / "test_motorola_s-rec_file.hex";
+            fs::temp_directory_path() / u8"test_motorola_s-rec_file.hex";
         std::ofstream ofs(path);
         ASSERT_TRUE(ofs.is_open());
         ofs << file_content;
@@ -244,7 +245,7 @@ TEST(test_fileread, fct_load_hexfile__flex_binary)
     assert(file_contents.size() == expected_results.size());
     int index = 0;
     const auto path =
-        fs::temp_directory_path() / "test_flex_binary_file.cmd";
+        fs::temp_directory_path() / u8"test_flex_binary_file.cmd";
     for (const auto &file_content : file_contents)
     {
         std::ofstream ofs(path, std::ios::out | std::ios::binary);
@@ -300,7 +301,8 @@ TEST(test_fileread, fct_write_flex_binary)
         memory.CopyFrom(file_content.data(), start_addr, file_content.size());
         start_addr += 0x100;
     }
-    const auto path = fs::temp_directory_path() / "test_flex_binary_file.cmd";
+    const auto path =
+        fs::temp_directory_path() / u8"test_flex_binary_file.cmd";
     auto result = write_flex_binary(path.u8string(), memory, 0xC100);
     ASSERT_EQ(result, 0);
     EXPECT_EQ(fs::file_size(path), 24);
@@ -336,7 +338,7 @@ TEST(test_fileread, fct_write_intel_hex)
         memory.CopyFrom(file_content.data(), start_addr, file_content.size());
         start_addr += 0x100;
     }
-    const auto path = fs::temp_directory_path() / "test_intel_hex_file.hex";
+    const auto path = fs::temp_directory_path() / u8"test_intel_hex_file.hex";
     auto result = write_intel_hex(path.u8string(), memory, 0xC100);
     ASSERT_EQ(result, 0);
     std::ifstream ifs(path);
@@ -375,7 +377,7 @@ TEST(test_fileread, fct_write_motorola_srecord)
         start_addr += 0x100;
     }
     const auto path =
-        fs::temp_directory_path() / "test_motorola_srecord_file.hex";
+        fs::temp_directory_path() / u8"test_motorola_srecord_file.hex";
     auto result = write_motorola_srecord(path.u8string(), memory, 0xC100);
     ASSERT_EQ(result, 0);
     std::ifstream ifs(path);
@@ -407,7 +409,7 @@ TEST(test_fileread, fct_write_raw_binary)
         memory.CopyFrom(file_content.data(), start_addr, file_content.size());
         start_addr += 0x100;
     }
-    const auto path = fs::temp_directory_path() / "test_raw_binary_file.dmp";
+    const auto path = fs::temp_directory_path() / u8"test_raw_binary_file.dmp";
     auto result = write_raw_binary(path.u8string(), memory, 0xC100);
     ASSERT_EQ(result, 0);
     EXPECT_EQ(fs::file_size(path), 515);

@@ -176,7 +176,7 @@ void Memory::init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr)
     // extended RAM to 0x00.
     if (do_preset_ram < 0)
     {
-        const auto path(flx::getFlexemuConfigFile());
+        const auto path(flx::getFlexemuConfigFile().u8string());
         FlexemuConfigFile configFile(path);
         const auto value = configFile.GetDebugSupportOption("presetRAM");
 

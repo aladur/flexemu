@@ -80,7 +80,8 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options)
 {
     const QSize iconSize(options.iconSize, options.iconSize);
 
-    injectDirectory = flx::getHomeDirectory().c_str();
+    injectDirectory =
+        QString::fromStdString(flx::getHomeDirectory().u8string());
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     QImage image(":resource/background.png");

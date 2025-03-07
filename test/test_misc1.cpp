@@ -338,11 +338,11 @@ TEST(test_misc1, fct_toAbsolutePath)
     const auto path = fs::temp_directory_path().u8string();
     auto result = flx::toAbsolutePath(path);
     EXPECT_EQ(result, path);
-    result = flx::toAbsolutePath("tmp");
+    const auto abs_path = flx::toAbsolutePath("tmp").u8string();
 #ifdef _WIN32
-    EXPECT_THAT(result, EndsWith("\\tmp"));
+    EXPECT_THAT(abs_path, EndsWith("\\tmp"));
 #else
-    EXPECT_THAT(result, EndsWith("/tmp"));
+    EXPECT_THAT(abs_path, EndsWith("/tmp"));
 #endif
 }
 

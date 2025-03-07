@@ -157,7 +157,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
 
     if (options.isEurocom2V5)
     {
-        const auto path(flx::getFlexemuConfigFile());
+        const auto path(flx::getFlexemuConfigFile().u8string());
         FlexemuConfigFile configFile(path);
 
         auto logMdcr = configFile.GetDebugSupportOption("logMdcr");
@@ -187,7 +187,7 @@ ApplicationRunner::~ApplicationRunner()
 
 void ApplicationRunner::AddIoDevicesToMemory()
 {
-    const auto path(flx::getFlexemuConfigFile());
+    const auto path(flx::getFlexemuConfigFile().u8string());
     FlexemuConfigFile configFile(path);
     const auto deviceParams = configFile.ReadIoDevices();
     const auto pairOfParams = configFile.GetIoDeviceLogging();
@@ -282,7 +282,7 @@ int ApplicationRunner::startup(QApplication &app)
         return 1;
     }
 
-    const auto path(flx::getFlexemuConfigFile());
+    const auto path(flx::getFlexemuConfigFile().u8string());
     FlexemuConfigFile configFile(path);
     auto address = configFile.GetSerparAddress(options.hex_file);
     if (address < 0 || !terminalIO.is_terminal_supported())

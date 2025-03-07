@@ -38,8 +38,8 @@
 
 namespace fs = std::filesystem;
 
-static const char * const OLDFLEXEMURC = ".flexemurc";
-static const char * const FLEXEMURC = "flexemurc";
+static const auto * const OLDFLEXEMURC = u8".flexemurc";
+static const auto * const FLEXEMURC = u8"flexemurc";
 
 static const char * const FLEXDISKDIR = "DiskDirectory";
 static const char * const FLEXDISK0 = "Disk0Path";
@@ -162,16 +162,12 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.isTerminalIgnoreNUL = true;
 #ifdef _WIN32
     options.terminalType = 0;
-#endif
-#ifdef UNIX
+    options.doc_dir = (flx::getExecutablePath() / u8"Documentation").u8string();
+    options.disk_dir = (flx::getExecutablePath() / u8"Data").u8string();
+#else
     options.terminalType = 1;
     options.doc_dir = F_DATADIR;
     options.disk_dir = F_DATADIR;
-#endif
-#ifdef _WIN32
-    options.doc_dir =
-        flx::getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
-    options.disk_dir = flx::getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
     options.pixelSize = 2;
     options.iconSize = 16;
@@ -448,13 +444,13 @@ void FlexemuOptions::WriteOptions(
 #ifdef UNIX
     struct stat sbuf{};
     const auto rcFilePath =
-        (flx::getFlexemuUserConfigPath() += PATHSEPARATORSTRING) += FLEXEMURC;
+        (flx::getFlexemuUserConfigPath() / FLEXEMURC).u8string();
     fs::create_directories(flx::getFlexemuUserConfigPath());
 
     WriteOptionsToFile(options, optionIds, rcFilePath, ifNotExists);
 
     const auto oldRcFilePath =
-        (flx::getHomeDirectory() += PATHSEPARATORSTRING) += OLDFLEXEMURC;
+        (flx::getHomeDirectory() / OLDFLEXEMURC).u8string();
     if (stat(oldRcFilePath.c_str(), &sbuf) == 0)
     {
         fs::remove(oldRcFilePath);
@@ -1130,12 +1126,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 #endif
 #ifdef UNIX
     struct stat sbuf{};
-    auto rcFilePath = (flx::getFlexemuUserConfigPath() += PATHSEPARATORSTRING)
-        += FLEXEMURC;
+    auto rcFilePath = (flx::getFlexemuUserConfigPath() / FLEXEMURC).u8string();
     if (stat(rcFilePath.c_str(), &sbuf) != 0)
     {
-        rcFilePath = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
-            OLDFLEXEMURC;
+        rcFilePath = (flx::getHomeDirectory() / OLDFLEXEMURC).u8string();
     }
 
     BRcFile rcFile(rcFilePath);

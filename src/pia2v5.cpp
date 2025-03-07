@@ -478,7 +478,7 @@ void Pia2V5::set_debug(const std::string &debugLevel,
 {
     if (logFilePath.empty())
     {
-        logFilePath = flx::getTempPath() + "/flexemu_mdcr.log";
+        logFilePath = (flx::getTempPath() / u8"flexemu_mdcr.log").u8string();
     }
 
     std::stringstream streamDebugLevel(debugLevel);

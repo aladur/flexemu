@@ -54,6 +54,9 @@
 #include <tuple>
 #include <ostream>
 #include <cassert>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 /* uncomment the following if the Disassembler should display FLEX entry
@@ -301,23 +304,23 @@ extern bool multimatches(const std::string &text,
                   char delimiter /* = ';'*/,
                   bool ignorecase /* = false */);
 #ifdef _WIN32
-extern std::string getExecutablePath();
+extern fs::path getExecutablePath();
 #endif
-extern std::string getHomeDirectory();
+extern fs::path getHomeDirectory();
 extern void dumpSector(std::ostream &os, uint32_t indent_count,
                        const Byte *buffer, uint32_t size);
 extern void hex_dump(std::ostream &os, const char *buffer, unsigned count);
 extern void print_versions(std::ostream &os, const std::string &program_name);
-extern std::string getTempPath();
-extern std::string getFlexemuUserConfigPath();
-extern std::string getFlexemuConfigFile();
+extern fs::path getTempPath();
+extern fs::path getFlexemuUserConfigPath();
+extern fs::path getFlexemuConfigFile();
 extern std::string getFlexLabelFile();
 extern std::string getFileName(const std::string &path);
 extern std::string getFileStem(const std::string &path);
 extern std::string getFileExtension(const std::string &path);
 extern std::string getParentPath(const std::string &path);
-extern std::string toAbsolutePath(const std::string &path);
-extern std::string getCurrentPath();
+extern fs::path toAbsolutePath(const std::string &path);
+extern fs::path getCurrentPath();
 extern std::string getHostName();
 extern std::string updateFilename(std::string path,
         const std::string &defaultFilestem, const std::string &fileExtension);

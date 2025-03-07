@@ -46,6 +46,10 @@
 #include <cstring>
 #include <utility>
 #include <algorithm>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
 
@@ -55,13 +59,11 @@ static const std::string &getDefaultBootSectorFile()
 
     if (defaultBootSectorFile.empty())
     {
-#ifdef UNIX
-        defaultBootSectorFile = std::string(F_DATADIR) + PATHSEPARATORSTRING +
-            BOOT_FILE;
-#endif
 #ifdef _WIN32
-        defaultBootSectorFile = flx::getExecutablePath() +
-                                PATHSEPARATORSTRING + BOOT_FILE;
+        defaultBootSectorFile =
+            (flx::getExecutablePath() / BOOT_FILE).u8string();
+#else
+        defaultBootSectorFile = fs::path(F_DATADIR) / BOOT_FILE;
 #endif
     }
 

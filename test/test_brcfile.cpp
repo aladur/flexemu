@@ -41,7 +41,7 @@ auto print_fct = [](const Byte b){
 
 TEST(test_brcfile, fct_Initialize)
 {
-    auto path = fs::temp_directory_path() / "test1.rc";
+    auto path = fs::temp_directory_path() / u8"test1.rc";
     std::ofstream ofs(path);
 
     ASSERT_TRUE(ofs.is_open());
@@ -64,7 +64,7 @@ TEST(test_brcfile, fct_GetValue)
 {
     std::string svalue;
     int ivalue;
-    auto path = fs::temp_directory_path() / "test2.rc";
+    auto path = fs::temp_directory_path() / u8"test2.rc";
     std::ofstream ofs(path);
 
     ASSERT_TRUE(ofs.is_open());
@@ -101,7 +101,7 @@ TEST(test_brcfile, fct_GetValue)
 
 TEST(test_brcfile, fct_GetValues)
 {
-    auto path = fs::temp_directory_path() / "test3.rc";
+    auto path = fs::temp_directory_path() / u8"test3.rc";
     std::ofstream ofs(path);
 
     ASSERT_TRUE(ofs.is_open());
@@ -126,7 +126,7 @@ TEST(test_brcfile, fct_GetValues)
 
 TEST(test_brcfile, fct_SetValue)
 {
-    auto path = fs::temp_directory_path() / "test4.rc";
+    auto path = fs::temp_directory_path() / u8"test4.rc";
     BRcFile rcf(path.u8string());
 
     EXPECT_EQ(rcf.SetValue("Key", "Value1"), BRC_NO_ERROR);

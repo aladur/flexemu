@@ -464,8 +464,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
             }
 #endif
 
-            auto tempPath = flx::getTempPath() + PATHSEPARATORSTRING +
-                "flexplorer";
+            auto tempPath = (flx::getTempPath() / u8"flexplorer").u8string();
 
             if (!BDirectory::Exists(tempPath))
             {

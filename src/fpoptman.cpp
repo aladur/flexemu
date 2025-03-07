@@ -34,8 +34,8 @@
 
 namespace fs = std::filesystem;
 
-static const char * const OLDFLEXPLORERRC = ".flexplorerrc";
-static const char * const FLEXPLORERRC = "flexplorerrc";
+static const auto * const OLDFLEXPLORERRC = u8".flexplorerrc";
+static const auto * const FLEXPLORERRC = u8"flexplorerrc";
 
 static const char * const FLEXPLORERBOOTSECTORFILE = "BootSectorFile";
 static const char * const FLEXPLOREREXTRACTCNV = "ExtractTextFileConvert";
@@ -58,13 +58,10 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.version = VERSION;
     options.ft_access = FileTimeAccess::NONE;
     options.iconSize = 32;
-#ifdef UNIX
-    options.bootSectorFile = std::string(F_DATADIR) + PATHSEPARATORSTRING +
-        BOOT_FILE;
-#endif
 #ifdef _WIN32
-    options.bootSectorFile =
-        flx::getExecutablePath() + PATHSEPARATORSTRING + BOOT_FILE;
+    options.bootSectorFile = (flx::getExecutablePath() / BOOT_FILE).u8string();
+#else
+    options.bootSectorFile = (fs::path(F_DATADIR) / BOOT_FILE).u8string();
 #endif
     options.injectTextFileConvert = true;
     options.injectTextFileAskUser = true;
@@ -72,15 +69,13 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.extractTextFileAskUser = true;
     options.onTrack0OnlyDirSectors = true;
     options.fileSizeType = FileSizeType::FileSize;
-    options.openInjectFilePath = flx::getHomeDirectory();
-#ifdef UNIX
+    options.openInjectFilePath = flx::getHomeDirectory().u8string();
+#ifdef _WIN32
+    options.openDiskPath = (flx::getExecutablePath() / u8"Data").u8string();
+#else
     options.openDiskPath = F_DATADIR;
 #endif
-#ifdef _WIN32
-    options.openDiskPath = flx::getExecutablePath() + PATHSEPARATORSTRING +
-                           "Data";
-#endif
-    options.openDirectoryPath = flx::getHomeDirectory();
+    options.openDirectoryPath = flx::getHomeDirectory().u8string();
 }
 
 void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
@@ -121,8 +116,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
 #ifdef UNIX
     struct stat sbuf{};
     auto rcFilePath =
-        (flx::getFlexemuUserConfigPath() += PATHSEPARATORSTRING) +=
-        FLEXPLORERRC;
+        (flx::getFlexemuUserConfigPath() / FLEXPLORERRC).u8string();
     fs::create_directories(flx::getFlexemuUserConfigPath());
 
     BRcFile rcFile(rcFilePath);
@@ -164,7 +158,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     }
 
     const auto oldRcFilePath =
-        (flx::getHomeDirectory() += PATHSEPARATORSTRING) += OLDFLEXPLORERRC;
+        (flx::getHomeDirectory() / OLDFLEXPLORERRC).u8string();
     if (stat(oldRcFilePath.c_str(), &sbuf) == 0)
     {
         fs::remove(oldRcFilePath);
@@ -254,12 +248,11 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
 #ifdef UNIX
     struct stat sbuf{};
     auto rcFilePath =
-        (flx::getFlexemuUserConfigPath() += PATHSEPARATORSTRING) +=
-        FLEXPLORERRC;
+        (flx::getFlexemuUserConfigPath() / FLEXPLORERRC).u8string();
     if (stat(rcFilePath.c_str(), &sbuf) != 0)
     {
-        rcFilePath = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
-            OLDFLEXPLORERRC;
+        rcFilePath =
+            (flx::getHomeDirectory() / OLDFLEXPLORERRC).u8string();
     }
     BRcFile rcFile(rcFilePath);
 

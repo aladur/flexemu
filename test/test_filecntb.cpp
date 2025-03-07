@@ -125,7 +125,8 @@ protected:
 // test IFlexDiskBase interface for class FlexDisk.
 TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
 {
-    const auto path1 = (fs::temp_directory_path() / "flexdisk.dsk").u8string();
+    const auto path1 =
+        (fs::temp_directory_path() / u8"flexdisk.dsk").u8string();
     const auto ft_access = FileTimeAccess::NONE;
     const auto mode = std::ios::in | std::ios::binary;
     FlexDiskBasePtr disk{};
@@ -159,7 +160,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         fs::remove(path1);
     }
 
-    const auto path2 = (fs::temp_directory_path() / "flexdisk.flx").u8string();
+    const auto path2 =
+        (fs::temp_directory_path() / u8"flexdisk.flx").u8string();
 
     for (int tracks = 2; tracks <= 255; tracks += 5)
     {
@@ -196,9 +198,10 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
 {
     const int tracks = 35;
     const int sectors = 10;
-    const auto path = (fs::temp_directory_path() / "flexdisk.dsk").u8string();
+    const auto path =
+        (fs::temp_directory_path() / u8"flexdisk.dsk").u8string();
     const auto path_jvc =
-        (fs::temp_directory_path() / "flexdisk.jvc.dsk").u8string();
+        (fs::temp_directory_path() / u8"flexdisk.jvc.dsk").u8string();
     auto ft_access = FileTimeAccess::NONE;
     const auto imode = std::ios::in | std::ios::binary | std::ios::ate;
     const auto omode = std::ios::out | std::ios::binary;
@@ -255,7 +258,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
 // test IFlexDiskBase interface for class FlexDirectoryDiskByFile.
 TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
 {
-    const auto path = (fs::temp_directory_path() / "flexdir123456").u8string();
+    const auto path =
+        (fs::temp_directory_path() / u8"flexdir123456").u8string();
     const auto ft_access = FileTimeAccess::NONE;
     auto type = DiskType::Directory;
     auto options = DiskOptions::NONE;
@@ -279,7 +283,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
 // test IFlexDiskBase interface for class FlexDirectoryBySector.
 TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryBySector)
 {
-    const auto path = (fs::temp_directory_path() / "flexdir123456").u8string();
+    const auto path =
+        (fs::temp_directory_path() / u8"flexdir123456").u8string();
     const auto ft_access = FileTimeAccess::NONE;
     unsigned diskNumber = 0U;
     FlexDiskBasePtr disk{};

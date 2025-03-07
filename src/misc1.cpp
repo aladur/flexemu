@@ -339,12 +339,12 @@ bool flx::multimatches(const std::string &text, const std::string &multipattern,
 }
 
 #ifdef _WIN32
-std::string flx::getExecutablePath()
+fs::path flx::getExecutablePath()
 {
     wchar_t path[MAX_PATH];
 
     HMODULE hModule = GetModuleHandle(nullptr);
-    std::string retval;
+    fs::path retval;
 
     if (hModule != nullptr)
     {
@@ -361,7 +361,7 @@ std::string flx::getExecutablePath()
             }
             --index;
         }
-        retval = ConvertToUtf8String(path);
+        retval = path;
     }
 
     return retval;
@@ -369,7 +369,7 @@ std::string flx::getExecutablePath()
 #endif
 
 #ifdef UNIX
-std::string flx::getHomeDirectory()
+fs::path flx::getHomeDirectory()
 {
     std::string result;
 
@@ -386,9 +386,8 @@ std::string flx::getHomeDirectory()
 
     return result;
 }
-#endif
-#ifdef _WIN32
-std::string flx::getHomeDirectory()
+#else
+fs::path flx::getHomeDirectory()
 {
     std::string homeDrive;
     std::string homePath;
@@ -402,11 +401,11 @@ std::string flx::getHomeDirectory()
         return "";
     }
 
-    return homeDrive + homePath;
+    return fs::u8path(homeDrive) / fs::u8path(homePath);
 }
 #endif
 
-std::string flx::getTempPath()
+fs::path flx::getTempPath()
 {
 #ifdef _WIN32
     wchar_t tempPath[MAX_PATH];
@@ -417,10 +416,10 @@ std::string flx::getTempPath()
                            std::string("In function GetTempPath"));
     }
 
-    return ConvertToUtf8String(tempPath);
+    return tempPath;
 #else
     // On POSIX compliant file systems /tmp has to be available
-    return "/tmp";
+    return u8"/tmp";
 #endif
 }
 
@@ -475,23 +474,17 @@ std::string flx::getParentPath(const std::string &path)
     return "";
 }
 
-std::string flx::toAbsolutePath(const std::string &path)
+fs::path flx::toAbsolutePath(const std::string &path)
 {
     if (flx::isAbsolutePath(path))
     {
         return path;
     }
 
-    auto directory = flx::getCurrentPath();
-    if (!flx::endsWithPathSeparator(path))
-    {
-        directory += PATHSEPARATORSTRING;
-    }
-
-    return directory + path;
+    return flx::getCurrentPath() / path;
 }
 
-std::string flx::getCurrentPath()
+fs::path flx::getCurrentPath()
 {
 #ifdef _WIN32
     DWORD size = GetCurrentDirectory(0, nullptr);
@@ -499,14 +492,14 @@ std::string flx::getCurrentPath()
 
     if (GetCurrentDirectory(size, buffer.get()) > 0)
     {
-        return ConvertToUtf8String(buffer.get());
+        return buffer.get();
     }
 #else
     std::array<char, PATH_MAX> buffer{};
 
     if (getcwd(buffer.data(), buffer.size()))
     {
-        return {buffer.data()};
+        return buffer.data();
     }
 #endif
 
@@ -641,57 +634,49 @@ bool flx::endsWithPathSeparator(const std::string &path)
     return (pos != std::string::npos && (pos == (path.size() - 1)));
 }
 
-std::string flx::getFlexemuUserConfigPath()
+fs::path flx::getFlexemuUserConfigPath()
 {
     std::string configPath;
+    fs::path result = (BEnvironment::GetValue("XDG_CONFIG_HOME", configPath) &&
+            !configPath.empty()) ?
+        fs::u8path(configPath) : getHomeDirectory();
 
-    if (!BEnvironment::GetValue("XDG_CONFIG_HOME", configPath) ||
-            configPath.empty())
-    {
-        configPath = getHomeDirectory() + PATHSEPARATORSTRING + ".config";
-    }
-    configPath += std::string(PATHSEPARATORSTRING) + "flexemu";
+    result /= fs::path(u8".config") / u8"flexemu";
 
-    return configPath;
+    return result;
 }
 
-std::string flx::getFlexemuConfigFile()
+fs::path flx::getFlexemuConfigFile()
 {
-    static const auto flexemuConfigFile = std::string("flexemu.conf");
-    static const auto userPath = getFlexemuUserConfigPath() +
-        PATHSEPARATORSTRING + flexemuConfigFile;
-    struct stat sbuf{};
+    static const auto * const flexemuConfigFile = u8"flexemu.conf";
+    static const auto userPath = getFlexemuUserConfigPath() / flexemuConfigFile;
 
-    if (stat(userPath.c_str(), &sbuf) == 0)
+    if (fs::exists(userPath))
     {
         return userPath;
     }
 
 #ifdef _WIN32
-    return getExecutablePath() + PATHSEPARATORSTRING + flexemuConfigFile;
-#endif
-#ifdef UNIX
-    return std::string(F_SYSCONFDIR) + PATHSEPARATORSTRING + flexemuConfigFile;
+    return getExecutablePath() / flexemuConfigFile;
+#else
+    return fs::path(F_SYSCONFDIR) / flexemuConfigFile;
 #endif
 }
 
 std::string flx::getFlexLabelFile()
 {
-    static const auto flexLabelFile = std::string("flexlabl.conf");
-    static const auto userPath = getFlexemuUserConfigPath() +
-        PATHSEPARATORSTRING + flexLabelFile;
-    struct stat sbuf{};
+    static const auto * const flexLabelFile = u8"flexlabl.conf";
+    static const auto userPath = getFlexemuUserConfigPath() / flexLabelFile;
 
-    if (stat(userPath.c_str(), &sbuf) == 0)
+    if (fs::exists(userPath))
     {
-        return userPath;
+        return userPath.u8string();
     }
 
 #ifdef _WIN32
-    return getExecutablePath() + PATHSEPARATORSTRING + flexLabelFile;
-#endif
-#ifdef UNIX
-    return std::string(F_SYSCONFDIR) + PATHSEPARATORSTRING + flexLabelFile;
+    return (getExecutablePath() / flexLabelFile).u8string();
+#else
+    return fs::path(F_SYSCONFDIR) / flexLabelFile;
 #endif
 }
 

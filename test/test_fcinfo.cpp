@@ -55,7 +55,7 @@ TEST(test_fcinfo, default_ctor)
 TEST(test_fcinfo, copy_ctor)
 {
     FlexDiskAttributes info_src;
-    const auto path = (fs::temp_directory_path() / "disk.dsk").u8string();
+    const auto path = (fs::temp_directory_path() / u8"disk.dsk").u8string();
     info_src.SetPath(path);
     info_src.SetName("abc");
     auto info_tgt(info_src);
@@ -70,7 +70,7 @@ TEST(test_fcinfo, copy_ctor)
 TEST(test_fcinfo, move_ctor)
 {
     FlexDiskAttributes info_src;
-    const auto path = (fs::temp_directory_path() / "disk.dsk").u8string();
+    const auto path = (fs::temp_directory_path() / u8"disk.dsk").u8string();
     info_src.SetPath(path);
     info_src.SetName("abc");
     auto info_tgt(std::move(info_src));
@@ -88,7 +88,7 @@ TEST(test_fcinfo, move_ctor)
 TEST(test_fcinfo, copy_assignment)
 {
     FlexDiskAttributes info_src;
-    const auto path = (fs::temp_directory_path() / "disk.dsk").u8string();
+    const auto path = (fs::temp_directory_path() / u8"disk.dsk").u8string();
     info_src.SetPath(path);
     info_src.SetName("abc");
     auto info_tgt = info_src;
@@ -103,7 +103,7 @@ TEST(test_fcinfo, copy_assignment)
 TEST(test_fcinfo, move_assignment)
 {
     FlexDiskAttributes info_src;
-    const auto path = (fs::temp_directory_path() / "disk.dsk").u8string();
+    const auto path = (fs::temp_directory_path() / u8"disk.dsk").u8string();
     info_src.SetPath(path);
     info_src.SetName("abc");
     auto info_tgt = std::move(info_src);

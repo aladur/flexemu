@@ -28,7 +28,7 @@
 
 // This macro defines the name of a file. It contains the boot sector.
 // It is used in directory containers to be able to boot from them.
-constexpr const char *BOOT_FILE = "boot";
+constexpr const auto *BOOT_FILE = u8"boot";
 
 const int SECTOR_SIZE = 256;
 

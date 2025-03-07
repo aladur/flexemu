@@ -293,7 +293,7 @@ TEST(test_ffilebuf, fct_WriteToFile)
 
 #ifndef _WIN32
     // Try to write file to a directory with read-only access.
-    path = fs::temp_directory_path() / "testdir";
+    path = fs::temp_directory_path() / u8"testdir";
     fs::create_directory(path);
     ASSERT_TRUE(fs::exists(path));
     fs::permissions(path, fs::perms::owner_write, fs::perm_options::remove);
@@ -445,7 +445,7 @@ TEST(test_ffilebuf, fct_buffer_CopyTo)
     std::string data;
     data.resize(16);
     std::iota(data.begin(), data.end(), '\0');
-    auto path = fs::temp_directory_path() / "test";
+    auto path = fs::temp_directory_path() / u8"test";
     std::fstream ofs(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     ofs << data;
@@ -489,7 +489,7 @@ TEST(test_ffilebuf, fct_buffer_CopyTo)
 TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
 {
     FlexFileBuffer ffb;
-    auto path = fs::temp_directory_path() / "test.txt";
+    auto path = fs::temp_directory_path() / u8"test.txt";
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
     EXPECT_TRUE(ofs.is_open());
     ofs << "This    is\tline1\nline3\nAnd this is the last line\n";
@@ -577,7 +577,7 @@ TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
 TEST(test_ffilebuf, fct_ConvertToDumpFile)
 {
     FlexFileBuffer ffb;
-    std::string test_file("test");
+    std::string test_file(u8"test");
     auto path = fs::temp_directory_path() / test_file;
     std::fstream ofs(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
@@ -606,7 +606,7 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
     fs::remove(path);
 
-    path = fs::current_path() / "data" / "cat.cmd";
+    path = fs::current_path() / u8"data" / u8"cat.cmd";
     // Check cat.cmd file.
     ASSERT_TRUE(ffb.ReadFromFile(path.u8string(), FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), 756U);
@@ -629,13 +629,13 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
     EXPECT_TRUE(ffb.IsFlexTextFile());
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
     fs::remove(path);
-    fs::remove(fs::current_path() / "data" / RANDOM_FILE_LIST_NEW);
+    fs::remove(fs::current_path() / u8"data" / RANDOM_FILE_LIST_NEW);
 }
 
 TEST(test_ffilebuf, fct_bin_file)
 {
     FlexFileBuffer ffb;
-    auto path = fs::temp_directory_path() / "test";
+    auto path = fs::temp_directory_path() / u8"test";
     std::fstream ofs(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     ofs << '\x05' << '\x44' << '\x02' << '\x43' <<
