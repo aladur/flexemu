@@ -37,14 +37,14 @@ public:
     BIniFile() = delete;
     BIniFile(const BIniFile &src) = delete;
     BIniFile(BIniFile &&src) noexcept;
-    explicit BIniFile(fs::path p_fileName);
+    explicit BIniFile(fs::path p_path);
     ~BIniFile() = default;
 
     BIniFile &operator=(const BIniFile &src) = delete;
     BIniFile &operator=(BIniFile &&src) noexcept;
 
     bool IsValid() const;
-    fs::path GetFileName() const;
+    fs::path GetPath() const;
     std::map<std::string, std::string> ReadSection(const std::string &section)
                                                                           const;
     int GetLineNumber(const std::string &section, const std::string &key) const;
@@ -62,7 +62,7 @@ private:
                   std::string &section, std::string &key, std::string &value,
                   bool isSectionOnly) const;
 
-    fs::path fileName;
+    fs::path path;
 };
 
 #endif

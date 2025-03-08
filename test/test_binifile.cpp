@@ -88,7 +88,7 @@ TEST(test_binifile, ctor)
     EXPECT_TRUE(createIniFile(path));
     BIniFile iniFile(path);
     EXPECT_TRUE(iniFile.IsValid());
-    EXPECT_EQ(iniFile.GetFileName(), path);
+    EXPECT_EQ(iniFile.GetPath(), path);
     fs::remove(path);
 }
 
@@ -98,17 +98,17 @@ TEST(test_binifile, move_ctor)
     EXPECT_TRUE(createIniFile(path));
     BIniFile iniFile1(path);
     EXPECT_TRUE(iniFile1.IsValid());
-    EXPECT_EQ(iniFile1.GetFileName(), path);
+    EXPECT_EQ(iniFile1.GetPath(), path);
     auto iniFile2(std::move(iniFile1));
     /* Intentionally test object after move. */
     /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_FALSE(iniFile1.IsValid());
-    EXPECT_TRUE(iniFile1.GetFileName().empty());
+    EXPECT_TRUE(iniFile1.GetPath().empty());
     const auto map1 = iniFile1.ReadSection("SECTION2");
     /* Intentionally test object after move. */
     /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(map1.empty());
-    EXPECT_EQ(iniFile2.GetFileName(), path);
+    EXPECT_EQ(iniFile2.GetPath(), path);
     const auto map2 = iniFile2.ReadSection("SECTION2");
     EXPECT_FALSE(map2.empty());
     fs::remove(path);
@@ -120,17 +120,17 @@ TEST(test_binifile, move_assignment)
     EXPECT_TRUE(createIniFile(path));
     BIniFile iniFile1(path);
     EXPECT_TRUE(iniFile1.IsValid());
-    EXPECT_EQ(iniFile1.GetFileName(), path);
+    EXPECT_EQ(iniFile1.GetPath(), path);
     auto iniFile2 = std::move(iniFile1);
     /* Intentionally test object after move. */
     /* NOLINTBEGIN(bugprone-use-after-move) */
     EXPECT_FALSE(iniFile1.IsValid());
-    EXPECT_TRUE(iniFile1.GetFileName().empty());
+    EXPECT_TRUE(iniFile1.GetPath().empty());
     const auto map1 = iniFile1.ReadSection("SECTION2");
     /* Intentionally test object after move. */
     /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(map1.empty());
-    EXPECT_EQ(iniFile2.GetFileName(), path);
+    EXPECT_EQ(iniFile2.GetPath(), path);
     const auto map2 = iniFile2.ReadSection("SECTION2");
     EXPECT_FALSE(map2.empty());
     fs::remove(path);

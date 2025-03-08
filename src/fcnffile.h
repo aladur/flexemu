@@ -47,13 +47,13 @@ public:
     FlexemuConfigFile() = delete;
     FlexemuConfigFile(const FlexemuConfigFile &src) = delete;
     FlexemuConfigFile(FlexemuConfigFile &&src) noexcept;
-    explicit FlexemuConfigFile(const fs::path &fileName);
+    explicit FlexemuConfigFile(fs::path p_path);
     ~FlexemuConfigFile() = default;
 
     FlexemuConfigFile &operator=(const FlexemuConfigFile &) = delete;
     FlexemuConfigFile &operator=(FlexemuConfigFile &&src) noexcept;
 
-    fs::path GetFileName() const;
+    fs::path GetPath() const;
     bool IsValid() const;
     std::vector<sIoDeviceMapping> ReadIoDevices() const;
     std::string GetDebugSupportOption(const std::string &key) const;
@@ -62,7 +62,7 @@ public:
     Byte GetBootCharacter(const fs::path &monitorFilePath) const;
 
 private:
-    fs::path iniFileName;
+    fs::path path;
 };
 
 #endif

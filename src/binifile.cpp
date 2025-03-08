@@ -28,34 +28,34 @@
 #include <set>
 
 
-BIniFile::BIniFile(fs::path p_fileName)
-    : fileName(std::move(p_fileName))
+BIniFile::BIniFile(fs::path p_path)
+    : path(std::move(p_path))
 {
 }
 
 BIniFile::BIniFile(BIniFile &&src) noexcept :
-    fileName(std::move(src.fileName))
+    path(std::move(src.path))
 {
 }
 
 BIniFile &BIniFile::operator=(BIniFile &&src) noexcept
 {
-    fileName = std::move(src.fileName);
+    path = std::move(src.path);
 
     return *this;
 }
 
 bool BIniFile::IsValid() const
 {
-    std::ifstream istream(fileName);
+    std::ifstream istream(path);
     bool isValid = istream.is_open();
 
     return isValid;
 }
 
-fs::path BIniFile::GetFileName() const
+fs::path BIniFile::GetPath() const
 {
-    return fileName;
+    return path;
 }
 
 BIniFile::Type BIniFile::ReadLine(int line_number,
@@ -73,7 +73,7 @@ BIniFile::Type BIniFile::ReadLine(int line_number,
         if (line.empty() || whiteSpace.find(line[0]) != std::string::npos)
         {
             throw FlexException(FERR_INVALID_LINE_IN_FILE, line_number,
-                    line, GetFileName());
+                    line, GetPath());
         }
 
         if (line[0] == '[')
@@ -124,7 +124,7 @@ std::map<std::string, std::string> BIniFile::ReadSection(
 {
     std::map<std::string, std::string> resultMap;
     std::set<std::string> foundKeys;
-    std::ifstream istream(fileName);
+    std::ifstream istream(path);
     int line_number = 0;
 
     if (istream.good())
@@ -161,7 +161,7 @@ std::map<std::string, std::string> BIniFile::ReadSection(
                             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                     line_number,
                                     key.append("=").append(value),
-                                    GetFileName());
+                                    GetPath());
                         }
 
                         resultMap.insert({ key, value });;
@@ -182,7 +182,7 @@ std::map<std::string, std::string> BIniFile::ReadSection(
 int BIniFile::GetLineNumber(const std::string &section, const std::string &key)
     const
 {
-    std::ifstream istream(fileName);
+    std::ifstream istream(path);
     int line_number = 0;
     std::string sectionName;
     std::string keyName;

@@ -70,7 +70,7 @@ TEST(test_fcnffile, ctor)
     EXPECT_TRUE(createCnfFile(path1));
     FlexemuConfigFile cnfFile1(path1);
     EXPECT_TRUE(cnfFile1.IsValid());
-    EXPECT_EQ(cnfFile1.GetFileName(), path1);
+    EXPECT_EQ(cnfFile1.GetPath(), path1);
     fs::remove(path1);
 
     const fs::path path2{R"(\\/\\/\\///\\/)"};
@@ -91,12 +91,12 @@ TEST(test_fcnffile, move_ctor)
 
     /* Intentionally test object after move. */
     /* NOLINTBEGIN(bugprone-use-after-move) */
-    EXPECT_TRUE(cnfFile1.GetFileName().empty());
+    EXPECT_TRUE(cnfFile1.GetPath().empty());
     EXPECT_FALSE(cnfFile1.IsValid());
     /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
     EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 6U);
-    EXPECT_EQ(cnfFile2.GetFileName(), path);
+    EXPECT_EQ(cnfFile2.GetPath(), path);
     fs::remove(path);
 }
 
@@ -109,11 +109,11 @@ TEST(test_fcnffile, move_assignment)
 
     /* Intentionally test object after move. */
     /* NOLINTBEGIN(bugprone-use-after-move) */
-    EXPECT_TRUE(cnfFile1.GetFileName().empty());
+    EXPECT_TRUE(cnfFile1.GetPath().empty());
     EXPECT_FALSE(cnfFile1.IsValid());
     /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
-    EXPECT_EQ(cnfFile2.GetFileName(), path);
+    EXPECT_EQ(cnfFile2.GetPath(), path);
     EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 6U);
     fs::remove(path);
 }
