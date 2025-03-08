@@ -117,7 +117,7 @@ void FLEXplorer::OnNewFlexDisk()
     QDialog dialog;
     FlexplorerNewUi ui;
     ui.setupUi(dialog);
-    ui.SetDefaultPath(QString(options.openDiskPath.c_str()));
+    ui.SetDefaultPath(QString::fromStdString(options.openDiskPath.u8string()));
     ui.TransferDataToDialog(DiskType::DSK, 80, 36);
     dialog.resize(newDialogSize);
     auto result = dialog.exec();
@@ -153,8 +153,9 @@ void FLEXplorer::OnNewFlexDisk()
             }
 
             auto path = ui.GetPath().toStdString();
+            std::string bootSectorFile = options.bootSectorFile.u8string();
             const char *bsFile = !options.bootSectorFile.empty() ?
-                                 options.bootSectorFile.c_str() : nullptr;
+                                 bootSectorFile.c_str() : nullptr;
             auto *container = FlexDisk::Create(
                                   path,
                                   options.ft_access,
@@ -175,7 +176,8 @@ void FLEXplorer::OnNewFlexDisk()
 
 void FLEXplorer::OnOpenFlexDisk()
 {
-    const auto defaultDir = QString(options.openDiskPath.c_str());
+    const auto defaultDir =
+        QString::fromStdString(options.openDiskPath.u8string());
     QStringList filePaths;
     QFileDialog dialog(this, tr("Select FLEX disk image files"), defaultDir,
                        "FLEX disk image files (*.dsk *.flx *.wta);;"
@@ -206,7 +208,8 @@ void FLEXplorer::OnOpenFlexDisk()
 
 void FLEXplorer::OnOpenDirectory()
 {
-    const auto defaultDir = QString(options.openDirectoryPath.c_str());
+    const auto defaultDir =
+        QString::fromStdString(options.openDirectoryPath.u8string());
     QFileDialog dialog(this, tr("Open a FLEX directory disk"),
                        defaultDir);
 
@@ -419,7 +422,8 @@ void FLEXplorer::OnInjectFiles()
         QFileDialog dialog(this, tr("Select file(s) to inject"));
 
         dialog.setFileMode(QFileDialog::ExistingFiles);
-        dialog.setDirectory(options.openInjectFilePath.c_str());
+        dialog.setDirectory(QString::fromStdString(
+            options.openInjectFilePath.u8string()));
         dialog.setViewMode(QFileDialog::Detail);
 
         if (dialog.exec() == QDialog::Accepted)
@@ -439,7 +443,8 @@ void FLEXplorer::OnExtractSelected()
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
         auto *subWindow = mdiArea->activeSubWindow();
-        const auto defaultDir = QString(options.openInjectFilePath.c_str());
+        const auto defaultDir =
+            QString::fromStdString(options.openInjectFilePath.u8string());
         QFileDialog dialog(this, tr("Target directory to extract file(s)"));
 
         dialog.setFileMode(QFileDialog::Directory);
@@ -527,7 +532,7 @@ void FLEXplorer::OnOptions()
         auto oldFileSizeType = options.fileSizeType;
 
         ui.TransferDataFromDialog(options);
-        FlexDisk::SetBootSectorFile(options.bootSectorFile);
+        FlexDisk::SetBootSectorFile(options.bootSectorFile.u8string());
         FlexDisk::onTrack0OnlyDirSectors =
             options.onTrack0OnlyDirSectors;
         if (oldFileTimeAccess != options.ft_access)
@@ -1308,7 +1313,7 @@ void FLEXplorer::UpdateForRecentDisk(const QString &path)
     options.recentDiskPaths.clear();
     for (const auto &diskPath : recentDiskPaths)
     {
-        options.recentDiskPaths.push_back(diskPath.toStdString());
+        options.recentDiskPaths.push_back(fs::u8path(diskPath.toStdString()));
     }
 
     UpdateRecentDiskActions();
@@ -1319,11 +1324,12 @@ void FLEXplorer::RestoreRecentDisks()
     recentDiskPaths.clear();
     for (const auto &path : options.recentDiskPaths)
     {
-        const QFileInfo fileInfo(path.c_str());
+        const auto sPath = QString::fromStdString(path.u8string());
+        const QFileInfo fileInfo(sPath);
 
         if (fileInfo.exists() && fileInfo.isFile())
         {
-            recentDiskPaths.push_back(path.c_str());
+            recentDiskPaths.push_back(sPath);
         }
     }
 
@@ -1412,7 +1418,8 @@ void FLEXplorer::UpdateForRecentDirectory(const QString &path)
     options.recentDirectoryPaths.clear();
     for (const auto &directoryPath : recentDirectoryPaths)
     {
-        options.recentDirectoryPaths.push_back(directoryPath.toStdString());
+        options.recentDirectoryPaths.push_back(
+                fs::u8path(directoryPath.toStdString()));
     }
 
     UpdateRecentDirectoryActions();
@@ -1423,11 +1430,12 @@ void FLEXplorer::RestoreRecentDirectories()
     recentDirectoryPaths.clear();
     for (const auto &path : options.recentDirectoryPaths)
     {
-        const QFileInfo fileInfo(path.c_str());
+        const auto sPath = QString::fromStdString(path.u8string());
+        const QFileInfo fileInfo(sPath);
 
         if (fileInfo.exists() && fileInfo.isDir())
         {
-            recentDirectoryPaths.push_back(path.c_str());
+            recentDirectoryPaths.push_back(sPath);
         }
     }
 

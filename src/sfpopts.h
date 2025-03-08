@@ -29,6 +29,10 @@
 #include <vector>
 #include "efiletim.h"
 #include "efilesiz.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 struct sFPOptions
 {
@@ -40,17 +44,17 @@ struct sFPOptions
     FileSizeType fileSizeType{};
     int iconSize{};
     std::string version;
-    std::string bootSectorFile;
+    fs::path bootSectorFile;
     bool injectTextFileConvert{};
     bool injectTextFileAskUser{};
     bool extractTextFileConvert{};
     bool extractTextFileAskUser{};
     bool onTrack0OnlyDirSectors{};
-    std::string openDiskPath;
-    std::string openDirectoryPath;
-    std::string openInjectFilePath;
-    std::vector<std::string> recentDiskPaths;
-    std::vector<std::string> recentDirectoryPaths;
+    fs::path openDiskPath;
+    fs::path openDirectoryPath;
+    fs::path openInjectFilePath;
+    std::vector<fs::path> recentDiskPaths;
+    std::vector<fs::path> recentDirectoryPaths;
 
     static const int maxRecentFiles = 24;
     static const int maxRecentDirectories = 24;

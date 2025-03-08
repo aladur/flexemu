@@ -57,7 +57,8 @@ void FlexplorerOptionsUi::TransferDataToDialog(const struct sFPOptions &options)
         throw std::logic_error("setupUi(dialog) has to be called before.");
     }
 
-    e_bootSectorFile->setText(options.bootSectorFile.c_str());
+    e_bootSectorFile->setText(QString::fromStdString(
+        options.bootSectorFile.u8string()));
 
     auto index = static_cast<int>(options.ft_access);
     index = (index == 3) ? 2 : index;
