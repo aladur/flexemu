@@ -183,8 +183,8 @@ int FlexemuConfigFile::GetSerparAddress(const fs::path &monitorFilePath)
                 std::stringstream addressStream;
 
                 addressStream << std::hex << addressString;
-                addressStream >> address;
-                if (address < 0 || address > 0xffff)
+                if (!(addressStream >> address) ||
+                    address < 0 || address > 0xFFFF)
                 {
                     auto lineNumber =
                         iniFile.GetLineNumber(section, iter.first);

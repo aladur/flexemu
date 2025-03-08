@@ -185,6 +185,39 @@ TEST(test_fcnffile, fct_GetDebugSupportOption)
     fs::remove(path);
 }
 
+TEST(test_fcnffile, fct_GetSerparAddress)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf5.conf";
+    ASSERT_TRUE(createCnfFile(path));
+    FlexemuConfigFile cnfFile(path);
+    ASSERT_TRUE(cnfFile.IsValid());
+#ifdef _WIN32
+    auto monitorFilePath = fs::u8path(u8"C:\\Temp\\subdir1\\neumon54.hex");
+#else
+    auto monitorFilePath = fs::u8path(u8"/tmp/subdir1/neumon54.hex");
+#endif
+    auto value = cnfFile.GetSerparAddress(monitorFilePath);
+    EXPECT_EQ(value, 0xEE09);
+    value = cnfFile.GetSerparAddress(u8"NEUMON54.hex");
+#ifdef _WIN32
+    EXPECT_EQ(value, 0xEE09);
+#else
+    EXPECT_EQ(value, -1);
+#endif
+    value = cnfFile.GetSerparAddress(u8"mon54-6.s19");
+    EXPECT_EQ(value, 0xEE30);
+    monitorFilePath = fs::u8path(u8"anydir") / u8"mon54.s19";
+    value = cnfFile.GetSerparAddress(monitorFilePath);
+    EXPECT_EQ(value, 0xEE20);
+    value = cnfFile.GetSerparAddress(u8"mon54.s19x");
+    EXPECT_EQ(value, -1);
+    value = cnfFile.GetSerparAddress(u8"");
+    EXPECT_EQ(value, -1);
+    value = cnfFile.GetSerparAddress(u8"unsupported_monitor.hex");
+    EXPECT_EQ(value, -1);
+    fs::remove(path);
+}
+
 TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
 {
     const auto path = fs::temp_directory_path() / u8"cnf6.conf";
@@ -262,6 +295,37 @@ TEST(test_fcnffile, fct_GetDebugSupportOption_exceptions)
     ASSERT_TRUE(cnfFile.IsValid());
     EXPECT_THAT([&](){ cnfFile.GetDebugSupportOption("invalidKey"); },
             testing::Throws<FlexException>());
+    fs::remove(path);
+}
+
+TEST(test_fcnffile, fct_GetSerparAddress_exceptions)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf8.conf";
+    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[SERPARAddress]\n"
+        "monitor.hex=10000\n"
+        "monitor.s19=FFFFFFFFFFFFFFFF\n";
+    ofs.close();
+    FlexemuConfigFile cnfFile1(path);
+    ASSERT_TRUE(cnfFile1.IsValid());
+    EXPECT_THAT([&](){ cnfFile1.GetSerparAddress(u8"monitor.hex"); },
+        testing::Throws<FlexException>());
+    EXPECT_THAT([&](){ cnfFile1.GetSerparAddress(u8"monitor.s19"); },
+        testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[SERPARAddress]\n"
+        "monitor.hex\n";
+    ofs.close();
+    FlexemuConfigFile cnfFile2(path);
+    ASSERT_TRUE(cnfFile2.IsValid());
+    EXPECT_THAT([&](){ cnfFile2.GetSerparAddress(u8"monitor.hex"); },
+        testing::Throws<FlexException>());
     fs::remove(path);
 }
 
