@@ -440,24 +440,19 @@ void FlexemuOptions::WriteOptions(
     }
 #ifdef _WIN32
     WriteOptionsToRegistry(options, optionIds, ifNotExists);
-#endif
-#ifdef UNIX
-    struct stat sbuf{};
-    const auto rcFilePath =
-        (flx::getFlexemuUserConfigPath() / FLEXEMURC).u8string();
+#else
+    const auto rcFilePath = flx::getFlexemuUserConfigPath() / FLEXEMURC;
     fs::create_directories(flx::getFlexemuUserConfigPath());
 
     WriteOptionsToFile(options, optionIds, rcFilePath, ifNotExists);
 
-    const auto oldRcFilePath =
-        (flx::getHomeDirectory() / OLDFLEXEMURC).u8string();
-    if (stat(oldRcFilePath.c_str(), &sbuf) == 0)
+    const auto oldRcFilePath = flx::getHomeDirectory() / OLDFLEXEMURC;
+    if (fs::exists(oldRcFilePath))
     {
         fs::remove(oldRcFilePath);
     }
 #endif
-
-} /* WriteOptions */
+}
 
 #ifdef _WIN32
 void FlexemuOptions::WriteOptionsToRegistry(
@@ -652,16 +647,14 @@ void FlexemuOptions::WriteOptionsToRegistry(
         }
     }
 }
-#endif
-
-#ifdef UNIX
+#else
 void FlexemuOptions::WriteOptionsToFile(
         const struct sOptions &options,
         const std::vector<FlexemuOptionId> &optionIdsToWrite,
-        const std::string &fileName,
+        const fs::path &path,
         bool ifNotExists /* = false */)
 {
-    if (ifNotExists && access(fileName.c_str(), F_OK) == 0)
+    if (ifNotExists && fs::exists(path))
     {
         return;
     }
@@ -869,7 +862,7 @@ void FlexemuOptions::WriteOptionsToFile(
         optionsToWrite.version = VERSION;
     }
 
-    BRcFile rcFile(fileName);
+    BRcFile rcFile(path);
     bool ok;
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXVERSION, VERSION);
@@ -1125,11 +1118,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     reg.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 #ifdef UNIX
-    struct stat sbuf{};
-    auto rcFilePath = (flx::getFlexemuUserConfigPath() / FLEXEMURC).u8string();
-    if (stat(rcFilePath.c_str(), &sbuf) != 0)
+    auto rcFilePath = flx::getFlexemuUserConfigPath() / FLEXEMURC;
+
+    if (!fs::exists(rcFilePath))
     {
-        rcFilePath = (flx::getHomeDirectory() / OLDFLEXEMURC).u8string();
+        rcFilePath = flx::getHomeDirectory() / OLDFLEXEMURC;
     }
 
     BRcFile rcFile(rcFilePath);

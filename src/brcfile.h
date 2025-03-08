@@ -28,6 +28,10 @@
 #include "warnoff.h"
 #include <optional>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 enum : uint8_t
 {
@@ -40,7 +44,7 @@ class BRcFile
 {
 public:
     BRcFile() = default;
-    explicit BRcFile(std::string p_fileName);
+    explicit BRcFile(fs::path p_path);
     ~BRcFile() = default;
 
     int SetValue(const char *key, const std::string &value);
@@ -55,7 +59,7 @@ private:
     int GetValue(const char *key, std::string &value,
             std::optional<bool> &isInteger);
 
-    std::string fileName;
+    fs::path path;
 };
 
 #endif

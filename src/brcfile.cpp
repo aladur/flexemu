@@ -28,15 +28,18 @@
 #include "warnoff.h"
 #include <optional>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
-BRcFile::BRcFile(std::string p_fileName) : fileName(std::move(p_fileName))
+BRcFile::BRcFile(fs::path p_path) : path(std::move(p_path))
 {
 }
 
 int BRcFile::SetValue(const char *key, const std::string &value)
 {
-    std::ofstream fs(fileName, std::ios::out | std::ios::app);
+    std::ofstream fs(path, std::ios::out | std::ios::app);
 
     if (!fs.is_open())
     {
@@ -55,7 +58,7 @@ int BRcFile::SetValue(const char *key, const std::string &value)
 
 int BRcFile::SetValue(const char *key, int value)
 {
-    std::ofstream fs(fileName, std::ios::out | std::ios::app);
+    std::ofstream fs(path, std::ios::out | std::ios::app);
 
     if (!fs.is_open())
     {
@@ -82,7 +85,7 @@ int BRcFile::GetValue(const char *key, std::string &value)
 int BRcFile::GetValue(const char *key, std::string &value,
         std::optional<bool> &isInteger)
 {
-    std::ifstream fs(fileName, std::ios::in);
+    std::ifstream fs(path, std::ios::in);
     auto keyLength = std::strlen(key);
 
     isInteger = true;
@@ -145,7 +148,7 @@ int BRcFile::GetValue(const char *key, int &value)
 
 int BRcFile::Initialize()
 {
-    std::ofstream fs(fileName, std::ios::out | std::ios::trunc);
+    std::ofstream fs(path, std::ios::out | std::ios::trunc);
 
     if (!fs.is_open())
     {
@@ -158,7 +161,7 @@ int BRcFile::Initialize()
 int BRcFile::GetValues(const char *keyPrefix,
         std::map<std::string, std::string> &values)
 {
-    std::ifstream fs(fileName.c_str());
+    std::ifstream fs(path);
     const auto lcKeyPrefix = flx::tolower(keyPrefix);
 
     values.clear();

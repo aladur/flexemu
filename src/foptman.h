@@ -26,6 +26,9 @@
 #include "misc1.h"
 #include "soptions.h"
 #include <iostream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 static constexpr std::array<FlexemuOptionId, 4> canFormatDriveOptionId
@@ -64,7 +67,7 @@ private:
     static void WriteOptionsToFile(
         const struct sOptions &options,
         const std::vector<FlexemuOptionId> &optionIds,
-        const std::string &fileName,
+        const fs::path &path,
         bool ifNotExists = false);
 #endif
 };

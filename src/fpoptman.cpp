@@ -112,11 +112,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
         key << FLEXPLORERRECENTDIRECTORY << i;
         reg.SetValue(key.str(), options.recentDirectoryPaths[i]);
     }
-#endif
-#ifdef UNIX
-    struct stat sbuf{};
-    auto rcFilePath =
-        (flx::getFlexemuUserConfigPath() / FLEXPLORERRC).u8string();
+#else
+    auto rcFilePath = flx::getFlexemuUserConfigPath() / FLEXPLORERRC;
     fs::create_directories(flx::getFlexemuUserConfigPath());
 
     BRcFile rcFile(rcFilePath);
@@ -157,9 +154,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
         rcFile.SetValue(key.str().c_str(), options.recentDirectoryPaths[i]);
     }
 
-    const auto oldRcFilePath =
-        (flx::getHomeDirectory() / OLDFLEXPLORERRC).u8string();
-    if (stat(oldRcFilePath.c_str(), &sbuf) == 0)
+    const auto oldRcFilePath = flx::getHomeDirectory() / OLDFLEXPLORERRC;
+    if (fs::exists(oldRcFilePath))
     {
         fs::remove(oldRcFilePath);
     }
@@ -244,15 +240,11 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
             options.recentDirectoryPaths.push_back(string_result);
         }
     }
-#endif
-#ifdef UNIX
-    struct stat sbuf{};
-    auto rcFilePath =
-        (flx::getFlexemuUserConfigPath() / FLEXPLORERRC).u8string();
-    if (stat(rcFilePath.c_str(), &sbuf) != 0)
+#else
+    auto rcFilePath = flx::getFlexemuUserConfigPath() / FLEXPLORERRC;
+    if (!fs::exists(rcFilePath))
     {
-        rcFilePath =
-            (flx::getHomeDirectory() / OLDFLEXPLORERRC).u8string();
+        rcFilePath = flx::getHomeDirectory() / OLDFLEXPLORERRC;
     }
     BRcFile rcFile(rcFilePath);
 
