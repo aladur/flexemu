@@ -29,6 +29,9 @@
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 const char *FlexException::what() const noexcept
@@ -95,10 +98,10 @@ FlexException::FlexException(int ec, int ip1, int ip2, const std::string &sp1)
 }
 
 FlexException::FlexException(int ec, int ip1, const std::string &sp1,
-        const std::string &sp2) noexcept
+        const fs::path &pp1) noexcept
     : errorCode(ec)
 {
-    errorString = fmt::format(errString[ec], ip1, sp1, sp2);
+    errorString = fmt::format(errString[ec], ip1, sp1, pp1.u8string());
 }
 
 FlexException::FlexException(int ec, const std::string &sp1,

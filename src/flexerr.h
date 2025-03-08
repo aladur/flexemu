@@ -27,6 +27,10 @@
 #include <exception>
 #include <cstdint>
 #include <array>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 enum : uint8_t {
 FERR_COUNT = 51,
@@ -109,7 +113,7 @@ public:
     FlexException(int ec, int ip1, const std::string &sp1) noexcept;
     FlexException(int ec, int ip1, int ip2, const std::string &sp1) noexcept;
     FlexException(int ec, int ip1, const std::string &sp1,
-                  const std::string &sp2) noexcept;
+                  const fs::path &pp1) noexcept;
     FlexException(int ec, const std::string &sp1, const std::string &sp2,
                   const std::string &sp3) noexcept;
 #ifdef _WIN32

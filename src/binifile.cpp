@@ -73,7 +73,7 @@ BIniFile::Type BIniFile::ReadLine(int line_number,
         if (line.empty() || whiteSpace.find(line[0]) != std::string::npos)
         {
             throw FlexException(FERR_INVALID_LINE_IN_FILE, line_number,
-                    line, GetFileName().u8string());
+                    line, GetFileName());
         }
 
         if (line[0] == '[')
@@ -161,7 +161,7 @@ std::map<std::string, std::string> BIniFile::ReadSection(
                             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                     line_number,
                                     key.append("=").append(value),
-                                    GetFileName().u8string());
+                                    GetFileName());
                         }
 
                         resultMap.insert({ key, value });;
