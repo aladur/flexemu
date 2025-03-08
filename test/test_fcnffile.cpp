@@ -50,8 +50,12 @@ static bool createCnfFile(const fs::path &path)
             "devices=mmu,pia1,acia1\n"
             "[SERPARAddress]\n"
             "neumon54.hex=EE09\n"
-            "mon54.s19=EE20\n"
-            "mon54-6.s19=EE30\n"
+            "mon54.s19= EE20\n"
+            "mon54-6.s19= EE30 \n"
+            "[BootCharacter]\n"
+            "neumon54.hex=E\n"
+            "mon54.s19= a\n"
+            "mon54-6.s19= # \n"
             "[DebugSupport]\n"
             "presetRAM=1\n"
             "logMdcr=1\n"
@@ -218,6 +222,39 @@ TEST(test_fcnffile, fct_GetSerparAddress)
     fs::remove(path);
 }
 
+TEST(test_fcnffile, fct_GetBootCharacter)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf6.conf";
+    ASSERT_TRUE(createCnfFile(path));
+    FlexemuConfigFile cnfFile(path);
+    ASSERT_TRUE(cnfFile.IsValid());
+#ifdef _WIN32
+    auto monitorFilePath = fs::u8path(u8"C:\\Temp\\subdir1\\neumon54.hex");
+#else
+    auto monitorFilePath = fs::u8path(u8"/tmp/subdir1/neumon54.hex");
+#endif
+    auto value = cnfFile.GetBootCharacter(monitorFilePath);
+    EXPECT_EQ(value, 'E');
+    value = cnfFile.GetBootCharacter(u8"NEUMON54.hex");
+#ifdef _WIN32
+    EXPECT_EQ(value, 'E');
+#else
+    EXPECT_EQ(value, '\0');
+#endif
+    value = cnfFile.GetBootCharacter(u8"mon54-6.s19");
+    EXPECT_EQ(value, '#');
+    monitorFilePath = fs::u8path(u8"anydir") / u8"mon54.s19";
+    value = cnfFile.GetBootCharacter(monitorFilePath);
+    EXPECT_EQ(value, 'a');
+    value = cnfFile.GetBootCharacter(u8"mon54.s19x");
+    EXPECT_EQ(value, '\0');
+    value = cnfFile.GetBootCharacter(u8"");
+    EXPECT_EQ(value, '\0');
+    value = cnfFile.GetBootCharacter(u8"unsupported_monitor.hex");
+    EXPECT_EQ(value, '\0');
+    fs::remove(path);
+}
+
 TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
 {
     const auto path = fs::temp_directory_path() / u8"cnf6.conf";
@@ -325,6 +362,40 @@ TEST(test_fcnffile, fct_GetSerparAddress_exceptions)
     FlexemuConfigFile cnfFile2(path);
     ASSERT_TRUE(cnfFile2.IsValid());
     EXPECT_THAT([&](){ cnfFile2.GetSerparAddress(u8"monitor.hex"); },
+        testing::Throws<FlexException>());
+    fs::remove(path);
+}
+
+TEST(test_fcnffile, fct_GetBootCharacter_exceptions)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf9.conf";
+    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootCharacter]\n"
+        "monitor.hex=AA\n"
+        "monitor.s19=abc\n"
+        "monitor.xxx=\n";
+    ofs.close();
+    FlexemuConfigFile cnfFile1(path);
+    ASSERT_TRUE(cnfFile1.IsValid());
+    EXPECT_THAT([&](){ cnfFile1.GetBootCharacter(u8"monitor.hex"); },
+        testing::Throws<FlexException>());
+    EXPECT_THAT([&](){ cnfFile1.GetBootCharacter(u8"monitor.s19"); },
+        testing::Throws<FlexException>());
+    EXPECT_THAT([&](){ cnfFile1.GetBootCharacter(u8"monitor.xxx"); },
+        testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootCharacter]\n"
+        "monitor.hex\n";
+    ofs.close();
+    FlexemuConfigFile cnfFile2(path);
+    ASSERT_TRUE(cnfFile2.IsValid());
+    EXPECT_THAT([&](){ cnfFile1.GetBootCharacter(u8"monitor.hex"); },
         testing::Throws<FlexException>());
     fs::remove(path);
 }
