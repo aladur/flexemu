@@ -27,6 +27,9 @@
 #include <ostream>
 #include <string>
 #include <map>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 class FlexLabelFile
@@ -34,7 +37,7 @@ class FlexLabelFile
 public:
     static std::map<unsigned, std::string> ReadFile(
             std::ostream &os,
-            const std::string &path,
+            const fs::path &path,
             const std::string &section);
 };
 

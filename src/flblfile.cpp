@@ -29,7 +29,7 @@
 
 std::map<unsigned, std::string> FlexLabelFile::ReadFile(
         std::ostream &os,
-        const std::string &path,
+        const fs::path &path,
         const std::string &section)
 {
     static std::regex regexKey("^[A-F0-9]{1,4}$");

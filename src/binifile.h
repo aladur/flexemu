@@ -26,6 +26,9 @@
 #include <string>
 #include <map>
 #include <cstdint>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 class BIniFile
@@ -34,14 +37,14 @@ public:
     BIniFile() = delete;
     BIniFile(const BIniFile &src) = delete;
     BIniFile(BIniFile &&src) noexcept;
-    explicit BIniFile(std::string p_fileName);
+    explicit BIniFile(fs::path p_fileName);
     ~BIniFile() = default;
 
     BIniFile &operator=(const BIniFile &src) = delete;
     BIniFile &operator=(BIniFile &&src) noexcept;
 
     bool IsValid() const;
-    std::string GetFileName() const;
+    fs::path GetFileName() const;
     std::map<std::string, std::string> ReadSection(const std::string &section)
                                                                           const;
     int GetLineNumber(const std::string &section, const std::string &key) const;
@@ -59,7 +62,7 @@ private:
                   std::string &section, std::string &key, std::string &value,
                   bool isSectionOnly) const;
 
-    std::string fileName;
+    fs::path fileName;
 };
 
 #endif

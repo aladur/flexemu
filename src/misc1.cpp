@@ -663,18 +663,18 @@ fs::path flx::getFlexemuConfigFile()
 #endif
 }
 
-std::string flx::getFlexLabelFile()
+fs::path flx::getFlexLabelFile()
 {
     static const auto * const flexLabelFile = u8"flexlabl.conf";
     static const auto userPath = getFlexemuUserConfigPath() / flexLabelFile;
 
     if (fs::exists(userPath))
     {
-        return userPath.u8string();
+        return userPath;
     }
 
 #ifdef _WIN32
-    return (getExecutablePath() / flexLabelFile).u8string();
+    return getExecutablePath() / flexLabelFile;
 #else
     return fs::path(F_SYSCONFDIR) / flexLabelFile;
 #endif

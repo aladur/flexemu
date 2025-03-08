@@ -86,7 +86,7 @@ TEST(test_binifile, ctor)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile(path.u8string());
+    BIniFile iniFile(path);
     EXPECT_TRUE(iniFile.IsValid());
     EXPECT_EQ(iniFile.GetFileName(), path);
     fs::remove(path);
@@ -96,7 +96,7 @@ TEST(test_binifile, move_ctor)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile1(path.u8string());
+    BIniFile iniFile1(path);
     EXPECT_TRUE(iniFile1.IsValid());
     EXPECT_EQ(iniFile1.GetFileName(), path);
     auto iniFile2(std::move(iniFile1));
@@ -118,7 +118,7 @@ TEST(test_binifile, move_assignment)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile1(path.u8string());
+    BIniFile iniFile1(path);
     EXPECT_TRUE(iniFile1.IsValid());
     EXPECT_EQ(iniFile1.GetFileName(), path);
     auto iniFile2 = std::move(iniFile1);
@@ -140,7 +140,7 @@ TEST(test_binifile, fct_ReadSection)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile(path.u8string());
+    BIniFile iniFile(path);
     std::string section;
     const auto map1 = iniFile.ReadSection(section);
     EXPECT_EQ(map1.size(), 2U);
@@ -167,11 +167,12 @@ TEST(test_binifile, fct_ReadSection)
     EXPECT_TRUE(map4.empty());
     fs::remove(path);
 }
+
 TEST(test_binifile, fct_GetLineNumber)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
-    BIniFile iniFile(path.u8string());
+    BIniFile iniFile(path);
     auto lineNumber = iniFile.GetLineNumber("", "key12");
     EXPECT_EQ(lineNumber, 2);
     lineNumber = iniFile.GetLineNumber("SECTION2", "key21");
@@ -195,7 +196,7 @@ TEST(test_binifile, fct_ReadSection_exceptions)
         " [SectionWithIndentation]\n"
         "key11=value11\n";
     ofs.close();
-    BIniFile iniFile1(path1.u8string());
+    BIniFile iniFile1(path1);
     EXPECT_THAT([&](){ iniFile1.ReadSection("SectionWithIndentation"); },
             testing::Throws<FlexException>());
     fs::remove(path1);
@@ -207,7 +208,7 @@ TEST(test_binifile, fct_ReadSection_exceptions)
         "[SectionWithIndentedKey]\n"
         " key11=value11\n";
     ofs.close();
-    BIniFile iniFile2(path2.u8string());
+    BIniFile iniFile2(path2);
     EXPECT_THAT([&](){ iniFile2.ReadSection("SectionWithIndentedKey"); },
             testing::Throws<FlexException>());
     fs::remove(path2);
@@ -220,7 +221,7 @@ TEST(test_binifile, fct_ReadSection_exceptions)
         "key11=value11a\n"
         "key11=value11b\n";
     ofs.close();
-    BIniFile iniFile3(path3.u8string());
+    BIniFile iniFile3(path3);
     EXPECT_THAT([&](){ iniFile3.ReadSection("SectionWithIdenticalKeys"); },
             testing::Throws<FlexException>());
     fs::remove(path3);
@@ -232,7 +233,7 @@ TEST(test_binifile, fct_ReadSection_exceptions)
         "[SectionWithWhitespaceLine]\n"
         "   \t\t    \t  \t   \t\t\t\n";
     ofs.close();
-    BIniFile iniFile4(path4.u8string());
+    BIniFile iniFile4(path4);
     EXPECT_THAT([&](){ iniFile4.ReadSection("SectionWithWhitespaceLine"); },
             testing::Throws<FlexException>());
     fs::remove(path4);
@@ -244,8 +245,20 @@ TEST(test_binifile, fct_ReadSection_exceptions)
         "[SectionWithEmptyLine]\n"
         "\n";
     ofs.close();
-    BIniFile iniFile5(path5.u8string());
+    BIniFile iniFile5(path5);
     EXPECT_THAT([&](){ iniFile5.ReadSection("SectionWithEmptyLine"); },
             testing::Throws<FlexException>());
     fs::remove(path5);
+}
+
+TEST(test_binifile, unicode_filename)
+{
+    const auto path = fs::temp_directory_path() / u8"ini_file1_\u2665.ini";
+    EXPECT_TRUE(createIniFile(path));
+    BIniFile iniFile(path);
+    const auto map2 = iniFile.ReadSection("SECTION2");
+    EXPECT_EQ(map2.size(), 2U);
+    EXPECT_EQ(map2.at("key21"), "value21");
+    EXPECT_EQ(map2.at("key22"), "value22");
+    fs::remove(path);
 }

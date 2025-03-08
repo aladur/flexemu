@@ -30,7 +30,7 @@
 
 namespace fs = std::filesystem;
 
-static bool createCnfFile(const std::string &path)
+static bool createCnfFile(const fs::path &path)
 {
     std::ofstream ofs(path);
     bool retval = false;
@@ -66,26 +66,25 @@ static bool createCnfFile(const std::string &path)
 
 TEST(test_fcnffile, ctor)
 {
-    const auto path1 = (fs::temp_directory_path() / u8"cnf1.conf").u8string();
+    const auto path1 = fs::temp_directory_path() / u8"cnf1.conf";
     EXPECT_TRUE(createCnfFile(path1));
     FlexemuConfigFile cnfFile1(path1);
     EXPECT_TRUE(cnfFile1.IsValid());
     EXPECT_EQ(cnfFile1.GetFileName(), path1);
     fs::remove(path1);
 
-    const std::string path2{R"(\\/\\/\\///\\/)"};
+    const fs::path path2{R"(\\/\\/\\///\\/)"};
     EXPECT_THAT([&](){ FlexemuConfigFile cnfFile2(path2); },
             testing::Throws<FlexException>());
 
-    const auto path3 =
-        (fs::temp_directory_path() / u8"not_existent_file.conf").u8string();
+    const auto path3 = fs::temp_directory_path() / u8"not_existent_file.conf";
     EXPECT_THAT([&](){ FlexemuConfigFile cnfFile3(path3); },
             testing::Throws<FlexException>());
 }
 
 TEST(test_fcnffile, move_ctor)
 {
-    const auto path = (fs::temp_directory_path() / u8"cnf2.conf").u8string();
+    const auto path = fs::temp_directory_path() / u8"cnf2.conf";
     EXPECT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile1(path);
     auto cnfFile2(std::move(cnfFile1));
@@ -103,7 +102,7 @@ TEST(test_fcnffile, move_ctor)
 
 TEST(test_fcnffile, move_assignment)
 {
-    const auto path = (fs::temp_directory_path() / u8"cnf3.conf").u8string();
+    const auto path = fs::temp_directory_path() / u8"cnf3.conf";
     EXPECT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile1(path);
     auto cnfFile2 = std::move(cnfFile1);
@@ -121,7 +120,7 @@ TEST(test_fcnffile, move_assignment)
 
 TEST(test_fcnffile, fct_ReadIoDevices)
 {
-    const auto path = (fs::temp_directory_path() / u8"cnf4.conf").u8string();
+    const auto path = fs::temp_directory_path() / u8"cnf4.conf";
     ASSERT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile(path);
     ASSERT_TRUE(cnfFile.IsValid());
@@ -171,7 +170,7 @@ TEST(test_fcnffile, fct_ReadIoDevices)
 
 TEST(test_fcnffile, fct_GetDebugSupportOption)
 {
-    const auto path = (fs::temp_directory_path() / u8"cnf5.conf").u8string();
+    const auto path = fs::temp_directory_path() / u8"cnf5.conf";
     ASSERT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile(path);
     ASSERT_TRUE(cnfFile.IsValid());
@@ -188,7 +187,7 @@ TEST(test_fcnffile, fct_GetDebugSupportOption)
 
 TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
 {
-    const auto path = (fs::temp_directory_path() / u8"cnf6.conf").u8string();
+    const auto path = fs::temp_directory_path() / u8"cnf6.conf";
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
@@ -252,7 +251,7 @@ TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
 
 TEST(test_fcnffile, fct_GetDebugSupportOption_exceptions)
 {
-    const auto path = (fs::temp_directory_path() / u8"cnf7.conf").u8string();
+    const auto path = fs::temp_directory_path() / u8"cnf7.conf";
         std::fstream ofs(path, std::ios::out | std::ios::trunc);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
@@ -263,6 +262,23 @@ TEST(test_fcnffile, fct_GetDebugSupportOption_exceptions)
     ASSERT_TRUE(cnfFile.IsValid());
     EXPECT_THAT([&](){ cnfFile.GetDebugSupportOption("invalidKey"); },
             testing::Throws<FlexException>());
+    fs::remove(path);
+}
+
+TEST(test_fcnffile, unicode_filename)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf\u2665.conf";
+    ASSERT_TRUE(createCnfFile(path));
+    FlexemuConfigFile cnfFile(path);
+    ASSERT_TRUE(cnfFile.IsValid());
+    auto value = cnfFile.GetDebugSupportOption("presetRAM");
+    EXPECT_EQ(value, "1");
+    value = cnfFile.GetDebugSupportOption("logMdcr");
+    EXPECT_EQ(value, "1");
+    value = cnfFile.GetDebugSupportOption("logMdcrFilePath");
+    EXPECT_EQ(value, "/dir/subdir/subdir/mdcr.log");
+    value = cnfFile.GetDebugSupportOption("invalidKey");
+    EXPECT_TRUE(value.empty());
     fs::remove(path);
 }
 

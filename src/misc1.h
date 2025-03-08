@@ -314,7 +314,7 @@ extern void print_versions(std::ostream &os, const std::string &program_name);
 extern fs::path getTempPath();
 extern fs::path getFlexemuUserConfigPath();
 extern fs::path getFlexemuConfigFile();
-extern std::string getFlexLabelFile();
+extern fs::path getFlexLabelFile();
 extern std::string getFileName(const std::string &path);
 extern std::string getFileStem(const std::string &path);
 extern std::string getFileExtension(const std::string &path);

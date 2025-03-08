@@ -49,14 +49,14 @@ static const std::set<std::string> &GetValidDevices()
     return validDevices;
 }
 
-FlexemuConfigFile::FlexemuConfigFile(const std::string &fileName) :
+FlexemuConfigFile::FlexemuConfigFile(const fs::path &fileName) :
      iniFileName(fileName)
 {
     BIniFile iniFile(iniFileName);
 
     if (!iniFile.IsValid())
     {
-        throw FlexException(FERR_UNABLE_TO_OPEN, fileName);
+        throw FlexException(FERR_UNABLE_TO_OPEN, fileName.u8string());
     }
 }
 
@@ -89,7 +89,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
             auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                         lineNumber, iter.first + "=" + iter.second,
-                        iniFile.GetFileName());
+                        iniFile.GetFileName().u8string());
         }
 
         std::stringstream stream(iter.second);
@@ -112,7 +112,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
                 throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                     lineNumber,
                                     iter.first + "=" + iter.second,
-                                    iniFile.GetFileName());
+                                    iniFile.GetFileName().u8string());
             }
 
             if (std::getline(stream, byteSizeString))
@@ -129,7 +129,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                         lineNumber,
                                         iter.first + "=" + iter.second,
-                                        iniFile.GetFileName());
+                                        iniFile.GetFileName().u8string());
                 }
                 mapping.byteSize = static_cast<Word>(byteSize);
             }
@@ -143,17 +143,17 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
             auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                 lineNumber, iter.first + "=" + iter.second,
-                                iniFile.GetFileName());
+                                iniFile.GetFileName().u8string());
         }
     }
 
     return deviceMappings;
 }
 
-int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
+int FlexemuConfigFile::GetSerparAddress(const fs::path &monitorFilePath)
     const
 {
-    std::string fileName = flx::getFileName(monitorFilePath);
+    std::string fileName = monitorFilePath.filename().u8string();
 
 #ifdef _WIN32
     flx::strlower(fileName);
@@ -191,7 +191,7 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                         lineNumber,
                                         iter.first + "=" + iter.second,
-                                        iniFile.GetFileName());
+                                        iniFile.GetFileName().u8string());
                 }
 
                 return address;
@@ -201,7 +201,7 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                 lineNumber,
                                 iter.first + "=" + iter.second,
-                                iniFile.GetFileName());
+                                iniFile.GetFileName().u8string());
         }
     }
 
@@ -227,7 +227,7 @@ std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
             auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                 lineNumber, iter.first + "=" + iter.second,
-                                iniFile.GetFileName());
+                                iniFile.GetFileName().u8string());
         }
 
         if (iter.first == key)
@@ -261,7 +261,7 @@ std::pair<std::string, std::set<std::string> >
             auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                 lineNumber, iter.first + "=" + iter.second,
-                                iniFile.GetFileName());
+                                iniFile.GetFileName().u8string());
         }
 
         if (iter.first == "devices")
@@ -281,7 +281,7 @@ std::pair<std::string, std::set<std::string> >
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                 lineNumber,
                                 iter.first + "=" + iter.second,
-                                iniFile.GetFileName());
+                                iniFile.GetFileName().u8string());
                 }
 
                 devices.emplace(device);
@@ -309,7 +309,7 @@ std::pair<std::string, std::set<std::string> >
     return result;
 }
 
-std::string FlexemuConfigFile::GetFileName() const
+fs::path FlexemuConfigFile::GetFileName() const
 {
     return iniFileName;
 }
@@ -321,10 +321,10 @@ bool FlexemuConfigFile::IsValid() const
     return iniFile.IsValid();
 }
 
-Byte FlexemuConfigFile::GetBootCharacter(const std::string &monitorFilePath)
+Byte FlexemuConfigFile::GetBootCharacter(const fs::path &monitorFilePath)
     const
 {
-    std::string fileName = flx::getFileName(monitorFilePath);
+    std::string fileName = monitorFilePath.filename().u8string();
     Byte result{};
 
 #ifdef _WIN32
@@ -352,7 +352,7 @@ Byte FlexemuConfigFile::GetBootCharacter(const std::string &monitorFilePath)
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                         lineNumber,
                                         iter.first + "=" + iter.second,
-                                        iniFile.GetFileName());
+                                        iniFile.GetFileName().u8string());
             }
             result = static_cast<Byte>(iter.second[0]);
         }

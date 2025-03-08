@@ -28,7 +28,7 @@
 #include <set>
 
 
-BIniFile::BIniFile(std::string p_fileName)
+BIniFile::BIniFile(fs::path p_fileName)
     : fileName(std::move(p_fileName))
 {
 }
@@ -53,7 +53,7 @@ bool BIniFile::IsValid() const
     return isValid;
 }
 
-std::string BIniFile::GetFileName() const
+fs::path BIniFile::GetFileName() const
 {
     return fileName;
 }
@@ -73,7 +73,7 @@ BIniFile::Type BIniFile::ReadLine(int line_number,
         if (line.empty() || whiteSpace.find(line[0]) != std::string::npos)
         {
             throw FlexException(FERR_INVALID_LINE_IN_FILE, line_number,
-                    line, GetFileName());
+                    line, GetFileName().u8string());
         }
 
         if (line[0] == '[')
@@ -160,7 +160,8 @@ std::map<std::string, std::string> BIniFile::ReadSection(
                         {
                             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                     line_number,
-                                    key.append("=").append(value), fileName);
+                                    key.append("=").append(value),
+                                    GetFileName().u8string());
                         }
 
                         resultMap.insert({ key, value });;

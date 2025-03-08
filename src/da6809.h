@@ -8,6 +8,9 @@
 #include "absdisas.h"
 #include <map>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 class Da6809 : public AbstractDisassembler
@@ -32,7 +35,7 @@ public:
             std::string &p_operands) override;
     void set_use_undocumented(bool value) override;
     unsigned getByteSize(const Byte *p_memory) override;
-    void SetFlexLabelFile(const std::string &path);
+    void SetFlexLabelFile(const fs::path &path);
 
 private:
 
@@ -71,7 +74,7 @@ private:
     std::string PrintCode(int bytes);
     const char *FlexLabel(Word addr);
 
-    std::string flexLabelFile;
+    fs::path flexLabelFile;
     std::map<unsigned, std::string> label_for_address;
     static const char *IndexRegister(Byte which);
     static const char *InterRegister(Byte which);

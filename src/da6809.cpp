@@ -27,6 +27,9 @@
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 void Da6809::set_use_undocumented(bool value)
@@ -34,7 +37,7 @@ void Da6809::set_use_undocumented(bool value)
     use_undocumented = value;
 }
 
-void Da6809::SetFlexLabelFile(const std::string &path)
+void Da6809::SetFlexLabelFile(const fs::path &path)
 {
     flexLabelFile = path;
 }

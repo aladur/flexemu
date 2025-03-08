@@ -157,8 +157,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
 
     if (options.isEurocom2V5)
     {
-        const auto path(flx::getFlexemuConfigFile().u8string());
-        FlexemuConfigFile configFile(path);
+        FlexemuConfigFile configFile(flx::getFlexemuConfigFile());
 
         auto logMdcr = configFile.GetDebugSupportOption("logMdcr");
         auto logFilePath = configFile.GetDebugSupportOption("logMdcrFilePath");
@@ -187,8 +186,7 @@ ApplicationRunner::~ApplicationRunner()
 
 void ApplicationRunner::AddIoDevicesToMemory()
 {
-    const auto path(flx::getFlexemuConfigFile().u8string());
-    FlexemuConfigFile configFile(path);
+    FlexemuConfigFile configFile(flx::getFlexemuConfigFile());
     const auto deviceParams = configFile.ReadIoDevices();
     const auto pairOfParams = configFile.GetIoDeviceLogging();
     const auto logFilePath = std::get<0>(pairOfParams);
@@ -282,9 +280,9 @@ int ApplicationRunner::startup(QApplication &app)
         return 1;
     }
 
-    const auto path(flx::getFlexemuConfigFile().u8string());
-    FlexemuConfigFile configFile(path);
-    auto address = configFile.GetSerparAddress(options.hex_file);
+    FlexemuConfigFile configFile(flx::getFlexemuConfigFile());
+
+    auto address = configFile.GetSerparAddress(fs::u8path(options.hex_file));
     if (address < 0 || !terminalIO.is_terminal_supported())
     {
         // The specified hex_file does not support switching between
@@ -312,7 +310,7 @@ int ApplicationRunner::startup(QApplication &app)
     memory.reset_io();
     cpu.reset();
 
-    auto boot_char = configFile.GetBootCharacter(options.hex_file);
+    auto boot_char = configFile.GetBootCharacter(fs::u8path(options.hex_file));
     if (options.term_mode && terminalIO.is_terminal_supported())
     {
         terminalIO.set_startup_command(options.startup_command);

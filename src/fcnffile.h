@@ -28,6 +28,9 @@
 #include <string>
 #include <set>
 #include <optional>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 struct sIoDeviceMapping
@@ -44,22 +47,22 @@ public:
     FlexemuConfigFile() = delete;
     FlexemuConfigFile(const FlexemuConfigFile &src) = delete;
     FlexemuConfigFile(FlexemuConfigFile &&src) noexcept;
-    explicit FlexemuConfigFile(const std::string &fileName);
+    explicit FlexemuConfigFile(const fs::path &fileName);
     ~FlexemuConfigFile() = default;
 
     FlexemuConfigFile &operator=(const FlexemuConfigFile &) = delete;
     FlexemuConfigFile &operator=(FlexemuConfigFile &&src) noexcept;
 
-    std::string GetFileName() const;
+    fs::path GetFileName() const;
     bool IsValid() const;
     std::vector<sIoDeviceMapping> ReadIoDevices() const;
     std::string GetDebugSupportOption(const std::string &key) const;
     std::pair<std::string, std::set<std::string> > GetIoDeviceLogging() const;
-    int GetSerparAddress(const std::string &monitorFilePath) const;
-    Byte GetBootCharacter(const std::string &monitorFilePath) const;
+    int GetSerparAddress(const fs::path &monitorFilePath) const;
+    Byte GetBootCharacter(const fs::path &monitorFilePath) const;
 
 private:
-    std::string iniFileName;
+    fs::path iniFileName;
 };
 
 #endif
