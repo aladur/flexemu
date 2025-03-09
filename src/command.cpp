@@ -345,7 +345,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("mount") == 0)
                 {
-                    if (!fdc.mount_drive(arg2, number))
+                    if (!fdc.mount_drive(fs::u8path(arg2), number))
                     {
                         answer_stream << "EMU error: "
                                          "Unable to mount " << arg2 <<
@@ -358,7 +358,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("rmount") == 0)
                 {
-                    if (!fdc.mount_drive(arg2, number, MOUNT_RAM))
+                    if (!fdc.mount_drive(fs::u8path(arg2), number, MOUNT_RAM))
                     {
                         answer_stream << "EMU error: "
                                          "Unable to mount " << arg2 <<

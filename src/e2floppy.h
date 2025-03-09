@@ -29,7 +29,6 @@
 
 #ifndef __fromflex__
 
-    #include <sys/stat.h>
     #include "flexemu.h"
     #include "wd1793.h"
     #include "filecnts.h"
@@ -94,7 +93,7 @@ private:
     std::array<Byte, MAX_DRIVES + 1U> track{};
     std::array<DiskStatus, MAX_DRIVES + 1U> drive_status{};
     std::array<Byte, 1024>sector_buffer{};
-    std::string disk_dir;
+    fs::path disk_dir;
     mutable std::mutex status_mutex;
     // data for CMD_WRITETRACK
     WriteTrackState writeTrackState{WriteTrackState::Inactive};
@@ -119,12 +118,12 @@ public:
     };
 
     virtual void get_drive_status(std::array<DiskStatus, MAX_DRIVES> &stat);
-    virtual void disk_directory(const std::string &p_disk_dir);
+    virtual void disk_directory(const fs::path &p_disk_dir);
     virtual void mount_all_drives(
             const std::array<fs::path, MAX_DRIVES> &drives);
     virtual bool sync_all_drives(tMountOption option = MOUNT_DEFAULT);
     virtual bool umount_all_drives();
-    virtual bool mount_drive(const std::string &path, Word drive_nr,
+    virtual bool mount_drive(const fs::path &path, Word drive_nr,
                              tMountOption option = MOUNT_DEFAULT);
     virtual bool format_disk(SWord trk, SWord sec,
                              const std::string &name, DiskType type);
