@@ -97,7 +97,7 @@ bool E2floppy::umount_drive(Word drive_nr)
     return true;
 }
 
-bool E2floppy::mount_drive(const std::string &path,
+bool E2floppy::mount_drive(const fs::path &path,
                            Word drive_nr,
                            tMountOption option)
 {
@@ -116,12 +116,13 @@ bool E2floppy::mount_drive(const std::string &path,
 
     // Intentionally use value argument, it may be changed on Windows.
     // NOLINTNEXTLINE(performance-unnecessary-value-param)
-    auto TryMount = [&](std::string containerPath) -> bool
+    auto TryMount = [&](fs::path containerPath) -> bool
     {
         IFlexDiskBySectorPtr pfloppy;
 
 #ifdef _WIN32
-        for (auto it = containerPath.begin(); it != containerPath.end(); ++it)
+        auto sPath = containerPath.u8string();
+        for (auto it = sPath.begin(); it != sPath.end(); ++it)
         {
             if (*it == '|')
             {
@@ -132,8 +133,10 @@ bool E2floppy::mount_drive(const std::string &path,
                 *it = '\\';
             }
         }
+        containerPath = fs::u8path(sPath);
 #endif
-        if (BDirectory::Exists(containerPath))
+        const auto status = fs::status(containerPath);
+        if (fs::exists(status) && fs::is_directory(status))
         {
             if (options.isDirectoryDiskActive)
             {
@@ -141,7 +144,7 @@ bool E2floppy::mount_drive(const std::string &path,
                 {
                     pfloppy = IFlexDiskBySectorPtr(
                      new FlexDirectoryDiskBySector(
-                         containerPath,
+                         containerPath.u8string(),
                          options.fileTimeAccess,
                          options.directoryDiskTracks,
                          options.directoryDiskSectors));
@@ -154,21 +157,21 @@ bool E2floppy::mount_drive(const std::string &path,
         }
         else
         {
-            struct stat sbuf{};
-            bool fileExists = !stat(containerPath.c_str(), &sbuf);
+            bool fileExists = fs::exists(status);
+            auto fileSize = fileExists ? fs::file_size(containerPath) : 0U;
 
             // Empty or non existing files are only mounted if
             // option canFormatDrive is set.
             if (!options.canFormatDrives[drive_nr] &&
                 (!fileExists ||
-                (fileExists && S_ISREG(sbuf.st_mode) && sbuf.st_size == 0)))
+                (fileExists && fs::is_regular_file(status) && fileSize == 0U)))
             {
                 return false;
             }
             // A file which does not exist or has file size zero
             // is marked as unformatted.
-            bool is_formatted = !stat(containerPath.c_str(), &sbuf) &&
-                                (S_ISREG(sbuf.st_mode) && sbuf.st_size);
+            bool is_formatted = (fileExists && fs::is_regular_file(status) &&
+                                fileSize > 0U);
             auto mode = std::ios::in | std::ios::out | std::ios::binary;
 
             if (is_formatted && option == MOUNT_RAM)
@@ -176,7 +179,7 @@ bool E2floppy::mount_drive(const std::string &path,
                 try
                 {
                     pfloppy = IFlexDiskBySectorPtr(
-                     new FlexRamDisk(containerPath, mode,
+                     new FlexRamDisk(containerPath.u8string(), mode,
                                      options.fileTimeAccess));
                 }
                 catch (FlexException &)
@@ -185,7 +188,7 @@ bool E2floppy::mount_drive(const std::string &path,
                     {
                         mode &= ~std::ios::out;
                         pfloppy = IFlexDiskBySectorPtr(
-                         new FlexRamDisk(containerPath, mode,
+                         new FlexRamDisk(containerPath.u8string(), mode,
                                          options.fileTimeAccess));
                     }
                     catch (FlexException &)
@@ -203,7 +206,7 @@ bool E2floppy::mount_drive(const std::string &path,
                 try
                 {
                     pfloppy = IFlexDiskBySectorPtr(
-                      new FlexDisk(containerPath, mode,
+                      new FlexDisk(containerPath.u8string(), mode,
                                    options.fileTimeAccess));
                 }
                 catch (FlexException &)
@@ -214,7 +217,7 @@ bool E2floppy::mount_drive(const std::string &path,
                         {
                             mode &= ~std::ios::out;
                             pfloppy = IFlexDiskBySectorPtr(
-                             new FlexDisk(containerPath, mode,
+                             new FlexDisk(containerPath.u8string(), mode,
                                           options.fileTimeAccess));
                         }
                         catch (FlexException &)
@@ -244,24 +247,18 @@ bool E2floppy::mount_drive(const std::string &path,
         return true;
     }
 
-    if (flx::isAbsolutePath(path))
+    if (path.is_absolute())
     {
         return false;
     }
 
     // If path is relative, second try with full path in disk_dir directory
-    auto fullPath = disk_dir;
-
-    if (!fullPath.empty() && fullPath[fullPath.length()-1] != PATHSEPARATOR)
-    {
-        fullPath += PATHSEPARATORSTRING;
-    }
-    fullPath += path;
+    auto fullPath = disk_dir / path;
 
     return TryMount(fullPath);
 }
 
-void E2floppy::disk_directory(const std::string &p_disk_dir)
+void E2floppy::disk_directory(const fs::path &p_disk_dir)
 {
     disk_dir = p_disk_dir;
 }
@@ -691,12 +688,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
 {
     IFlexDiskBySectorPtr pfloppy;
     FileTimeAccess fileTimeAccess = FileTimeAccess::NONE;
-    auto path = disk_dir;
-    if (!flx::endsWithPathSeparator(path))
-    {
-        path += PATHSEPARATORSTRING;
-    }
-    path += name;
+    const auto path = disk_dir / name;
 
     try
     {
@@ -707,15 +699,16 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
                 {
                     pfloppy = IFlexDiskBySectorPtr(
                         FlexDirectoryDiskBySector::Create(
-                            path, options.fileTimeAccess, trk, sec, disk_type));
+                            path.u8string(), options.fileTimeAccess,
+                            trk, sec, disk_type));
                 }
                 break;
 
             case DiskType::DSK:
             case DiskType::FLX:
                 pfloppy = IFlexDiskBySectorPtr(
-                    FlexDisk::Create(path, fileTimeAccess, trk, sec,
-                        disk_type));
+                    FlexDisk::Create(path.u8string(), fileTimeAccess,
+                        trk, sec, disk_type));
                 break;
         }
     }
