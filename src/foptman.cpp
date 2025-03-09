@@ -130,13 +130,13 @@ void FlexemuOptions::PrintHelp(std::ostream &os)
 
 void FlexemuOptions::InitOptions(struct sOptions &options)
 {
-    options.drives[0] = "system.dsk";
-    options.drives[1] = "";
-    options.drives[2] = "";
-    options.drives[3] = "";
-    options.mdcrDrives[0] = "system.mdcr";
-    options.mdcrDrives[1] = "";
-    options.hex_file = "neumon54.hex";
+    options.drives[0] = fs::u8path(u8"system.dsk");
+    options.drives[1] = fs::u8path(u8"");
+    options.drives[2] = fs::u8path(u8"");
+    options.drives[3] = fs::u8path(u8"");
+    options.mdcrDrives[0] = fs::u8path("system.mdcr");
+    options.mdcrDrives[1] = fs::u8path(u8"");
+    options.hex_file = fs::u8path(u8"neumon54.hex");
     options.startup_command = "";
     options.term_mode = false;
     options.isRamExtension = true;
@@ -162,8 +162,8 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.isTerminalIgnoreNUL = true;
 #ifdef _WIN32
     options.terminalType = 0;
-    options.doc_dir = (flx::getExecutablePath() / u8"Documentation").u8string();
-    options.disk_dir = (flx::getExecutablePath() / u8"Data").u8string();
+    options.doc_dir = flx::getExecutablePath() / u8"Documentation";
+    options.disk_dir = flx::getExecutablePath() / u8"Data";
 #else
     options.terminalType = 1;
     options.doc_dir = F_DATADIR;
@@ -219,32 +219,32 @@ void FlexemuOptions::GetCommandlineOptions(
         switch (result)
         {
             case 'f':
-                options.hex_file = optarg;
+                options.hex_file = fs::u8path(optarg);
                 setReadOnly(FlexemuOptionId::HexFile);
                 break;
 
             case '0':
-                options.drives[0] = optarg;
+                options.drives[0] = fs::u8path(optarg);
                 setReadOnly(FlexemuOptionId::Drive0);
                 break;
 
             case '1':
-                options.drives[1] = optarg;
+                options.drives[1] = fs::u8path(optarg);
                 setReadOnly(FlexemuOptionId::Drive1);
                 break;
 
             case '2':
-                options.drives[2] = optarg;
+                options.drives[2] = fs::u8path(optarg);
                 setReadOnly(FlexemuOptionId::Drive2);
                 break;
 
             case '3':
-                options.drives[3] = optarg;
+                options.drives[3] = fs::u8path(optarg);
                 setReadOnly(FlexemuOptionId::Drive3);
                 break;
 
             case 'p':
-                options.disk_dir = optarg;
+                options.disk_dir = fs::u8path(optarg);
                 setReadOnly(FlexemuOptionId::DiskDirectory);
                 break;
 
@@ -396,16 +396,16 @@ void FlexemuOptions::GetCommandlineOptions(
 
             case 'L':
                 {
-                    const std::string tmp = optarg;
-                    const auto ext = flx::tolower(flx::getFileExtension(tmp));
+                    const auto tmp = fs::u8path(optarg);
+                    const auto ext = flx::tolower(tmp.extension().u8string());
                     if (ext != ".log" && ext != ".txt" && ext != ".csv")
                     {
                         std::cerr << "logging path '" <<
                             tmp << "' has an unsupported file extension.\n";
                         exit(EXIT_FAILURE);
                     }
+                    options.cpuLogPath = tmp;
                 }
-                options.cpuLogPath = optarg;
                 break;
 
             case 'V':
@@ -520,35 +520,35 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::HexFile:
-            reg.SetValue(FLEXMONITOR, options.hex_file.c_str());
+            reg.SetValue(FLEXMONITOR, options.hex_file.u8string());
             break;
 
         case FlexemuOptionId::DiskDirectory:
-            reg.SetValue(FLEXDISKDIR, options.disk_dir.c_str());
+            reg.SetValue(FLEXDISKDIR, options.disk_dir.u8string());
             break;
 
         case FlexemuOptionId::Drive0:
-            reg.SetValue(FLEXDISK0, options.drives[0].c_str());
+            reg.SetValue(FLEXDISK0, options.drives[0].u8string());
             break;
 
         case FlexemuOptionId::Drive1:
-            reg.SetValue(FLEXDISK1, options.drives[1].c_str());
+            reg.SetValue(FLEXDISK1, options.drives[1].u8string());
             break;
 
         case FlexemuOptionId::Drive2:
-            reg.SetValue(FLEXDISK2, options.drives[2].c_str());
+            reg.SetValue(FLEXDISK2, options.drives[2].u8string());
             break;
 
         case FlexemuOptionId::Drive3:
-            reg.SetValue(FLEXDISK3, options.drives[3].c_str());
+            reg.SetValue(FLEXDISK3, options.drives[3].u8string());
             break;
 
         case FlexemuOptionId::MdcrDrive0:
-            reg.SetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0].c_str());
+            reg.SetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0].u8string());
             break;
 
         case FlexemuOptionId::MdcrDrive1:
-            reg.SetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1].c_str());
+            reg.SetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1].u8string());
             break;
 
         case FlexemuOptionId::CanFormatDrive0:
@@ -944,14 +944,22 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
 
     reg.GetValue(FLEXVERSION, options.version);
-    reg.GetValue(FLEXDISKDIR, options.disk_dir);
-    reg.GetValue(FLEXDISK0, options.drives[0]);
-    reg.GetValue(FLEXDISK1, options.drives[1]);
-    reg.GetValue(FLEXDISK2, options.drives[2]);
-    reg.GetValue(FLEXDISK3, options.drives[3]);
-    reg.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
-    reg.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
-    reg.GetValue(FLEXMONITOR, options.hex_file);
+    reg.GetValue(FLEXDISKDIR, string_result);
+    options.disk_dir = fs::u8path(string_result);
+    reg.GetValue(FLEXDISK0, string_result);
+    options.drives[0] = fs::u8path(string_result);
+    reg.GetValue(FLEXDISK1, string_result);
+    options.drives[1] = fs::u8path(string_result);
+    reg.GetValue(FLEXDISK2, string_result);
+    options.drives[2] = fs::u8path(string_result);
+    reg.GetValue(FLEXDISK3, string_result);
+    options.drives[3] = fs::u8path(string_result);
+    reg.GetValue(FLEXMDCRDRIVE0, string_result);
+    options.mdcrDrives[0] = fs::u8path(string_result);
+    reg.GetValue(FLEXMDCRDRIVE1, string_result);
+    options.mdcrDrives[1] = fs::u8path(string_result);
+    reg.GetValue(FLEXMONITOR, string_result);
+    options.hex_file = fs::u8path(string_result);
     reg.GetValue(FLEXCOLOR, options.color);
 
     if (!reg.GetValue(FLEXNCOLORS, int_result))
@@ -1127,14 +1135,22 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     BRcFile rcFile(rcFilePath);
     rcFile.GetValue(FLEXVERSION, options.version);
-    rcFile.GetValue(FLEXDISKDIR, options.disk_dir);
-    rcFile.GetValue(FLEXDISK0, options.drives[0]);
-    rcFile.GetValue(FLEXDISK1, options.drives[1]);
-    rcFile.GetValue(FLEXDISK2, options.drives[2]);
-    rcFile.GetValue(FLEXDISK3, options.drives[3]);
-    rcFile.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
-    rcFile.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
-    rcFile.GetValue(FLEXMONITOR, options.hex_file);
+    rcFile.GetValue(FLEXDISKDIR, string_result);
+    options.disk_dir = string_result;
+    rcFile.GetValue(FLEXDISK0, string_result);
+    options.drives[0] = string_result;
+    rcFile.GetValue(FLEXDISK1, string_result);
+    options.drives[1] = string_result;
+    rcFile.GetValue(FLEXDISK2, string_result);
+    options.drives[2] = string_result;
+    rcFile.GetValue(FLEXDISK3, string_result);
+    options.drives[3] = string_result;
+    rcFile.GetValue(FLEXMDCRDRIVE0, string_result);
+    options.mdcrDrives[0] = string_result;
+    rcFile.GetValue(FLEXMDCRDRIVE1, string_result);
+    options.mdcrDrives[1] = string_result;
+    rcFile.GetValue(FLEXMONITOR, string_result);
+    options.hex_file = string_result;
     rcFile.GetValue(FLEXCOLOR, options.color);
 
     if (!rcFile.GetValue(FLEXNCOLORS, int_result))

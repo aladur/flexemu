@@ -80,7 +80,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
     // neumnt54.hex is obsolete now.
     // neumon54.hex can be used for both terminal and GUI mode.
     // SERPAR flag is switched dynamically during emulation.
-    if (flx::getFileName(options.hex_file) == std::string("neumnt54.hex"))
+    if (options.hex_file.filename().u8string() == std::string("neumnt54.hex"))
     {
         std::stringstream message;
 
@@ -112,11 +112,11 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
     {
         Mc6809LoggerConfig loggerConfig;
 
-        loggerConfig.logFileName = options.cpuLogPath;
+        loggerConfig.logFileName = options.cpuLogPath.u8string();
         loggerConfig.isEnabled = true;
         loggerConfig.logCycleCount = true;
-        const auto extension = flx::tolower(
-                flx::getFileExtension(options.cpuLogPath));
+        const auto extension =
+            flx::tolower(options.cpuLogPath.extension().u8string());
         if (extension == ".csv")
         {
             loggerConfig.format = Mc6809LoggerConfig::Format::Csv;
@@ -222,18 +222,17 @@ void ApplicationRunner::AddIoDevicesToMemory()
 
 bool ApplicationRunner::LoadMonitorFileIntoRom()
 {
-    std::string hexFilePath = options.hex_file;
+    auto hexFilePath = options.hex_file;
     DWord startAddress = 0;
 
-    int error = load_hexfile(options.hex_file, memory, startAddress);
+    int error = load_hexfile(hexFilePath.u8string(), memory, startAddress);
     if (error < 0)
     {
-        if (!flx::isAbsolutePath(hexFilePath))
+        if (!hexFilePath.is_absolute())
         {
-            hexFilePath = options.disk_dir + PATHSEPARATORSTRING +
-                          options.hex_file;
+            hexFilePath = options.disk_dir / hexFilePath;
 
-            error = load_hexfile(hexFilePath, memory, startAddress);
+            error = load_hexfile(hexFilePath.u8string(), memory, startAddress);
         }
 
         if (error < 0)
@@ -266,12 +265,12 @@ int ApplicationRunner::startup(QApplication &app)
 
     if (options.isEurocom2V5)
     {
-        pia2v5.disk_directory(options.disk_dir.c_str());
+        pia2v5.disk_directory(options.disk_dir.u8string().c_str());
         pia2v5.mount_all_drives(options.mdcrDrives);
     }
     else
     {
-        fdc.disk_directory(options.disk_dir);
+        fdc.disk_directory(options.disk_dir.u8string());
         fdc.mount_all_drives(options.drives);
     }
 
@@ -282,7 +281,7 @@ int ApplicationRunner::startup(QApplication &app)
 
     FlexemuConfigFile configFile(flx::getFlexemuConfigFile());
 
-    auto address = configFile.GetSerparAddress(fs::u8path(options.hex_file));
+    auto address = configFile.GetSerparAddress(options.hex_file);
     if (address < 0 || !terminalIO.is_terminal_supported())
     {
         // The specified hex_file does not support switching between
@@ -310,7 +309,7 @@ int ApplicationRunner::startup(QApplication &app)
     memory.reset_io();
     cpu.reset();
 
-    auto boot_char = configFile.GetBootCharacter(fs::u8path(options.hex_file));
+    auto boot_char = configFile.GetBootCharacter(options.hex_file);
     if (options.term_mode && terminalIO.is_terminal_supported())
     {
         terminalIO.set_startup_command(options.startup_command);

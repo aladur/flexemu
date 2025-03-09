@@ -36,6 +36,9 @@
 #include "soptions.h"
 #include <cassert>
 #include <array>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 E2floppy::E2floppy(const struct sOptions &p_options)
@@ -264,13 +267,13 @@ void E2floppy::disk_directory(const std::string &p_disk_dir)
 }
 
 void E2floppy::mount_all_drives(
-        const std::array<std::string, MAX_DRIVES> &drives)
+        const std::array<fs::path, MAX_DRIVES> &drives)
 {
     Word drive_nr = 0U;
 
     for (const auto &drive : drives)
     {
-        mount_drive(drive, drive_nr++);
+        mount_drive(drive.u8string(), drive_nr++);
     }
 
     selected = MAX_DRIVES; // deselect all drives

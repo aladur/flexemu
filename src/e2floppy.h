@@ -37,6 +37,9 @@
     #include "fcinfo.h"
     #include <string>
     #include <mutex>
+    #include <filesystem>
+
+namespace fs = std::filesystem;
 
 #else
     #include "typedefs.h"
@@ -118,7 +121,7 @@ public:
     virtual void get_drive_status(std::array<DiskStatus, MAX_DRIVES> &stat);
     virtual void disk_directory(const std::string &p_disk_dir);
     virtual void mount_all_drives(
-            const std::array<std::string, MAX_DRIVES> &drives);
+            const std::array<fs::path, MAX_DRIVES> &drives);
     virtual bool sync_all_drives(tMountOption option = MOUNT_DEFAULT);
     virtual bool umount_all_drives();
     virtual bool mount_drive(const std::string &path, Word drive_nr,

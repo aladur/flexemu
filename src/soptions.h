@@ -32,6 +32,9 @@
 #include <algorithm>
 #include "efiletim.h"
 #include "e2.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 enum class FlexemuOptionId : uint8_t
@@ -91,10 +94,10 @@ struct sOptions
     sOptions& operator=(const sOptions &src) = default;
 
     std::string version;
-    std::array<std::string, MAX_DRIVES> drives;
-    std::array<std::string, 2> mdcrDrives;
-    std::string hex_file;
-    std::string disk_dir;
+    std::array<fs::path, MAX_DRIVES> drives;
+    std::array<fs::path, 2> mdcrDrives;
+    fs::path hex_file;
+    fs::path disk_dir;
     std::string startup_command;
     bool isRamExtension{}; // Use RAM extension cards/No RAM extension
     bool isHiMem{}; // Use 2 x 288K RAM extension/2 x 96 K RAM ext.
@@ -114,7 +117,7 @@ struct sOptions
 
     // User interface options
     std::string color; // color name or "default" for multi color palette.
-    std::string doc_dir; // Directory containing html documenation.
+    fs::path doc_dir; // Directory containing html documenation.
     int nColors{}; // Number of colors or gray scale values { 2, 8, 64 }.
     bool isInverse{}; // Display inverse colors or gray scale values.
     bool isSmooth{}; // Display mode is smooth display.
@@ -136,7 +139,7 @@ struct sOptions
     int directoryDiskSectors{}; // Default number of sectors for a directory disk
     bool isDirectoryDiskActive{}; // true if directory disk is active.
     bool isStatusBarVisible{}; // true if status bar is visible.
-    std::string cpuLogPath; // Path used for CPU instruction logging
+    fs::path cpuLogPath; // Path used for CPU instruction logging
 
     FlexemuOptionIds_t readOnlyOptionIds;// List of option ids which are
                                          // read-only.

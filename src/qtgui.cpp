@@ -623,7 +623,7 @@ void QtGui::OnCpuUndocumentedInstructions()
 
 void QtGui::OnIntroduction() const
 {
-    QString documentationDir = options.doc_dir.c_str();
+    auto documentationDir = QString::fromStdString(options.doc_dir.u8string());
     auto url = CreateDocumentationUrl(documentationDir, "flexemu.htm");
 
     QDesktopServices::openUrl(url);

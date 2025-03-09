@@ -33,6 +33,9 @@
 #include <array>
 #include <vector>
 #include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 class Mc6809;
@@ -91,7 +94,7 @@ protected:
 public:
     void set_debug(const std::string &debugLevel, std::string logFilePath);
     void disk_directory(const char *p_disk_dir);
-    void mount_all_drives(const std::array<std::string, 2> &paths);
+    void mount_all_drives(const std::array<fs::path, 2> &paths);
     bool mount_drive(const char *path, Word drive_nr);
 
 public:

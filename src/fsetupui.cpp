@@ -157,7 +157,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     readOnlyOptions = AddDependentReadOnlyOptions(options.readOnlyOptionIds);
 
-    InitializeHardwareHyperlink(options.doc_dir.c_str());
+    InitializeHardwareHyperlink(options.doc_dir.u8string().c_str());
 
     for (int x = 1; x <= SCREEN_SIZES; ++x)
     {
@@ -224,16 +224,19 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     c_undocumented->setChecked(options.use_undocumented);
 
-    e_monitorPgm->setText(QString(options.hex_file.c_str()));
-    e_diskMonitorDir->setText(QString(options.disk_dir.c_str()));
+    e_monitorPgm->setText(QString::fromStdString(options.hex_file.u8string()));
+    e_diskMonitorDir->setText(QString::fromStdString(
+                options.disk_dir.u8string()));
 
-    e_drive0->setText(QString(options.drives[0].c_str()));
-    e_drive1->setText(QString(options.drives[1].c_str()));
-    e_drive2->setText(QString(options.drives[2].c_str()));
-    e_drive3->setText(QString(options.drives[3].c_str()));
+    e_drive0->setText(QString::fromStdString(options.drives[0].u8string()));
+    e_drive1->setText(QString::fromStdString(options.drives[1].u8string()));
+    e_drive2->setText(QString::fromStdString(options.drives[2].u8string()));
+    e_drive3->setText(QString::fromStdString(options.drives[3].u8string()));
 
-    e_mdcrDrive0->setText(QString(options.mdcrDrives[0].c_str()));
-    e_mdcrDrive1->setText(QString(options.mdcrDrives[1].c_str()));
+    e_mdcrDrive0->setText(QString::fromStdString(
+                options.mdcrDrives[0].u8string()));
+    e_mdcrDrive1->setText(QString::fromStdString(
+                options.mdcrDrives[1].u8string()));
 
     c_canFormatDrive0->setChecked(options.canFormatDrives[0]);
     c_canFormatDrive1->setChecked(options.canFormatDrives[1]);
@@ -719,35 +722,41 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
 
     if (!IsReadOnly(FlexemuOptionId::DiskDirectory))
     {
+        const auto text = e_diskMonitorDir->text();
         options.disk_dir =
-            QDir::toNativeSeparators(e_diskMonitorDir->text()).toStdString();
+            fs::u8path(QDir::toNativeSeparators(text).toStdString());
     }
 
     if (!IsReadOnly(FlexemuOptionId::DiskDirectory))
     {
+        const auto text = e_monitorPgm->text();
         options.hex_file =
-            QDir::toNativeSeparators(e_monitorPgm->text()).toStdString();
+            fs::u8path(QDir::toNativeSeparators(text).toStdString());
     }
 
     if (!IsReadOnly(FlexemuOptionId::Drive0))
     {
+        const auto text = e_drive0->text();
         options.drives[0] =
-            QDir::toNativeSeparators(e_drive0->text()).toStdString();
+            fs::u8path(QDir::toNativeSeparators(text).toStdString());
     }
     if (!IsReadOnly(FlexemuOptionId::Drive1))
     {
+        const auto text = e_drive1->text();
         options.drives[1] =
-            QDir::toNativeSeparators(e_drive1->text()).toStdString();
+            fs::u8path(QDir::toNativeSeparators(text).toStdString());
     }
     if (!IsReadOnly(FlexemuOptionId::Drive2))
     {
+        const auto text = e_drive2->text();
         options.drives[2] =
-            QDir::toNativeSeparators(e_drive2->text()).toStdString();
+            fs::u8path(QDir::toNativeSeparators(text).toStdString());
     }
     if (!IsReadOnly(FlexemuOptionId::Drive3))
     {
+        const auto text = e_drive3->text();
         options.drives[3] =
-            QDir::toNativeSeparators(e_drive3->text()).toStdString();
+            fs::u8path(QDir::toNativeSeparators(text).toStdString());
     }
 
     if (!IsReadOnly(FlexemuOptionId::CanFormatDrive0))
@@ -769,13 +778,15 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
 
     if (!IsReadOnly(FlexemuOptionId::MdcrDrive0))
     {
+        const auto text = e_mdcrDrive0->text();
         options.mdcrDrives[0] =
-            QDir::toNativeSeparators(e_mdcrDrive0->text()).toStdString();
+            fs::u8path(QDir::toNativeSeparators(text).toStdString());
     }
     if (!IsReadOnly(FlexemuOptionId::MdcrDrive1))
     {
+        const auto text = e_mdcrDrive1->text();
         options.mdcrDrives[1] =
-            QDir::toNativeSeparators(e_mdcrDrive1->text()).toStdString();
+            fs::u8path(QDir::toNativeSeparators(text).toStdString());
     }
 
     if (!IsReadOnly(FlexemuOptionId::IsRamExt2x96) &&
