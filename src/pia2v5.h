@@ -74,7 +74,7 @@ private:
     ReadMode read_mode{ReadMode::Off};
     TapeDirection direction{TapeDirection::NONE};
     Word debug{0};
-    std::string disk_dir;
+    fs::path disk_dir;
     std::fstream cdbg;
     // following delay/cycle variables/constants are multiples of cpu cycles
     QWord delay_RDC{0}; // Delay until a read clock is present
@@ -92,10 +92,10 @@ protected:
     Byte readInputB() override;
 
 public:
-    void set_debug(const std::string &debugLevel, std::string logFilePath);
-    void disk_directory(const char *p_disk_dir);
+    void set_debug(const std::string &debugLevel, fs::path logFilePath);
+    void disk_directory(const fs::path &p_disk_dir);
     void mount_all_drives(const std::array<fs::path, 2> &paths);
-    bool mount_drive(const char *path, Word drive_nr);
+    bool mount_drive(const fs::path &path, Word drive_nr);
 
 public:
     void resetIo() override;

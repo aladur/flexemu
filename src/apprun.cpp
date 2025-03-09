@@ -160,7 +160,8 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
         FlexemuConfigFile configFile(flx::getFlexemuConfigFile());
 
         auto logMdcr = configFile.GetDebugSupportOption("logMdcr");
-        auto logFilePath = configFile.GetDebugSupportOption("logMdcrFilePath");
+        auto logFilePath =
+            fs::u8path(configFile.GetDebugSupportOption("logMdcrFilePath"));
         pia2v5.set_debug(logMdcr, logFilePath);
     }
 
@@ -265,7 +266,7 @@ int ApplicationRunner::startup(QApplication &app)
 
     if (options.isEurocom2V5)
     {
-        pia2v5.disk_directory(options.disk_dir.u8string().c_str());
+        pia2v5.disk_directory(options.disk_dir);
         pia2v5.mount_all_drives(options.mdcrDrives);
     }
     else

@@ -30,6 +30,9 @@
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 #define GET_DELTA_TIME static_cast<float>((cpu.get_cycles() - cycles_cdbg) * \
@@ -383,7 +386,7 @@ void Pia2V5::requestInputA()
     }
 }
 
-void Pia2V5::disk_directory(const char *p_disk_dir)
+void Pia2V5::disk_directory(const fs::path &p_disk_dir)
 {
         disk_dir = p_disk_dir;
 }
@@ -415,16 +418,16 @@ void Pia2V5::mount_all_drives(const std::array<fs::path, 2> &paths)
 
     for (const auto &path : paths)
     {
-        mount_drive(path.u8string().c_str(), drive_nr);
+        mount_drive(path, drive_nr);
         ++drive_nr;
     }
 
     drive_idx = -1;
 }
 
-bool Pia2V5::mount_drive(const char *path, Word drive_nr)
+bool Pia2V5::mount_drive(const fs::path &path, Word drive_nr)
 {
-    if (drive_nr > 1 || path == nullptr || path[0] == '\0')
+    if (drive_nr > 1 || path.empty())
     {
         return false;
     }
@@ -436,13 +439,13 @@ bool Pia2V5::mount_drive(const char *path, Word drive_nr)
     }
 
     int i;
-    std::string containerPath = path;
+    auto containerPath = path;
 
-    for (i = 0; i < 2; ++i)
+    for (i = 0; i < (path.is_relative() ? 2 : 1); ++i)
     {
         try
         {
-            drive[drive_nr] = MiniDcrTape::Open(containerPath);
+            drive[drive_nr] = MiniDcrTape::Open(containerPath.u8string());
             if (debug)
             {
                 cdbg << "drive_nr=" << drive_nr <<
@@ -459,26 +462,17 @@ bool Pia2V5::mount_drive(const char *path, Word drive_nr)
             }
         }
 
-        containerPath = disk_dir;
-
-        if (!containerPath.empty() &&
-        containerPath[containerPath.length()-1] != PATHSEPARATOR)
-        {
-            containerPath += PATHSEPARATORSTRING;
-        }
-
-        containerPath += path;
+        containerPath = disk_dir / path;
     }
 
     return false;
 }
 
-void Pia2V5::set_debug(const std::string &debugLevel,
-                       std::string logFilePath)
+void Pia2V5::set_debug(const std::string &debugLevel, fs::path logFilePath)
 {
     if (logFilePath.empty())
     {
-        logFilePath = (flx::getTempPath() / u8"flexemu_mdcr.log").u8string();
+        logFilePath = fs::temp_directory_path() / u8"flexemu_mdcr.log";
     }
 
     std::stringstream streamDebugLevel(debugLevel);
