@@ -28,6 +28,9 @@
 #include <array>
 #include <vector>
 #include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 const int TYPE_MDCR_CONTAINER = 0x100; /* file container with MDCR format */
@@ -67,14 +70,14 @@ public:
     MiniDcrTape() = delete;
     MiniDcrTape(const MiniDcrTape &) = delete;
     MiniDcrTape(MiniDcrTape &&) = delete;
-    MiniDcrTape(const std::string &path, Mode mode);
+    MiniDcrTape(const fs::path &path, Mode mode);
     virtual ~MiniDcrTape();
 
     MiniDcrTape &operator= (const MiniDcrTape &) = delete;
     MiniDcrTape &operator= (MiniDcrTape &&) = delete;
 
-    static MiniDcrTapePtr Create(const std::string &path);
-    static MiniDcrTapePtr Open(const std::string &path);
+    static MiniDcrTapePtr Create(const fs::path &path);
+    static MiniDcrTapePtr Open(const fs::path &path);
     bool Close();
     bool IsOpen() const;
     bool HasRecord() const;
@@ -90,6 +93,6 @@ public:
 private:
     bool VerifyTape();
 
-}; // class MiniDcrTape
+};
 
 #endif // MDCRTAPE_INCLUDED

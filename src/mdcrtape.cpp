@@ -23,7 +23,6 @@
 
 #include "mdcrtape.h"
 #include "flexerr.h"
-#include "sys/stat.h"
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -32,17 +31,17 @@
 
 const std::array<char, 4> MiniDcrTape::magic_bytes { 'M', 'D', 'C', 'R' };
 
-MiniDcrTape::MiniDcrTape(const std::string &path, Mode mode) :
+MiniDcrTape::MiniDcrTape(const fs::path &path, Mode mode) :
     is_write_protected(false)
 {
-    struct stat sbuf{};
+    const auto status = fs::status(path);
 
     switch (mode)
     {
         case Mode::Open:
-            if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+            if (!fs::exists(status) || !fs::is_regular_file(status))
             {
-                throw FlexException(FERR_UNABLE_TO_OPEN, path);
+                throw FlexException(FERR_UNABLE_TO_OPEN, path.u8string());
             }
 
             stream.open(path, std::ios::in | std::ios::out | std::ios::binary);
@@ -53,7 +52,7 @@ MiniDcrTape::MiniDcrTape(const std::string &path, Mode mode) :
 
                 if (!IsOpen())
                 {
-                    throw FlexException(FERR_UNABLE_TO_OPEN, path);
+                    throw FlexException(FERR_UNABLE_TO_OPEN, path.u8string());
                 }
 
                 // file only can be opened read-only.
@@ -62,21 +61,21 @@ MiniDcrTape::MiniDcrTape(const std::string &path, Mode mode) :
 
             if (!VerifyTape())
             {
-                throw FlexException(FERR_IS_NO_MDCRFORMAT, path);
+                throw FlexException(FERR_IS_NO_MDCRFORMAT, path.u8string());
             }
             break;
 
         case Mode::Create:
-            if (!stat(path.c_str(), &sbuf))
+            if (fs::exists(status))
             {
-                throw FlexException(FERR_FILE_ALREADY_EXISTS, path);
+                throw FlexException(FERR_FILE_ALREADY_EXISTS, path.u8string());
             }
 
             stream.open(path, std::ios::out | std::ios::binary);
 
             if (!IsOpen())
             {
-                throw FlexException(FERR_UNABLE_TO_CREATE, path);
+                throw FlexException(FERR_UNABLE_TO_CREATE, path.u8string());
             }
 
             stream.write(MiniDcrTape::magic_bytes.data(),
@@ -88,7 +87,7 @@ MiniDcrTape::MiniDcrTape(const std::string &path, Mode mode) :
 
             if (!IsOpen())
             {
-                throw FlexException(FERR_UNABLE_TO_CREATE, path);
+                throw FlexException(FERR_UNABLE_TO_CREATE, path.u8string());
             }
             break;
 
@@ -107,12 +106,12 @@ MiniDcrTape::MiniDcrTape::~MiniDcrTape()
     }
 }
 
-MiniDcrTapePtr MiniDcrTape::Create(const std::string &path)
+MiniDcrTapePtr MiniDcrTape::Create(const fs::path &path)
 {
     return std::make_unique<MiniDcrTape>(path, Mode::Create);
 }
 
-MiniDcrTapePtr MiniDcrTape::Open(const std::string &path)
+MiniDcrTapePtr MiniDcrTape::Open(const fs::path &path)
 {
     return std::make_unique<MiniDcrTape>(path, Mode::Open);
 }
