@@ -43,6 +43,9 @@
 #include <QUrl>
 #include <QLocale>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 class QLineEdit;
@@ -90,7 +93,7 @@ private:
 
     void ConnectSignalsWithSlots();
     static void AddFrequencyValidator(QLineEdit &lineEdit);
-    void InitializeHardwareHyperlink(const char *doc_dir);
+    void InitializeHardwareHyperlink(const fs::path &doc_dir);
     bool Validate();
     bool IsReadOnly(FlexemuOptionId optionId);
     void SetOptionsReadOnly(const std::vector<FlexemuOptionId> &readOnlyOptions);
@@ -99,8 +102,8 @@ private:
 
     void OnSelectFile(QLineEdit &lineEdit, FileType type);
 
-    static QUrl CreateDocumentationUrl(const char *doc_dir,
-                                       const char *html_file);
+    static QUrl CreateDocumentationUrl(const fs::path &doc_dir,
+                                       const fs::path &html_file);
     static std::string CreateHref(const char *encoded_url,
                                   const char *description);
     static QString GetRelativePath(

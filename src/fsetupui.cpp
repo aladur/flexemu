@@ -45,6 +45,9 @@
 #endif
 
 #include "fsetupui.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 void FlexemuOptionsUi::ConnectSignalsWithSlots()
@@ -157,7 +160,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     readOnlyOptions = AddDependentReadOnlyOptions(options.readOnlyOptionIds);
 
-    InitializeHardwareHyperlink(options.doc_dir.u8string().c_str());
+    InitializeHardwareHyperlink(options.doc_dir);
 
     for (int x = 1; x <= SCREEN_SIZES; ++x)
     {
@@ -1083,11 +1086,11 @@ void FlexemuOptionsUi::AddFrequencyValidator(QLineEdit &lineEdit)
 }
 
 QUrl FlexemuOptionsUi::CreateDocumentationUrl(
-        const char *doc_dir, const char *html_file)
+        const fs::path &doc_dir, const fs::path &html_file)
 {
-    auto path = QString(doc_dir) + PATHSEPARATORSTRING + html_file;
+    const auto path = doc_dir / html_file;
 
-    return QUrl::fromLocalFile(path);
+    return QUrl::fromLocalFile(QString::fromStdString(path.u8string()));
 }
 
 std::string FlexemuOptionsUi::CreateHref(const char *encoded_url,
@@ -1097,9 +1100,9 @@ std::string FlexemuOptionsUi::CreateHref(const char *encoded_url,
            "\">" + description + "</a>";
 }
 
-void FlexemuOptionsUi::InitializeHardwareHyperlink(const char *doc_dir)
+void FlexemuOptionsUi::InitializeHardwareHyperlink(const fs::path &doc_dir)
 {
-    auto url = CreateDocumentationUrl(doc_dir, "e2hwdesc.htm");
+    auto url = CreateDocumentationUrl(doc_dir, fs::u8path(u8"e2hwdesc.htm"));
     auto href = CreateHref(url.toEncoded().data(),
                            "Eurocom II hardware description");
 
