@@ -42,7 +42,7 @@ struct ParseResult
     std::map<std::string, int> countForMnemonic;
 };
 
-static ParseResult parseFile(std::string &fileName)
+static ParseResult parseFile(const fs::path &fileName)
 {
     ParseResult result;
     std::string line;
@@ -115,7 +115,7 @@ TEST(test_mc6809logger, fct_doLogging)
     EXPECT_FALSE(logger.doLogging(0x8000));
     EXPECT_FALSE(logger.doLogging(0xFFFF));
     Mc6809LoggerConfig config;
-    config.logFileName = "test.log";
+    config.logFileName = fs::u8path(u8"test.log");
     config.isEnabled = true;
     logger.setLoggerConfig(config);
     EXPECT_TRUE(logger.doLogging(0x0000));
@@ -154,7 +154,7 @@ TEST(test_mc6809logger, fct_doLogging)
 TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
 {
     Mc6809LoggerConfig config;
-    config.logFileName = "test1.log";
+    config.logFileName = fs::u8path(u8"test1.log");
     config.isEnabled = true;
     config.isLoopOptimization = true;
     {
@@ -187,7 +187,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     fs::remove(config.logFileName);
 
     {
-        config.logFileName = "test2.log";
+        config.logFileName = fs::u8path(u8"test2.log");
         // Testcase:
         // 0100 LDA #6
         // 0102 DECA
@@ -219,7 +219,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     fs::remove(config.logFileName);
 
     {
-        config.logFileName = "test3.log";
+        config.logFileName = fs::u8path(u8"test3.log");
         // Testcase:
         // 0100 LDA #2
         // 0102 DECA
@@ -249,7 +249,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     fs::remove(config.logFileName);
 
     {
-        config.logFileName = "test4.log";
+        config.logFileName = fs::u8path(u8"test4.log");
         // Testcase:
         // 0100 LDA #8
         // 0102 LDX #$FFFC
@@ -300,7 +300,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
 TEST(test_mc6809logger, fct_logCpuState_selfModifyCode)
 {
     Mc6809LoggerConfig config;
-    config.logFileName = "test5.log";
+    config.logFileName = fs::u8path(u8"test5.log");
     config.isEnabled = true;
     config.isLoopOptimization = true;
     {

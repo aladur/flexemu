@@ -24,10 +24,13 @@
 #define SCPULOG_INCLUDED
 
 #include "typedefs.h"
-#include <string>
 #include "warnoff.h"
 #include <optional>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 using OptionalWord = std::optional<Word>;
 enum class LogRegister : uint8_t
@@ -149,7 +152,7 @@ public:
     OptionalWord stopAddr;
     bool logCycleCount{false};
     LogRegister logRegisters{LogRegister::NONE};
-    std::string logFileName;
+    fs::path logFileName;
     Format format{Format::Text};
     char csvSeparator{';'};
     bool isEnabled{false};

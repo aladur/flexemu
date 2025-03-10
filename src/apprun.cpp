@@ -112,7 +112,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
     {
         Mc6809LoggerConfig loggerConfig;
 
-        loggerConfig.logFileName = options.cpuLogPath.u8string();
+        loggerConfig.logFileName = options.cpuLogPath;
         loggerConfig.isEnabled = true;
         loggerConfig.logCycleCount = true;
         const auto extension =
