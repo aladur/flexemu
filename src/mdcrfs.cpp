@@ -27,6 +27,9 @@
 #include <limits>
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 const std::string &GetMdcrError(int index)
@@ -204,7 +207,7 @@ MdcrStatus MdcrFileSystem::ReadFile(
 }
 
 MdcrStatus MdcrFileSystem::WriteFile(
-        const char *filepath,
+        const fs::path &filepath,
         const BMemoryBuffer &memory,
         MiniDcrTape &mdcr,
         MdcrWriteMode mode,
@@ -213,7 +216,7 @@ MdcrStatus MdcrFileSystem::WriteFile(
     int32_t index = 0;
     std::vector<Byte> ibuffer;
     std::vector<Byte> obuffer;
-    std::string filename = flx::getFileName(filepath);
+    std::string filename = filepath.filename().u8string();
     std::string mdcrFilename = CreateMdcrFilename(filename.c_str(), toUppercase);
 
     if (mdcr.IsWriteProtected())

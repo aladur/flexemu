@@ -25,6 +25,10 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 class BMemoryBuffer;
 class MiniDcrTape;
@@ -70,7 +74,7 @@ class MdcrFileSystem
                       BMemoryBuffer &memory,
                       MiniDcrTape &mdcr);
         MdcrStatus WriteFile(
-                       const char *filepath,
+                       const fs::path &filepath,
                        const BMemoryBuffer &memory,
                        MiniDcrTape &mdcr,
                        MdcrWriteMode mode,

@@ -123,7 +123,7 @@ static int WriteAppendToMdcrFile(const std::vector<fs::path> &ifiles,
                                 MdcrWriteMode::Append;
 
         MdcrStatus status = mdcrfs.WriteFile(
-                ifile.u8string().c_str(),
+                ifile,
                 memory,
                 *mdcr.get(),
                 mode,
