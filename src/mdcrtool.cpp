@@ -71,8 +71,8 @@ static void syntax()
 
 }
 
-static int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
-        const char *ofile, bool isTruncate, bool toUppercase)
+static int WriteAppendToMdcrFile(const std::vector<fs::path> &ifiles,
+        const fs::path &ofile, bool isTruncate, bool toUppercase)
 {
     MiniDcrTapePtr mdcr;
     BMemoryBuffer memory(65536);
@@ -103,16 +103,15 @@ static int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
         return 1;
     }
 
-    for (const char *ifile : ifiles)
+    for (const fs::path &ifile : ifiles)
     {
         DWord startAddress = 0;
 
         memory.Reset();
-        const std::string path = ifile;
-        auto result = load_hexfile(fs::u8path(path), memory, startAddress);
+        auto result = load_hexfile(ifile, memory, startAddress);
         if (result < 0)
         {
-            std::cerr << "*** Error in \"" << ifile << "\":\n    ";
+            std::cerr << "*** Error in " << ifile << ":\n    ";
             print_hexfile_error(std::cerr, result);
             std::cerr << " Ignored.\n";
             continue; // ignore reading input file. Continue with next one.
@@ -124,7 +123,7 @@ static int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
                                 MdcrWriteMode::Append;
 
         MdcrStatus status = mdcrfs.WriteFile(
-                ifile,
+                ifile.u8string().c_str(),
                 memory,
                 *mdcr.get(),
                 mode,
@@ -152,7 +151,7 @@ static int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
     return 0;
 }
 
-static int CreateMdcrFile(const char *ofile)
+static int CreateMdcrFile(const fs::path &ofile)
 {
     MiniDcrTapePtr mdcr;
 
@@ -169,7 +168,7 @@ static int CreateMdcrFile(const char *ofile)
     return 0;
 }
 
-static int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
+static int ExtractFromMdcrFile(const fs::path &targetDir, const fs::path &ifile)
 {
     MiniDcrTapePtr mdcr;
 
@@ -183,37 +182,31 @@ static int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
         return 1;
     }
 
-    std::string sTargetDir;
-    if (targetDir != nullptr)
+    if (!targetDir.empty())
     {
-        sTargetDir = targetDir;
-        if (!BDirectory::Exists(sTargetDir))
+        const auto status = fs::status(targetDir);
+        if (!fs::exists(status) || !fs::is_directory(status))
         {
-            std::cerr << "*** Error: '" << targetDir << "' does not exist or is"
+            std::cerr << "*** Error: " << targetDir << " does not exist or is"
             " no directory.\n";
             return 1;
-        }
-
-        if (sTargetDir.at(sTargetDir.size() - 1) != PATHSEPARATOR)
-        {
-            sTargetDir += PATHSEPARATORSTRING;
         }
     }
 
     MdcrFileSystem mdcrfs;
 
     auto status = mdcrfs.ForEachFile(*mdcr.get(),
-                       [&sTargetDir](const std::string &filename,
+                       [&targetDir](const std::string &filename,
                           BMemoryBuffer &memory)
     {
         auto pos = filename.find_last_not_of(' ');
         std::string outFilename(filename.c_str(), pos+1);
-        outFilename = sTargetDir + outFilename;
+        const auto path = targetDir / outFilename;
 
-        auto result = write_flex_binary(fs::u8path(outFilename), memory);
+        auto result = write_flex_binary(path, memory);
         if (result < 0)
         {
-            std::cerr << "*** Error in \"" << outFilename << "\":\n    ";
+            std::cerr << "*** Error in " << path << ":\n    ";
             print_hexfile_error(std::cerr, result);
             std::cerr << " Ignored.\n";
         }
@@ -234,7 +227,7 @@ static int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
     return 0;
 }
 
-static int ListContentOfMdcrFile(const char *ifile)
+static int ListContentOfMdcrFile(const fs::path &ifile)
 {
     MiniDcrTapePtr mdcr;
 
@@ -285,10 +278,10 @@ static int ListContentOfMdcrFile(const char *ifile)
 int flx::main(int argc, char *argv[])
 {
     std::string optstr("o:c:x:l:tuhd:V");
-    std::vector<const char *>ifiles;
-    const char *ofile = nullptr;
-    const char *ifile = nullptr;
-    const char *targetDir = nullptr;
+    std::vector<fs::path>ifiles;
+    fs::path ofile;
+    fs::path ifile;
+    fs::path targetDir;
     bool isTruncate = false;
     bool isUppercase = false;
     int command = 0;
@@ -307,14 +300,14 @@ int flx::main(int argc, char *argv[])
         switch (result)
         {
             case 'o':
-            case 'c': ofile = optarg;
+            case 'c': ofile = fs::u8path(optarg);
                       command = result;
                       break;
             case 'x':
-            case 'l': ifile = optarg;
+            case 'l': ifile = fs::u8path(optarg);
                       command = result;
                       break;
-            case 'd': targetDir = optarg;
+            case 'd': targetDir = fs::u8path(optarg);
                       break;
             case 't': isTruncate = true;
                       break;
@@ -337,18 +330,18 @@ int flx::main(int argc, char *argv[])
 
     for (index = optind; index < argc; index++)
     {
-        ifiles.push_back(argv[index]);
+        ifiles.emplace_back(argv[index]);
     }
 
     if (command == 0 ||
-        (command == 'o' && (ifiles.empty() || ofile == nullptr)) ||
-        (command == 'c' && (!ifiles.empty() || ofile == nullptr ||
+        (command == 'o' && (ifiles.empty() || ofile.empty())) ||
+        (command == 'c' && (!ifiles.empty() || ofile.empty() ||
                             isTruncate || isUppercase)) ||
-        (command == 'x' && (!ifiles.empty() || ifile == nullptr ||
+        (command == 'x' && (!ifiles.empty() || ifile.empty() ||
                             isTruncate || isUppercase)) ||
-        (command == 'l' && (!ifiles.empty() || ifile == nullptr ||
+        (command == 'l' && (!ifiles.empty() || ifile.empty() ||
                             isTruncate || isUppercase)) ||
-        (command != 'x' && targetDir != nullptr))
+        (command != 'x' && !targetDir.empty()))
     {
         syntax();
         return 1;
