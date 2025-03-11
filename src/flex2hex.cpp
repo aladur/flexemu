@@ -33,11 +33,6 @@
 #include <iomanip>
 #include <fstream>
 #include <map>
-#include <sys/stat.h>
-#ifdef HAVE_UNISTD_H
-    #include <sys/types.h>
-    #include <unistd.h>
-#endif
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -76,13 +71,13 @@ static void syntax()
         "   -h:              Print this help and exit.\n";
 }
 
-static int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
+static int ConvertFlexToHex(const fs::path &ifile, const fs::path &ofile,
         FileType ofiletype, int verbose)
 {
     BMemoryBuffer memory(65536);
     DWord startAddress = std::numeric_limits<DWord>::max();
 
-    auto result = load_flex_binary(fs::u8path(ifile), memory, startAddress);
+    auto result = load_flex_binary(ifile, memory, startAddress);
     if (result < 0)
     {
         std::cerr << "*** Error in \"" << ifile << "\":\n    ";
@@ -90,20 +85,19 @@ static int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
         std::cerr << '\n';
         return 1;
     }
-    const auto pofile = fs::u8path(ofile);
 
     switch(ofiletype)
     {
         case FileType::IntelHex:
-                  result = write_intel_hex(pofile, memory, startAddress);
+                  result = write_intel_hex(ofile, memory, startAddress);
                   break;
 
         case FileType::MotorolaSRec:
-                  result = write_motorola_srecord(pofile, memory, startAddress);
+                  result = write_motorola_srecord(ofile, memory, startAddress);
                   break;
 
         case FileType::RawBinary:
-                  result = write_raw_binary(pofile, memory, startAddress);
+                  result = write_raw_binary(ofile, memory, startAddress);
                   break;
 
         case FileType::Unknown:
@@ -113,7 +107,7 @@ static int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
 
     if (result < 0)
     {
-        std::cerr << "*** Error in \"" << pofile << "\":\n    ";
+        std::cerr << "*** Error in " << ofile << ":\n    ";
         print_hexfile_error(std::cerr, result);
         std::cerr << '\n';
         return 1;
@@ -137,8 +131,8 @@ int flx::main(int argc, char *argv[])
         { 'b', FileType::RawBinary },
     };
     std::string optstr("himbo:vVy");
-    std::vector<std::string> ifiles;
-    std::string ofilePrefered;
+    std::vector<fs::path> ifiles;
+    fs::path ofilePrefered;
     FileType ofiletype = FileType::Unknown;
     bool isOverwriteAlways = false;
     int verbose = 0;
@@ -156,7 +150,7 @@ int flx::main(int argc, char *argv[])
     {
         switch (result)
         {
-            case 'o': ofilePrefered = optarg;
+            case 'o': ofilePrefered = fs::u8path(optarg);
                       break;
 
             case 'i':
@@ -200,7 +194,7 @@ int flx::main(int argc, char *argv[])
     auto index = optind;
     while (index < argc)
     {
-        ifiles.emplace_back(argv[index]);
+        ifiles.emplace_back(fs::u8path(argv[index]));
         ++index;
     }
 
@@ -228,24 +222,23 @@ int flx::main(int argc, char *argv[])
 
     for (const auto &ifile : ifiles)
     {
-        struct stat status{};
         auto ofile(ofilePrefered);
 
         if (ofile.empty())
         {
-            ofile = flx::getFileStem(ifile);
+            ofile = ifile.stem();
             switch (ofiletype)
             {
                 case FileType::IntelHex:
-                    ofile += ".hex";
+                    ofile += u8".hex";
                     break;
 
                 case FileType::MotorolaSRec:
-                    ofile += ".s19";
+                    ofile += u8".s19";
                     break;
 
                 case FileType::RawBinary:
-                    ofile += ".bin";
+                    ofile += u8".bin";
                     break;
 
                 case FileType::Unknown:
@@ -255,9 +248,10 @@ int flx::main(int argc, char *argv[])
             }
         }
 
-        if (!stat(ofile.c_str(), &status))
+        const auto status = fs::status(ofile);
+        if (fs::exists(status))
         {
-            if (!S_ISREG(status.st_mode))
+            if (!fs::is_regular_file(status))
             {
                 std::cerr << "*** File " << ofile
                           << " exists but is no file. Conversion skipped.\n";
