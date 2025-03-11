@@ -38,6 +38,9 @@
     #include <sys/types.h>
     #include <unistd.h>
 #endif
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 enum class FileType : uint8_t
@@ -79,7 +82,7 @@ static int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
     BMemoryBuffer memory(65536);
     DWord startAddress = std::numeric_limits<DWord>::max();
 
-    auto result = load_flex_binary(ifile, memory, startAddress);
+    auto result = load_flex_binary(fs::u8path(ifile), memory, startAddress);
     if (result < 0)
     {
         std::cerr << "*** Error in \"" << ifile << "\":\n    ";
@@ -87,19 +90,20 @@ static int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
         std::cerr << '\n';
         return 1;
     }
+    const auto pofile = fs::u8path(ofile);
 
     switch(ofiletype)
     {
         case FileType::IntelHex:
-                  result = write_intel_hex(ofile, memory, startAddress);
+                  result = write_intel_hex(pofile, memory, startAddress);
                   break;
 
         case FileType::MotorolaSRec:
-                  result = write_motorola_srecord(ofile, memory, startAddress);
+                  result = write_motorola_srecord(pofile, memory, startAddress);
                   break;
 
         case FileType::RawBinary:
-                  result = write_raw_binary(ofile, memory, startAddress);
+                  result = write_raw_binary(pofile, memory, startAddress);
                   break;
 
         case FileType::Unknown:
@@ -109,7 +113,7 @@ static int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
 
     if (result < 0)
     {
-        std::cerr << "*** Error in \"" << ofile << "\":\n    ";
+        std::cerr << "*** Error in \"" << pofile << "\":\n    ";
         print_hexfile_error(std::cerr, result);
         std::cerr << '\n';
         return 1;

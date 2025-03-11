@@ -26,29 +26,32 @@
 
 #include <limits>
 #include <ostream>
-#include <string>
 #include "memsrc.h"
 #include "memtgt.h"
+#include <filesystem>
 
-extern int load_hexfile(const std::string &filename,
+namespace fs = std::filesystem;
+
+
+extern int load_hexfile(const fs::path &filename,
                         MemoryTarget<DWord> &memtgt,
                         DWord &startAddress);
-extern int load_flex_binary(const std::string &filename,
+extern int load_flex_binary(const fs::path &filename,
                             MemoryTarget<DWord> &memtgt,
                             DWord &startAddress);
-extern int write_flex_binary(const std::string &filename,
+extern int write_flex_binary(const fs::path &filename,
                              const MemorySource<DWord> &memsrc,
                              DWord startAddress =
                                  std::numeric_limits<DWord>::max());
-extern int write_intel_hex(const std::string &filename,
+extern int write_intel_hex(const fs::path &filename,
                            const MemorySource<DWord> &memsrc,
                            DWord startAddress =
                               std::numeric_limits<DWord>::max());
-extern int write_motorola_srecord(const std::string &filename,
+extern int write_motorola_srecord(const fs::path &filename,
                                   const MemorySource<DWord> &memsrc,
                                   DWord startAddress =
                                    std::numeric_limits<DWord>::max());
-extern int write_raw_binary(const std::string &filename,
+extern int write_raw_binary(const fs::path &filename,
                             const MemorySource<DWord> &memsrc,
                             DWord startAddress =
                                 std::numeric_limits<DWord>::max());

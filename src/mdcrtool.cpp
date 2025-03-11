@@ -35,6 +35,10 @@
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 static void version()
 {
@@ -104,7 +108,8 @@ static int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
         DWord startAddress = 0;
 
         memory.Reset();
-        auto result = load_hexfile(ifile, memory, startAddress);
+        const std::string path = ifile;
+        auto result = load_hexfile(fs::u8path(path), memory, startAddress);
         if (result < 0)
         {
             std::cerr << "*** Error in \"" << ifile << "\":\n    ";
@@ -205,7 +210,7 @@ static int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
         std::string outFilename(filename.c_str(), pos+1);
         outFilename = sTargetDir + outFilename;
 
-        auto result = write_flex_binary(outFilename, memory);
+        auto result = write_flex_binary(fs::u8path(outFilename), memory);
         if (result < 0)
         {
             std::cerr << "*** Error in \"" << outFilename << "\":\n    ";

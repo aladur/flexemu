@@ -226,14 +226,14 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
     auto hexFilePath = options.hex_file;
     DWord startAddress = 0;
 
-    int error = load_hexfile(hexFilePath.u8string(), memory, startAddress);
+    int error = load_hexfile(hexFilePath, memory, startAddress);
     if (error < 0)
     {
         if (!hexFilePath.is_absolute())
         {
             hexFilePath = options.disk_dir / hexFilePath;
 
-            error = load_hexfile(hexFilePath.u8string(), memory, startAddress);
+            error = load_hexfile(hexFilePath, memory, startAddress);
         }
 
         if (error < 0)

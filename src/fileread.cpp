@@ -34,6 +34,9 @@
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 static Word read_word(std::istream &istream)
@@ -392,7 +395,7 @@ static int load_flex_binary(std::istream &istream, MemoryTarget<DWord> &memtgt,
     return 0;
 }
 
-int load_hexfile(const std::string &filename, MemoryTarget<DWord> &memtgt,
+int load_hexfile(const fs::path &filename, MemoryTarget<DWord> &memtgt,
                  DWord &startAddress)
 {
     Word ch;
@@ -434,7 +437,7 @@ int load_hexfile(const std::string &filename, MemoryTarget<DWord> &memtgt,
     return -3; // Unknown or invalid file format
 }
 
-int load_flex_binary(const std::string &filename, MemoryTarget<DWord> &memtgt,
+int load_flex_binary(const fs::path &filename, MemoryTarget<DWord> &memtgt,
                      DWord &startAddress)
 {
     std::ifstream istream(filename, std::ios_base::in | std::ios_base::binary);
@@ -650,7 +653,7 @@ static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
 }
 
 static int write_hexfile(
-    const std::string &filename,
+    const fs::path &filename,
     const MemorySource<DWord> &memsrc,
     const std::function<int(WBType, std::ostream&, const Byte *, DWord,
         DWord)>& write_buffer,
@@ -729,7 +732,7 @@ static int write_hexfile(
     return result;
 }
 
-int write_intel_hex(const std::string &filename,
+int write_intel_hex(const fs::path &filename,
                     const MemorySource<DWord> &memsrc,
                     DWord startAddress)
 {
@@ -737,7 +740,7 @@ int write_intel_hex(const std::string &filename,
                          startAddress, false);
 }
 
-int write_motorola_srecord(const std::string &filename,
+int write_motorola_srecord(const fs::path &filename,
                            const MemorySource<DWord> &memsrc,
                            DWord startAddress)
 {
@@ -745,7 +748,7 @@ int write_motorola_srecord(const std::string &filename,
                          startAddress, false);
 }
 
-int write_raw_binary(const std::string &filename,
+int write_raw_binary(const fs::path &filename,
                      const MemorySource<DWord> &memsrc,
                      DWord startAddress)
 {
@@ -753,7 +756,7 @@ int write_raw_binary(const std::string &filename,
                          startAddress, true);
 }
 
-int write_flex_binary(const std::string &filename,
+int write_flex_binary(const fs::path &filename,
                       const MemorySource<DWord> &memsrc,
                       DWord startAddress)
 {
