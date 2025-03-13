@@ -64,6 +64,7 @@ set(unittests_SOURCES
     test_filecnts.cpp
     test_filecont.cpp
     test_fileread.cpp
+    test_filesystem.cpp
     test_filfschk.cpp
     test_fdirent.cpp
     test_bdate.cpp
