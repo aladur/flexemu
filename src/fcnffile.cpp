@@ -299,7 +299,7 @@ std::pair<std::string, std::set<std::string> >
         if (logFilePath.empty())
         {
             logFilePath =
-                (flx::getTempPath() / u8"flexemu_device.log").u8string();
+                (fs::temp_directory_path() / u8"flexemu_device.log").u8string();
         }
 
         result.first = logFilePath;

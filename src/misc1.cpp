@@ -405,24 +405,6 @@ fs::path flx::getHomeDirectory()
 }
 #endif
 
-fs::path flx::getTempPath()
-{
-#ifdef _WIN32
-    wchar_t tempPath[MAX_PATH];
-
-    if (!GetTempPath(MAX_PATH, tempPath))
-    {
-       throw FlexException(GetLastError(),
-                           std::string("In function GetTempPath"));
-    }
-
-    return tempPath;
-#else
-    // On POSIX compliant file systems /tmp has to be available
-    return u8"/tmp";
-#endif
-}
-
 std::string flx::getFileName(const std::string &path)
 {
     auto pos = path.find_last_of(pathSeparators);

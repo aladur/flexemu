@@ -311,7 +311,6 @@ extern void dumpSector(std::ostream &os, uint32_t indent_count,
                        const Byte *buffer, uint32_t size);
 extern void hex_dump(std::ostream &os, const char *buffer, unsigned count);
 extern void print_versions(std::ostream &os, const std::string &program_name);
-extern fs::path getTempPath();
 extern fs::path getFlexemuUserConfigPath();
 extern fs::path getFlexemuConfigFile();
 extern fs::path getFlexLabelFile();
