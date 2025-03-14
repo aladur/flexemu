@@ -464,29 +464,17 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
             }
 #endif
 
-            auto tempPath =
-                (fs::temp_directory_path() / u8"flexplorer").u8string();
+            auto tempPath = fs::temp_directory_path() / u8"flexplorer" /
+                fs::u8path(GetPath().toStdString()).filename();
 
-            if (!BDirectory::Exists(tempPath))
+            std::error_code error;
+            fs::create_directories(tempPath, error);
+            if (error)
             {
-                if (!BDirectory::Create(tempPath))
-                {
-                    throw FlexException(FERR_UNABLE_TO_CREATE, tempPath);
-                }
+                throw FlexException(FERR_UNABLE_TO_CREATE, tempPath.u8string());
             }
 
-            tempPath += PATHSEPARATORSTRING +
-                        flx::getFileName(GetPath().toStdString());
-            if (!BDirectory::Exists(tempPath))
-            {
-                if (!BDirectory::Create(tempPath))
-                {
-                    throw FlexException(FERR_UNABLE_TO_CREATE, tempPath);
-                }
-            }
-
-            std::string tempFile(tempPath);
-            tempFile.append(PATHSEPARATORSTRING).append(filename);
+            const auto tempFile = (tempPath / filename).u8string();
 
             if (buffer.WriteToFile(tempFile, options.ft_access))
             {
