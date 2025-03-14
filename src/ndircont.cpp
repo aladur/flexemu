@@ -157,8 +157,6 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         int sectors,
         DiskType disk_type)
 {
-    const auto dir = fs::u8path(path).parent_path().u8string();
-
     if (disk_type != DiskType::Directory)
     {
         using T = std::underlying_type_t<DiskType>;
@@ -167,13 +165,9 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         throw FlexException(FERR_INVALID_FORMAT, id);
     }
 
-    const auto status = fs::status(dir);
-    if (!fs::exists(status) || !fs::is_directory(status))
-    {
-        throw FlexException(FERR_UNABLE_TO_CREATE, path);
-    }
-
-    if (!BDirectory::Create(path, 0755))
+    std::error_code error;
+    fs::create_directories(fs::u8path(path), error);
+    if (error)
     {
         throw FlexException(FERR_UNABLE_TO_CREATE, path);
     }

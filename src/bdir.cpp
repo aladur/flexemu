@@ -66,19 +66,6 @@ bool BDirectory::Remove(const std::string &p_path)
 #endif
 }
 
-#if defined(_MSC_VER) || defined(__MINGW32)
-bool BDirectory::Create(const std::string &p_path, int /* [[maybe_unused]] int mode = 0755 */)
-{
-    return _mkdir(p_path.c_str()) >= 0;
-}
-#endif
-#if defined(UNIX) || defined(__CYGWIN32)
-bool BDirectory::Create(const std::string &p_path, int mode /* = 0755 */)
-{
-    return mkdir(p_path.c_str(), mode) >= 0;
-}
-#endif
-
 #ifdef _WIN32
 bool BDirectory::RemoveRecursive(const std::string &p_path)
 {
@@ -309,11 +296,6 @@ bool BDirectory::Remove() const
 bool BDirectory::RemoveRecursive() const
 {
     return RemoveRecursive(path);
-}
-
-bool BDirectory::Create(int mode /* = 0755 */) const
-{
-    return Create(path, mode);
 }
 
 PathList_t BDirectory::GetSubDirectories() const
