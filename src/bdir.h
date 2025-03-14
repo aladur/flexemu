@@ -39,7 +39,6 @@ private:
     std::string path;
 
 public:
-    static bool Exists(const std::string &p_path);
     static bool Remove(const std::string &p_path);
     static bool RemoveRecursive(const std::string &p_path);
     static PathList_t GetSubDirectories(const std::string &p_path);
@@ -57,7 +56,6 @@ public:
     {
         return path;
     };
-    bool Exists() const;
     bool Remove() const;
     bool RemoveRecursive() const;
     PathList_t GetSubDirectories() const;

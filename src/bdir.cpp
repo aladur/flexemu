@@ -49,13 +49,6 @@ namespace fs = std::filesystem;
  static functions
 ********************************************/
 
-bool BDirectory::Exists(const std::string &p_path)
-{
-    const auto status = fs::status(p_path);
-
-    return fs::exists(status) && fs::is_directory(status);
-}
-
 bool BDirectory::Remove(const std::string &p_path)
 {
 #if defined(_MSC_VER) || defined(__MINGW32)
@@ -282,11 +275,6 @@ PathList_t BDirectory::GetFiles(const std::string &p_path)
 /********************************************
  member functions
 ********************************************/
-
-bool BDirectory::Exists() const
-{
-    return Exists(path);
-}
 
 bool BDirectory::Remove() const
 {

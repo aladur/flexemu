@@ -261,7 +261,8 @@ static int ExtractDskFiles(std::string target_dir, bool verbose,
         target_dir = ".";
     }
 
-    if (!BDirectory::Exists(target_dir))
+    const auto status = fs::status(fs::u8path(target_dir));
+    if (!fs::exists(status) || !fs::is_directory(status))
     {
         std::cerr <<
             "*** Error: '" << target_dir << "' does not exist or is"
