@@ -418,55 +418,6 @@ TEST(test_misc1, macro_EXTEND8)
     EXPECT_EQ(sizeof(tgt2), 2U);
 }
 
-TEST(test_misc1, fct_getFileStem)
-{
-    auto result = flx::getFileStem("");
-    EXPECT_EQ(result, "");
-    result = flx::getFileStem(".");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileStem("..");
-    EXPECT_EQ(result, "..");
-    result = flx::getFileStem(".ext");
-    EXPECT_EQ(result, "");
-    result = flx::getFileStem(".tar.xz");
-    EXPECT_EQ(result, ".tar");
-    result = flx::getFileStem("filename.ext");
-    EXPECT_EQ(result, "filename");
-    result = flx::getFileStem("filename.tar.gz");
-    EXPECT_EQ(result, "filename.tar");
-    result = flx::getFileStem("filename");
-    EXPECT_EQ(result, "filename");
-    result = flx::getFileStem("filename...ext");
-    EXPECT_EQ(result, "filename..");
-#ifdef _WIN32
-    result = flx::getFileStem("C:\\");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileStem("C:\\dir1\\dir2\\.");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileStem("C:\\dir1\\dir2\\..");
-    EXPECT_EQ(result, "..");
-    result = flx::getFileStem("C:\\dir1\\dir2\\");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileStem("C:\\dir1\\dir2");
-    EXPECT_EQ(result, "dir2");
-    result = flx::getFileStem("C:\\dir\\filename.ext");
-    EXPECT_EQ(result, "filename");
-#else
-    result = flx::getFileStem("/");
-    EXPECT_EQ(result, "/");
-    result = flx::getFileStem("/dir1/dir2/.");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileStem("/dir1/dir2/..");
-    EXPECT_EQ(result, "..");
-    result = flx::getFileStem("/dir1/dir2/");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileStem("/dir1/dir2");
-    EXPECT_EQ(result, "dir2");
-    result = flx::getFileStem("/dir/filename.ext");
-    EXPECT_EQ(result, "filename");
-#endif
-}
-
 TEST(test_misc1, fct_isAbsolutePath)
 {
 #ifdef _WIN32

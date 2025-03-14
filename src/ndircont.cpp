@@ -936,7 +936,8 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
             if (!stat(path.c_str(), &sbuf) &&
                 add_to_link_table(dir_idx, sbuf.st_size, is_random, begin, end))
             {
-                std::string name(flx::toupper(flx::getFileStem(filename)));
+                const auto stem = fs::u8path(filename).stem().u8string();
+                std::string name(flx::toupper(stem));
                 std::string extension(flx::toupper(
                             flx::getFileExtension(filename).substr(1)));
 

@@ -514,33 +514,6 @@ std::string flx::getFileExtension(const std::string &path)
     return "";
 }
 
-std::string flx::getFileStem(const std::string &path)
-{
-    std::string fileName = flx::getFileName(path);
-
-    if (fileName == "." || fileName == "..")
-    {
-        return fileName;
-    }
-
-    auto pos = fileName.find_last_of('.');
-
-    if (pos != std::string::npos)
-    {
-        if (pos == 0)
-        {
-            // If path == ".txt" return "".
-            return "";
-        }
-        // If path == "bar.txt" return "bar".
-        // If path == "foo.bar.txt" return "foo.bar".
-        return fileName.substr(0, pos);
-    }
-
-    // If path == "bar" return "bar".
-    return fileName;
-}
-
 std::string flx::getHostName()
 {
     std::string dnsHostName;
@@ -912,7 +885,7 @@ std::string flx::updateFilename(std::string path,
 {
     auto pIdx = path.find_last_of(PATHSEPARATOR);
     auto index = path.find_last_of('.');
-    auto stem = flx::getFileStem(path);
+    auto stem = fs::u8path(path).stem().u8string();
 
     if (stem == "." || stem == "..")
     {
@@ -939,7 +912,7 @@ std::string flx::updateFilename(std::string path,
         else
         {
             path = path.substr(0U, index) + fileExtension;
-            const auto newStem = flx::getFileStem(path);
+            const auto newStem = fs::u8path(path).stem().u8string();
             if (!newStem.empty() && newStem[0] == '.')
             {
                 auto newIdx = path.find_last_of(PATHSEPARATOR);
