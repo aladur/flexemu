@@ -27,7 +27,6 @@
 #include <filesystem>
 
 
-using ::testing::EndsWith;
 namespace fs = std::filesystem;
 
 TEST(test_misc1, fct_strlower)
@@ -317,19 +316,6 @@ TEST(test_misc1, fct_getCurrentPath)
     bool result = fs::exists(path) && fs::is_directory(status);
 
     EXPECT_TRUE(result);
-}
-
-TEST(test_misc1, fct_toAbsolutePath)
-{
-    const auto path = fs::temp_directory_path().u8string();
-    auto result = flx::toAbsolutePath(path);
-    EXPECT_EQ(result, path);
-    const auto abs_path = flx::toAbsolutePath("tmp").u8string();
-#ifdef _WIN32
-    EXPECT_THAT(abs_path, EndsWith("\\tmp"));
-#else
-    EXPECT_THAT(abs_path, EndsWith("/tmp"));
-#endif
 }
 
 TEST(test_misc1, fct_getHostName)

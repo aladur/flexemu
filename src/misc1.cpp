@@ -456,16 +456,6 @@ std::string flx::getParentPath(const std::string &path)
     return "";
 }
 
-fs::path flx::toAbsolutePath(const std::string &path)
-{
-    if (flx::isAbsolutePath(path))
-    {
-        return path;
-    }
-
-    return flx::getCurrentPath() / path;
-}
-
 fs::path flx::getCurrentPath()
 {
 #ifdef _WIN32
