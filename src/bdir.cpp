@@ -49,104 +49,6 @@ namespace fs = std::filesystem;
  static functions
 ********************************************/
 
-bool BDirectory::Remove(const std::string &p_path)
-{
-#if defined(_MSC_VER) || defined(__MINGW32)
-    return _rmdir(p_path.c_str()) >= 0;
-#endif
-#if defined(UNIX) || defined(__CYGWIN32)
-    return rmdir(p_path.c_str()) >= 0;
-#endif
-}
-
-#ifdef _WIN32
-bool BDirectory::RemoveRecursive(const std::string &p_path)
-{
-    std::string basePath(p_path);
-    WIN32_FIND_DATA pentry;
-
-    if (basePath[basePath.length()-1] != PATHSEPARATOR)
-    {
-        basePath += PATHSEPARATOR;
-    }
-
-    const auto wFilePattern (ConvertToUtf16String(basePath + "*.*"));
-    auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
-    if (hdl != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
-            const auto dirEntry(
-                basePath + ConvertToUtf8String(pentry.cFileName));
-
-            if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-            {
-                if (pentry.cFileName[0] != '.')
-                {
-                    RemoveRecursive(dirEntry);
-                }
-            }
-            else
-            {
-                remove(dirEntry.c_str());
-            }
-        }
-        while (FindNextFile(hdl, &pentry) != 0);
-
-        FindClose(hdl);
-    }
-
-    BDirectory::Remove(basePath);
-    return true;
-}
-#else
-bool BDirectory::RemoveRecursive(const std::string &p_path)
-{
-    std::string basePath;
-    fs::path dirEntry;
-
-    basePath = p_path;
-
-    if (basePath[basePath.length()-1] == PATHSEPARATOR)
-    {
-        std::string temp = basePath.substr(0, basePath.length() - 1);
-
-        basePath = temp;
-    }
-
-    auto *pd = opendir(basePath.c_str());
-    if (pd != nullptr)
-    {
-        struct dirent *pentry;
-
-        while ((pentry = readdir(pd)) != nullptr)
-        {
-            dirEntry = fs::path(basePath) / pentry->d_name;
-            const auto status = fs::status(dirEntry);
-
-            if (!fs::exists(status))
-            {
-                continue;
-            }
-
-            if (fs::is_regular_file(status))
-            {
-                remove(dirEntry.c_str());
-            }
-            if (fs::is_directory(status) && pentry->d_name[0] != '.')
-            {
-                RemoveRecursive(dirEntry);
-            }
-        }
-
-        closedir(pd);
-    }
-
-    BDirectory::Remove(basePath);
-    return true;
-}
-#endif
-
 PathList_t BDirectory::GetSubDirectories(const std::string &p_path)
 {
     std::vector<std::string> subDirList;
@@ -275,16 +177,6 @@ PathList_t BDirectory::GetFiles(const std::string &p_path)
 /********************************************
  member functions
 ********************************************/
-
-bool BDirectory::Remove() const
-{
-    return Remove(path);
-}
-
-bool BDirectory::RemoveRecursive() const
-{
-    return RemoveRecursive(path);
-}
 
 PathList_t BDirectory::GetSubDirectories() const
 {
