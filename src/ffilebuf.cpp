@@ -571,7 +571,7 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
     result = ostream.good();
     ostream.close();
 
-    const auto directory = flx::getParentPath(path);
+    const auto directory = fs::u8path(path).parent_path().u8string();
     if (doRandomCheck)
     {
         RandomFileCheck randomFileCheck(directory);

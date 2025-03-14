@@ -429,33 +429,6 @@ std::string flx::getFileName(const std::string &path)
     return path;
 }
 
-std::string flx::getParentPath(const std::string &path)
-{
-    auto pos = path.find_last_of(pathSeparators);
-
-    if (pos != std::string::npos)
-    {
-        if (pos == (path.size() - 1))
-        {
-            // If path == "/", return "".
-            if (pos == 0)
-            {
-                return "";
-            }
-        }
-
-        // If path is "/foo/bar/" return "/foo/bar".
-        // If path == "/foo/bar.txt" return "/foo".
-        // If path == "/foo/bar" return "/foo".
-        return path.substr(0, pos);
-    }
-
-    // If path == "bar.txt" return "".
-    // If path == "." return "".
-    // If path == ".." return "".
-    return "";
-}
-
 fs::path flx::getCurrentPath()
 {
 #ifdef _WIN32

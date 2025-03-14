@@ -317,7 +317,6 @@ extern fs::path getFlexLabelFile();
 extern std::string getFileName(const std::string &path);
 extern std::string getFileStem(const std::string &path);
 extern std::string getFileExtension(const std::string &path);
-extern std::string getParentPath(const std::string &path);
 extern fs::path getCurrentPath();
 extern std::string getHostName();
 extern std::string updateFilename(std::string path,

@@ -467,43 +467,6 @@ TEST(test_misc1, fct_getFileStem)
 #endif
 }
 
-TEST(test_misc1, fct_getParentPath)
-{
-    auto result = flx::getParentPath("");
-    EXPECT_EQ(result, "");
-    result = flx::getParentPath("filename.ext");
-    EXPECT_EQ(result, "");
-    result = flx::getParentPath("filename");
-    EXPECT_EQ(result, "");
-#ifdef _WIN32
-    result = flx::getParentPath("C:\\");
-    EXPECT_EQ(result, "C:");
-    result = flx::getParentPath("C:\\dir1\\dir2\\.");
-    EXPECT_EQ(result, "C:\\dir1\\dir2");
-    result = flx::getParentPath("C:\\dir1\\dir2\\..");
-    EXPECT_EQ(result, "C:\\dir1\\dir2");
-    result = flx::getParentPath("C:\\dir1\\dir2\\");
-    EXPECT_EQ(result, "C:\\dir1\\dir2");
-    result = flx::getParentPath("C:\\dir1\\dir2");
-    EXPECT_EQ(result, "C:\\dir1");
-    result = flx::getParentPath("C:\\dir\\filename.ext");
-    EXPECT_EQ(result, "C:\\dir");
-#else
-    result = flx::getParentPath("/");
-    EXPECT_EQ(result, "");
-    result = flx::getParentPath("/dir1/dir2/.");
-    EXPECT_EQ(result, "/dir1/dir2");
-    result = flx::getParentPath("/dir1/dir2/..");
-    EXPECT_EQ(result, "/dir1/dir2");
-    result = flx::getParentPath("/dir1/dir2/");
-    EXPECT_EQ(result, "/dir1/dir2");
-    result = flx::getParentPath("/dir1/dir2");
-    EXPECT_EQ(result, "/dir1");
-    result = flx::getParentPath("/dir/filename.ext");
-    EXPECT_EQ(result, "/dir");
-#endif
-}
-
 TEST(test_misc1, fct_isAbsolutePath)
 {
 #ifdef _WIN32

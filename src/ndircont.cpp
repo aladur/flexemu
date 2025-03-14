@@ -156,7 +156,7 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         DiskType disk_type)
 {
     struct stat sbuf{};
-    const auto dir = flx::getParentPath(path);
+    const auto dir = fs::u8path(path).parent_path().u8string();
 
     if (disk_type != DiskType::Directory)
     {
