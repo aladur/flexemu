@@ -136,7 +136,8 @@ bool E2floppy::mount_drive(const fs::path &path,
         containerPath = fs::u8path(sPath);
 #endif
         const auto status = fs::status(containerPath);
-        if (fs::exists(status) && fs::is_directory(status))
+        bool pathExists = fs::exists(status);
+        if (pathExists && fs::is_directory(status))
         {
             if (options.isDirectoryDiskActive)
             {
@@ -157,21 +158,18 @@ bool E2floppy::mount_drive(const fs::path &path,
         }
         else
         {
-            bool fileExists = fs::exists(status);
-            auto fileSize = fileExists ? fs::file_size(containerPath) : 0U;
+            auto fileSize = pathExists ? fs::file_size(containerPath) : 0U;
 
-            // Empty or non existing files are only mounted if
-            // option canFormatDrive is set.
-            if (!options.canFormatDrives[drive_nr] &&
-                (!fileExists ||
-                (fileExists && fs::is_regular_file(status) && fileSize == 0U)))
+            // Empty files are only mounted if option canFormatDrive is set.
+            // They are identified as unformatted.
+            if (!options.canFormatDrives[drive_nr] && pathExists &&
+                fs::is_regular_file(status) && fileSize == 0U)
             {
                 return false;
             }
-            // A file which does not exist or has file size zero
-            // is marked as unformatted.
-            bool is_formatted = (fileExists && fs::is_regular_file(status) &&
-                                fileSize > 0U);
+            // A file which has a non-zero file size is identified as
+            // formatted.
+            const bool is_formatted = (fileSize > 0U);
             auto mode = std::ios::in | std::ios::out | std::ios::binary;
 
             if (is_formatted && option == MOUNT_RAM)

@@ -32,8 +32,6 @@
 #include "ffilebuf.h"
 #include "filecont.h"
 #include "qtfree.h"
-#include <sys/types.h>
-#include <sys/stat.h>
 #include "warnoff.h"
 #include <QtGlobal>
 #include <QObject>
@@ -56,7 +54,9 @@
 #include <unordered_map>
 #include <utility>
 #include <memory>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 
 HeaderNames_t &FlexplorerTableModel::GetHeaderNames()
 {
@@ -1007,22 +1007,21 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
 void FlexplorerTableModel::OpenFlexDisk(const char *p_path,
                                          const FileTimeAccess &fileTimeAccess)
 {
-    struct stat sbuf{};
-
     // path can either be a directory or a file container.
     if (p_path == nullptr)
     {
         throw FlexException(FERR_INVALID_NULL_POINTER, "p_path");
     }
 
-    if (stat(p_path, &sbuf))
+    if (!fs::exists(p_path))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, p_path);
     }
 
     path = p_path;
 
-    if (S_ISDIR(sbuf.st_mode))
+    const auto status = fs::status(path.toStdString());
+    if (fs::is_directory(status))
     {
         std::string directory(p_path);
 

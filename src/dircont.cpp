@@ -45,6 +45,10 @@
 #include "cvtwchar.h"
 #include <cstring>
 #include <ctime>
+#include <filesystem>
+
+
+namespace fs = std::filesystem;
 
 /****************************************/
 /* Constructor                          */
@@ -55,10 +59,10 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
     : randomFileCheck(path)
     , ft_access(fileTimeAccess)
 {
-    struct stat sbuf{};
     static Word number = 0;
+    const auto status = fs::status(path);
 
-    if (stat(path.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
+    if (!fs::exists(status) || !fs::is_directory(status))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
@@ -105,9 +109,6 @@ FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
         const FileTimeAccess &fileTimeAccess,
         DiskType disk_type)
 {
-    struct stat sbuf{};
-    std::string path;
-
     if (disk_type != DiskType::Directory)
     {
         using T = std::underlying_type_t<DiskType>;
@@ -116,31 +117,24 @@ FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
         throw FlexException(FERR_INVALID_FORMAT, id);
     }
 
-    path = directory;
+    const auto path = fs::u8path(directory) / name;
+    const auto status = fs::status(path);
 
-    if (!path.empty() && !flx::endsWithPathSeparator(path))
-    {
-        path += PATHSEPARATORSTRING;
-    }
-
-    path += name;
-
-    if (stat(path.c_str(), &sbuf) == 0 && S_ISREG(sbuf.st_mode))
+    if (fs::exists(status) && fs::is_regular_file(status))
     {
         // if a file exists with this name delete it
-        remove(path.c_str());
+        fs::remove(path);
     }
 
-    if (stat(path.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
+    std::error_code error;
+
+    fs::create_directory(path, error);
+    if (error)
     {
-        // directory does not exist
-        if (!BDirectory::Create(path, 0755))
-        {
-            throw FlexException(FERR_UNABLE_TO_CREATE, path);
-        }
+        throw FlexException(FERR_UNABLE_TO_CREATE, path.u8string());
     }
 
-    return new FlexDirectoryDiskByFile(path, fileTimeAccess);
+    return new FlexDirectoryDiskByFile(path.u8string(), fileTimeAccess);
 }
 
 std::string FlexDirectoryDiskByFile::GetPath() const
@@ -389,7 +383,6 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
         const char *fileName /* = nullptr */)
 {
     std::string lowerFileName;
-    struct stat sbuf{};
 
     if (fileName == nullptr)
     {
@@ -402,10 +395,11 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
 #ifdef UNIX
     flx::strlower(lowerFileName);
 #endif
-    const auto filePath = directory + PATHSEPARATORSTRING + lowerFileName;
+    const auto filePath = fs::path(directory) / lowerFileName;
+    const auto status = fs::status(filePath);
 
     // prevent to overwrite an existing file
-    if (stat(filePath.c_str(), &sbuf) == 0 && S_ISREG(sbuf.st_mode))
+    if (fs::exists(status) && fs::is_regular_file(status))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName);
     }
@@ -415,9 +409,9 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_CONTAINER_IS_READONLY, GetPath());
     }
 
-    if (!buffer.WriteToFile(filePath, ft_access))
+    if (!buffer.WriteToFile(filePath.u8string(), ft_access))
     {
-        throw FlexException(FERR_WRITING_TO, filePath);
+        throw FlexException(FERR_WRITING_TO, filePath.u8string());
     }
 
     SetDateTime(lowerFileName, buffer.GetDate(), buffer.GetTime());

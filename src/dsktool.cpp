@@ -21,7 +21,6 @@
 
 
 #include "misc1.h"
-#include <sys/stat.h>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -47,7 +46,10 @@
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <filesystem>
 
+
+namespace fs = std::filesystem;
 
 static std::vector<std::string> GetMatchingFilenames(FlexDisk &container,
         const std::vector<std::regex> &regexs)
@@ -90,11 +92,11 @@ static int FormatFlexDiskFile(const std::string &dsk_file, DiskType disk_type,
         int tracks, int sectors, char default_answer, bool verbose,
         const char *bsFile)
 {
-    struct stat sbuf{};
+    const auto status = fs::status(dsk_file);
 
-    if (!stat(dsk_file.c_str(), &sbuf))
+    if (fs::exists(status))
     {
-        if (!S_ISREG(sbuf.st_mode))
+        if (!fs::is_regular_file(status))
         {
             std::cerr << "*** Error: " << dsk_file <<
                          " exists but is no regular file. Aborted.\n";
@@ -1000,24 +1002,24 @@ static int checkDiskSize(const std::string &disk_size, int &tracks,
 
 static bool checkBootSectorFile(const char *opt, const char **bsFile)
 {
-    struct stat sbuf{};
-
     if (*bsFile != nullptr)
     {
         std::cerr << "*** Error: -B can be specified only once\n";
         return false;
     }
 
-    if (!stat(opt, &sbuf))
+    const auto status = fs::status(opt);
+    if (fs::exists(status))
     {
-        if (!S_ISREG(sbuf.st_mode))
+        if (!fs::is_regular_file(status))
         {
             std::cerr << "*** Error: " << opt <<
                          " is no regular file. Aborted.\n";
             return false;
         }
 
-        if (sbuf.st_size != SECTOR_SIZE && sbuf.st_size != 2*SECTOR_SIZE)
+        const auto file_size = fs::file_size(opt);
+        if (file_size != SECTOR_SIZE && file_size != 2*SECTOR_SIZE)
         {
             std::cerr << "*** Error: Boot sector file " << opt <<
                          "\n    has to have a size of " << SECTOR_SIZE <<

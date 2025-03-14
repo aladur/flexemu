@@ -35,6 +35,7 @@
 #include <limits>
 #include <cassert>
 #include <iostream>
+#include <filesystem>
 #include <sys/stat.h>
 #include "bdir.h"
 #include "filecntb.h"
@@ -50,6 +51,7 @@
 #include <fmt/format.h>
 #include "warnon.h"
 
+namespace fs = std::filesystem;
 
 // A debug log can be written to a file
 // by uncommenting the DEBUG_FILE macro definition.
@@ -89,13 +91,13 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
     , randomFileCheck(path)
     , ft_access(fileTimeAccess)
 {
-    struct stat sbuf{};
     static Word number = 0U;
 
     static_assert(sizeof(s_sys_info_sector) == SECTOR_SIZE, "Wrong alignment");
     static_assert(sizeof(s_dir_sector) == SECTOR_SIZE, "Wrong alignment");
 
-    if (stat(path.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
+    const auto status = fs::status(path);
+    if (!fs::exists(status) || !fs::is_directory(status))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
@@ -155,7 +157,6 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         int sectors,
         DiskType disk_type)
 {
-    struct stat sbuf{};
     const auto dir = fs::u8path(path).parent_path().u8string();
 
     if (disk_type != DiskType::Directory)
@@ -166,7 +167,8 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         throw FlexException(FERR_INVALID_FORMAT, id);
     }
 
-    if (stat(dir.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
+    const auto status = fs::status(dir);
+    if (!fs::exists(status) || !fs::is_directory(status))
     {
         throw FlexException(FERR_UNABLE_TO_CREATE, path);
     }
@@ -670,7 +672,7 @@ void FlexDirectoryDiskBySector::close_new_files()
 // On success return its first and last track/sector.
 bool FlexDirectoryDiskBySector::add_to_link_table(
     SDWord dir_idx,
-    off_t size,
+    uintmax_t size,
     bool is_random,
     st_t &begin,
     st_t &end)
@@ -795,11 +797,11 @@ void FlexDirectoryDiskBySector::add_to_directory(
 }
 
 SectorMap_t FlexDirectoryDiskBySector::create_sector_map(
-        const std::string &path, const struct stat &sbuf, const st_t &begin)
+        const std::string &path, std::uintmax_t file_size, const st_t &begin)
 {
     SectorMap_t sectorMap{};
 
-    DWord data_size = sbuf.st_size - (DBPS * 2);
+    DWord data_size = file_size - (DBPS * 2);
     Word remaining_sectors = static_cast<Word>((data_size + DBPS - 1U) / DBPS);
 
     if (data_size == 0)
@@ -848,9 +850,8 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
 {
     std::vector<std::string> filenames; // List of to be added files
     std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
-    struct stat sbuf{};
     std::string fname;
-    std::string path;
+    fs::path path;
 
     auto add_file = [&](const std::string &filename)
     {
@@ -864,7 +865,6 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
         }
     };
 
-    memset(&sbuf, 0, sizeof(sbuf));
     initialize_flex_directory();
     initialize_flex_link_table();
 
@@ -883,8 +883,10 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
     do
     {
         fname = flx::tolower(ConvertToUtf8String(pentry.cFileName));
-        path = directory + PATHSEPARATORSTRING + fname;
-        if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+        path = fs::path(directory) / fname;
+
+        const auto status = fs::status(path);
+        if (!exists(status) || !fs::is_regular_file(status))
         {
             continue;
         }
@@ -908,8 +910,10 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
     while ((pentry = readdir(pd)) != nullptr)
     {
         fname = pentry->d_name;
-        path = directory + PATHSEPARATORSTRING + fname;
-        if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+        path = fs::path(directory) / fname;
+
+        const auto status = fs::status(path);
+        if (!exists(status) || !fs::is_regular_file(status))
         {
             continue;
         }
@@ -930,25 +934,33 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
         {
             st_t begin;
             st_t end;
-            path = directory + PATHSEPARATORSTRING + filename;
+            path = fs::u8path(directory) / filename;
             bool is_random = randomFileCheck.IsRandomFile(filename);
 
-            if (!stat(path.c_str(), &sbuf) &&
-                add_to_link_table(dir_idx, sbuf.st_size, is_random, begin, end))
+            const auto status = fs::status(path);
+            if (!fs::exists(status) || !fs::is_regular_file(status))
+            {
+                continue;
+            }
+            const auto file_size = fs::file_size(path);
+            if (add_to_link_table(dir_idx, file_size, is_random, begin, end))
             {
                 const auto stem = fs::u8path(filename).stem().u8string();
                 std::string name(flx::toupper(stem));
                 std::string extension(flx::toupper(
                             flx::getFileExtension(filename).substr(1)));
+                struct stat sbuf{};
 
-                bool is_file_wp = (access(path.c_str(), W_OK) != 0);
+                bool is_file_wp = (access(path.u8string().c_str(), W_OK) != 0);
+                stat(path.u8string().c_str(), &sbuf);
                 add_to_directory(name, extension,
                                  dir_idx, is_random, sbuf, begin,
                                  end, is_file_wp);
 
                 if (is_random)
                 {
-                    auto sector_map = create_sector_map(path, sbuf, begin);
+                    auto sector_map =
+                        create_sector_map(path.u8string(), file_size, begin);
                     sector_maps.emplace(dir_idx, sector_map);
                 }
             }
@@ -1169,46 +1181,30 @@ void FlexDirectoryDiskBySector::check_for_changed_file_attr(Word ds_idx,
         if ((dir_sector.dir_entries[i].file_attr & WRITE_PROTECT) !=
             (old_dir_sector.dir_entries[i].file_attr & WRITE_PROTECT))
         {
+#ifdef _WIN32
+            const static auto write_perms = fs::perms::all;
+#else
+            const static auto write_perms = fs::perms::owner_write;
+#endif
             const auto dir_idx = dir_idx0 + i;
             auto filename = get_unix_filename(dir_idx);
             auto file_attr = dir_sector.dir_entries[i].file_attr;
             const char *set_clear = nullptr;
-#ifdef _WIN32
-            const auto wFilePath(ConvertToUtf16String(directory +
-                PATHSEPARATORSTRING + filename));
-            DWORD attrs = GetFileAttributes(wFilePath.c_str());
-
-            if (file_attr & WRITE_PROTECT)
-            {
-                attrs |= FILE_ATTRIBUTE_READONLY;
-                set_clear = "set";
-            }
-            else
-            {
-                attrs &= ~FILE_ATTRIBUTE_READONLY;
-                set_clear = "clear";
-            }
-
-            SetFileAttributes(wFilePath.c_str(), attrs);
-#endif
-#ifdef UNIX
-            const auto path = directory + PATHSEPARATORSTRING + filename;
-            struct stat sbuf{};
-            if (!stat(path.c_str(), &sbuf))
+            const auto path = fs::path(directory) / filename;
+            if (fs::exists(path))
             {
                 if (file_attr & WRITE_PROTECT)
                 {
-                    chmod(path.c_str(), sbuf.st_mode &
-                            static_cast<unsigned>(~S_IWUSR));
+                    fs::permissions(path, write_perms,
+                            fs::perm_options::remove);
                     set_clear = "set";
                 }
                 else
                 {
-                    chmod(path.c_str(), sbuf.st_mode | S_IWUSR);
+                    fs::permissions(path, write_perms, fs::perm_options::add);
                     set_clear = "clear";
                 }
             }
-#endif
 #ifdef DEBUG_FILE
             LOG_XX("      {} write_protect {}\n", set_clear, filename);
 #else
@@ -1599,12 +1595,12 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                 // Write boot sector 00-01 or 00-02.
                 // into a file which name is defined in BOOT_FILE.
                 BootSectorBuffer_t bootSectors{};
-                struct stat sbuf{};
 
-                auto path = directory + PATHSEPARATORSTRING + BOOT_FILE;
+                auto path = fs::path(directory) / BOOT_FILE;
                 std::fill(bootSectors.begin(), bootSectors.end(), '\0');
 
-                if (!stat(path.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
+                const auto status = fs::status(path);
+                if (fs::exists(status) && fs::is_regular_file(status))
                 {
                     std::ifstream ifs(path, std::ios::in | std::ios::binary);
                     if (ifs.is_open())

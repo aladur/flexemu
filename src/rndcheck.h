@@ -47,7 +47,7 @@ public:
 
     static bool IsValidSectorMap(
             const SectorMap_t &sectorMap,
-            uint32_t fileSize);
+            std::uintmax_t fileSize);
 
 private:
     bool HasRandomFileAttribute(const std::string &filename) const;

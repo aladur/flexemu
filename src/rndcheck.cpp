@@ -30,7 +30,6 @@
 #include <filesystem>
 #include <iostream>
 #include <algorithm>
-#include <sys/stat.h>
 
 
 namespace fs = std::filesystem;
@@ -43,11 +42,9 @@ RandomFileCheck::RandomFileCheck(std::string p_directory)
 
     for (const auto *file : { RANDOM_FILE_LIST_NEW, RANDOM_FILE_LIST })
     {
-        fs::path test_path(directory);
-        test_path /= file;
-        struct stat sbuf{};
+        const auto test_path = fs::path(directory) / file;
 
-        if (stat(test_path.string().c_str(), &sbuf) == 0)
+        if (fs::exists(test_path))
         {
             path = test_path.string();
             randomListFile = file;
@@ -79,13 +76,13 @@ RandomFileCheck::RandomFileCheck(std::string p_directory)
         // filesize of a random file.
         auto iter = std::remove_if(randomFiles.begin(), randomFiles.end(),
                 [&](const auto &filename){
-            fs::path file_path(directory);
-            file_path /= filename;
-            struct stat sbuf{};
+            std::error_code error;
+            const auto file_path = fs::path(directory) / filename;
+            const auto file_size = fs::file_size(file_path, error);
 
-            return stat(file_path.string().c_str(), &sbuf) != 0 ||
-                sbuf.st_size <= (2 * DBPS) ||
-                sbuf.st_size > (MAX_RANDOM_FILE_SECTORS * DBPS);
+            return error ||
+                file_size <= (2 * DBPS) ||
+                file_size > (MAX_RANDOM_FILE_SECTORS * DBPS);
         });
         randomFiles.erase(iter, randomFiles.end());
 
@@ -111,12 +108,11 @@ RandomFileCheck::~RandomFileCheck()
 // If file is verified as random file update randomFiles list.
 bool RandomFileCheck::CheckForRandom(const std::string &filename) const
 {
-    fs::path path(directory);
-    path /= flx::tolower(filename);
-    struct stat sbuf{};
+    const auto path = fs::path(directory) / flx::tolower(filename);
     bool result = false;
-
-    if (stat(path.string().c_str(), &sbuf) != 0 || sbuf.st_size <= (2 * DBPS))
+    std::error_code error;
+    const auto file_size = fs::file_size(path, error);
+    if (error || file_size <= (2 * DBPS))
     {
         return result;
     }
@@ -133,7 +129,7 @@ bool RandomFileCheck::CheckForRandom(const std::string &filename) const
     {
         ifs.read(reinterpret_cast<char *>(sectorMap.data()),
                 sectorMap.size());
-        result = !ifs.fail() && IsValidSectorMap(sectorMap, sbuf.st_size);
+        result = !ifs.fail() && IsValidSectorMap(sectorMap, file_size);
     }
 
     return result;
@@ -214,7 +210,7 @@ bool RandomFileCheck::RemoveFromRandomList(const std::string &filename)
 }
 
 bool RandomFileCheck::IsValidSectorMap(const SectorMap_t &sectorMap,
-        uint32_t fileSize)
+        std::uintmax_t fileSize)
 {
     auto count = sectorMap.size() / 3;
     st_t trk_sec{};
@@ -379,8 +375,7 @@ bool RandomFileCheck::IsWriteProtected() const
 
 void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
 {
-    std::string path;
-    struct stat sbuf{};
+    fs::path path;
 
     if (!randomListFile.empty())
     {
@@ -407,8 +402,9 @@ void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
             continue;
         }
 
-        path = directory + PATHSEPARATORSTRING + filename;
-        if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+        path = fs::path(directory) / filename;
+        const auto status = fs::status(path);
+        if (!fs::exists(status) || !fs::is_regular_file(status))
         {
             continue;
         }
@@ -436,8 +432,9 @@ void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
             continue;
         }
 
-        path = directory + PATHSEPARATORSTRING + filename;
-        if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+        path = fs::path(directory) / filename;
+        const auto status = fs::status(path);
+        if (!fs::exists(status) || !fs::is_regular_file(status))
         {
             continue;
         }

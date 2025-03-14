@@ -22,7 +22,6 @@
 
 #include "misc1.h"
 #include <sys/stat.h>
-#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
     #include <unistd.h>
 #endif
@@ -40,6 +39,10 @@
 
 #include "bdir.h"
 #include "cvtwchar.h"
+#include <filesystem>
+
+
+namespace fs = std::filesystem;
 
 
 /********************************************
@@ -48,9 +51,9 @@
 
 bool BDirectory::Exists(const std::string &p_path)
 {
-    struct stat sbuf{};
+    const auto status = fs::status(p_path);
 
-    return !stat(p_path.c_str(), &sbuf) && (S_ISDIR(sbuf.st_mode));
+    return fs::exists(status) && fs::is_directory(status);
 }
 
 bool BDirectory::Remove(const std::string &p_path)
@@ -120,8 +123,7 @@ bool BDirectory::RemoveRecursive(const std::string &p_path)
 bool BDirectory::RemoveRecursive(const std::string &p_path)
 {
     std::string basePath;
-    std::string dirEntry;
-    struct stat sbuf{};
+    fs::path dirEntry;
 
     basePath = p_path;
 
@@ -139,14 +141,19 @@ bool BDirectory::RemoveRecursive(const std::string &p_path)
 
         while ((pentry = readdir(pd)) != nullptr)
         {
-            dirEntry = basePath + PATHSEPARATORSTRING +
-                       pentry->d_name;
+            dirEntry = fs::path(basePath) / pentry->d_name;
+            const auto status = fs::status(dirEntry);
 
-            if (!stat(dirEntry.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)))
+            if (!fs::exists(status))
+            {
+                continue;
+            }
+
+            if (fs::is_regular_file(status))
             {
                 remove(dirEntry.c_str());
             }
-            else if (S_ISDIR(sbuf.st_mode) && pentry->d_name[0] != '.')
+            if (fs::is_directory(status) && pentry->d_name[0] != '.')
             {
                 RemoveRecursive(dirEntry);
             }
@@ -190,8 +197,7 @@ PathList_t BDirectory::GetSubDirectories(const std::string &p_path)
     }
 
 #else
-    std::string dirEntry;
-    struct stat sbuf{};
+    fs::path dirEntry;
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
@@ -207,11 +213,11 @@ PathList_t BDirectory::GetSubDirectories(const std::string &p_path)
 
         while ((pentry = readdir(pd)) != nullptr)
         {
-            dirEntry = basePath + PATHSEPARATORSTRING + pentry->d_name;
+            dirEntry = fs::path(basePath) / pentry->d_name;
+            const auto status = fs::status(dirEntry);
 
-            if (stat(dirEntry.c_str(), &sbuf) == 0 &&
-                S_ISDIR(sbuf.st_mode) &&
-                pentry->d_name[0] != '.')
+            if (fs::exists(status) && fs::is_directory(status) &&
+                    pentry->d_name[0] != '.')
             {
                 subDirList.emplace_back(pentry->d_name);
             }
@@ -255,8 +261,7 @@ PathList_t BDirectory::GetFiles(const std::string &p_path)
     }
 
 #else
-    std::string dirEntry;
-    struct stat sbuf{};
+    fs::path dirEntry;
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
@@ -272,9 +277,10 @@ PathList_t BDirectory::GetFiles(const std::string &p_path)
 
         while ((pentry = readdir(pd)) != nullptr)
         {
-            dirEntry = basePath + PATHSEPARATORSTRING + pentry->d_name;
+            dirEntry = fs::path(basePath) / pentry->d_name;
+            const auto status = fs::status(dirEntry);
 
-            if (stat(dirEntry.c_str(), &sbuf) == 0 && S_ISREG(sbuf.st_mode))
+            if (fs::exists(status) && fs::is_regular_file(status))
             {
                 fileList.emplace_back(pentry->d_name);
             }

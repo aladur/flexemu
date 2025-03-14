@@ -27,7 +27,6 @@
 #include <ctime>
 #include <cstring>
 #include <filesystem>
-#include <sys/stat.h>
 
 
 namespace fs = std::filesystem;
@@ -80,10 +79,9 @@ Mc146818::Mc146818()
 std::string Mc146818::getConfigFilePath(Mc146818::Config type)
 {
     auto newPath = (flx::getFlexemuUserConfigPath() / CONFIGBIN).u8string();
-    struct stat sbuf{};
 
     if ((type == Config::New) ||
-        (type == Config::NewOrOld && stat(newPath.c_str(), &sbuf) == 0))
+        (type == Config::NewOrOld && fs::exists(newPath)))
     {
         fs::create_directories(flx::getFlexemuUserConfigPath());
         return newPath;
@@ -110,9 +108,8 @@ Mc146818::~Mc146818()
     }
 
     const auto oldPath = getConfigFilePath(Config::Old);
-    struct stat sbuf{};
 
-    if (stat(oldPath.c_str(), &sbuf) == 0)
+    if (fs::exists(oldPath))
     {
         fs::remove(oldPath);
     }

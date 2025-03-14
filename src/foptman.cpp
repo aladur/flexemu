@@ -33,7 +33,6 @@
 #include "brcfile.h"
 #include <cstring>
 #include <filesystem>
-#include <sys/stat.h>
 
 
 namespace fs = std::filesystem;

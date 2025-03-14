@@ -27,7 +27,10 @@
 #include <iostream>
 #include <algorithm>
 #include <memory>
+#include <filesystem>
 
+
+namespace fs = std::filesystem;
 
 const std::array<char, 4> MiniDcrTape::magic_bytes { 'M', 'D', 'C', 'R' };
 

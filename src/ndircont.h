@@ -169,7 +169,7 @@ private:
     static std::string get_unix_filename(const s_dir_entry &dir_entry);
     bool add_to_link_table(
         SDWord dir_idx,
-        off_t size,
+        uintmax_t size,
         bool is_random,
         st_t &begin,
         st_t &end);
@@ -184,7 +184,7 @@ private:
         bool is_file_wp);
     SectorMap_t create_sector_map(
                            const std::string &path,
-                           const struct stat &sbuf,
+                           std::uintmax_t size,
                            const st_t &begin);
     void check_for_delete(Word ds_idx, const s_dir_sector &d);
     void check_for_extend(Word ds_idx, const s_dir_sector &d);

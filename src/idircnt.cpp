@@ -32,7 +32,10 @@
 #include "cvtwchar.h"
 #include <ctime>
 #include <fstream>
+#include <filesystem>
 
+
+namespace fs = std::filesystem;
 
 FlexDirectoryDiskIteratorImp::FlexDirectoryDiskIteratorImp(
     FlexDirectoryDiskByFile *p_base)
@@ -184,13 +187,13 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
 #endif
 #ifdef UNIX
-    auto path = base->GetPath() + PATHSEPARATORSTRING;
+    const auto path = fs::path(base->GetPath());
     struct stat sbuf {};
     struct dirent* findData = nullptr;
-
+    // This loop is performance sensitive. Keep usage of struct stat.
     while (isValid &&
             (!flx::isFlexFilename(fileName) ||
-            stat((path + fileName).c_str(), &sbuf) != 0 ||
+            stat((path / fileName).c_str(), &sbuf) != 0 ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !flx::multimatches(fileName, wildcard, ';', true)))
@@ -200,7 +203,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         if (searchOneFile)
         {
             fileName = flx::tolower(wildcard);
-            if (stat((path + fileName).c_str(), &sbuf) == 0 &&
+            if (stat((path / fileName).c_str(), &sbuf) == 0 &&
                     !searchOneFileAtEnd)
             {
                 isValid = true;
@@ -247,7 +250,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
         flx::strupper(fileName);
         dirEntry.SetTotalFileName(fileName);
-        auto fileSize = (sbuf.st_size + 251) / 252 * SECTOR_SIZE;
+        auto fileSize = (sbuf.st_size + 251U) / 252U * SECTOR_SIZE;
         dirEntry.SetFileSize(static_cast<int>(fileSize));
         const struct tm *lt = localtime(&sbuf.st_mtime);
         dirEntry.SetDate({lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900});
@@ -429,50 +432,35 @@ bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
 // Only the WRITE_PROTECT flag is supported
 bool FlexDirectoryDiskIteratorImp::SetAttributesCurrent(Byte attributes)
 {
-    std::string filePath;
+#ifdef _WIN32
+    const static auto write_perms = fs::perms::all;
+#else
+    const static auto write_perms = fs::perms::owner_write;
+#endif
 
     if (dirEntry.IsEmpty())
     {
         return false;
     }
 
-#ifdef _WIN32
-    const auto wFilePath(
-        ConvertToUtf16String(base->GetPath() + PATHSEPARATORSTRING +
-                             dirEntry.GetTotalFileName()));
-    DWORD attrs = GetFileAttributes(wFilePath.c_str());
-
-    if (attributes & WRITE_PROTECT)
-    {
-        attrs |= FILE_ATTRIBUTE_READONLY;
-    }
-    else
-    {
-        attrs &= ~FILE_ATTRIBUTE_READONLY;
-    }
-
-    SetFileAttributes(wFilePath.c_str(), attrs);
-#endif
+    auto fileName = dirEntry.GetTotalFileName();
 #ifdef UNIX
-    struct stat sbuf{};
+    fileName = flx::tolower(fileName);
+#endif
+    const auto filePath = fs::path(base->GetPath()) / fileName;
 
-    filePath = flx::tolower(dirEntry.GetTotalFileName());
-    filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
-
-    if (!stat(filePath.c_str(), &sbuf))
+    if (fs::exists(filePath))
     {
         if (attributes & WRITE_PROTECT)
         {
-            chmod(filePath.c_str(), sbuf.st_mode &
-                    static_cast<unsigned>(~S_IWUSR));
+            fs::permissions(filePath, write_perms, fs::perm_options::remove);
         }
         else
         {
-            chmod(filePath.c_str(), sbuf.st_mode | S_IWUSR);
+            fs::permissions(filePath, write_perms, fs::perm_options::add);
         }
     }
 
-#endif
     return true;
 }
 

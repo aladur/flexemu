@@ -22,8 +22,10 @@
 
 #include "fdoptman.h"
 #include "brcfile.h"
-#include <sys/stat.h>
+#include <filesystem>
 
+
+namespace fs = std::filesystem;
 
 static const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
 static const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
@@ -33,18 +35,14 @@ FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(std::string directory)
     , tracks(0)
     , sectors(0)
 {
-    if (path[path.length() - 1] != PATHSEPARATOR)
-    {
-        path += PATHSEPARATOR;
-    }
-    path += GetRcFilename();
+    path = (fs::path(path) / GetRcFilename()).u8string();
 }
 
 bool FlexDirectoryDiskOptions::Read()
 {
-    struct stat sbuf{};
+    const auto status = fs::status(path);
 
-    if (!stat(path.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)))
+    if (fs::exists(status) && fs::is_regular_file(status))
     {
         BRcFile rcFile(path);
 
@@ -60,9 +58,9 @@ bool FlexDirectoryDiskOptions::Read()
 
 bool FlexDirectoryDiskOptions::Write(bool onlyIfNotExists)
 {
-    struct stat sbuf{};
+    const auto status = fs::status(path);
 
-    if (onlyIfNotExists && !stat(path.c_str(), &sbuf))
+    if (onlyIfNotExists && fs::exists(status))
     {
         return true;
     }

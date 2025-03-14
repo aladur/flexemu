@@ -22,7 +22,6 @@
 
 
 #include "misc1.h"
-#include <sys/stat.h>
 #include <string>
 #include <sstream>
 #include <array>
@@ -128,9 +127,8 @@ FlexDisk::FlexDisk(
     , ft_access(fileTimeAccess)
     , is_flex_format(true)
 {
-    struct stat sbuf{};
-
-    if (stat(path.c_str(), &sbuf) != 0 || !S_ISREG(sbuf.st_mode))
+    const auto status = fs::status(path);
+    if (!fs::exists(status) || !fs::is_regular_file(status))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
@@ -141,7 +139,8 @@ FlexDisk::FlexDisk(
     }
 
     param.type = DiskType::DSK;
-    if (sbuf.st_size == 0)
+    file_size = static_cast<DWord>(fs::file_size(path));
+    if (file_size == 0U)
     {
         // If file has been created or file size 0 then
         // it is marked as an unformatted file container.
@@ -157,7 +156,6 @@ FlexDisk::FlexDisk(
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
-    file_size = static_cast<DWord>(sbuf.st_size);
 
     if ((mode & std::ios::out) == 0)
     {
@@ -1608,15 +1606,15 @@ bool FlexDisk::GetFlexTracksSectors(Word &tracks, Word &sectors,
 // Check if the file container contains a FLEX compatible file system.
 bool FlexDisk::IsFlexFileFormat(DiskType p_disk_type) const
 {
-    struct stat sbuf{};
     Word tracks = 35;
     Word sectors = 10;
 
-    if (stat(path.c_str(), &sbuf) != 0)
+    if (!fs::exists(path))
     {
         return false;
     }
 
+    const auto fileSize = fs::file_size(path);
     if (p_disk_type == DiskType::FLX)
     {
         if (GetFlexTracksSectors(tracks, sectors, sizeof(s_flex_header)) &&
@@ -1631,8 +1629,7 @@ bool FlexDisk::IsFlexFileFormat(DiskType p_disk_type) const
             flx_header.sides >= 1U && flx_header.sides <= 2U)
         {
             // Plausibility check with the file size.
-            auto size = static_cast<off_t>(getFileSize(flx_header));
-            if (size == sbuf.st_size)
+            if (getFileSize(flx_header) == fileSize)
             {
                 return true;
             }
@@ -1646,13 +1643,13 @@ bool FlexDisk::IsFlexFileFormat(DiskType p_disk_type) const
 
         if (GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
         {
-            off_t size_min = jvcHeaderSize + ((tracks - 1) * sectors + 1) *
+            size_t size_min = jvcHeaderSize + ((tracks - 1) * sectors + 1) *
                              SECTOR_SIZE;
-            off_t size_max = jvcHeaderSize + tracks * sectors * SECTOR_SIZE;
+            size_t size_max = jvcHeaderSize + tracks * sectors * SECTOR_SIZE;
 
             // do a plausibility check with the size of the DSK file
-            if (sbuf.st_size % SECTOR_SIZE == jvcHeaderSize &&
-                sbuf.st_size >= size_min && sbuf.st_size <= size_max)
+            if (fileSize % SECTOR_SIZE == jvcHeaderSize &&
+                fileSize >= size_min && fileSize <= size_max)
             {
                 return true;
             }

@@ -28,8 +28,6 @@
 #include <sstream>
 #include <functional>
 #include <limits>
-#include <sys/types.h>
-#include <sys/stat.h>
 #ifdef UNIX
 #include <netdb.h>
 #include <pwd.h>
@@ -41,6 +39,7 @@
 #include <array>
 #include <string>
 #include <fstream>
+#include <filesystem>
 #include <algorithm>
 #include <utility>
 #include <regex>
@@ -48,6 +47,7 @@
 #include <fmt/format.h>
 #include "warnon.h"
 
+namespace fs = std::filesystem;
 
 #ifdef _WIN32
     static const char * const pathSeparators = "\\/";

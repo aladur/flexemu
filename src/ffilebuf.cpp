@@ -33,10 +33,12 @@
 #include <algorithm>
 #include <vector>
 #include <fstream>
+#include <filesystem>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
 
+namespace fs = std::filesystem;
 
 // The format of a FLEX text file is described in the
 // FLEX Advanced Programmer's Guide in Chapter
@@ -558,7 +560,6 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
 {
     auto mode = std::ios::out | std::ios::binary | std::ios::trunc;
     std::ofstream ostream(path, mode);
-    struct stat sbuf{};
     bool result = false;
 
     if (!ostream.is_open() || GetFileSize() == 0)
@@ -586,11 +587,13 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
     const bool setFileTime =
         (fileTimeAccess & FileTimeAccess::Set) == FileTimeAccess::Set;
 
-    if (result && stat(path.c_str(), &sbuf) == 0)
+    if (result && fs::exists(path))
     {
         struct utimbuf timebuf{};
         struct tm file_time{};
+        struct stat sbuf{};
 
+        stat(path.c_str(), &sbuf);
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec = 0;
         file_time.tm_min = setFileTime ? fileHeader.minute : 0;
@@ -609,14 +612,13 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
 bool FlexFileBuffer::ReadFromFile(const std::string &path,
         FileTimeAccess fileTimeAccess, bool doRandomCheck)
 {
-    struct stat sbuf{};
-
-    if (!stat(path.c_str(), &sbuf) && S_ISREG(sbuf.st_mode) &&
-         sbuf.st_size >= 0)
+    const auto absPath = fs::absolute(fs::u8path(path));
+    const auto status = fs::status(absPath);
+    if (exists(status) && fs::is_regular_file(status))
     {
-        std::ifstream istream(path, std::ios::in | std::ios::binary);
+        std::ifstream istream(absPath, std::ios::in | std::ios::binary);
 
-        Realloc(sbuf.st_size);
+        Realloc(fs::file_size(absPath));
 
         if (istream.is_open())
         {
@@ -628,9 +630,9 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path,
 
             if (GetFileSize() == 0 || istream.good())
             {
-                const auto fullPath = fs::absolute(fs::u8path(path));
-                const auto directory = fullPath.parent_path().u8string();
-                const auto filename = fullPath.filename().u8string();
+                const auto directory = absPath.parent_path().u8string();
+                const auto filename = absPath.filename().u8string();
+                struct stat sbuf{};
 
                 SetAttributes(0);
                 SetSectorMap(0);
@@ -646,12 +648,14 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path,
                     }
                 }
 
-                if(access(path.c_str(), W_OK))
+                if(access(absPath.u8string().c_str(), W_OK))
                 {
                     SetAttributes(FLX_READONLY);
                 }
 
                 SetAdjustedFilename(filename);
+
+                stat(absPath.u8string().c_str(), &sbuf);
                 struct tm *lt = localtime(&sbuf.st_mtime);
                 const bool getFileTime =
                 (fileTimeAccess & FileTimeAccess::Get) == FileTimeAccess::Get;
