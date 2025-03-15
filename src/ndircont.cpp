@@ -37,7 +37,6 @@
 #include <iostream>
 #include <filesystem>
 #include <sys/stat.h>
-#include "bdir.h"
 #include "filecntb.h"
 #include "fattrib.h"
 #include "ndircont.h"
@@ -87,7 +86,7 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors)
-    : directory(path)
+    : directory(fs::u8path(path))
     , randomFileCheck(path)
     , ft_access(fileTimeAccess)
 {
@@ -96,25 +95,27 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
     static_assert(sizeof(s_sys_info_sector) == SECTOR_SIZE, "Wrong alignment");
     static_assert(sizeof(s_dir_sector) == SECTOR_SIZE, "Wrong alignment");
 
-    const auto status = fs::status(path);
+    const auto status = fs::status(directory);
     if (!fs::exists(status) || !fs::is_directory(status))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
 
-    if (directory.size() > 1 && flx::endsWithPathSeparator(directory))
+    if (path.size() > 1 && flx::endsWithPathSeparator(path))
     {
+        auto new_path(path);
         // Remove trailing PATHSEPARATOR character.
-        directory.resize(directory.size() - 1);
+        new_path.resize(path.size() - 1);
+        directory = fs::u8path(new_path);
     }
 
-    if ((access(directory.c_str(), W_OK) != 0) ||
+    if ((access(path.c_str(), W_OK) != 0) ||
             randomFileCheck.IsWriteProtected())
     {
         attributes |= WRITE_PROTECT;
     }
 
-    FlexDirectoryDiskOptions opts(directory);
+    FlexDirectoryDiskOptions opts(path);
 
     if (opts.Read())
     {
@@ -177,7 +178,7 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
 
 std::string FlexDirectoryDiskBySector::GetPath() const
 {
-    return directory;
+    return directory.u8string();
 }
 
 bool FlexDirectoryDiskBySector::GetDiskAttributes(
@@ -197,7 +198,7 @@ bool FlexDirectoryDiskBySector::GetDiskAttributes(
     diskAttributes.SetName(disk_name);
     diskAttributes.SetNumber(
             flx::getValueBigEndian<Word>(&sis.sir.disk_number[0]));
-    diskAttributes.SetPath(directory);
+    diskAttributes.SetPath(directory.u8string());
     diskAttributes.SetType(param.type);
     diskAttributes.SetOptions(param.options);
     diskAttributes.SetAttributes(attributes);
@@ -420,14 +421,13 @@ SDWord FlexDirectoryDiskBySector::id_of_new_file(const st_t &track_sector)
     return new_file_id;
 }
 
-std::string FlexDirectoryDiskBySector::get_path_of_file(SDWord file_id) const
+fs::path FlexDirectoryDiskBySector::get_path_of_file(SDWord file_id) const
 {
     if (file_id < 0)
     {
         if (new_files.find(file_id) != new_files.end())
         {
-            return directory + PATHSEPARATORSTRING +
-                   new_files.at(file_id).filename;
+            return directory / new_files.at(file_id).filename;
         }
     }
     else
@@ -438,8 +438,7 @@ std::string FlexDirectoryDiskBySector::get_path_of_file(SDWord file_id) const
         {
             const auto &directory_entry =
                 flex_directory[ds_idx].dir_entries[file_id % DIRENTRIES];
-            return directory + PATHSEPARATORSTRING +
-                   get_unix_filename(directory_entry);
+            return directory / get_unix_filename(directory_entry);
         }
     }
 
@@ -865,7 +864,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
     const auto wWildcard(
-        ConvertToUtf16String(directory + PATHSEPARATORSTRING + "*.*"));
+        ConvertToUtf16String((directory / u8"*.*").u8string()));
 
     auto hdl = FindFirstFile(wWildcard.c_str(), &pentry);
 
@@ -877,9 +876,8 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
     do
     {
         fname = flx::tolower(ConvertToUtf8String(pentry.cFileName));
-        path = fs::path(directory) / fname;
 
-        const auto status = fs::status(path);
+        const auto status = fs::status(directory / fname);
         if (!exists(status) || !fs::is_regular_file(status))
         {
             continue;
@@ -893,7 +891,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
 #endif
 
 #ifdef UNIX
-    auto *pd = opendir(directory.c_str());
+    auto *pd = opendir(directory.u8string().c_str());
     struct dirent *pentry;
 
     if (pd == nullptr)
@@ -904,10 +902,9 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
     while ((pentry = readdir(pd)) != nullptr)
     {
         fname = pentry->d_name;
-        path = fs::path(directory) / fname;
 
-        const auto status = fs::status(path);
-        if (!exists(status) || !fs::is_regular_file(status))
+        const auto status = fs::status(directory / fname);
+        if (!fs::exists(status) || !fs::is_regular_file(status))
         {
             continue;
         }
@@ -928,7 +925,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
         {
             st_t begin;
             st_t end;
-            path = fs::u8path(directory) / filename;
+            path = directory / filename;
             bool is_random = randomFileCheck.IsRandomFile(filename);
 
             const auto status = fs::status(path);
@@ -974,11 +971,11 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
 {
     struct stat sbuf{};
 
-    if (!stat(directory.c_str(), &sbuf))
+    if (!stat(directory.u8string().c_str(), &sbuf))
     {
         auto &sis = flex_sys_info[0];
         const struct tm *lt = localtime(&sbuf.st_mtime);
-        auto diskname = getDiskName(flx::getFileName(directory));
+        auto diskname = getDiskName(directory.filename().u8string());
 
         std::fill(std::begin(sis.unused1), std::end(sis.unused1), '\0');
         diskname.resize(FLEX_DISKNAME_LENGTH);
@@ -1070,14 +1067,15 @@ void FlexDirectoryDiskBySector::check_for_delete(Word ds_idx,
             auto filename = get_unix_filename(dir_idx);
             auto track_sector = old_dir_sector.dir_entries[i].start;
             auto sec_idx = get_sector_index(track_sector);
+            std::error_code error;
+
             if (old_dir_sector.dir_entries[i].sector_map & IS_RANDOM_FILE)
             {
                 randomFileCheck.RemoveFromRandomList(filename);
                 randomFileCheck.UpdateRandomListToFile();
                 sector_maps.erase(flex_links[sec_idx].file_id);
             }
-            auto path = directory + PATHSEPARATORSTRING + filename;
-            unlink(path.c_str());
+            fs::remove(directory / filename, error);
             change_file_id_and_type(sec_idx, dir_idx, 0, SectorType::FreeChain);
 #ifdef DEBUG_FILE
             LOG_X("      delete {}\n", filename);
@@ -1108,9 +1106,10 @@ void FlexDirectoryDiskBySector::check_for_rename(Word ds_idx,
         if (!old_filename.empty() && !new_filename.empty() &&
             old_filename.compare(new_filename) != 0)
         {
-            auto old_path = directory + PATHSEPARATORSTRING + old_filename;
-            auto new_path = directory + PATHSEPARATORSTRING + new_filename;
-            rename(old_path.c_str(), new_path.c_str());
+            std::error_code error;
+
+            fs::rename(directory / old_filename, directory / new_filename,
+                       error);
             if (dir_sector.dir_entries[i].sector_map & IS_RANDOM_FILE)
             {
                 randomFileCheck.RemoveFromRandomList(old_filename);
@@ -1184,7 +1183,7 @@ void FlexDirectoryDiskBySector::check_for_changed_file_attr(Word ds_idx,
             auto filename = get_unix_filename(dir_idx);
             auto file_attr = dir_sector.dir_entries[i].file_attr;
             const char *set_clear = nullptr;
-            const auto path = fs::path(directory) / filename;
+            const auto path = directory / filename;
             if (fs::exists(path))
             {
                 if (file_attr & WRITE_PROTECT)
@@ -1298,12 +1297,11 @@ void FlexDirectoryDiskBySector::check_for_new_file(Word ds_idx,
                 change_file_id_and_type(sec_idx, iter.first,
                                         dir_idx, SectorType::File);
 
-                auto old_path =
-                    directory + PATHSEPARATORSTRING + iter.second.filename;
                 auto new_name = get_unix_filename(flex_links[sec_idx].file_id);
 
-                auto new_path = directory + PATHSEPARATORSTRING + new_name;
-                rename(old_path.c_str(), new_path.c_str());
+                const auto new_path = directory / new_name;
+                std::error_code error;
+                fs::rename(directory / iter.second.filename, new_path, error);
 
                 // check for random file, if true add it to the list of
                 // random files.
@@ -1332,7 +1330,7 @@ void FlexDirectoryDiskBySector::check_for_new_file(Word ds_idx,
                 LOG_XX("      new file {}, was {}\n",
                         new_name, iter.second.filename);
 #endif
-                set_file_time(new_path.c_str(),
+                set_file_time(new_path.u8string().c_str(),
                     dir_sector.dir_entries[i].month,
                     dir_sector.dir_entries[i].day,
                     dir_sector.dir_entries[i].year,
@@ -1423,7 +1421,7 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
                 // when reading it a default boot code is set which
                 // savely jumps back into the monitor program.
 
-                auto path = directory + PATHSEPARATORSTRING + BOOT_FILE;
+                const auto path = directory / BOOT_FILE;
                 bool set_default_boot_code = true;
                 std::ifstream ifs(path, std::ios::in | std::ios::binary);
 
@@ -1515,7 +1513,7 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
                     {
                         // The host file system changes the modification time.
                         // Set it back to the time of the emulated file system.
-                        update_file_time(path.c_str(), link.file_id);
+                        update_file_time(path.u8string().c_str(), link.file_id);
                     }
                 }
 
@@ -1590,7 +1588,7 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                 // into a file which name is defined in BOOT_FILE.
                 BootSectorBuffer_t bootSectors{};
 
-                auto path = fs::path(directory) / BOOT_FILE;
+                const auto path = directory / BOOT_FILE;
                 std::fill(bootSectors.begin(), bootSectors.end(), '\0');
 
                 const auto status = fs::status(path);
@@ -1771,7 +1769,7 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                     {
                         // The host file system changes the modification time.
                         // Set it back to the time of the emulated file system.
-                        update_file_time(path.c_str(), link.file_id);
+                        update_file_time(path.u8string().c_str(), link.file_id);
                     }
                 }
             }
@@ -1840,11 +1838,7 @@ std::string FlexDirectoryDiskBySector::get_unique_filename(
 {
     auto number = flx::getValueBigEndian<Word>(
             flex_sys_info[0].sir.disk_number);
-    std::string diskname = flx::getFileName(directory);
-    if (diskname[0] == '.')
-    {
-        diskname = "flexdisk";
-    }
+    auto diskname = flx::tolower(getDiskName(directory.filename().u8string()));
     diskname += '_' + std::to_string(number) + "." + extension;
 
     return diskname;

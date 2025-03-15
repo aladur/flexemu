@@ -35,6 +35,10 @@
 #include <vector>
 #include <array>
 #include <unordered_map>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 // class FlexDirectoryDiskBySector implements a sector oriented access
 // to a FLEX disk by mapping a host directory emulating a FLEX disk.
@@ -112,7 +116,7 @@ public:
     FlexDirectoryDiskBySector &operator=(FlexDirectoryDiskBySector &&) = delete;
 
 private:
-    std::string directory;
+    fs::path directory;
     RandomFileCheck randomFileCheck;
     Byte attributes{};
     const FileTimeAccess &ft_access{};
@@ -203,7 +207,7 @@ private:
     st_t link_address() const;
     bool is_last_of_free_chain(const st_t &track_sector) const;
     SDWord id_of_new_file(const st_t &track_sector);
-    std::string get_path_of_file(SDWord file_id) const;
+    fs::path get_path_of_file(SDWord file_id) const;
     Word record_nr_of_new_file(SDWord new_file_id, SDWord sec_idx) const;
     void change_file_id_and_type(
         SDWord sec_idx,
