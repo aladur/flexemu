@@ -99,13 +99,9 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
     const auto pattern = path + "*.*";
     WIN32_FIND_DATA findData{};
 
-    while (isValid &&
-            (!flx::isFlexFilename(fileName) ||
-            (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
-            (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
-            (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
-            findData.nFileSizeLow > (MAX_FILE_SECTORS * DBPS) ||
-            !flx::multimatches(fileName, wildcard, ';', true)))
+    // do-while loop in this context improves code readability.
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
+    do
     {
         isValid = false;
 
@@ -120,36 +116,45 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
                 isValid = true;
             }
             searchOneFileAtEnd = true;
-            continue;
-        }
-
-        if (dirHdl == nullptr)
-        {
-            dirHdl = FindFirstFile(ConvertToUtf16String(pattern).c_str(),
-                                   &findData);
-            if (dirHdl != INVALID_HANDLE_VALUE)
-            {
-                isValid = true;
-            }
-            else
-            {
-                dirHdl = nullptr;
-            }
         }
         else
         {
-            if (FindNextFile(dirHdl, &findData))
+            if (dirHdl == nullptr)
             {
-                isValid = true;
-
-                fileName = ConvertToUtf8String(findData.cFileName);
-                if (fileName.size() > 12)
+                dirHdl = FindFirstFile(ConvertToUtf16String(pattern).c_str(),
+                                       &findData);
+                if (dirHdl != INVALID_HANDLE_VALUE)
                 {
-                    fileName = ConvertToUtf8String(findData.cAlternateFileName);
+                    isValid = true;
+                }
+                else
+                {
+                    dirHdl = nullptr;
+                }
+            }
+            else
+            {
+                if (FindNextFile(dirHdl, &findData))
+                {
+                    isValid = true;
+
+                    fileName = ConvertToUtf8String(findData.cFileName);
+                    if (fileName.size() > 12)
+                    {
+                        fileName =
+                            ConvertToUtf8String(findData.cAlternateFileName);
+                    }
                 }
             }
         }
     }
+    while (isValid &&
+            (!flx::isFlexFilename(fileName) ||
+            (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
+            (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
+            (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
+            findData.nFileSizeLow > (MAX_FILE_SECTORS * DBPS) ||
+            !flx::multimatches(fileName, wildcard, ';', true)));
 
     if (isValid)
     {
@@ -191,12 +196,9 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
     struct stat sbuf {};
     struct dirent* findData = nullptr;
     // This loop is performance sensitive. Keep usage of struct stat.
-    while (isValid &&
-            (!flx::isFlexFilename(fileName) ||
-            stat((path / fileName).c_str(), &sbuf) != 0 ||
-            !S_ISREG(sbuf.st_mode) ||
-            sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !flx::multimatches(fileName, wildcard, ';', true)))
+    // do-while loop in this context improves code readability.
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
+    do
     {
         isValid = false;
 
@@ -209,28 +211,35 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
                 isValid = true;
             }
             searchOneFileAtEnd = true;
-            continue;
         }
-
-        if (dirHdl == nullptr)
+        else
         {
-            dirHdl = opendir(path.c_str());
+            if (dirHdl == nullptr)
+            {
+                dirHdl = opendir(path.c_str());
+                if (dirHdl != nullptr)
+                {
+                    isValid = true;
+                }
+            }
+
             if (dirHdl != nullptr)
             {
-                isValid = true;
-            }
-        }
-
-        if (dirHdl != nullptr)
-        {
-            findData = readdir(dirHdl);
-            if (findData != nullptr)
-            {
-                isValid = true;
-                fileName = findData->d_name;
+                findData = readdir(dirHdl);
+                if (findData != nullptr)
+                {
+                    isValid = true;
+                    fileName = findData->d_name;
+                }
             }
         }
     }
+    while (isValid &&
+            (!flx::isFlexFilename(fileName) ||
+            stat((path / fileName).c_str(), &sbuf) != 0 ||
+            !S_ISREG(sbuf.st_mode) ||
+            sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
+            !flx::multimatches(fileName, wildcard, ';', true)));
 
     if (isValid)
     {
