@@ -31,6 +31,9 @@
 #include "flexerr.h"
 #include "rndcheck.h"
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 class FlexDiskAttributes;
@@ -47,7 +50,7 @@ class FlexDirectoryDiskByFile : public IFlexDiskByFile
     friend class FlexDirectoryDiskIteratorImp; // corresponding iterator class
 
 private:
-    std::string directory;
+    fs::path directory;
     RandomFileCheck randomFileCheck;
     Byte attributes{};
     Word disk_number{};
