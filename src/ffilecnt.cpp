@@ -229,9 +229,9 @@ FlexDisk::FlexDisk(
 /* Public interface                     */
 /****************************************/
 
-std::string FlexDisk::GetPath() const
+fs::path FlexDisk::GetPath() const
 {
-    return path.u8string();
+    return path;
 }
 
 unsigned FlexDisk::GetBytesPerSector() const

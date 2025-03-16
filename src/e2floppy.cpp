@@ -268,7 +268,7 @@ void E2floppy::mount_all_drives(
 
     for (const auto &drive : drives)
     {
-        mount_drive(drive.u8string(), drive_nr++);
+        mount_drive(drive, drive_nr++);
     }
 
     selected = MAX_DRIVES; // deselect all drives
@@ -316,7 +316,7 @@ std::string E2floppy::drive_attributes_string(Word drive_nr)
             stream << "name:       " << diskAttributes.GetName() << " #" <<
                                         diskAttributes.GetNumber() << '\n';
         }
-        stream << "path:       " << diskAttributes.GetPath().c_str() << '\n'
+        stream << "path:       " << diskAttributes.GetPath() << '\n'
                << "tracks:     " << trk << '\n'
                << "sectors:    " << sec << '\n'
                << "write-prot: " << (is_write_protected ? "yes" : "no") << '\n'
@@ -409,7 +409,7 @@ bool E2floppy::sync_drive(Word drive_nr, tMountOption option)
 
     if (floppy[drive_nr]->GetFlexDiskType() == DiskType::Directory)
     {
-        auto path = floppy[drive_nr]->GetPath();
+        const auto path = floppy[drive_nr]->GetPath();
         result = umount_drive(drive_nr);
         result &= mount_drive(path, drive_nr, option);
     }

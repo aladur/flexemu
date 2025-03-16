@@ -146,7 +146,7 @@ public:
     bool GetDiskAttributes(FlexDiskAttributes &diskAttributes) const override;
     DiskType GetFlexDiskType() const override;
     DiskOptions GetFlexDiskOptions() const override;
-    std::string GetPath() const override;
+    fs::path GetPath() const override;
 
     // IFlexDiskBySector interface declaration.
     bool ReadSector(Byte *buffer, int trk, int sec,

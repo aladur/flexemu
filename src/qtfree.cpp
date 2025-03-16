@@ -44,6 +44,7 @@
 #include "e2.h"
 #include <cmath>
 
+
 QFont GetFont(const QString &fontName)
 {
     auto list = fontName.split(QLatin1Char(','));
@@ -172,7 +173,7 @@ void OpenDiskStatusDialog(QWidget *parent,
         text = diskAttributes.GetTypeString().c_str();
         model.setItem(row++, 1, new QStandardItem(text));
         model.setItem(row, 0, new QStandardItem(QObject::tr("Path")));
-        text = diskAttributes.GetPath().c_str();
+        text = QString::fromStdString(diskAttributes.GetPath().u8string());
         model.setItem(row++, 1, new QStandardItem(text));
 
         if (diskAttributes.GetIsFlexFormat())

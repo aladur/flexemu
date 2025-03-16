@@ -28,6 +28,10 @@
 #include <string>
 #include <vector>
 #include "bdate.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 // class FlexDiskAttributes is a data class to set and get a number of
 // attributes of a FLEX disk image.
@@ -39,7 +43,7 @@ class FlexDiskAttributes
 private:
 
     BDate date;
-    std::string path; // path of container file
+    fs::path path; // path of container file
     int sectors{0}; // Number of sectors per track
     int tracks{0}; // Number of tracks
     std::string name; // name of disk
@@ -77,7 +81,7 @@ public:
 
     std::string GetTypeString() const;
 
-    inline void SetPath(const std::string &p)
+    inline void SetPath(const fs::path &p)
     {
         path = p;
         is_valid = true;
@@ -164,7 +168,7 @@ public:
         return number;
     }
 
-    inline std::string GetPath() const
+    inline fs::path GetPath() const
     {
         return path;
     }

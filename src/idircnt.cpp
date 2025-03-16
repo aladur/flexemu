@@ -95,8 +95,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
     // repeat until a valid directory entry found
 #ifdef _WIN32
-    const auto path = base->GetPath() + PATHSEPARATORSTRING;
-    const auto pattern = path + "*.*";
+    const auto pattern = (base->GetPath() / u8"*.*").u8string();
     WIN32_FIND_DATA findData{};
 
     // do-while loop in this context improves code readability.
@@ -108,7 +107,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         if (searchOneFile)
         {
             fileName = wildcard;
-            const auto filePattern = path + fileName;
+            const auto filePattern = (base->GetPath() / fileName).u8string();
             dirHdl = FindFirstFile(ConvertToUtf16String(filePattern).c_str(),
                 &findData);
             if (dirHdl != INVALID_HANDLE_VALUE && !searchOneFileAtEnd)
@@ -192,7 +191,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
 #endif
 #ifdef UNIX
-    const auto path = fs::path(base->GetPath());
+    const auto path = base->GetPath();
     struct stat sbuf {};
     struct dirent* findData = nullptr;
     // This loop is performance sensitive. Keep usage of struct stat.
@@ -205,7 +204,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         if (searchOneFile)
         {
             fileName = flx::tolower(wildcard);
-            if (stat((path / fileName).c_str(), &sbuf) == 0 &&
+            if (stat((path / fileName).u8string().c_str(), &sbuf) == 0 &&
                     !searchOneFileAtEnd)
             {
                 isValid = true;
@@ -216,7 +215,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         {
             if (dirHdl == nullptr)
             {
-                dirHdl = opendir(path.c_str());
+                dirHdl = opendir(path.u8string().c_str());
                 if (dirHdl != nullptr)
                 {
                     isValid = true;
@@ -236,7 +235,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
     }
     while (isValid &&
             (!flx::isFlexFilename(fileName) ||
-            stat((path / fileName).c_str(), &sbuf) != 0 ||
+            stat((path / fileName).u8string().c_str(), &sbuf) != 0 ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !flx::multimatches(fileName, wildcard, ';', true)));
@@ -283,20 +282,19 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 // Only valid if the iterator has a valid directory entry
 bool FlexDirectoryDiskIteratorImp::DeleteCurrent()
 {
-    std::string filePath;
-
     if (dirEntry.IsEmpty())
     {
         return false;
     }
 
-    filePath = flx::tolower(dirEntry.GetTotalFileName());
-    filePath = base->GetPath() + PATHSEPARATOR + filePath;
-#ifdef UNIX
+    const auto filePath = base->GetPath() /
+                flx::tolower(dirEntry.GetTotalFileName());
+    std::error_code error;
 
-    if (remove(filePath.c_str()))
+    fs::remove(filePath, error);
+    if (error)
     {
-        if (errno == ENOENT)
+        if (error == std::errc::no_such_file_or_directory)
         {
             throw FlexException(FERR_NO_FILE_IN_CONTAINER,
                                 dirEntry.GetTotalFileName(),
@@ -308,36 +306,6 @@ bool FlexDirectoryDiskIteratorImp::DeleteCurrent()
                             base->GetPath());
     }
 
-#endif
-#ifdef _WIN32
-    // evtl. remove read-only attribute
-    // to be able to delete it
-    const auto wFilePath(ConvertToUtf16String(filePath));
-    DWORD attributes = GetFileAttributes(wFilePath.c_str());
-
-    if (attributes & FILE_ATTRIBUTE_READONLY)
-    {
-        SetFileAttributes(wFilePath.c_str(), attributes & ~FILE_ATTRIBUTE_READONLY);
-    }
-
-    BOOL success = DeleteFile(wFilePath.c_str());
-
-    if (!success)
-    {
-        DWORD lastError = GetLastError();
-
-        if (lastError == ERROR_FILE_NOT_FOUND)
-        {
-            throw FlexException(FERR_NO_FILE_IN_CONTAINER,
-                dirEntry.GetTotalFileName(), base->GetPath());
-        }
-        else {
-            throw FlexException(FERR_REMOVE_FILE,
-                dirEntry.GetTotalFileName(), base->GetPath());
-        }
-    }
-
-#endif
     return true;
 }
 
@@ -351,7 +319,8 @@ bool FlexDirectoryDiskIteratorImp::RenameCurrent(const std::string &newName)
         return false;
     }
 
-    std::string src(dirEntry.GetTotalFileName());
+    std::error_code error;
+    auto src(dirEntry.GetTotalFileName());
     // When renaming always prefer lowercase filenames
     auto dst(flx::tolower(newName));
     FlexDirEntry tempDirEntry;
@@ -359,41 +328,30 @@ bool FlexDirectoryDiskIteratorImp::RenameCurrent(const std::string &newName)
     flx::strlower(src);
 #endif
 
-    // prevent overwriting of an existing file
-    if (base->FindFile(dst, tempDirEntry))
-    {
-        throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
-    }
-
     if (src == dst)
     {
         return true;
     }
 
-    src = base->GetPath() + PATHSEPARATORSTRING + src;
-    dst = base->GetPath() + PATHSEPARATORSTRING + dst;
-
-    if (rename(src.c_str(), dst.c_str()))
+    fs::rename(base->GetPath() / src, base->GetPath() / dst, error);
+    if (error)
     {
         // Unfinished
-        if (errno == EEXIST)
+        if (error == std::errc::file_exists)
         {
             throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
         }
 
-        if (errno == EACCES)
-        {
-            throw FlexException(FERR_RENAME_FILE,
-                                dirEntry.GetTotalFileName(),
-                                base->GetPath());
-        }
-
-        if (errno == ENOENT)
+        if (error == std::errc::no_such_file_or_directory)
         {
             throw FlexException(FERR_NO_FILE_IN_CONTAINER,
                                 dirEntry.GetTotalFileName(),
                                 base->GetPath());
         }
+
+        throw FlexException(FERR_RENAME_FILE,
+                            dirEntry.GetTotalFileName(),
+                            base->GetPath());
     }
 
     return true;
@@ -405,17 +363,16 @@ bool FlexDirectoryDiskIteratorImp::RenameCurrent(const std::string &newName)
 bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
 {
     struct stat sbuf{};
-    std::string filePath;
 
     if (dirEntry.IsEmpty())
     {
         return false;
     }
 
-    filePath = flx::tolower(dirEntry.GetTotalFileName());
-    filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
+    const auto filePath = base->GetPath() /
+        flx::tolower(dirEntry.GetTotalFileName());
 
-    if (stat(filePath.c_str(), &sbuf) == 0)
+    if (stat(filePath.u8string().c_str(), &sbuf) == 0)
     {
         struct utimbuf timebuf{};
         struct tm file_time{};
@@ -430,7 +387,8 @@ bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
         file_time.tm_isdst = -1;
         timebuf.modtime = mktime(&file_time);
 
-        return (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) == 0);
+        return (timebuf.modtime >= 0 &&
+                utime(filePath.u8string().c_str(), &timebuf) == 0);
     }
 
     return false;
@@ -456,7 +414,7 @@ bool FlexDirectoryDiskIteratorImp::SetAttributesCurrent(Byte attributes)
 #ifdef UNIX
     fileName = flx::tolower(fileName);
 #endif
-    const auto filePath = fs::path(base->GetPath()) / fileName;
+    const auto filePath = base->GetPath() / fileName;
 
     if (fs::exists(filePath))
     {

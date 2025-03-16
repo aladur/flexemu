@@ -23,7 +23,9 @@
 #define FILECNTB_INCLUDED
 
 #include "misc1.h"
-#include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 // This macro defines the name of a file. It contains the boot sector.
@@ -78,7 +80,7 @@ public:
             &diskAttributes) const = 0;
     virtual DiskType GetFlexDiskType() const = 0;
     virtual DiskOptions GetFlexDiskOptions() const = 0;
-    virtual std::string GetPath() const = 0;
+    virtual fs::path GetPath() const = 0;
 
     virtual ~IFlexDiskBase() = default;
 };

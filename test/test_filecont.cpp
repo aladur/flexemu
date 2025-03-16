@@ -335,8 +335,8 @@ TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
                 EXPECT_EQ(dirEntry.GetAttributes(), 0);
             }
 
-            if (disk->GetPath() == diskPathDsk ||
-                disk->GetPath() == diskPathFlx)
+            if (disk->GetPath().u8string() == diskPathDsk ||
+                disk->GetPath().u8string() == diskPathFlx)
             {
                 // FLX_NODELETE, FLX_NOREAD and FLX_NOCAT is only supported
                 // with FlexDiskByFile (but not FlexDirectoryByFile).
@@ -562,7 +562,7 @@ TEST_F(test_IFlexDiskByFile, fct_GetSupportedAttributes)
     static const auto diskPath = (temp_dir / diskFiles[RW][DIR]).u8string();
     for (auto &disk : disks[RW])
     {
-        const std::string attr = (disk->GetPath() == diskPath) ?
+        const std::string attr = (disk->GetPath().u8string() == diskPath) ?
             "W" : "WDRC";
         EXPECT_EQ(disk->GetSupportedAttributes(), attr);
     }

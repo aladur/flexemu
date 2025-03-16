@@ -78,7 +78,7 @@ public:
     bool GetDiskAttributes(FlexDiskAttributes &diskAttributes) const override;
     DiskType GetFlexDiskType() const override;
     DiskOptions GetFlexDiskOptions() const override;
-    std::string GetPath() const override;
+    fs::path GetPath() const override;
 
     // IFlexDiskByFile interface declaration (to be used within flexplorer).
     IFlexDiskByFile *begin() override

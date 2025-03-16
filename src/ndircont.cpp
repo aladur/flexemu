@@ -176,9 +176,9 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
     return new FlexDirectoryDiskBySector(path, fileTimeAccess, tracks, sectors);
 }
 
-std::string FlexDirectoryDiskBySector::GetPath() const
+fs::path FlexDirectoryDiskBySector::GetPath() const
 {
-    return directory.u8string();
+    return directory;
 }
 
 bool FlexDirectoryDiskBySector::GetDiskAttributes(

@@ -131,9 +131,9 @@ FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
     return new FlexDirectoryDiskByFile(path.u8string(), fileTimeAccess);
 }
 
-std::string FlexDirectoryDiskByFile::GetPath() const
+fs::path FlexDirectoryDiskByFile::GetPath() const
 {
-    return directory.u8string();
+    return directory;
 }
 
 std::string FlexDirectoryDiskByFile::GetSupportedAttributes() const
