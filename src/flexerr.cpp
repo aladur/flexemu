@@ -71,10 +71,22 @@ FlexException::FlexException(int ec, int ip1) noexcept
     errorString = fmt::format(errString[ec], ip1);
 }
 
+FlexException::FlexException(int ec, const char *cp1) noexcept
+    : errorCode(ec)
+{
+    errorString = fmt::format(errString[ec], cp1);
+}
+
 FlexException::FlexException(int ec, const std::string &sp1) noexcept
     : errorCode(ec)
 {
     errorString = fmt::format(errString[ec], sp1);
+}
+
+FlexException::FlexException(int ec, const fs::path &pp1) noexcept
+    : errorCode(ec)
+{
+    errorString = fmt::format(errString[ec], pp1.u8string());
 }
 
 FlexException::FlexException(int ec, const std::string &sp1,
@@ -84,10 +96,30 @@ FlexException::FlexException(int ec, const std::string &sp1,
     errorString = fmt::format(errString[ec], sp1, sp2);
 }
 
+FlexException::FlexException(int ec, const std::string &sp1,
+                             const fs::path &pp1) noexcept
+    : errorCode(ec)
+{
+    errorString = fmt::format(errString[ec], sp1, pp1.u8string());
+}
+
+FlexException::FlexException(int ec, const fs::path &pp1,
+                             const std::string &sp1) noexcept
+    : errorCode(ec)
+{
+    errorString = fmt::format(errString[ec], pp1.u8string(), sp1);
+}
+
 FlexException::FlexException(int ec, int ip1, const std::string &sp1) noexcept
     : errorCode(ec)
 {
     errorString = fmt::format(errString[ec], ip1, sp1);
+}
+
+FlexException::FlexException(int ec, int ip1, const fs::path &pp1) noexcept
+    : errorCode(ec)
+{
+    errorString = fmt::format(errString[ec], ip1, pp1.u8string());
 }
 
 FlexException::FlexException(int ec, int ip1, int ip2, const std::string &sp1)

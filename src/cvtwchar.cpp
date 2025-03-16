@@ -49,8 +49,8 @@ std::wstring ConvertToUtf16String(const std::string &value)
         else if (size == 0)
         {
             DWORD lastError = GetLastError();
-            throw FlexException(lastError,
-                                "Conversion to UTF16 string failed.");
+            const auto msg = std::string("Conversion to UTF16 string failed.");
+            throw FlexException(lastError, msg);
         }
     }
 
@@ -77,8 +77,8 @@ std::string ConvertToUtf8String(const std::wstring &value)
         else if (size == 0)
         {
             DWORD lastError = GetLastError();
-            throw FlexException(lastError,
-                                "Conversion to UTF8 string failed.");
+            const auto msg = std::string("Conversion to UTF8 string failed.");
+            throw FlexException(lastError, msg);
         }
     }
 

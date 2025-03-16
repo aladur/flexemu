@@ -512,7 +512,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
                 else
                 {
                     throw FlexException(FERR_CREATE_PROCESS,
-                                        "xdg-open", tempFile);
+                                        std::string("xdg-open"), tempFile);
                 }
 #endif
             }

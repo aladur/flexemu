@@ -1010,7 +1010,7 @@ void FlexplorerTableModel::OpenFlexDisk(const char *p_path,
     // path can either be a directory or a file container.
     if (p_path == nullptr)
     {
-        throw FlexException(FERR_INVALID_NULL_POINTER, "p_path");
+        throw FlexException(FERR_INVALID_NULL_POINTER, std::string("p_path"));
     }
 
     if (!fs::exists(p_path))
