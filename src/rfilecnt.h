@@ -26,6 +26,10 @@
 #include "efiletim.h"
 #include "ffilecnt.h"
 #include <vector>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 // class FlexRamDisk is a specialization of FlexDisk where the whole disk
 // image is stored in RAM for improved performance. The disk image is only
@@ -43,7 +47,7 @@ public:
     FlexRamDisk() = delete;
     FlexRamDisk(const FlexRamDisk &src) = delete;
     FlexRamDisk(FlexRamDisk &&src) = delete;
-    FlexRamDisk(const std::string &p_path, std::ios::openmode mode,
+    FlexRamDisk(const fs::path &p_path, std::ios::openmode mode,
                 const FileTimeAccess &fileTimeAccess);
     ~FlexRamDisk() override;
 

@@ -107,7 +107,7 @@ public:
     FlexDirectoryDiskBySector() = delete;
     FlexDirectoryDiskBySector(const FlexDirectoryDiskBySector &) = delete;
     FlexDirectoryDiskBySector(FlexDirectoryDiskBySector &&) = delete;
-    FlexDirectoryDiskBySector(const std::string &path,
+    FlexDirectoryDiskBySector(const fs::path &path,
                            const FileTimeAccess &fileTimeAccess,
                            int tracks, int sectors);
     ~FlexDirectoryDiskBySector() override;
@@ -137,7 +137,7 @@ private:
                              // directory with file entries.
 
 public:
-    static FlexDirectoryDiskBySector *Create(const std::string &path,
+    static FlexDirectoryDiskBySector *Create(const fs::path &path,
             const FileTimeAccess &fileTimeAccess,
             int tracks, int sectors, DiskType disk_type);
 

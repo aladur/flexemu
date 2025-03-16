@@ -67,7 +67,7 @@ protected:
 
     static void CheckAttributes(
             const FlexDiskAttributes &diskInfo,
-            const std::string &path,
+            const fs::path &path,
             unsigned diskNumber,
             unsigned jvcHeaderSize,
             int expectedTracks,
@@ -77,7 +77,7 @@ protected:
             DiskOptions options,
             bool isWriteProtected)
     {
-        auto diskName = flx::toupper(flx::getFileName(path));
+        auto diskName = flx::toupper(path.filename().u8string());
         auto pos = diskName.find_first_of('.');
         if (pos != std::string::npos)
         {
@@ -106,7 +106,7 @@ protected:
             }
         }
         EXPECT_EQ(diskInfo.GetOptions(), options);
-        EXPECT_EQ(diskInfo.GetPath().u8string(), path);
+        EXPECT_EQ(diskInfo.GetPath(), path);
         EXPECT_EQ(diskInfo.GetName(), diskName);
         EXPECT_EQ(diskInfo.GetNumber(), diskNumber);
         int tracks = 0;
@@ -160,8 +160,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         fs::remove(path1);
     }
 
-    const auto path2 =
-        (fs::temp_directory_path() / u8"flexdisk.flx").u8string();
+    const auto path2 = fs::temp_directory_path() / u8"flexdisk.flx";
 
     for (int tracks = 2; tracks <= 255; tracks += 5)
     {
@@ -183,7 +182,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         EXPECT_TRUE(static_cast<bool>(disk));
         EXPECT_EQ(disk->IsWriteProtected(), tracks == 40);
         EXPECT_EQ(disk->GetFlexDiskType(), type);
-        EXPECT_EQ(disk->GetPath().u8string(), path2);
+        EXPECT_EQ(disk->GetPath(), path2);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
         CheckAttributes(diskInfo, path2, 0U, 0U, tracks, sectors, SECTOR_SIZE,
@@ -198,10 +197,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
 {
     const int tracks = 35;
     const int sectors = 10;
-    const auto path =
-        (fs::temp_directory_path() / u8"flexdisk.dsk").u8string();
-    const auto path_jvc =
-        (fs::temp_directory_path() / u8"flexdisk.jvc.dsk").u8string();
+    const auto path = fs::temp_directory_path() / u8"flexdisk.dsk";
+    const auto path_jvc = fs::temp_directory_path() / u8"flexdisk.jvc.dsk";
     auto ft_access = FileTimeAccess::NONE;
     const auto imode = std::ios::in | std::ios::binary | std::ios::ate;
     const auto omode = std::ios::out | std::ios::binary;
@@ -244,7 +241,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
         EXPECT_EQ(disk->IsWriteProtected(), false);
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetFlexDiskOptions(), options);
-        EXPECT_EQ(disk->GetPath().u8string(), path_jvc);
+        EXPECT_EQ(disk->GetPath(), path_jvc);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
         CheckAttributes(diskInfo, path_jvc, 0U, jvcHeaderSize, tracks, sectors,
@@ -258,8 +255,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
 // test IFlexDiskBase interface for class FlexDirectoryDiskByFile.
 TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
 {
-    const auto path =
-        (fs::temp_directory_path() / u8"flexdir123456").u8string();
+    const auto path = fs::temp_directory_path() / u8"flexdir123456";
     const auto ft_access = FileTimeAccess::NONE;
     auto type = DiskType::Directory;
     auto options = DiskOptions::NONE;
@@ -272,7 +268,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
     EXPECT_EQ(disk->IsWriteProtected(), false);
     EXPECT_EQ(disk->GetFlexDiskType(), type);
     EXPECT_EQ(disk->GetFlexDiskOptions(), options);
-    EXPECT_EQ(disk->GetPath().u8string(), path);
+    EXPECT_EQ(disk->GetPath(), path);
     FlexDiskAttributes diskInfo{};
     ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
     CheckAttributes(diskInfo, path, 0U, 0U, 0, 0, 0, type, options, false);
@@ -283,8 +279,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
 // test IFlexDiskBase interface for class FlexDirectoryBySector.
 TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryBySector)
 {
-    const auto path =
-        (fs::temp_directory_path() / u8"flexdir123456").u8string();
+    const auto path = fs::temp_directory_path() / u8"flexdir123456";
     const auto ft_access = FileTimeAccess::NONE;
     unsigned diskNumber = 0U;
     FlexDiskBasePtr disk{};
@@ -303,7 +298,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryBySector)
         EXPECT_EQ(disk->IsWriteProtected(), false);
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetFlexDiskOptions(), options);
-        EXPECT_EQ(disk->GetPath().u8string(), path);
+        EXPECT_EQ(disk->GetPath(), path);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
         CheckAttributes(diskInfo, path, diskNumber, 0U, tracks, sectors,

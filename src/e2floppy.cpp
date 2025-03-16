@@ -145,7 +145,7 @@ bool E2floppy::mount_drive(const fs::path &path,
                 {
                     pfloppy = IFlexDiskBySectorPtr(
                      new FlexDirectoryDiskBySector(
-                         containerPath.u8string(),
+                         containerPath,
                          options.fileTimeAccess,
                          options.directoryDiskTracks,
                          options.directoryDiskSectors));
@@ -177,7 +177,7 @@ bool E2floppy::mount_drive(const fs::path &path,
                 try
                 {
                     pfloppy = IFlexDiskBySectorPtr(
-                     new FlexRamDisk(containerPath.u8string(), mode,
+                     new FlexRamDisk(containerPath, mode,
                                      options.fileTimeAccess));
                 }
                 catch (FlexException &)
@@ -186,7 +186,7 @@ bool E2floppy::mount_drive(const fs::path &path,
                     {
                         mode &= ~std::ios::out;
                         pfloppy = IFlexDiskBySectorPtr(
-                         new FlexRamDisk(containerPath.u8string(), mode,
+                         new FlexRamDisk(containerPath, mode,
                                          options.fileTimeAccess));
                     }
                     catch (FlexException &)
@@ -204,7 +204,7 @@ bool E2floppy::mount_drive(const fs::path &path,
                 try
                 {
                     pfloppy = IFlexDiskBySectorPtr(
-                      new FlexDisk(containerPath.u8string(), mode,
+                      new FlexDisk(containerPath, mode,
                                    options.fileTimeAccess));
                 }
                 catch (FlexException &)
@@ -215,7 +215,7 @@ bool E2floppy::mount_drive(const fs::path &path,
                         {
                             mode &= ~std::ios::out;
                             pfloppy = IFlexDiskBySectorPtr(
-                             new FlexDisk(containerPath.u8string(), mode,
+                             new FlexDisk(containerPath, mode,
                                           options.fileTimeAccess));
                         }
                         catch (FlexException &)
@@ -697,7 +697,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
                 {
                     pfloppy = IFlexDiskBySectorPtr(
                         FlexDirectoryDiskBySector::Create(
-                            path.u8string(), options.fileTimeAccess,
+                            path, options.fileTimeAccess,
                             trk, sec, disk_type));
                 }
                 break;

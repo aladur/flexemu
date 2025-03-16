@@ -69,8 +69,7 @@ protected:
 
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
-                const auto diskPath =
-                    (temp_dir / diskFiles[idx][tidx]).u8string();
+                const auto diskPath = temp_dir / diskFiles[idx][tidx];
                 pdisk = (idx == RAM || idx == ROM) ?
                     new FlexRamDisk(diskPath, ios_mode, ft) :
                     new FlexDisk(diskPath, ios_mode, ft);
@@ -82,8 +81,7 @@ protected:
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
-            const auto diskPath =
-                (temp_dir / diskFiles[idx][DIR]).u8string();
+            const auto diskPath = temp_dir / diskFiles[idx][DIR];
             const auto &ft = (idx == FT) ? with_ft : no_ft;
             auto *pdir = new FlexDirectoryDiskBySector(diskPath,
                     ft, tracks, sectors);
@@ -278,8 +276,8 @@ TEST_F(test_IFlexDiskBySector, fct_FormatSector)
     std::ofstream fs(path, mode);
     ASSERT_TRUE(fs.is_open());
     fs.close();
-    auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path.u8string(),
-        mode, ft_access));
+    auto disk = static_cast<IFlexDiskBySectorPtr>(
+            new FlexDisk(path, mode, ft_access));
 
     EXPECT_FALSE(disk->FormatSector(buffer.data(), -1, 1, 0, 1));
     EXPECT_FALSE(disk->FormatSector(buffer.data(), 256, 1, 0, 1));
@@ -322,8 +320,8 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_flex_disk)
         ASSERT_TRUE(fs.is_open());
         fs.close();
 
-        auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path.u8string(),
-                    newmode, ft_access));
+        auto disk = static_cast<IFlexDiskBySectorPtr>(
+                new FlexDisk(path, newmode, ft_access));
         for (int track = 0; track < trcks; ++track)
         {
             for (int sector = 1; sector <= secs; ++sector)
@@ -381,8 +379,8 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_flex_disk_interleave)
     ASSERT_TRUE(fs.is_open());
     fs.close();
 
-    auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path.u8string(),
-                newmode, ft_access));
+    auto disk = static_cast<IFlexDiskBySectorPtr>(
+            new FlexDisk(path, newmode, ft_access));
     for (int track = 0; track < tracks; ++track)
     {
         int sector = 1;
@@ -446,8 +444,8 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_cpm_disk)
     fs.close();
 
     std::fill(buffer.begin(), buffer.end(), '\xE5');
-    auto disk = static_cast<IFlexDiskBySectorPtr>(new FlexDisk(path.u8string(),
-                newmode, ft_access));
+    auto disk = static_cast<IFlexDiskBySectorPtr>(
+            new FlexDisk(path, newmode, ft_access));
     for (int track = 0; track < trcks; ++track)
     {
         for (int sector = 1; sector <= secs; ++sector)

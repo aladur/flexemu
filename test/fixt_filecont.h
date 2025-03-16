@@ -92,7 +92,7 @@ protected:
         {
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
-                const auto diskPath = (temp_dir / diskFiles[idx][tidx]).u8string();
+                const auto diskPath = temp_dir / diskFiles[idx][tidx];
                 if (idx == TGT)
                 {
                     auto *pdisk = FlexDisk::Create(diskPath,
@@ -102,7 +102,7 @@ protected:
                 }
                 else
                 {
-                    auto ext = flx::getFileExtension(diskPath);
+                    auto ext = diskPath.extension().u8string();
                     const auto srcFile = fs::current_path() / "data" /
                         (std::string("testdisk") + ext);
                     ASSERT_TRUE(fs::copy_file(srcFile, diskPath));

@@ -1031,7 +1031,8 @@ void FlexplorerTableModel::OpenFlexDisk(const char *p_path,
         }
 
         container =
-            std::make_unique<FlexDirectoryDiskByFile>(directory, fileTimeAccess);
+            std::make_unique<FlexDirectoryDiskByFile>(fs::u8path(directory),
+                    fileTimeAccess);
     }
     else
     {

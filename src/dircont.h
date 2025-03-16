@@ -60,7 +60,7 @@ public:
     FlexDirectoryDiskByFile() = delete;
     FlexDirectoryDiskByFile(const FlexDirectoryDiskByFile &) = delete;
     FlexDirectoryDiskByFile(FlexDirectoryDiskByFile &&) = delete;
-    FlexDirectoryDiskByFile(const std::string &path,
+    FlexDirectoryDiskByFile(const fs::path &path,
                             const FileTimeAccess &fileTimeAccess);
     ~FlexDirectoryDiskByFile() override = default;
 
@@ -68,7 +68,7 @@ public:
             const FlexDirectoryDiskByFile &) = delete;
     FlexDirectoryDiskByFile &operator= (FlexDirectoryDiskByFile &&) = delete;
 
-    static FlexDirectoryDiskByFile *Create(const std::string &directory,
+    static FlexDirectoryDiskByFile *Create(const fs::path &directory,
             const std::string &name, int tracks, int sectors,
             const FileTimeAccess &fileTimeAccess,
             DiskType disk_type);

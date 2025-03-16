@@ -68,8 +68,7 @@ protected:
 
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
-                const auto diskPath =
-                    (temp_dir / diskFiles[idx][tidx]).u8string();
+                const auto diskPath = temp_dir / diskFiles[idx][tidx];
                 pdisk = (idx == RAM || idx == ROM) ?
                     new FlexRamDisk(diskPath, ios_mode, ft) :
                     new FlexDisk(diskPath, ios_mode, ft);
@@ -81,7 +80,7 @@ protected:
         std::vector<int> dirIndices{RO, RW, FT, TGT};
         for (int idx : dirIndices)
         {
-            const auto diskPath = (temp_dir / diskFiles[idx][DIR]).u8string();
+            const auto diskPath = temp_dir / diskFiles[idx][DIR];
             const auto &ft = (idx == FT) ? with_ft : no_ft;
             auto *pdir =
                     new FlexDirectoryDiskByFile(diskPath, ft);

@@ -82,12 +82,12 @@ namespace fs = std::filesystem;
 // can corrupt the emulation.
 
 FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
-        const std::string &path,
+        const fs::path &path,
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors)
-    : directory(fs::u8path(path))
-    , randomFileCheck(path)
+    : directory(path)
+    , randomFileCheck(path.u8string())
     , ft_access(fileTimeAccess)
 {
     static Word number = 0U;
@@ -101,21 +101,21 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
 
-    if (path.size() > 1 && flx::endsWithPathSeparator(path))
+    auto sPath = directory.u8string();
+    if (sPath.size() > 1 && flx::endsWithPathSeparator(sPath))
     {
-        auto new_path(path);
         // Remove trailing PATHSEPARATOR character.
-        new_path.resize(path.size() - 1);
-        directory = fs::u8path(new_path);
+        sPath.resize(sPath.size() - 1);
+        directory = fs::u8path(sPath);
     }
 
-    if ((access(path.c_str(), W_OK) != 0) ||
+    if ((access(sPath.c_str(), W_OK) != 0) ||
             randomFileCheck.IsWriteProtected())
     {
         attributes |= WRITE_PROTECT;
     }
 
-    FlexDirectoryDiskOptions opts(path);
+    FlexDirectoryDiskOptions opts(sPath);
 
     if (opts.Read())
     {
@@ -152,7 +152,7 @@ FlexDirectoryDiskBySector::~FlexDirectoryDiskBySector()
 // Create a new directory disk in path directory.
 // format parameter is ignored.
 FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
-        const std::string &path,
+        const fs::path &path,
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
@@ -167,7 +167,7 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
     }
 
     std::error_code error;
-    fs::create_directories(fs::u8path(path), error);
+    fs::create_directories(path, error);
     if (error)
     {
         throw FlexException(FERR_UNABLE_TO_CREATE, path);

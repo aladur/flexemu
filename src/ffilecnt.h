@@ -95,7 +95,7 @@ private:
 
 public:
     FlexDisk() = delete;
-    FlexDisk(const std::string &p_path, std::ios::openmode mode,
+    FlexDisk(fs::path p_path, std::ios::openmode mode,
              const FileTimeAccess &fileTimeAccess);
     ~FlexDisk() override = default;
     FlexDisk(const FlexDisk &src) = delete;
@@ -105,7 +105,7 @@ public:
 
     static bool onTrack0OnlyDirSectors;
 
-    static FlexDisk *Create(const std::string &path,
+    static FlexDisk *Create(const fs::path &path,
                             const FileTimeAccess &fileTimeAccess,
                             int tracks, int sectors,
                             DiskType type,

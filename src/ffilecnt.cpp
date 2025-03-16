@@ -119,10 +119,10 @@ void s_flex_header::initialize(unsigned sector_size, int p_tracks,
 /****************************************/
 
 FlexDisk::FlexDisk(
-        const std::string &p_path,
+        fs::path p_path,
         std::ios::openmode mode,
         const FileTimeAccess &fileTimeAccess)
-    : path(fs::u8path(p_path))
+    : path(std::move(p_path))
     , fstream(path, mode)
     , ft_access(fileTimeAccess)
     , is_flex_format(true)
@@ -276,7 +276,7 @@ bool FlexDisk::IsFlexFormat() const
 }
 
 FlexDisk *FlexDisk::Create(
-        const std::string &path,
+        const fs::path &path,
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
@@ -291,7 +291,7 @@ FlexDisk *FlexDisk::Create(
         throw FlexException(FERR_INVALID_FORMAT, id);
     }
 
-    Format_disk(fs::u8path(path), tracks, sectors, disk_type, bsFile);
+    Format_disk(path, tracks, sectors, disk_type, bsFile);
 
     auto mode = std::ios::in | std::ios::out | std::ios::binary;
     return new FlexDisk(path, mode, fileTimeAccess);

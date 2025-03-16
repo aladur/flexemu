@@ -55,13 +55,13 @@ namespace fs = std::filesystem;
 /****************************************/
 
 FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
-        const std::string &path, const FileTimeAccess &fileTimeAccess)
-    : randomFileCheck(path)
+        const fs::path &path, const FileTimeAccess &fileTimeAccess)
+    : randomFileCheck(path.u8string())
     , ft_access(fileTimeAccess)
 {
     static Word number = 0;
-    auto new_path(path);
-    if (path.size() > 1 && flx::endsWithPathSeparator(path))
+    auto new_path(path.u8string());
+    if (new_path.size() > 1 && flx::endsWithPathSeparator(new_path))
     {
         new_path.resize(new_path.size() - 1);
     }
@@ -71,7 +71,7 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
     const auto status = fs::status(directory);
     if (!fs::exists(status) || !fs::is_directory(status))
     {
-        throw FlexException(FERR_UNABLE_TO_OPEN, directory.u8string());
+        throw FlexException(FERR_UNABLE_TO_OPEN, directory);
     }
 
     if ((access(directory.u8string().c_str(), W_OK) != 0) ||
@@ -96,7 +96,7 @@ bool FlexDirectoryDiskByFile::IsWriteProtected() const
 
 // track and sectors parameter will be ignored
 FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
-        const std::string &directory,
+        const fs::path &directory,
         const std::string &name,
         int /* tracks */,
         int /* sectors */,
@@ -111,7 +111,7 @@ FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
         throw FlexException(FERR_INVALID_FORMAT, id);
     }
 
-    const auto path = fs::u8path(directory) / name;
+    const auto path = directory / name;
     const auto status = fs::status(path);
 
     if (fs::exists(status) && fs::is_regular_file(status))
@@ -125,10 +125,10 @@ FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
     fs::create_directory(path, error);
     if (error)
     {
-        throw FlexException(FERR_UNABLE_TO_CREATE, path.u8string());
+        throw FlexException(FERR_UNABLE_TO_CREATE, path);
     }
 
-    return new FlexDirectoryDiskByFile(path.u8string(), fileTimeAccess);
+    return new FlexDirectoryDiskByFile(path, fileTimeAccess);
 }
 
 fs::path FlexDirectoryDiskByFile::GetPath() const
@@ -272,7 +272,7 @@ bool FlexDirectoryDiskByFile::GetDiskAttributes(
 
     if (!success)
     {
-        throw FlexException(FERR_READING_DISKSPACE, directory.u8string());
+        throw FlexException(FERR_READING_DISKSPACE, directory);
     }
 
     diskAttributes.SetFree(static_cast<uint64_t>(numberOfFreeClusters) *
@@ -285,7 +285,7 @@ bool FlexDirectoryDiskByFile::GetDiskAttributes(
 
     if (statvfs(directory.u8string().c_str(), &fsbuf) != 0)
     {
-        throw FlexException(FERR_READING_DISKSPACE, directory.u8string());
+        throw FlexException(FERR_READING_DISKSPACE, directory);
     }
 
     diskAttributes.SetFree(fsbuf.f_bsize * fsbuf.f_bavail);
@@ -394,7 +394,7 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     if (!buffer.WriteToFile(filePath.u8string(), ft_access))
     {
-        throw FlexException(FERR_WRITING_TO, filePath.u8string());
+        throw FlexException(FERR_WRITING_TO, filePath);
     }
 
     SetDateTime(sFileName, buffer.GetDate(), buffer.GetTime());

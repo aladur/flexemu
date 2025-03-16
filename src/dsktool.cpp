@@ -126,7 +126,7 @@ static int FormatFlexDiskFile(const std::string &dsk_file, DiskType disk_type,
         auto fileTimeAccess = FileTimeAccess::NONE;
 
         container.reset(FlexDisk::Create(
-                        dsk_file,
+                        fs::u8path(dsk_file),
                         fileTimeAccess,
                         tracks, sectors,
                         disk_type,
@@ -162,7 +162,7 @@ static int ExtractDskFile(const std::string &target_dir, bool verbose,
     FlexCopyManager::autoTextConversion = convert_text;
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamDisk src{dsk_file, mode, fileTimeAccess};
-    FlexDirectoryDiskByFile dest{target_dir, fileTimeAccess};
+    FlexDirectoryDiskByFile dest{fs::u8path(target_dir), fileTimeAccess};
     size_t count = 0;
     size_t random_count = 0;
     size_t byte_size = 0;

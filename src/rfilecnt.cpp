@@ -23,9 +23,12 @@
 #include "rfilecnt.h"
 #include "flexerr.h"
 #include <cstring>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
-FlexRamDisk::FlexRamDisk(const std::string &p_path, std::ios::openmode mode,
+FlexRamDisk::FlexRamDisk(const fs::path &p_path, std::ios::openmode mode,
                          const FileTimeAccess &p_fileTimeAccess)
     : FlexDisk(p_path, mode, p_fileTimeAccess)
 {
