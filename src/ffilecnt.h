@@ -33,6 +33,10 @@
 #include <array>
 #include <unordered_map>
 #include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 class FlexDiskAttributes;
 class BDate;
@@ -68,7 +72,7 @@ class FlexDisk : public IFlexDiskBySector, public IFlexDiskByFile
     };
 
 protected:
-    std::string path;
+    fs::path path;
     mutable std::fstream fstream;
     s_floppy param{};
     DWord file_size{};
@@ -178,7 +182,7 @@ protected:
         int sec,
         struct s_formats &format);
     static void Format_disk(
-        const std::string &path,
+        const fs::path &path,
         int tracks,
         int sectors,
         DiskType p_disk_type,
@@ -196,6 +200,6 @@ protected:
 private:
     IFlexDiskIteratorImpPtr IteratorFactory() override;
 
-}; // class FlexDisk
+};
 
 #endif // FFILECNT_INCLUDED

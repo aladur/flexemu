@@ -122,8 +122,8 @@ FlexDisk::FlexDisk(
         const std::string &p_path,
         std::ios::openmode mode,
         const FileTimeAccess &fileTimeAccess)
-    : path(p_path)
-    , fstream(p_path, mode)
+    : path(fs::u8path(p_path))
+    , fstream(path, mode)
     , ft_access(fileTimeAccess)
     , is_flex_format(true)
 {
@@ -231,7 +231,7 @@ FlexDisk::FlexDisk(
 
 std::string FlexDisk::GetPath() const
 {
-    return path;
+    return path.u8string();
 }
 
 unsigned FlexDisk::GetBytesPerSector() const
@@ -291,7 +291,7 @@ FlexDisk *FlexDisk::Create(
         throw FlexException(FERR_INVALID_FORMAT, id);
     }
 
-    Format_disk(path, tracks, sectors, disk_type, bsFile);
+    Format_disk(fs::u8path(path), tracks, sectors, disk_type, bsFile);
 
     auto mode = std::ios::in | std::ios::out | std::ios::binary;
     return new FlexDisk(path, mode, fileTimeAccess);
@@ -528,7 +528,7 @@ bool FlexDisk::GetDiskAttributes(FlexDiskAttributes &diskAttributes) const
             param.max_track ? param.max_track + 1 : 0,
             param.max_sector);
     diskAttributes.SetIsFlexFormat(is_flex_format);
-    diskAttributes.SetPath(path);
+    diskAttributes.SetPath(path.u8string());
     diskAttributes.SetType(param.type);
     diskAttributes.SetOptions(param.options);
     diskAttributes.SetAttributes(attributes);
@@ -1477,7 +1477,7 @@ void FlexDisk::Create_format_table(DiskType p_disk_type, int trk, int sec,
 // getTrack0SectorCount().
 
 void FlexDisk::Format_disk(
-    const std::string &path,
+    const fs::path &path,
     int tracks,
     int sectors,
     DiskType p_disk_type,
@@ -1529,7 +1529,8 @@ void FlexDisk::Format_disk(
         }
 
         s_sys_info_sector sis{};
-        Create_sys_info_sector(sis, flx::getFileName(path), format);
+        const auto diskname = getDiskName(path.filename().u8string());
+        Create_sys_info_sector(sis, diskname, format);
 
         fstream.write(reinterpret_cast<const char *>(&sis), sizeof(sis));
         if (fstream.fail())
