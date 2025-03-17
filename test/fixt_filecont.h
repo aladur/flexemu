@@ -42,18 +42,22 @@ protected:
     // First index of diskPaths or disks:
     const int RO{0}; // read-only disk image index.
     const int RW{1}; // read-write disk image index.
-    const int FT{2}; // read-write disk image index with file time.
-    const int TGT{3};// read-write disk image index used as copy target.
-    const int ROM{4}; // read-only disk image index stored in RAM (DSK only).
-    const int RAM{5}; // read-write disk image index stored in RAM (DSK only).
+    const int SP{2}; // read-write disk image index with space in path.
+    const int U8{3}; // read-write disk image index with utf8-char in path.
+    const int FT{4}; // read-write disk image index with file time.
+    const int TGT{5};// read-write disk image index used as copy target.
+    const int ROM{6}; // read-only disk image index stored in RAM (DSK only).
+    const int RAM{7}; // read-write disk image index stored in RAM (DSK only).
     // Second index of diskPaths or disks:
     const int DSK{0};// *.dsk disk image file index.
     const int FLX{1};// *.flx disk image file index.
     const int DIR{2};// directory disk index.
 
-    const std::array<std::array<const char *, 3>, 6> diskFiles{{
+    const std::array<std::array<const char *, 3>, 8> diskFiles{{
         {"testdisk_ro.dsk", "testdisk_ro.flx", "testdir_ro"},
         {"testdisk_rw.dsk", "testdisk_rw.flx", "testdir_rw"},
+        {"testdisk_ .dsk", "testdisk_ .flx", "testdir_ "},
+        {u8"testdisk_\u2665.dsk", "testdisk_\u2665.flx", "testdir_\u2665"},
         {"testdisk_ft.dsk", "testdisk_ft.flx", "testdir_ft"},
         {"testdisk_tgt.dsk", "testdisk_tgt.flx", "testdir_tgt"},
         {"testdisk_rom.dsk", "testdisk_rom.flx", ""},

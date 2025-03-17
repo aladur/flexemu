@@ -51,11 +51,14 @@ using FlexDiskByFilePtr = std::unique_ptr<IFlexDiskByFile>;
 class test_IFlexDiskByFile : public test_FlexDiskFixture
 {
 protected:
-    std::array<std::array<FlexDiskByFilePtr, 3>, 6> disks;
+    std::array<std::array<FlexDiskByFilePtr, 3>, 8> disks;
 
     void SetUp() override
     {
         test_FlexDiskFixture::SetUp();
+
+        ASSERT_EQ(diskFiles.size(), disks.size());
+        ASSERT_EQ(diskFiles[RO].size(), disks[RO].size());
 
         const auto mode = std::ios::in | std::ios::out | std::ios::binary;
         const auto romode = std::ios::in | std::ios::binary;
