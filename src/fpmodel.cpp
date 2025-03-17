@@ -86,7 +86,7 @@ const FlexplorerTableModel::FileTypes_t &FlexplorerTableModel::GetFileTypes()
     return fileTypes;
 }
 
-FlexplorerTableModel::FlexplorerTableModel(const char *p_path,
+FlexplorerTableModel::FlexplorerTableModel(const fs::path &p_path,
                                            struct sFPOptions &p_options,
                                            QObject *parent)
     : QAbstractTableModel(parent)
@@ -1004,34 +1004,22 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
     return textString;
 }
 
-void FlexplorerTableModel::OpenFlexDisk(const char *p_path,
+void FlexplorerTableModel::OpenFlexDisk(const fs::path &p_path,
                                          const FileTimeAccess &fileTimeAccess)
 {
     // path can either be a directory or a file container.
-    if (p_path == nullptr)
-    {
-        throw FlexException(FERR_INVALID_NULL_POINTER, std::string("p_path"));
-    }
-
     if (!fs::exists(p_path))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, p_path);
     }
 
-    path = p_path;
+    path = QString::fromStdString(p_path.u8string());
 
-    const auto status = fs::status(path.toStdString());
+    const auto status = fs::status(p_path);
     if (fs::is_directory(status))
     {
-        std::string directory(p_path);
-
-        if (flx::endsWithPathSeparator(directory))
-        {
-            directory = directory.substr(0, directory.size()-1);
-        }
-
         container =
-            std::make_unique<FlexDirectoryDiskByFile>(fs::u8path(directory),
+            std::make_unique<FlexDirectoryDiskByFile>(p_path,
                     fileTimeAccess);
     }
     else

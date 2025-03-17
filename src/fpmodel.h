@@ -42,6 +42,9 @@
 #include <memory>
 #include <array>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 class FlexDirEntry;
@@ -64,7 +67,7 @@ class FlexplorerTableModel : public QAbstractTableModel
 
 public:
     FlexplorerTableModel() = delete;
-    FlexplorerTableModel(const char *path, struct sFPOptions &options,
+    FlexplorerTableModel(const fs::path &p_path, struct sFPOptions &options,
                          QObject *parent = Q_NULLPTR);
     ~FlexplorerTableModel() override = default;
 
@@ -135,7 +138,8 @@ private:
     using RowType = std::array<QVariant, COLUMNS>;
     using IdsType = QVector<int>;
 
-    void OpenFlexDisk(const char *path, const FileTimeAccess &fileTimeAccess);
+    void OpenFlexDisk(const fs::path &p_path,
+            const FileTimeAccess &fileTimeAccess);
     QModelIndex SetRow(const FlexDirEntry &dirEntry, int row, int role);
     IdsType GetIds() const;
     void CalculateAndChangePersistentIndexList(const IdsType &oldIds);
