@@ -230,8 +230,8 @@ QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
         }
 
         const auto filePath = QDir::toNativeSeparators(path);
-        if (!buffer.ReadFromFile(filePath.toStdString(), options.ft_access,
-                    true))
+        if (!buffer.ReadFromFile(fs::u8path(filePath.toStdString()),
+                    options.ft_access, true))
         {
             auto msg = tr("Error reading from\n%1\nInjection aborted.");
             msg = msg.arg(filePath);
@@ -404,7 +404,7 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
                 }
             }
 
-            if (!buffer.WriteToFile(targetPath.toStdString(),
+            if (!buffer.WriteToFile(fs::u8path(targetPath.toStdString()),
                         options.ft_access, true))
             {
                 throw FlexException(FERR_UNABLE_TO_CREATE,
@@ -474,13 +474,14 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
                 throw FlexException(FERR_UNABLE_TO_CREATE, tempPath);
             }
 
-            const auto tempFile = (tempPath / filename).u8string();
+            const auto tempFile = tempPath / filename;
 
             if (buffer.WriteToFile(tempFile, options.ft_access))
             {
 #ifdef _WIN32
                 SHELLEXECUTEINFO execInfo;
-                std::wstring wTempFile = ConvertToUtf16String(tempFile);
+                std::wstring wTempFile =
+                    ConvertToUtf16String(tempFile.u8string());
 
                 memset(&execInfo, 0, sizeof(execInfo));
                 execInfo.cbSize = sizeof(execInfo);
@@ -503,7 +504,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
                 // on the file contents. It can have any file extension.
                 BProcess process("xdg-open", ".");
 
-                process.AddArgument(tempFile);
+                process.AddArgument(tempFile.u8string());
 
                 if (process.Start())
                 {

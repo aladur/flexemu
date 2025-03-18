@@ -347,7 +347,7 @@ FlexFileBuffer FlexDirectoryDiskByFile::ReadToBuffer(const std::string &fileName
 #else
         flx::tolower(fileName);
 #endif
-    if (!buffer.ReadFromFile(filePath.u8string(), ft_access, false))
+    if (!buffer.ReadFromFile(filePath, ft_access, false))
     {
         throw FlexException(FERR_READING_FROM, fileName);
     }
@@ -392,7 +392,7 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_CONTAINER_IS_READONLY, GetPath());
     }
 
-    if (!buffer.WriteToFile(filePath.u8string(), ft_access))
+    if (!buffer.WriteToFile(filePath, ft_access))
     {
         throw FlexException(FERR_WRITING_TO, filePath);
     }

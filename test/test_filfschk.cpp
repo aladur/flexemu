@@ -39,10 +39,9 @@ namespace fs = std::filesystem;
 class test_filfschk : public ::testing::Test
 {
 protected:
-    const std::string fileNameOnDisk{ "cat.cmd" };
+    const std::string fileNameOnDisk{ u8"cat.cmd" };
     const std::string diskPath = fs::temp_directory_path() / u8"disk.dsk";
-    const std::string filePath =
-        (fs::current_path() / u8"data" / fileNameOnDisk).u8string();
+    const fs::path filePath{fs::current_path() / u8"data" / fileNameOnDisk};
     std::unique_ptr<FlexDisk> disk;
 
     void SetUp() override

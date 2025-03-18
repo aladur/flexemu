@@ -555,7 +555,7 @@ bool FlexFileBuffer::IsFlexExecutableFile() const
     return true;
 }
 
-bool FlexFileBuffer::WriteToFile(const std::string &path,
+bool FlexFileBuffer::WriteToFile(const fs::path &path,
         FileTimeAccess fileTimeAccess, bool doRandomCheck) const
 {
     auto mode = std::ios::out | std::ios::binary | std::ios::trunc;
@@ -572,7 +572,7 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
     result = ostream.good();
     ostream.close();
 
-    const auto directory = fs::u8path(path).parent_path();
+    const auto directory = path.parent_path();
     if (doRandomCheck)
     {
         RandomFileCheck randomFileCheck(directory);
@@ -593,7 +593,7 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
         struct tm file_time{};
         struct stat sbuf{};
 
-        stat(path.c_str(), &sbuf);
+        stat(path.u8string().c_str(), &sbuf);
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec = 0;
         file_time.tm_min = setFileTime ? fileHeader.minute : 0;
@@ -603,16 +603,17 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
         file_time.tm_year = fileHeader.year - 1900;
         file_time.tm_isdst = -1;
         timebuf.modtime = mktime(&file_time);
-        return (timebuf.modtime >= 0 && utime(path.c_str(), &timebuf) == 0);
+        return (timebuf.modtime >= 0 &&
+                utime(path.u8string().c_str(), &timebuf) == 0);
     }
 
     return result;
 }
 
-bool FlexFileBuffer::ReadFromFile(const std::string &path,
+bool FlexFileBuffer::ReadFromFile(const fs::path &path,
         FileTimeAccess fileTimeAccess, bool doRandomCheck)
 {
-    const auto absPath = fs::absolute(fs::u8path(path));
+    const auto absPath = fs::absolute(path);
     const auto status = fs::status(absPath);
     if (exists(status) && fs::is_regular_file(status))
     {

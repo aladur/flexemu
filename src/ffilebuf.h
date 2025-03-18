@@ -39,6 +39,9 @@
 #include "warnoff.h"
 #include <optional>
 #include "warnon.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 const std::array<char,4> flexFileHeaderMagicNumber = {
@@ -94,9 +97,9 @@ public:
     void ConvertToTextFile();
     void ConvertToFlexTextFile();
     void ConvertToDumpFile(DWord bytesPerLine);
-    bool WriteToFile(const std::string &path,
+    bool WriteToFile(const fs::path &path,
             FileTimeAccess fileTimeAccess, bool doRandomCheck = false) const;
-    bool ReadFromFile(const std::string &path, FileTimeAccess fileTimeAccess,
+    bool ReadFromFile(const fs::path &path, FileTimeAccess fileTimeAccess,
             bool doRandomCheck = false);
     bool IsTextFile() const;
     bool IsFlexTextFile() const;
