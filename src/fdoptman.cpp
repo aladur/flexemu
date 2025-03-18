@@ -24,18 +24,16 @@
 #include "brcfile.h"
 #include <filesystem>
 
-
 namespace fs = std::filesystem;
 
 static const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
 static const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
 
-FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(std::string directory)
-    : path(std::move(directory))
+FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(const fs::path &directory)
+    : path(directory / GetRcFilename())
     , tracks(0)
     , sectors(0)
 {
-    path = (fs::path(path) / GetRcFilename()).u8string();
 }
 
 bool FlexDirectoryDiskOptions::Read()
@@ -93,7 +91,7 @@ void FlexDirectoryDiskOptions::SetSectors(int p_sectors)
 
 const std::string &FlexDirectoryDiskOptions::GetRcFilename()
 {
-    static const std::string rcFilename{".flexdiskrc"};
+    static const std::string rcFilename{u8".flexdiskrc"};
 
     return rcFilename;
 }

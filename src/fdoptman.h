@@ -25,13 +25,16 @@
 
 #include "misc1.h"
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 class FlexDirectoryDiskOptions
 {
 public:
     FlexDirectoryDiskOptions() = delete;
-    explicit FlexDirectoryDiskOptions(std::string directory);
+    explicit FlexDirectoryDiskOptions(const fs::path &directory);
     bool Read();
     bool Write(bool onlyIfNotExists);
     int GetTracks() const;
@@ -42,7 +45,7 @@ public:
 private:
     static const std::string &GetRcFilename();
 
-    std::string path;
+    fs::path path;
     int tracks;
     int sectors;
 };

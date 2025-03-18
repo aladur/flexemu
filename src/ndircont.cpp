@@ -115,7 +115,7 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         attributes |= WRITE_PROTECT;
     }
 
-    FlexDirectoryDiskOptions opts(sPath);
+    FlexDirectoryDiskOptions opts(directory);
 
     if (opts.Read())
     {
