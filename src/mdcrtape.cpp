@@ -44,7 +44,7 @@ MiniDcrTape::MiniDcrTape(const fs::path &path, Mode mode) :
         case Mode::Open:
             if (!fs::exists(status) || !fs::is_regular_file(status))
             {
-                throw FlexException(FERR_UNABLE_TO_OPEN, path.u8string());
+                throw FlexException(FERR_UNABLE_TO_OPEN, path);
             }
 
             stream.open(path, std::ios::in | std::ios::out | std::ios::binary);
@@ -55,7 +55,7 @@ MiniDcrTape::MiniDcrTape(const fs::path &path, Mode mode) :
 
                 if (!IsOpen())
                 {
-                    throw FlexException(FERR_UNABLE_TO_OPEN, path.u8string());
+                    throw FlexException(FERR_UNABLE_TO_OPEN, path);
                 }
 
                 // file only can be opened read-only.
@@ -64,21 +64,21 @@ MiniDcrTape::MiniDcrTape(const fs::path &path, Mode mode) :
 
             if (!VerifyTape())
             {
-                throw FlexException(FERR_IS_NO_MDCRFORMAT, path.u8string());
+                throw FlexException(FERR_IS_NO_MDCRFORMAT, path);
             }
             break;
 
         case Mode::Create:
             if (fs::exists(status))
             {
-                throw FlexException(FERR_FILE_ALREADY_EXISTS, path.u8string());
+                throw FlexException(FERR_FILE_ALREADY_EXISTS, path);
             }
 
             stream.open(path, std::ios::out | std::ios::binary);
 
             if (!IsOpen())
             {
-                throw FlexException(FERR_UNABLE_TO_CREATE, path.u8string());
+                throw FlexException(FERR_UNABLE_TO_CREATE, path);
             }
 
             stream.write(MiniDcrTape::magic_bytes.data(),
@@ -90,7 +90,7 @@ MiniDcrTape::MiniDcrTape(const fs::path &path, Mode mode) :
 
             if (!IsOpen())
             {
-                throw FlexException(FERR_UNABLE_TO_CREATE, path.u8string());
+                throw FlexException(FERR_UNABLE_TO_CREATE, path);
             }
             break;
 

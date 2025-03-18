@@ -471,7 +471,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
             fs::create_directories(tempPath, error);
             if (error)
             {
-                throw FlexException(FERR_UNABLE_TO_CREATE, tempPath.u8string());
+                throw FlexException(FERR_UNABLE_TO_CREATE, tempPath);
             }
 
             const auto tempFile = (tempPath / filename).u8string();
