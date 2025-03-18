@@ -681,12 +681,12 @@ void E2floppy::get_drive_status(std::array<DiskStatus, MAX_DRIVES> &stat)
 }
 
 bool E2floppy::format_disk(SWord trk, SWord sec,
-                           const std::string &name,
+                           const std::string &disk_filename,
                            DiskType disk_type)
 {
     IFlexDiskBySectorPtr pfloppy;
     FileTimeAccess fileTimeAccess = FileTimeAccess::NONE;
-    const auto path = disk_dir / name;
+    const auto path = disk_dir / disk_filename;
 
     try
     {
