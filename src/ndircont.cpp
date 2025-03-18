@@ -87,7 +87,7 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         int tracks,
         int sectors)
     : directory(path)
-    , randomFileCheck(path.u8string())
+    , randomFileCheck(path)
     , ft_access(fileTimeAccess)
 {
     static Word number = 0U;

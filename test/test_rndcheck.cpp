@@ -85,7 +85,7 @@ public:
                 auto filePath = diskdir;
                 filePath /= (idx == RWD || idx == RWDO) ?
                     RANDOM_FILE_LIST_NEW : RANDOM_FILE_LIST;
-                randomListFiles.emplace_back(filePath.u8string());
+                randomListFiles.emplace_back(filePath);
                 streams[idx].open(filePath);
                 ASSERT_TRUE(streams[idx].is_open()) << "path=" << filePath;
             }
@@ -97,12 +97,11 @@ public:
 
         for (int idx = RO; idx <= RWA; ++idx)
         {
-            const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+            const auto diskdir = temp_dir / diskdirs[idx];
             for (int val = 3; val <= 11; ++val)
             {
                 const auto filename = fmt::format("random{:02}.dat", val);
-                const auto path =
-                    createFile(diskdir, filename, true, val);
+                const auto path = createFile(diskdir, filename, true, val);
                 // Random file "random11.dat" is not in random list file
                 // instead has file attributes.
                 if (val != 11)
@@ -119,8 +118,7 @@ public:
             for (int val = 1; val <= 4; ++val)
             {
                 const auto filename = fmt::format("nornd{:02}.dat", val);
-                const auto path =
-                    createFile(diskdir, filename, false, val);
+                const auto path = createFile(diskdir, filename, false, val);
                 if (val == 4)
                 {
                     setFileAttribute(path);
@@ -167,7 +165,7 @@ public:
         }
     }
 
-    static std::string createFile(
+    static fs::path createFile(
             const fs::path &directory,
             const std::string &filename,
             bool isRandom, int sectors)
@@ -202,13 +200,13 @@ public:
             ofs.write(reinterpret_cast<const char *>(line.data()), line.size());
         }
 
-        return path.u8string();
+        return path;
     }
 
-    static void setFileAttribute(const std::string &path)
+    static void setFileAttribute(const fs::path &path)
     {
 #ifdef _WIN32
-        const auto wPath = ConvertToUtf16String(path.c_str());
+        const auto wPath = ConvertToUtf16String(path.u8string());
         DWord attributes = GetFileAttributes(wPath.c_str());
 
         if (attributes != INVALID_FILE_ATTRIBUTES)
@@ -230,7 +228,7 @@ TEST_F(test_FlexRandomFileFixture, fct_IsRandomFile)
 {
     for (int idx = RO; idx <= RWDO; ++idx)
     {
-        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        const auto diskdir = temp_dir / diskdirs[idx];
         RandomFileCheck randomFileCheck(diskdir);
 
         for (int val = 3; val <= 11; ++val)
@@ -249,7 +247,7 @@ TEST_F(test_FlexRandomFileFixture, fct_IsRandomFile)
         }
     }
 
-    const auto diskdir = (temp_dir / diskdirs[RWA]).u8string();
+    const auto diskdir = temp_dir / diskdirs[RWA];
     RandomFileCheck randomFileCheck(diskdir);
 
     for (int val = 3; val <= 11; ++val)
@@ -271,7 +269,7 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckForRandom)
 {
     for (int idx = RO; idx <= RWA; ++idx)
     {
-        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        const auto diskdir = temp_dir / diskdirs[idx];
         RandomFileCheck randomFileCheck(diskdir);
 
         for (int val = 3; val <= 11; ++val)
@@ -293,7 +291,7 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckForRandomAndUpdate)
 {
     for (int idx = RO; idx <= RWA; ++idx)
     {
-        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        const auto diskdir = temp_dir / diskdirs[idx];
         RandomFileCheck randomFileCheck(diskdir);
 
         for (int val = 3; val <= 11; ++val)
@@ -316,7 +314,7 @@ TEST_F(test_FlexRandomFileFixture, fct_AddToRandomList)
 {
     for (int idx = RO; idx <= RWA; ++idx)
     {
-        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        const auto diskdir = temp_dir / diskdirs[idx];
         RandomFileCheck randomFileCheck(diskdir);
         std::string filename{"newrnd1.dat"};
         EXPECT_EQ(randomFileCheck.AddToRandomList(filename), true) <<
@@ -340,7 +338,7 @@ TEST_F(test_FlexRandomFileFixture, fct_RemoveFromRandomList)
 {
     for (int idx = RO; idx <= RWA; ++idx)
     {
-        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        const auto diskdir = temp_dir / diskdirs[idx];
         RandomFileCheck randomFileCheck(diskdir);
         std::string filename{"newrnd1.dat"};
         EXPECT_EQ(randomFileCheck.RemoveFromRandomList(filename), false) <<
@@ -371,7 +369,7 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckForFileAttributeAndUpdate)
         {
             fs::remove(diskdir / RANDOM_FILE_LIST);
         }
-        RandomFileCheck randomFileCheck(diskdir.u8string());
+        RandomFileCheck randomFileCheck(diskdir);
         std::string filename{"random03.dat"};
         const bool expected = (idx == RWA);
         auto result = randomFileCheck.CheckForFileAttributeAndUpdate(filename);
@@ -450,7 +448,7 @@ TEST_F(test_FlexRandomFileFixture, fct_UpdateRandomListToFile)
     for (int idx = RO; idx <= RWA; ++idx)
     {
         const auto diskdir = temp_dir / diskdirs[idx];
-        RandomFileCheck randomFileCheck(diskdir.u8string());
+        RandomFileCheck randomFileCheck(diskdir);
 #ifdef _WIN32
         // Directories on Windows have nothing like POSIX permissions.
         // RO has same behavior as RW.
@@ -507,7 +505,7 @@ TEST_F(test_FlexRandomFileFixture, fct_IsWriteProtected)
 #endif
     for ( ; idx <= RWA; ++idx)
     {
-        const auto diskdir = (temp_dir / diskdirs[idx]).u8string();
+        const auto diskdir = temp_dir / diskdirs[idx];
         RandomFileCheck randomFileCheck(diskdir);
 
         EXPECT_EQ(randomFileCheck.IsWriteProtected(), expectedWP[idx]) <<
@@ -526,7 +524,7 @@ TEST_F(test_FlexRandomFileFixture, fct_CheckAllFilesAttributeAndUpdate)
         {
             fs::remove(diskdir / RANDOM_FILE_LIST);
         }
-        RandomFileCheck randomFileCheck(diskdir.u8string());
+        RandomFileCheck randomFileCheck(diskdir);
         randomFileCheck.CheckAllFilesAttributeAndUpdate();
         std::string filename{"random03.dat"};
         const bool expected = (idx == RWA);

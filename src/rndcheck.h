@@ -32,7 +32,7 @@
 class RandomFileCheck
 {
 public:
-    explicit RandomFileCheck(std::string p_directory);
+    explicit RandomFileCheck(fs::path p_directory);
     virtual ~RandomFileCheck();
 
     bool CheckForRandomAndUpdate(const std::string &filename);
@@ -52,10 +52,10 @@ public:
 private:
     bool HasRandomFileAttribute(const std::string &filename) const;
     bool RemoveRandomFileAttribute(const std::string &filename);
-    bool ReadRandomListFromFile(const std::string &path);
+    bool ReadRandomListFromFile(const fs::path &path);
     bool WriteRandomListToFile();
 
-    std::string directory;
+    fs::path directory;
     std::string randomListFile;
     // vector of lower case filenames of all random files:
     std::vector<std::string> randomFiles;

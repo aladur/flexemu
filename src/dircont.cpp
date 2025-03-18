@@ -56,7 +56,7 @@ namespace fs = std::filesystem;
 
 FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
         const fs::path &path, const FileTimeAccess &fileTimeAccess)
-    : randomFileCheck(path.u8string())
+    : randomFileCheck(path)
     , ft_access(fileTimeAccess)
 {
     static Word number = 0;

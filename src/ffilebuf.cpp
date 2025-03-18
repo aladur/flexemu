@@ -572,7 +572,7 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
     result = ostream.good();
     ostream.close();
 
-    const auto directory = fs::u8path(path).parent_path().u8string();
+    const auto directory = fs::u8path(path).parent_path();
     if (doRandomCheck)
     {
         RandomFileCheck randomFileCheck(directory);
@@ -630,7 +630,7 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path,
 
             if (GetFileSize() == 0 || istream.good())
             {
-                const auto directory = absPath.parent_path().u8string();
+                const auto directory = absPath.parent_path();
                 const auto filename = absPath.filename().u8string();
                 struct stat sbuf{};
 

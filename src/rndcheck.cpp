@@ -31,22 +31,22 @@
 #include <iostream>
 #include <algorithm>
 
-
 namespace fs = std::filesystem;
 
-RandomFileCheck::RandomFileCheck(std::string p_directory)
+
+RandomFileCheck::RandomFileCheck(fs::path p_directory)
     : directory(std::move(p_directory))
 {
-    std::string path;
+    fs::path path;
     int idx = 0;
 
     for (const auto *file : { RANDOM_FILE_LIST_NEW, RANDOM_FILE_LIST })
     {
-        const auto test_path = fs::path(directory) / file;
+        const auto test_path = directory / file;
 
         if (fs::exists(test_path))
         {
-            path = test_path.string();
+            path = test_path;
             randomListFile = file;
             break;
         }
@@ -58,7 +58,8 @@ RandomFileCheck::RandomFileCheck(std::string p_directory)
         // If file random exists but directory does not allow to create new
         // files, like .random set read-only state.
 
-        isWriteProtected = (access(directory.c_str(), W_OK) != 0) ? true :
+        isWriteProtected = (access(directory.u8string().c_str(), W_OK) != 0) ?
+            true :
             isWriteProtected;
     }
 
@@ -77,7 +78,7 @@ RandomFileCheck::RandomFileCheck(std::string p_directory)
         auto iter = std::remove_if(randomFiles.begin(), randomFiles.end(),
                 [&](const auto &filename){
             std::error_code error;
-            const auto file_path = fs::path(directory) / filename;
+            const auto file_path = directory / filename;
             const auto file_size = fs::file_size(file_path, error);
 
             return error ||
@@ -89,8 +90,8 @@ RandomFileCheck::RandomFileCheck(std::string p_directory)
         WriteRandomListToFile();
 
         if (!isDirty && idx == 1 &&
-                access(directory.c_str(), W_OK) == 0 &&
-                access(path.c_str(), W_OK) == 0)
+                access(directory.u8string().c_str(), W_OK) == 0 &&
+                access(path.u8string().c_str(), W_OK) == 0)
         {
             // Remove old random list file.
             fs::remove(path);
@@ -108,7 +109,7 @@ RandomFileCheck::~RandomFileCheck()
 // If file is verified as random file update randomFiles list.
 bool RandomFileCheck::CheckForRandom(const std::string &filename) const
 {
-    const auto path = fs::path(directory) / flx::tolower(filename);
+    const auto path = directory / flx::tolower(filename);
     bool result = false;
     std::error_code error;
     const auto file_size = fs::file_size(path, error);
@@ -258,11 +259,10 @@ bool RandomFileCheck::IsValidSectorMap(const SectorMap_t &sectorMap,
 
 bool RandomFileCheck::HasRandomFileAttribute(const std::string &filename) const
 {
-    fs::path path(directory);
-    path /= flx::tolower(filename);
+    const auto path = directory / flx::tolower(filename);
 
 #ifdef _WIN32
-    const auto wPath = ConvertToUtf16String(path.string());
+    const auto wPath = ConvertToUtf16String(path.u8string());
     DWord attributes = GetFileAttributes(wPath.c_str());
 
     return (attributes != INVALID_FILE_ATTRIBUTES &&
@@ -282,11 +282,10 @@ bool RandomFileCheck::HasRandomFileAttribute(const std::string &filename) const
 
 bool RandomFileCheck::RemoveRandomFileAttribute(const std::string &filename)
 {
-    fs::path path(directory);
-    path /= flx::tolower(filename);
+    const auto path = directory / flx::tolower(filename);
 
 #ifdef _WIN32
-    const auto wPath = ConvertToUtf16String(path.string());
+    const auto wPath = ConvertToUtf16String(path.u8string());
     DWord attributes = GetFileAttributes(wPath.c_str());
 
     if (attributes != INVALID_FILE_ATTRIBUTES)
@@ -305,7 +304,7 @@ bool RandomFileCheck::RemoveRandomFileAttribute(const std::string &filename)
     return false;
 }
 
-bool RandomFileCheck::ReadRandomListFromFile(const std::string &path)
+bool RandomFileCheck::ReadRandomListFromFile(const fs::path &path)
 {
     std::ifstream ifs(path);
 
@@ -334,8 +333,8 @@ bool RandomFileCheck::ReadRandomListFromFile(const std::string &path)
 
 bool RandomFileCheck::WriteRandomListToFile()
 {
-    fs::path path(directory);
-    path /= (randomListFile.empty()) ? RANDOM_FILE_LIST_NEW : randomListFile;
+    const auto path = directory / (randomListFile.empty() ?
+        RANDOM_FILE_LIST_NEW : randomListFile);
 
     if (!isDirty || isWriteProtected)
     {
@@ -385,7 +384,7 @@ void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
     const auto wWildcard(
-        ConvertToUtf16String(directory + PATHSEPARATORSTRING + "*.*"));
+        ConvertToUtf16String((directory / u8"*.*").u8string()));
 
     auto hdl = FindFirstFile(wWildcard.c_str(), &pentry);
 
@@ -402,7 +401,7 @@ void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
             continue;
         }
 
-        path = fs::path(directory) / filename;
+        path = directory / filename;
         const auto status = fs::status(path);
         if (!fs::exists(status) || !fs::is_regular_file(status))
         {
@@ -418,7 +417,7 @@ void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
 #ifdef UNIX
     struct dirent *pentry;
 
-    auto *pd = opendir(directory.c_str());
+    auto *pd = opendir(directory.u8string().c_str());
     if (pd == nullptr)
     {
         return;
@@ -432,7 +431,7 @@ void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
             continue;
         }
 
-        path = fs::path(directory) / filename;
+        path = directory / filename;
         const auto status = fs::status(path);
         if (!fs::exists(status) || !fs::is_regular_file(status))
         {
@@ -444,4 +443,3 @@ void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
     closedir(pd);
 #endif
 }
-

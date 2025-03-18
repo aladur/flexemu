@@ -55,8 +55,8 @@ namespace fs = std::filesystem;
     static const char * const pathSeparators = "/";
 #endif
 
-const char * const RANDOM_FILE_LIST = "random";
-const char * const RANDOM_FILE_LIST_NEW = ".random";
+const char * const RANDOM_FILE_LIST = u8"random";
+const char * const RANDOM_FILE_LIST_NEW = u8".random";
 const char * const flx::white_space = " \t\n\r\f\v";
 
 char flx::tolower_value(char ch)
