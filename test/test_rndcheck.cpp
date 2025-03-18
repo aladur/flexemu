@@ -42,17 +42,21 @@ protected:
                      // (random).
     const int RW{1}; // read-write disk directory with random list file
                      // (random).
-    const int RWO{2}; // read-write disk directory with read-only random list
+    const int SP{2}; // read-write disk directory with space in path and
+                     // random list file (random).
+    const int U8{3}; // read-write disk directory with utf8-char in path and
+                     // random list file (random).
+    const int RWO{4}; // read-write disk directory with read-only random list
                       // file (random).
-    const int RWD{3}; // read-write disk directory with new random list file
+    const int RWD{5}; // read-write disk directory with new random list file
                       // (.random).
-    const int RWDO{4};// read-write disk directory with new read-only random
+    const int RWDO{6};// read-write disk directory with new read-only random
                       // list file (.random).
-    const int RWA{5}; // read-write disk directory with attributes.
+    const int RWA{7}; // read-write disk directory with attributes.
 
-    const std::array<const char *, 6> diskdirs{{
-        "testdir_ro", "testdir_rw", "testdir_rwo",
-        "testdir_rwd", "testdir_rwdo", "testdir_rwa"
+    const std::array<const char *, 8> diskdirs{{
+        "testdir_ro", "testdir_rw", "testdir_ ", "testdir_\u2665",
+        "testdir_rwo", "testdir_rwd", "testdir_rwdo", "testdir_rwa"
     }};
     std::vector<std::string> randomListFiles;
     const fs::path temp_dir{ fs::temp_directory_path() };
@@ -65,7 +69,7 @@ protected:
 public:
     void SetUp() override
     {
-        std::array<std::ofstream, 6> streams;
+        std::array<std::ofstream, 8> streams;
 
         ASSERT_EQ(diskdirs.size(), streams.size());
         for (int idx = RO; idx <= RWA; ++idx)
@@ -430,14 +434,18 @@ TEST_F(test_FlexRandomFileFixture, fct_IsValidSectorMap)
 
 TEST_F(test_FlexRandomFileFixture, fct_UpdateRandomListToFile)
 {
-    const std::array<const char *, 6> randomListFiles{
+    const std::array<const char *, 8> randomListFiles{
         RANDOM_FILE_LIST,
+        RANDOM_FILE_LIST_NEW,
+        RANDOM_FILE_LIST_NEW,
         RANDOM_FILE_LIST_NEW,
         RANDOM_FILE_LIST,
         RANDOM_FILE_LIST_NEW,
         RANDOM_FILE_LIST_NEW,
         RANDOM_FILE_LIST_NEW,
     };
+
+    ASSERT_EQ(diskdirs.size(), randomListFiles.size());
 
     for (int idx = RO; idx <= RWA; ++idx)
     {
@@ -485,9 +493,12 @@ TEST_F(test_FlexRandomFileFixture, fct_UpdateRandomListToFile)
 
 TEST_F(test_FlexRandomFileFixture, fct_IsWriteProtected)
 {
-    const std::array<bool, 6> expectedWP{
-        true, false, true, false, true, false
+    const std::array<bool, 8> expectedWP{
+        true, false, false, false, true, false, true, false
     };
+
+    ASSERT_EQ(diskdirs.size(), expectedWP.size());
+
     int idx = RO;
 #ifdef _WIN32
     // Directories on Windows have nothing like POSIX permissions.
