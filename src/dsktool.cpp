@@ -47,6 +47,7 @@
 #include <fmt/format.h>
 #include "warnon.h"
 #include <filesystem>
+#include <optional>
 
 
 namespace fs = std::filesystem;
@@ -90,7 +91,7 @@ static std::vector<std::string> GetMatchingFilenames(FlexDisk &container,
 
 static int FormatFlexDiskFile(const std::string &dsk_file, DiskType disk_type,
         int tracks, int sectors, char default_answer, bool verbose,
-        const char *bsFile)
+        const std::optional<fs::path> &bsFile)
 {
     const auto status = fs::status(dsk_file);
 
@@ -1001,9 +1002,10 @@ static int checkDiskSize(const std::string &disk_size, int &tracks,
     return 1;
 }
 
-static bool checkBootSectorFile(const char *opt, const char **bsFile)
+static bool checkBootSectorFile(const fs::path &opt,
+        std::optional<fs::path> &bsFile)
 {
-    if (*bsFile != nullptr)
+    if (bsFile.has_value())
     {
         std::cerr << "*** Error: -B can be specified only once\n";
         return false;
@@ -1029,7 +1031,7 @@ static bool checkBootSectorFile(const char *opt, const char **bsFile)
             return false;
         }
 
-        *bsFile = opt;
+        bsFile = opt;
         return true;
     }
 
@@ -1144,7 +1146,7 @@ int flx::main(int argc, char *argv[])
     std::vector<std::regex> regexs;
     std::string dsk_file;
     std::string dst_dsk_file;
-    const char *bsFile = nullptr;
+    std::optional<fs::path> bsFile;
     DiskType disk_type{};
     bool is_disk_type_valid = false;
     int tracks = 0;
@@ -1259,7 +1261,7 @@ int flx::main(int argc, char *argv[])
                       is_disk_type_valid = true;
                       break;
 
-            case 'B': if (!checkBootSectorFile(optarg, &bsFile))
+            case 'B': if (!checkBootSectorFile(fs::u8path(optarg), bsFile))
                       {
                           return 1;
                       }
@@ -1361,7 +1363,7 @@ int flx::main(int argc, char *argv[])
         (command != 'c' && debug_output) ||
         (std::string("cCilLxX").find_first_of(command) == std::string::npos &&
             (fileTimeAccess != FileTimeAccess::NONE)) ||
-        (command != 'f' && bsFile != nullptr))
+        (command != 'f' && bsFile.has_value()))
     {
         std::cerr << "*** Error: Wrong syntax\n";
         usage();

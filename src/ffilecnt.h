@@ -34,6 +34,7 @@
 #include <unordered_map>
 #include <fstream>
 #include <filesystem>
+#include <optional>
 
 namespace fs = std::filesystem;
 
@@ -109,9 +110,10 @@ public:
                             const FileTimeAccess &fileTimeAccess,
                             int tracks, int sectors,
                             DiskType type,
-                            const char *bsFile = nullptr);
-    static void SetBootSectorFile(const std::string &p_bootSectorFile);
-    static std::string &GetBootSectorFile();
+                            const std::optional<fs::path> &bsFile =
+                                std::nullopt);
+    static void SetBootSectorFile(const fs::path &bootSectorFile);
+    static fs::path &GetBootSectorFile();
     static void InitializeClass();
 
     // IFlexDiskBase interface declaration
@@ -164,7 +166,7 @@ protected:
     void Initialize_for_dsk_format(const s_formats &format);
     void Initialize_unformatted_disk();
     static void Create_boot_sectors(BootSectorBuffer_t &bootSectors,
-                                    const char *bsFile);
+                                    std::optional<fs::path> bsFile);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
     bool IsFlexFileFormat(DiskType disk_type) const;
     st_t ExtendDirectory(s_dir_sector last_dir_sector, const st_t &st_last);
@@ -186,7 +188,7 @@ protected:
         int tracks,
         int sectors,
         DiskType p_disk_type,
-        const char *bsFile = nullptr);
+        const std::optional<fs::path> &bsFile);
     static FlexDirEntry CreateDirEntryFrom(const s_dir_entry &dir_entry,
             const std::string &filename);
 

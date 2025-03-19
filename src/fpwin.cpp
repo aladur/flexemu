@@ -72,6 +72,10 @@
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include "warnon.h"
+#include <filesystem>
+#include <optional>
+
+namespace fs = std::filesystem;
 
 
 FLEXplorer::FLEXplorer(sFPOptions &p_options)
@@ -152,10 +156,14 @@ void FLEXplorer::OnNewFlexDisk()
                 return;
             }
 
-            auto path = ui.GetPath().toStdString();
-            std::string bootSectorFile = options.bootSectorFile.u8string();
-            const char *bsFile = !options.bootSectorFile.empty() ?
-                                 bootSectorFile.c_str() : nullptr;
+            const auto path = ui.GetPath().toStdString();
+            const auto bootSectorFile = options.bootSectorFile;
+            std::optional<fs::path> bsFile;
+
+            if (!bootSectorFile.empty())
+            {
+                bsFile = bootSectorFile;
+            }
             auto *container = FlexDisk::Create(
                                   path,
                                   options.ft_access,

@@ -52,15 +52,14 @@ namespace fs = std::filesystem;
 
 static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
 
-static const std::string &getDefaultBootSectorFile()
+static const fs::path &getDefaultBootSectorFile()
 {
-    static std::string defaultBootSectorFile;
+    static fs::path defaultBootSectorFile;
 
     if (defaultBootSectorFile.empty())
     {
 #ifdef _WIN32
-        defaultBootSectorFile =
-            (flx::getExecutablePath() / BOOT_FILE).u8string();
+        defaultBootSectorFile = (flx::getExecutablePath() / BOOT_FILE);
 #else
         defaultBootSectorFile = fs::path(F_DATADIR) / BOOT_FILE;
 #endif
@@ -281,7 +280,7 @@ FlexDisk *FlexDisk::Create(
         int tracks,
         int sectors,
         DiskType disk_type,
-        const char *bsFile /* = nullptr */)
+        const std::optional<fs::path> &bsFile)
 {
     if (disk_type != DiskType::DSK && disk_type != DiskType::FLX)
     {
@@ -297,14 +296,14 @@ FlexDisk *FlexDisk::Create(
     return new FlexDisk(path, mode, fileTimeAccess);
 }
 
-void FlexDisk::SetBootSectorFile(const std::string &p_bootSectorFile)
+void FlexDisk::SetBootSectorFile(const fs::path &bootSectorFile)
 {
-    GetBootSectorFile() = p_bootSectorFile;
+    GetBootSectorFile() = bootSectorFile;
 }
 
-std::string &FlexDisk::GetBootSectorFile()
+fs::path &FlexDisk::GetBootSectorFile()
 {
-    static std::string bootSectorFile;
+    static fs::path bootSectorFile;
 
     return bootSectorFile;
 }
@@ -1315,15 +1314,15 @@ void FlexDisk::Initialize_unformatted_disk()
 }
 
 void FlexDisk::Create_boot_sectors(BootSectorBuffer_t &bootSectors,
-                                   const char *bsFile)
+                                   std::optional<fs::path> bsFile)
 {
     // Read boot sector(s) if present from file.
-    if (bsFile == nullptr)
+    if (!bsFile.has_value())
     {
-        bsFile = getDefaultBootSectorFile().c_str();
+        bsFile = getDefaultBootSectorFile();
     }
     std::memset(bootSectors.data(), '\0', bootSectors.size());
-    std::fstream boot(bsFile, std::ios::in | std::ios::binary);
+    std::fstream boot(bsFile.value(), std::ios::in | std::ios::binary);
 
     if (boot.is_open())
     {
@@ -1481,7 +1480,7 @@ void FlexDisk::Format_disk(
     int tracks,
     int sectors,
     DiskType p_disk_type,
-    const char *bsFile /* = nullptr */)
+    const std::optional<fs::path> &bsFile)
 {
     struct s_formats format{};
     int err = 0;
