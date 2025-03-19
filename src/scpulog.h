@@ -108,7 +108,7 @@ public:
         stopAddr.reset();
         logCycleCount = false;
         logRegisters = LogRegister::NONE;
-        logFileName.clear();
+        logFilePath.clear();
         format = Format::Text;
         csvSeparator = ';';
         isEnabled = false;
@@ -122,7 +122,7 @@ public:
         , stopAddr(src.stopAddr)
         , logCycleCount(src.logCycleCount)
         , logRegisters(src.logRegisters)
-        , logFileName(std::move(src.logFileName))
+        , logFilePath(std::move(src.logFilePath))
         , format(src.format)
         , csvSeparator(src.csvSeparator)
         , isEnabled(src.isEnabled)
@@ -138,7 +138,7 @@ public:
         stopAddr = src.stopAddr;
         logCycleCount = src.logCycleCount;
         logRegisters = src.logRegisters;
-        logFileName = std::move(src.logFileName);
+        logFilePath = std::move(src.logFilePath);
         format = src.format;
         csvSeparator = src.csvSeparator;
         isEnabled = src.isEnabled;
@@ -152,7 +152,7 @@ public:
     OptionalWord stopAddr;
     bool logCycleCount{false};
     LogRegister logRegisters{LogRegister::NONE};
-    fs::path logFileName;
+    fs::path logFilePath;
     Format format{Format::Text};
     char csvSeparator{';'};
     bool isEnabled{false};

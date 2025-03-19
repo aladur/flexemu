@@ -443,11 +443,11 @@ bool Mc6809Logger::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
 
     if (config.isEnabled)
     {
-        logOfs.open(config.logFileName, std::ios::out | std::ios::trunc);
+        logOfs.open(config.logFilePath, std::ios::out | std::ios::trunc);
         if (!logOfs.is_open())
         {
             // Error when trying to open log file.
-            config.logFileName.clear();
+            config.logFilePath.clear();
         }
 
         return logOfs.is_open();

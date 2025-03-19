@@ -139,7 +139,7 @@ void Mc6809LoggerConfigUi::SetData(const Mc6809LoggerConfig &loggerConfig)
     }
 
     e_logFilename->setText(QString::fromStdString(
-                loggerConfig.logFileName.u8string()));
+                loggerConfig.logFilePath.u8string()));
 
     auto logRegister = LogRegister::CC;
     for (auto *regCheckBox : regCheckBoxes)
@@ -162,7 +162,7 @@ Mc6809LoggerConfig Mc6809LoggerConfigUi::GetData() const
 
     loggerConfig.logCycleCount = c_logCycleCount->isChecked();
     loggerConfig.isLoopOptimization = c_loopOptimization->isChecked();
-    loggerConfig.logFileName = fs::u8path(e_logFilename->text().toStdString());
+    loggerConfig.logFilePath = fs::u8path(e_logFilename->text().toStdString());
 
     loggerConfig.logRegisters = LogRegister::NONE;
     auto logRegister = LogRegister::CC;

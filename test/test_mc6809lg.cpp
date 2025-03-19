@@ -115,7 +115,7 @@ TEST(test_mc6809logger, fct_doLogging)
     EXPECT_FALSE(logger.doLogging(0x8000));
     EXPECT_FALSE(logger.doLogging(0xFFFF));
     Mc6809LoggerConfig config;
-    config.logFileName = fs::u8path(u8"test.log");
+    config.logFilePath = fs::u8path(u8"test.log");
     config.isEnabled = true;
     logger.setLoggerConfig(config);
     EXPECT_TRUE(logger.doLogging(0x0000));
@@ -144,17 +144,17 @@ TEST(test_mc6809logger, fct_doLogging)
     EXPECT_FALSE(logger.doLogging(0x4000));
     EXPECT_FALSE(logger.doLogging(0x8000));
     EXPECT_FALSE(logger.doLogging(0x8001));
-    config.logFileName.clear();
+    config.logFilePath.clear();
     config.isEnabled = false;
     logger.setLoggerConfig(config);
 
-    fs::remove(config.logFileName);
+    fs::remove(config.logFilePath);
 }
 
 TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
 {
     Mc6809LoggerConfig config;
-    config.logFileName = fs::u8path(u8"test1.log");
+    config.logFilePath = fs::u8path(u8"test1.log");
     config.isEnabled = true;
     config.isLoopOptimization = true;
     {
@@ -176,7 +176,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
         auto state = setState({0x7E, 0xCD, 0x03}, 0x0105, "JMP", "$CD03");
         logger.logCpuState(state);
     }
-    auto result = parseFile(config.logFileName);
+    auto result = parseFile(config.logFilePath);
     ASSERT_TRUE(result.isValid);
     EXPECT_EQ(result.doCount, 0);
     EXPECT_EQ(result.repeatCount, 0);
@@ -184,10 +184,10 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     EXPECT_EQ(result.countForMnemonic["BSR"], 3);
     EXPECT_EQ(result.countForMnemonic["RTS"], 4);
     EXPECT_EQ(result.countForMnemonic["JMP"], 1);
-    fs::remove(config.logFileName);
+    fs::remove(config.logFilePath);
 
     {
-        config.logFileName = fs::u8path(u8"test2.log");
+        config.logFilePath = fs::u8path(u8"test2.log");
         // Testcase:
         // 0100 LDA #6
         // 0102 DECA
@@ -205,7 +205,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
         auto state = setState({0x7E, 0xCD, 0x03}, 0x0105, "JMP", "$CD03");
         logger.logCpuState(state);
     }
-    result = parseFile(config.logFileName);
+    result = parseFile(config.logFilePath);
     ASSERT_TRUE(result.isValid);
     EXPECT_EQ(result.doCount, 1);
     EXPECT_EQ(result.repeatCount, 1);
@@ -216,10 +216,10 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     EXPECT_EQ(result.countForMnemonic["DECA"], 2);
     EXPECT_EQ(result.countForMnemonic["BNE"], 2);
     EXPECT_EQ(result.countForMnemonic["JMP"], 1);
-    fs::remove(config.logFileName);
+    fs::remove(config.logFilePath);
 
     {
-        config.logFileName = fs::u8path(u8"test3.log");
+        config.logFilePath = fs::u8path(u8"test3.log");
         // Testcase:
         // 0100 LDA #2
         // 0102 DECA
@@ -236,7 +236,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
         }
         logger.logCpuState(setState({}, 0x0105, "JMP", "$CD03"));
     }
-    result = parseFile(config.logFileName);
+    result = parseFile(config.logFilePath);
     ASSERT_TRUE(result.isValid);
     EXPECT_EQ(result.doCount, 0);
     EXPECT_EQ(result.repeatCount, 0);
@@ -246,10 +246,10 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     EXPECT_EQ(result.countForMnemonic["DECA"], 2);
     EXPECT_EQ(result.countForMnemonic["BNE"], 2);
     EXPECT_EQ(result.countForMnemonic["JMP"], 1);
-    fs::remove(config.logFileName);
+    fs::remove(config.logFilePath);
 
     {
-        config.logFileName = fs::u8path(u8"test4.log");
+        config.logFilePath = fs::u8path(u8"test4.log");
         // Testcase:
         // 0100 LDA #8
         // 0102 LDX #$FFFC
@@ -280,7 +280,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
         logger.logCpuState(state);
     }
 
-    result = parseFile(config.logFileName);
+    result = parseFile(config.logFilePath);
     ASSERT_TRUE(result.isValid);
     EXPECT_EQ(result.doCount, 1);
     EXPECT_EQ(result.repeatCount, 1);
@@ -294,13 +294,13 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     EXPECT_EQ(result.countForMnemonic["BEQ"], 3);
     EXPECT_EQ(result.countForMnemonic["BNE"], 2);
     EXPECT_EQ(result.countForMnemonic["JMP"], 1);
-    fs::remove(config.logFileName);
+    fs::remove(config.logFilePath);
 }
 
 TEST(test_mc6809logger, fct_logCpuState_selfModifyCode)
 {
     Mc6809LoggerConfig config;
-    config.logFileName = fs::u8path(u8"test5.log");
+    config.logFilePath = fs::u8path(u8"test5.log");
     config.isEnabled = true;
     config.isLoopOptimization = true;
     {
@@ -333,7 +333,7 @@ TEST(test_mc6809logger, fct_logCpuState_selfModifyCode)
         logger.logCpuState(setState({0x39}, 0x0120, "RTS"));
         logger.logCpuState(setState({0x7E, 0xCD, 0x03}, 0x0109, "JMP", "$CD03"));
     }
-    auto result = parseFile(config.logFileName);
+    auto result = parseFile(config.logFilePath);
     ASSERT_TRUE(result.isValid);
     EXPECT_EQ(result.doCount, 1);
     EXPECT_EQ(result.repeatCount, 1);
@@ -347,7 +347,7 @@ TEST(test_mc6809logger, fct_logCpuState_selfModifyCode)
     EXPECT_EQ(result.countForMnemonic["BNE"], 2);
     EXPECT_EQ(result.countForMnemonic["RTS"], 1);
     EXPECT_EQ(result.countForMnemonic["JMP"], 1);
-    fs::remove(config.logFileName);
+    fs::remove(config.logFilePath);
 }
 
 TEST(test_mc6809logger, fct_asCCString)

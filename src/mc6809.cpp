@@ -1495,7 +1495,7 @@ void Mc6809::reset_bp(int which)
     }
 }
 
-// If logFileName is empty the current log file is closed.
+// If logFilePath is empty the current log file is closed.
 bool Mc6809::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
 {
     return logger.setLoggerConfig(loggerConfig);
