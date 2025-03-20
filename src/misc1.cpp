@@ -482,38 +482,6 @@ bool flx::isPathsEqual(const std::string &path1, const std::string &path2)
 #endif
 }
 
-std::string flx::getFileExtension(const std::string &path)
-{
-    std::string fileName = getFileName(path);
-
-    if (!path.empty())
-    {
-        auto ch = path.at(path.size() - 1);
-
-        if (ch == PATHSEPARATOR
-#ifdef _WIN32
-            || ch == '/'
-#endif
-        )
-        {
-            return "";
-        }
-    }
-
-    auto pos = fileName.find_last_of('.');
-
-    if (pos != std::string::npos && fileName != "." && fileName != "..")
-    {
-        // If fileName == "bar.txt" return ".txt".
-        // If fileName == "foo.bar.txt" return ".txt".
-        return fileName.substr(pos);
-    }
-
-    // If fileName == "." or ".." return "".
-    // If fileName contains no dot return "".
-    return "";
-}
-
 std::string flx::getHostName()
 {
     std::string dnsHostName;

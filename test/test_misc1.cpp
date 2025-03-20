@@ -365,47 +365,6 @@ TEST(test_misc1, fct_getFileName)
 #endif
 }
 
-TEST(test_misc1, fct_getFileExtension)
-{
-    auto result = flx::getFileExtension("");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("filename.ext");
-    EXPECT_EQ(result, ".ext");
-    result = flx::getFileExtension("filename.tar.gz");
-    EXPECT_EQ(result, ".gz");
-    result = flx::getFileExtension("filename");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("filename...ext");
-    EXPECT_EQ(result, ".ext");
-#ifdef _WIN32
-    result = flx::getFileExtension("\\");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("C:\\dir1\\dir2\\.");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("C:\\dir1\\dir2\\..");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("C:\\dir1\\dir2\\");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("C:\\dir1\\dir2");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("C:\\dir\\filename.ext");
-    EXPECT_EQ(result, ".ext");
-#else
-    result = flx::getFileExtension("/");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("/dir1/dir2/.");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("/dir1/dir2/..");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("/dir1/dir2/");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("/dir1/dir2");
-    EXPECT_EQ(result, "");
-    result = flx::getFileExtension("/dir/filename.ext");
-    EXPECT_EQ(result, ".ext");
-#endif
-}
-
 TEST(test_misc1, macro_EXTEND8)
 {
     Byte src1{0x55};

@@ -458,7 +458,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
 #ifdef _WIN32
             // Windows ShellExtensions works best with a
             // well known file extension.
-            if (flx::getFileExtension(filename.c_str()) != ".txt")
+            if (fs::u8path(filename).extension().u8string() != u8".txt")
             {
                 filename += ".txt";
             }

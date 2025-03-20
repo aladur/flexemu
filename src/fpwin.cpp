@@ -1167,14 +1167,13 @@ void FLEXplorer::SetStatusMessage(const QString &message)
 
 QStringList FLEXplorer::GetSupportedFiles(const QMimeData *mimeData)
 {
-    static const QStringList supportedExtensions{ ".dsk", ".flx", ".wta" };
+    static const QStringList supportedExtensions{ "dsk", "flx", "wta" };
     QStringList supportedFiles;
 
     for (const auto &url : mimeData->urls())
     {
         const auto path = QDir::toNativeSeparators(url.toLocalFile());
-        const auto fileExtension = QString(flx::getFileExtension(
-                        path.toStdString()).c_str()).toLower();
+        const auto fileExtension = QFileInfo(path).suffix().toLower();
 
         if (supportedExtensions.contains(fileExtension))
         {

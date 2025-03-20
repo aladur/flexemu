@@ -378,7 +378,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     int sec;
                     DiskType disk_type{};
                     const auto extension =
-                        flx::tolower(flx::getFileExtension(arg2));
+                        flx::tolower(fs::u8path(arg2).extension().u8string());
 
                     if (extension.empty())
                     {

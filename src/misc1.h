@@ -315,7 +315,6 @@ extern fs::path getFlexemuUserConfigPath();
 extern fs::path getFlexemuConfigFile();
 extern fs::path getFlexLabelFile();
 extern std::string getFileName(const std::string &path);
-extern std::string getFileExtension(const std::string &path);
 extern fs::path getCurrentPath();
 extern std::string getHostName();
 extern std::string updateFilename(std::string path,
