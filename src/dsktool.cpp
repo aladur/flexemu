@@ -23,6 +23,7 @@
 #include "misc1.h"
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <fstream>
 #include <vector>
 #include <tuple>
@@ -49,8 +50,8 @@
 #include <filesystem>
 #include <optional>
 
-
 namespace fs = std::filesystem;
+
 
 static std::vector<std::string> GetMatchingFilenames(FlexDisk &container,
         const std::vector<std::regex> &regexs)
@@ -89,7 +90,7 @@ static std::vector<std::string> GetMatchingFilenames(FlexDisk &container,
     return result;
 }
 
-static int FormatFlexDiskFile(const std::string &dsk_file, DiskType disk_type,
+static int FormatFlexDiskFile(const fs::path &dsk_file, DiskType disk_type,
         int tracks, int sectors, char default_answer, bool verbose,
         const std::optional<fs::path> &bsFile)
 {
@@ -104,12 +105,12 @@ static int FormatFlexDiskFile(const std::string &dsk_file, DiskType disk_type,
             return 1;
         }
 
-        std::string question(dsk_file);
+        std::stringstream qstream;
 
-        question += " already exists. Overwrite?";
-        if (flx::askForInput(question, "yn", default_answer))
+        qstream << dsk_file << " already exists. Overwrite?";
+        if (flx::askForInput(qstream.str(), "yn", default_answer))
         {
-            unlink(dsk_file.c_str());
+            fs::remove(dsk_file);
         }
         else
         {
@@ -127,7 +128,7 @@ static int FormatFlexDiskFile(const std::string &dsk_file, DiskType disk_type,
         auto fileTimeAccess = FileTimeAccess::NONE;
 
         container.reset(FlexDisk::Create(
-                        fs::u8path(dsk_file),
+                        dsk_file,
                         fileTimeAccess,
                         tracks, sectors,
                         disk_type,
@@ -136,7 +137,7 @@ static int FormatFlexDiskFile(const std::string &dsk_file, DiskType disk_type,
         if (container && verbose)
         {
             std::cout << "Successfully created " <<
-                flx::getFileName(dsk_file) << " with " <<
+                dsk_file.filename() << " with " <<
                 tracks << "-" << sectors << " tracks-sectors.\n";
         }
     }
@@ -150,20 +151,20 @@ static int FormatFlexDiskFile(const std::string &dsk_file, DiskType disk_type,
     return 0;
 }
 
-static int ExtractDskFile(const std::string &target_dir, bool verbose,
-        bool convert_text, char default_answer, const std::string &dsk_file,
+static int ExtractDskFile(const fs::path &target_dir, bool verbose,
+        bool convert_text, char default_answer, const fs::path &dsk_file,
         const std::vector<std::regex> &regexs, FileTimeAccess fileTimeAccess)
 {
     if (verbose)
     {
-        std::cout << "Extracting from '" << dsk_file << "' into '" <<
-                     target_dir << "' ... \n";
+        std::cout << "Extracting from " << dsk_file << " into " <<
+                     target_dir << " ... \n";
     }
 
     FlexCopyManager::autoTextConversion = convert_text;
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamDisk src{dsk_file, mode, fileTimeAccess};
-    FlexDirectoryDiskByFile dest{fs::u8path(target_dir), fileTimeAccess};
+    FlexDirectoryDiskByFile dest{target_dir, fileTimeAccess};
     size_t count = 0;
     size_t random_count = 0;
     size_t byte_size = 0;
@@ -252,9 +253,9 @@ static int ExtractDskFile(const std::string &target_dir, bool verbose,
     return 0;
 }
 
-static int ExtractDskFiles(std::string target_dir, bool verbose,
+static int ExtractDskFiles(fs::path target_dir, bool verbose,
         bool convert_text, char default_answer,
-        const std::vector<std::string> &dsk_files,
+        const std::vector<fs::path> &dsk_files,
         const std::vector<std::regex> &regexs, FileTimeAccess fileTimeAccess)
 {
     if (target_dir.empty())
@@ -262,7 +263,7 @@ static int ExtractDskFiles(std::string target_dir, bool verbose,
         target_dir = ".";
     }
 
-    const auto status = fs::status(fs::u8path(target_dir));
+    const auto status = fs::status(target_dir);
     if (!fs::exists(status) || !fs::is_directory(status))
     {
         std::cerr <<
@@ -293,14 +294,14 @@ static int ExtractDskFiles(std::string target_dir, bool verbose,
             }
             std::cerr <<
                 "   *** Error: " << ex.what() << ".\n" <<
-                "       Extraction from '" << dsk_file << "' aborted.\n";
+                "       Extraction from " << dsk_file << " aborted.\n";
         }
     }
 
     return 0;
 }
 
-static int ListDirectoryOfDskFile(const std::string &dsk_file,
+static int ListDirectoryOfDskFile(const fs::path &dsk_file,
         const std::vector<std::regex> &regexs, FileTimeAccess fileTimeAccess)
 {
     const auto mode = std::ios::in | std::ios::binary;
@@ -322,7 +323,7 @@ static int ListDirectoryOfDskFile(const std::string &dsk_file,
     {
         hasAttributes = true;
         std::cout <<
-            "FILE: " << flx::getFileName(dsk_file) << "  " <<
+            "FILE: " << dsk_file.filename() << "  " <<
             "DISK: " << diskAttributes.GetName() <<
             " #" << diskAttributes.GetNumber() <<
             "  CREATED: " << diskAttributes.GetDate().GetDateString(format) <<
@@ -331,7 +332,7 @@ static int ListDirectoryOfDskFile(const std::string &dsk_file,
     else
     {
         std::cerr << "Error reading disk image attributes from " <<
-                     flx::getFileName(dsk_file) << "\n";
+                     dsk_file.filename() << "\n";
     }
 
     std::cout << "FILE#   NAME   TYPE  BEGIN   END   SIZE    DATE      ";
@@ -391,7 +392,7 @@ static int ListDirectoryOfDskFile(const std::string &dsk_file,
     return 0;
 }
 
-static int ListDirectoryOfDskFiles(const std::vector<std::string> &dsk_files,
+static int ListDirectoryOfDskFiles(const std::vector<fs::path> &dsk_files,
         const std::vector<std::regex> &regexs, FileTimeAccess fileTimeAccess)
 {
     for (const auto &dsk_file : dsk_files)
@@ -404,14 +405,14 @@ static int ListDirectoryOfDskFiles(const std::vector<std::string> &dsk_files,
         {
             std::cerr <<
                 "   *** Error: " << ex.what() << ".\n" <<
-                "       List directory of '" << dsk_file << "' aborted.\n";
+                "       List directory of " << dsk_file << " aborted.\n";
         }
     }
 
     return 0;
 }
 
-static int SummaryOfDskFile(const std::string &dsk_file,
+static int SummaryOfDskFile(const fs::path &dsk_file,
         uint64_t &sum_files, uint64_t&sum_size, uint64_t&sum_free,
         bool verbose)
 {
@@ -447,7 +448,7 @@ static int SummaryOfDskFile(const std::string &dsk_file,
             name = "\"\"";
         }
 
-        std::string file = verbose ? dsk_file : flx::getFileName(dsk_file);
+        const auto file = (verbose ? dsk_file : dsk_file.filename()).u8string();
 
         std::cout << fmt::format(
             "{} {:<12} {:<5} {:<2}-{:<2} {:<5} {:<5} {:<5} {}\n",
@@ -462,13 +463,13 @@ static int SummaryOfDskFile(const std::string &dsk_file,
     else
     {
         std::cerr << "Error reading disk image attributes for " <<
-                     flx::getFileName(dsk_file) << "\n";
+                     dsk_file.filename() << "\n";
     }
 
     return 0;
 }
 
-static int SummaryOfDskFiles(const std::vector<std::string> &dsk_files,
+static int SummaryOfDskFiles(const std::vector<fs::path> &dsk_files,
         bool verbose)
 {
     uint64_t sum_files = 0U;
@@ -489,7 +490,7 @@ static int SummaryOfDskFiles(const std::vector<std::string> &dsk_files,
         {
             std::cerr <<
                 "   *** Error: " << ex.what() << ".\n" <<
-                "       Summary of '" << dsk_file << "' aborted.\n";
+                "       Summary of " << dsk_file << " aborted.\n";
         }
     }
 
@@ -506,8 +507,8 @@ static int SummaryOfDskFiles(const std::vector<std::string> &dsk_files,
     return 0;
 }
 
-static int InjectToDskFile(const std::string &dsk_file, bool verbose,
-        const std::vector<std::string> &files, char default_answer,
+static int InjectToDskFile(const fs::path &dsk_file, bool verbose,
+        const std::vector<fs::path> &files, char default_answer,
         bool isConvertText, FileTimeAccess fileTimeAccess)
 {
     FlexCopyManager::autoTextConversion = isConvertText;
@@ -525,7 +526,7 @@ static int InjectToDskFile(const std::string &dsk_file, bool verbose,
         bool isText = false;
         FlexFileBuffer fileBuffer;
 
-        if (!fileBuffer.ReadFromFile(fs::u8path(file), fileTimeAccess, true))
+        if (!fileBuffer.ReadFromFile(file, fileTimeAccess, true))
         {
             std::cerr <<
                 "   *** Error: Reading from " << file << ". Aborted.\n";
@@ -583,7 +584,7 @@ static int InjectToDskFile(const std::string &dsk_file, bool verbose,
     return 0;
 }
 
-static int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
+static int DeleteFromDskFile(const fs::path &dsk_file, bool verbose,
         const std::vector<std::regex> &regexs, char default_answer)
 {
     auto fileTimeAccess = FileTimeAccess::NONE;
@@ -651,7 +652,7 @@ static int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
     return 0;
 }
 
-static int CheckConsistencyOfDskFile(const std::string &dsk_file,
+static int CheckConsistencyOfDskFile(const fs::path &dsk_file,
         bool verbose, bool debug_output, FileTimeAccess fileTimeAccess)
 {
     const auto mode = std::ios::in | std::ios::binary;
@@ -690,7 +691,7 @@ static int CheckConsistencyOfDskFile(const std::string &dsk_file,
     return 0;
 }
 
-static int CheckConsistencyOfDskFiles(const std::vector<std::string> &dsk_files,
+static int CheckConsistencyOfDskFiles(const std::vector<fs::path> &dsk_files,
         bool verbose, bool debug_output, FileTimeAccess fileTimeAccess)
 {
     for (const auto &dsk_file : dsk_files)
@@ -704,15 +705,15 @@ static int CheckConsistencyOfDskFiles(const std::vector<std::string> &dsk_files,
         {
             std::cerr <<
                 "   *** Error: " << ex.what() << ".\n" <<
-                "       Check consistency of '" << dsk_file << "' aborted.\n";
+                "       Check consistency of " << dsk_file << ". Aborted.\n";
         }
     }
 
     return 0;
 }
 
-static int CopyFromToDskFile(const std::string &src_dsk_file,
-        const std::string &dst_dsk_file, bool verbose,
+static int CopyFromToDskFile(const fs::path &src_dsk_file,
+        const fs::path &dst_dsk_file, bool verbose,
         const std::vector<std::regex> &regexs, char default_answer,
         FileTimeAccess fileTimeAccess)
 {
@@ -937,13 +938,13 @@ static bool getDiskTypeFromExtension(std::string ext, DiskType &disk_type)
     return false;
 }
 
-static void estimateDiskType(const std::string &dsk_file, DiskType &disk_type)
+static void estimateDiskType(const fs::path &dsk_file, DiskType &disk_type)
 {
     std::string extension;
 
     if (!dsk_file.empty())
     {
-        extension = flx::getFileExtension(dsk_file);
+        extension = dsk_file.extension().u8string();
         if (!extension.empty())
         {
             extension = extension.substr(1);
@@ -1049,7 +1050,8 @@ static char checkCommand(char oldCommand, int result)
         return static_cast<char>(result);
     }
 
-    std::cerr << "*** Error: Only one command -X, -l, -s, -c, -C, -i or -r allowed."                 "\n";
+    std::cerr << "*** Error: Only one command -X, -l, -s, -c, -C, -i or -r "
+                 "allowed.\n";
     usage();
     return 0;
 }
@@ -1085,14 +1087,14 @@ static int checkTrack0Access()
 }
 
 static std::tuple<bool, std::vector<std::string> >
-        readFile(const std::string &fileName)
+        readFile(const fs::path &path)
 {
-    std::ifstream file(fileName);
+    std::ifstream file(path);
     std::vector<std::string> lines;
 
     if (!file.is_open())
     {
-        std::cerr << "*** Error reading from file " << fileName << "\n";
+        std::cerr << "*** Error reading from file " << path << "\n";
         return std::make_tuple(false, lines);
     }
 
@@ -1139,14 +1141,14 @@ static bool addToRegexList(const std::vector<std::string> &regexLines,
 int flx::main(int argc, char *argv[])
 {
     std::string optstr("f:X:x:L:l:s:c:C:i:r:R:T:d:o:S:F:B:DhmntvVyz");
-    std::string target_dir;
-    std::vector<std::string> dsk_files;
-    std::vector<std::string> files;
-    std::vector<std::string> regexFiles;
+    fs::path target_dir;
+    std::vector<fs::path> dsk_files;
+    std::vector<fs::path> files;
+    std::vector<fs::path> regexFiles;
     std::vector<std::regex> regexs;
-    std::string dsk_file;
-    std::string dst_dsk_file;
-    std::optional<fs::path> bsFile;
+    fs::path dsk_file;
+    fs::path dst_dsk_file;
+    std::optional<fs::path> bsFile = std::nullopt;
     DiskType disk_type{};
     bool is_disk_type_valid = false;
     int tracks = 0;
@@ -1179,7 +1181,7 @@ int flx::main(int argc, char *argv[])
             case 'l':
             case 's':
             case 'c':
-                      dsk_files.emplace_back(optarg);
+                      dsk_files.emplace_back(fs::u8path(optarg));
                       command = checkCommand(command, result);
                       if (command == '\0')
                       {
@@ -1193,7 +1195,7 @@ int flx::main(int argc, char *argv[])
             case 'r':
             case 'L':
             case 'C':
-                      dsk_file = optarg;
+                      dsk_file = fs::u8path(optarg);
                       command = checkCommand(command, result);
                       if (command == '\0')
                       {
@@ -1201,7 +1203,7 @@ int flx::main(int argc, char *argv[])
                       }
                       break;
 
-            case 'd': target_dir = optarg;
+            case 'd': target_dir = fs::u8path(optarg);
                       break;
 
             case 'D': debug_output = true;
@@ -1210,11 +1212,11 @@ int flx::main(int argc, char *argv[])
             case 'R': has_regex_file = true;
                       if (command == 'C' || command == 'x')
                       {
-                          regexFiles.emplace_back(optarg);
+                          regexFiles.emplace_back(fs::u8path(optarg));
                       }
                       break;
 
-            case 'T': dst_dsk_file = optarg;
+            case 'T': dst_dsk_file = fs::u8path(optarg);
                       break;
 
             case 'm': regexCaseSense = true;
