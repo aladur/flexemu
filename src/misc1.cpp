@@ -405,30 +405,6 @@ fs::path flx::getHomeDirectory()
 }
 #endif
 
-std::string flx::getFileName(const std::string &path)
-{
-    auto pos = path.find_last_of(pathSeparators);
-
-    if (pos != std::string::npos)
-    {
-        if (pos == (path.size() - 1))
-        {
-            // If path == "/", return "/".
-            // If path is "/foo/bar/" return ".".
-            return pos == 0 ? path : ".";
-        }
-
-        // If path == "/foo/bar.txt" return "bar.txt".
-        // If path == "/foo/bar" return "bar".
-        return path.substr(pos + 1);
-    }
-
-    // If path == "bar.txt" return "bar.txt".
-    // If path == "." return ".".
-    // If path == ".." return "..".
-    return path;
-}
-
 fs::path flx::getCurrentPath()
 {
 #ifdef _WIN32

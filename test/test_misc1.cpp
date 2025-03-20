@@ -324,47 +324,6 @@ TEST(test_misc1, fct_getHostName)
     EXPECT_FALSE(result.empty());
 }
 
-TEST(test_misc1, fct_getFileName)
-{
-    auto result = flx::getFileName("");
-    EXPECT_EQ(result, "");
-    result = flx::getFileName("filename.ext");
-    EXPECT_EQ(result, "filename.ext");
-    result = flx::getFileName("filename.ext");
-    EXPECT_EQ(result, "filename.ext");
-    result = flx::getFileName("filename");
-    EXPECT_EQ(result, "filename");
-    result = flx::getFileName(".ext");
-    EXPECT_EQ(result, ".ext");
-#ifdef _WIN32
-    result = flx::getFileName("C:\\");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileName("C:\\dir1\\dir2\\.");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileName("C:\\dir1\\dir2\\..");
-    EXPECT_EQ(result, "..");
-    result = flx::getFileName("C:\\dir1\\dir2\\");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileName("C:\\dir1\\dir2");
-    EXPECT_EQ(result, "dir2");
-    result = flx::getFileName("C:\\dir\\filename.ext");
-    EXPECT_EQ(result, "filename.ext");
-#else
-    result = flx::getFileName("/");
-    EXPECT_EQ(result, "/");
-    result = flx::getFileName("/dir1/dir2/.");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileName("/dir1/dir2/..");
-    EXPECT_EQ(result, "..");
-    result = flx::getFileName("/dir1/dir2/");
-    EXPECT_EQ(result, ".");
-    result = flx::getFileName("/dir1/dir2");
-    EXPECT_EQ(result, "dir2");
-    result = flx::getFileName("/dir/filename.ext");
-    EXPECT_EQ(result, "filename.ext");
-#endif
-}
-
 TEST(test_misc1, macro_EXTEND8)
 {
     Byte src1{0x55};

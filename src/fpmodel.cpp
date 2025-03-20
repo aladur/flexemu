@@ -44,6 +44,7 @@
 #include <QModelIndexList>
 #include <QTextStream>
 #include <QIODevice>
+#include <QFileInfo>
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <QRegularExpression>
 #else
@@ -196,7 +197,7 @@ QString FlexplorerTableModel::GetPath() const
 
 QString FlexplorerTableModel::GetUserFriendlyPath() const
 {
-    return flx::getFileName(path.toStdString()).c_str();
+    return QFileInfo(path).fileName();
 }
 
 bool FlexplorerTableModel::IsWriteProtected() const
