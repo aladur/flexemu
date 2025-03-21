@@ -49,19 +49,14 @@ namespace fs = std::filesystem;
  static functions
 ********************************************/
 
-PathList_t BDirectory::GetSubDirectories(const std::string &p_path)
+PathList_t BDirectory::GetSubDirectories(const fs::path &p_path)
 {
-    std::vector<std::string> subDirList;
-    std::string basePath(p_path);
+    PathList_t subDirList;
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 
-    if (basePath[basePath.length()-1] != PATHSEPARATOR)
-    {
-        basePath += PATHSEPARATOR;
-    }
-
-    const auto wFilePattern(ConvertToUtf16String(basePath + "*.*"));
+    const auto wFilePattern(
+            ConvertToUtf16String((p_path / "*.*").u8string()));
     auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
     if (hdl != INVALID_HANDLE_VALUE)
     {
@@ -81,21 +76,14 @@ PathList_t BDirectory::GetSubDirectories(const std::string &p_path)
 #else
     fs::path dirEntry;
 
-    if (basePath[basePath.length()-1] == PATHSEPARATOR)
-    {
-        std::string temp = basePath.substr(0, basePath.length() - 1);
-
-        basePath = temp;
-    }
-
-    auto *pd = opendir(basePath.c_str());
+    auto *pd = opendir(p_path.u8string().c_str());
     if (pd != nullptr)
     {
         struct dirent *pentry;
 
         while ((pentry = readdir(pd)) != nullptr)
         {
-            dirEntry = fs::path(basePath) / pentry->d_name;
+            dirEntry = p_path / pentry->d_name;
             const auto status = fs::status(dirEntry);
 
             if (fs::exists(status) && fs::is_directory(status) &&
@@ -112,19 +100,14 @@ PathList_t BDirectory::GetSubDirectories(const std::string &p_path)
     return subDirList;
 }
 
-PathList_t BDirectory::GetFiles(const std::string &p_path)
+PathList_t BDirectory::GetFiles(const fs::path &p_path)
 {
-    std::vector<std::string> fileList;
-    std::string basePath(p_path);
+    PathList_t fileList;
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 
-    if (basePath[basePath.length()-1] != PATHSEPARATOR)
-    {
-        basePath += PATHSEPARATOR;
-    }
-
-    const auto wFilePattern(ConvertToUtf16String(basePath + "*.*"));
+    const auto wFilePattern(
+            ConvertToUtf16String((p_path / "*.*").u8string()));
     auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
     if (hdl != INVALID_HANDLE_VALUE)
     {
@@ -145,21 +128,14 @@ PathList_t BDirectory::GetFiles(const std::string &p_path)
 #else
     fs::path dirEntry;
 
-    if (basePath[basePath.length()-1] == PATHSEPARATOR)
-    {
-        std::string temp = basePath.substr(0, basePath.length() - 1);
-
-        basePath = temp;
-    }
-
-    auto *pd = opendir(basePath.c_str());
+    auto *pd = opendir(p_path.u8string().c_str());
     if (pd != nullptr)
     {
         struct dirent *pentry;
 
         while ((pentry = readdir(pd)) != nullptr)
         {
-            dirEntry = fs::path(basePath) / pentry->d_name;
+            dirEntry = fs::path(p_path) / pentry->d_name;
             const auto status = fs::status(dirEntry);
 
             if (fs::exists(status) && fs::is_regular_file(status))

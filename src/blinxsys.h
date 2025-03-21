@@ -29,6 +29,10 @@
 #include <string>
 #include <map>
 #include <cstdint>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 enum class BLinuxSysInfoType : uint8_t
 {
@@ -45,7 +49,7 @@ public:
     std::string Read(BLinuxSysInfoType type, const std::string &subtype) const;
 
 private:
-    mutable std::map<std::string, std::string> pathCache;
+    mutable std::map<std::string, fs::path> pathCache;
 };
 #endif
 #endif

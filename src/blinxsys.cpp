@@ -26,6 +26,10 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 #ifdef __linux__
 std::string BLinuxSysInfo::ToString(BLinuxSysInfoType type)
@@ -42,7 +46,7 @@ std::string BLinuxSysInfo::ToString(BLinuxSysInfoType type)
 std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
                                 const std::string &subtype) const
 {
-    std::string path;
+    fs::path path;
     std::vector<std::string> subdirs;
     bool isPathAvailable = true;
     const auto id = ToString(type).append(" ").append(subtype);
@@ -53,7 +57,7 @@ std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
         switch (type)
         {
             case BLinuxSysInfoType::LED:
-                path = "/sys/class/leds";
+                path = fs::u8path(u8"/sys/class/leds");
                 subdirs = BDirectory::GetSubDirectories(path);
                 for (const std::string &subdir : subdirs)
                 {
@@ -62,9 +66,7 @@ std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
                     {
                         if (pos == (subdir.size() - subtype.size()))
                         {
-                            path.append("/")
-                                .append(subdir)
-                                .append("/brightness");
+                            path = path / subdir / u8"brightness";
                             pathCache[id] = path;
                             isPathAvailable = true;
                             break;
@@ -83,13 +85,12 @@ std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
         std::ifstream fs(path);
         if (fs.is_open())
         {
-            std::array<char, 2048U> content_array{};
+            std::string linebuffer;
 
-            fs.getline(content_array.data(), content_array.size() - 1U, '\n');
+            std::getline(fs, linebuffer);
             fs.close();
-            std::string content(content_array.data());
 
-            return content;
+            return linebuffer;
         }
     }
 

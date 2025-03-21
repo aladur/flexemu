@@ -23,12 +23,14 @@
 #ifndef BDIR_INCLUDED
 #define BDIR_INCLUDED
 
-#include "misc1.h"
 #ifdef _WIN32
     #pragma warning (disable: 4786)
 #endif
 #include <vector>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 using PathList_t = std::vector<std::string>;
@@ -36,21 +38,21 @@ using PathList_t = std::vector<std::string>;
 class BDirectory
 {
 private:
-    std::string path;
+    fs::path path;
 
 public:
-    static PathList_t GetSubDirectories(const std::string &p_path);
-    static PathList_t GetFiles(const std::string &p_path);
+    static PathList_t GetSubDirectories(const fs::path &p_path);
+    static PathList_t GetFiles(const fs::path &p_path);
 
     BDirectory() = default;
-    explicit BDirectory(std::string &p_path) : path(p_path) { };
+    explicit BDirectory(fs::path &p_path) : path(p_path) { };
     ~BDirectory() = default;
 
-    inline void SetPath(std::string &p_path)
+    inline void SetPath(fs::path &p_path)
     {
         path = p_path;
     };
-    inline const std::string &GetPath() const
+    inline const fs::path &GetPath() const
     {
         return path;
     };
