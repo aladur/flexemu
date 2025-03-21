@@ -323,6 +323,7 @@ QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
 QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
                         const QString &targetDirectory)
 {
+    const QDir targetDir(targetDirectory);
     auto selectedRows = selectionModel()->selectedRows();
     QProgressDialog progress(tr("Extract files ..."), tr("&Cancel"), 0,
                              cast_from_qsizetype(selectedRows.size() - 1), this);
@@ -380,8 +381,7 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
 #ifdef UNIX
             targetFilename = targetFilename.toLower();
 #endif
-            auto targetPath = targetDirectory + PATHSEPARATORSTRING +
-                              targetFilename;
+            auto targetPath = targetDir.filePath(targetFilename);
 
             if (QFile::exists(targetPath))
             {

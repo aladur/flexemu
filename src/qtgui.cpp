@@ -69,6 +69,7 @@
 #include <QAbstractButton>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QDir>
 #include <QUrl>
 #include <QMenu>
 #include <QMenuBar>
@@ -1677,7 +1678,7 @@ void QtGui::OnResize()
 QUrl QtGui::CreateDocumentationUrl(const QString &docDir,
                                    const QString &htmlFile)
 {
-    auto path = docDir + PATHSEPARATORSTRING + htmlFile;
+    auto path = QDir(docDir).filePath(htmlFile);
 
     return QUrl::fromLocalFile(path);
 }

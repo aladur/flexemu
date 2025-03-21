@@ -25,6 +25,7 @@
 #include "mdcrtape.h"
 #include "filecnts.h"
 #include "warnoff.h"
+#include <QDir>
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QFileDialog>
@@ -89,8 +90,8 @@ void FlexplorerNewUi::TransferDataToDialog(DiskType p_disk_type,
 
     if (path.isEmpty())
     {
-        e_path->setText(defaultPath + PATHSEPARATORSTRING +
-            "new." + GetCurrentFileExtension());
+        const auto defaultName = QString("new.") + GetCurrentFileExtension();
+        e_path->setText(QDir(defaultPath).filePath(defaultName));
     }
     else
     {
@@ -155,7 +156,7 @@ QString FlexplorerNewUi::GetPath() const
     auto pIdx = path.lastIndexOf(PATHSEPARATOR);
     if (pIdx < 0)
     {
-        path = defaultPath + PATHSEPARATORSTRING + path;
+        path = QDir(defaultPath).filePath(path);
     }
     auto index = path.lastIndexOf('.');
     if (index < 0 || index < pIdx)
@@ -358,7 +359,7 @@ void FlexplorerNewUi::UpdateFilename()
     }
     if (path.lastIndexOf(PATHSEPARATOR) < 0)
     {
-        path = defaultPath + PATHSEPARATORSTRING + path;
+        path = QDir(defaultPath).filePath(path);
     }
     auto pIdx = path.lastIndexOf(PATHSEPARATOR);
     auto index = path.lastIndexOf('.');

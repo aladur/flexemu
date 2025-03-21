@@ -290,7 +290,7 @@ bool FLEXplorer::OpenFlexDiskForPath(QString path, bool isLast)
     // If path ends with a path separator character it will be cut off.
     // This can happen when calling FLEXplorer on the command line with
     // a path entered with command line completion.
-    if (path.size() > 1 && path.right(1) == QString(PATHSEPARATORSTRING))
+    if (path.size() > 1 && path.endsWith(PATHSEPARATOR))
     {
         path.resize(path.size() - 1);
     }
