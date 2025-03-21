@@ -67,6 +67,7 @@ set(unittests_SOURCES
     test_filesystem.cpp
     test_filfschk.cpp
     test_fdirent.cpp
+    test_bdir.cpp
     test_bdate.cpp
     test_bintervl.cpp
     test_bmembuf.cpp

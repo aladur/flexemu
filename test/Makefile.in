@@ -178,7 +178,7 @@ am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
 	unittests-test_filesystem.$(OBJEXT) \
 	unittests-test_filfschk.$(OBJEXT) \
 	unittests-test_fdirent.$(OBJEXT) \
-	unittests-test_bdate.$(OBJEXT) \
+	unittests-test_bdate.$(OBJEXT) unittests-test_bdir.$(OBJEXT) \
 	unittests-test_bintervl.$(OBJEXT) \
 	unittests-test_bmembuf.$(OBJEXT) \
 	unittests-test_breltime.$(OBJEXT) \
@@ -244,6 +244,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	./$(DEPDIR)/test_gccasm-test_gccasm.Po \
 	./$(DEPDIR)/test_gccasm-testmain.Po \
 	./$(DEPDIR)/unittests-test_bdate.Po \
+	./$(DEPDIR)/unittests-test_bdir.Po \
 	./$(DEPDIR)/unittests-test_benv.Po \
 	./$(DEPDIR)/unittests-test_binifile.Po \
 	./$(DEPDIR)/unittests-test_bintervl.Po \
@@ -773,6 +774,7 @@ unittests_SOURCES = \
 	test_filfschk.cpp \
 	test_fdirent.cpp \
 	test_bdate.cpp \
+	test_bdir.cpp \
 	test_bintervl.cpp \
 	test_bmembuf.cpp \
 	test_breltime.cpp \
@@ -1102,6 +1104,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gccasm-test_gccasm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gccasm-testmain.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bdate.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bdir.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_benv.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_binifile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bintervl.Po@am__quote@ # am--include-marker
@@ -1720,6 +1723,20 @@ unittests-test_bdate.obj: test_bdate.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_bdate.obj `if test -f 'test_bdate.cpp'; then $(CYGPATH_W) 'test_bdate.cpp'; else $(CYGPATH_W) '$(srcdir)/test_bdate.cpp'; fi`
 
+unittests-test_bdir.o: test_bdir.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_bdir.o -MD -MP -MF $(DEPDIR)/unittests-test_bdir.Tpo -c -o unittests-test_bdir.o `test -f 'test_bdir.cpp' || echo '$(srcdir)/'`test_bdir.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_bdir.Tpo $(DEPDIR)/unittests-test_bdir.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_bdir.cpp' object='unittests-test_bdir.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_bdir.o `test -f 'test_bdir.cpp' || echo '$(srcdir)/'`test_bdir.cpp
+
+unittests-test_bdir.obj: test_bdir.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_bdir.obj -MD -MP -MF $(DEPDIR)/unittests-test_bdir.Tpo -c -o unittests-test_bdir.obj `if test -f 'test_bdir.cpp'; then $(CYGPATH_W) 'test_bdir.cpp'; else $(CYGPATH_W) '$(srcdir)/test_bdir.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_bdir.Tpo $(DEPDIR)/unittests-test_bdir.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_bdir.cpp' object='unittests-test_bdir.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_bdir.obj `if test -f 'test_bdir.cpp'; then $(CYGPATH_W) 'test_bdir.cpp'; else $(CYGPATH_W) '$(srcdir)/test_bdir.cpp'; fi`
+
 unittests-test_bintervl.o: test_bintervl.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_bintervl.o -MD -MP -MF $(DEPDIR)/unittests-test_bintervl.Tpo -c -o unittests-test_bintervl.o `test -f 'test_bintervl.cpp' || echo '$(srcdir)/'`test_bintervl.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_bintervl.Tpo $(DEPDIR)/unittests-test_bintervl.Po
@@ -2294,6 +2311,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/test_gccasm-test_gccasm.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-testmain.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
+	-rm -f ./$(DEPDIR)/unittests-test_bdir.Po
 	-rm -f ./$(DEPDIR)/unittests-test_benv.Po
 	-rm -f ./$(DEPDIR)/unittests-test_binifile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po
@@ -2395,6 +2413,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/test_gccasm-test_gccasm.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-testmain.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
+	-rm -f ./$(DEPDIR)/unittests-test_bdir.Po
 	-rm -f ./$(DEPDIR)/unittests-test_benv.Po
 	-rm -f ./$(DEPDIR)/unittests-test_binifile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po

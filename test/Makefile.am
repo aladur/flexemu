@@ -70,6 +70,7 @@ unittests_SOURCES = \
 	test_filfschk.cpp \
 	test_fdirent.cpp \
 	test_bdate.cpp \
+	test_bdir.cpp \
 	test_bintervl.cpp \
 	test_bmembuf.cpp \
 	test_breltime.cpp \
