@@ -45,9 +45,7 @@ public:
 
     void ReadDataFrom(const Byte *buffer);
     void WriteDataTo(Byte *buffer) const;
-    void SetPath(const std::string &path);
     std::string GetPath() const;
-    void SetDnsHostName(const std::string &dnsHostName);
     std::string GetDnsHostName() const;
     void Add(FlexFileBuffer &&fileBuffer);
     FlexFileBuffer &GetBufferAt(unsigned int index);

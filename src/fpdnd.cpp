@@ -157,19 +157,9 @@ void FlexDnDFiles::Add(FlexFileBuffer &&fileBuffer)
     fileBuffers.push_back(std::move(fileBuffer));
 }
 
-void FlexDnDFiles::SetPath(const std::string &pPath)
-{
-    path = pPath;
-}
-
 std::string FlexDnDFiles::GetPath() const
 {
     return path;
-}
-
-void FlexDnDFiles::SetDnsHostName(const std::string &pDnsHostName)
-{
-    dnsHostName = pDnsHostName;
 }
 
 std::string FlexDnDFiles::GetDnsHostName() const
