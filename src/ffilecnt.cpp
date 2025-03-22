@@ -423,7 +423,7 @@ bool FlexDisk::RenameFile(const std::string &oldName,
 
     if (it == this->end())
     {
-        throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName, path);
+        throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName, GetPath());
     }
 
     it.RenameCurrent(newName);
@@ -466,7 +466,7 @@ bool FlexDisk::GetDiskAttributes(FlexDiskAttributes &diskAttributes) const
             std::stringstream stream;
 
             stream << sis_trk_sec;
-            throw FlexException(FERR_READING_TRKSEC, stream.str(), path);
+            throw FlexException(FERR_READING_TRKSEC, stream.str(), GetPath());
         }
 
         if (sis.sir.year < 75)
@@ -605,7 +605,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
         std::stringstream stream;
 
         stream << sis_trk_sec;
-        throw FlexException(FERR_READING_TRKSEC, stream.str(), path);
+        throw FlexException(FERR_READING_TRKSEC, stream.str(), GetPath());
     }
 
     next = start = sis.sir.fc_start;
@@ -641,7 +641,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
                 std::stringstream stream;
 
                 stream << next;
-                throw FlexException(FERR_READING_TRKSEC, stream.str(), path);
+                throw FlexException(FERR_READING_TRKSEC, stream.str(), GetPath());
             }
 
             if (count)
@@ -665,7 +665,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
             std::stringstream stream;
 
             stream << next;
-            throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
+            throw FlexException(FERR_WRITING_TRKSEC, stream.str(), GetPath());
         }
 
         recordNr++;
@@ -685,7 +685,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
                     if (--smSector == 0U)
                     {
                         throw FlexException(FERR_RECORDMAP_FULL,
-                                            fileName, path);
+                                            fileName, GetPath());
                     }
                     smIndex = 4U;
                 }
@@ -722,7 +722,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
             std::stringstream stream;
 
             stream << next;
-            throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
+            throw FlexException(FERR_WRITING_TRKSEC, stream.str(), GetPath());
         }
     }
 
@@ -746,7 +746,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
                 std::stringstream stream;
 
                 stream << next;
-                throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
+                throw FlexException(FERR_WRITING_TRKSEC, stream.str(), GetPath());
             }
 
             next.trk = sectorBuffer[count][0];
@@ -765,7 +765,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
         std::stringstream stream;
 
         stream << sis_trk_sec;
-        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
+        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), GetPath());
     }
 
     // Create a new directory entry.
@@ -794,7 +794,7 @@ FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
 
     if (!is_flex_format)
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, path);
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, GetPath());
     }
 
     if (fileName.find_first_of("*?[]") != std::string::npos)
@@ -912,7 +912,7 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &dirEntry)
             std::stringstream stream;
 
             stream << next;
-            throw FlexException(FERR_READING_TRKSEC, stream.str(), path);
+            throw FlexException(FERR_READING_TRKSEC, stream.str(), GetPath());
         }
 
         for (Byte idx = 0U; idx < DIRENTRIES; ++idx)
@@ -961,7 +961,7 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &dirEntry)
 
                     stream << next;
                     throw FlexException(FERR_WRITING_TRKSEC,
-                                        stream.str(), path);
+                                        stream.str(), GetPath());
                 }
 
                 SetNextDirectoryPosition(next);
@@ -1674,7 +1674,7 @@ st_t FlexDisk::ExtendDirectory(s_dir_sector last_dir_sector,
                     sis_trk_sec.sec))
     {
         stream << sis_trk_sec;
-        throw FlexException(FERR_READING_TRKSEC, stream.str(), path);
+        throw FlexException(FERR_READING_TRKSEC, stream.str(), GetPath());
     }
 
     auto next = sis.sir.fc_start; // Get next trk-sec from start of free chain
@@ -1688,14 +1688,14 @@ st_t FlexDisk::ExtendDirectory(s_dir_sector last_dir_sector,
                      st_last.trk, st_last.sec))
     {
         stream << st_last;
-        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
+        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), GetPath());
     }
 
     s_dir_sector dir_sector{};
     if (!ReadSector(reinterpret_cast<Byte *>(&dir_sector), next.trk, next.sec))
     {
         stream << next;
-        throw FlexException(FERR_READING_TRKSEC, stream.str(), path);
+        throw FlexException(FERR_READING_TRKSEC, stream.str(), GetPath());
     }
 
     auto new_fc_start = dir_sector.next;
@@ -1707,7 +1707,7 @@ st_t FlexDisk::ExtendDirectory(s_dir_sector last_dir_sector,
                      next.sec))
     {
         stream << next;
-        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
+        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), GetPath());
     }
 
     sis.sir.fc_start = new_fc_start;
@@ -1726,7 +1726,7 @@ st_t FlexDisk::ExtendDirectory(s_dir_sector last_dir_sector,
                      sis_trk_sec.sec))
     {
         stream << sis_trk_sec;
-        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
+        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), GetPath());
     }
 
     return next;
@@ -1762,7 +1762,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
 
     if (headerSize > MAX_JVC_HEADERSIZE)
     {
-        throw FlexException(FERR_IS_NO_FILECONTAINER, path);
+        throw FlexException(FERR_IS_NO_FILECONTAINER, GetPath());
     }
 
     if (!headerSize)
@@ -1773,14 +1773,14 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
     fstream.seekg(0);
     if (fstream.fail())
     {
-        throw FlexException(FERR_READING_FROM, path);
+        throw FlexException(FERR_READING_FROM, GetPath());
     }
 
     header.resize(headerSize);
     fstream.read(reinterpret_cast<char *>(header.data()), headerSize);
     if (fstream.fail())
     {
-        throw FlexException(FERR_READING_FROM, path);
+        throw FlexException(FERR_READING_FROM, GetPath());
     }
 
     switch(headerSize)
@@ -1789,7 +1789,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[4]; // sector attribute flag
             if (temp != 0U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, path);
+                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
             }
             FALLTHROUGH;
 
@@ -1797,7 +1797,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[3]; // first sector ID
             if (temp != 1U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, path);
+                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
             }
             FALLTHROUGH;
 
@@ -1805,7 +1805,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[2]; // sector size count
             if (temp != 1U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, path);
+                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
             }
             FALLTHROUGH;
 
@@ -1813,7 +1813,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[1]; // side count
             if (temp < 1U || temp > 2U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, path);
+                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
             }
             FALLTHROUGH;
 
@@ -1821,7 +1821,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[0]; // sectors per track
             if (temp < 5U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, path);
+                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
             }
     }
 

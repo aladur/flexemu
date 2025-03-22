@@ -56,7 +56,7 @@ FlexemuConfigFile::FlexemuConfigFile(fs::path p_path) :
 
     if (!iniFile.IsValid())
     {
-        throw FlexException(FERR_UNABLE_TO_OPEN, path);
+        throw FlexException(FERR_UNABLE_TO_OPEN, GetPath());
     }
 }
 

@@ -37,7 +37,7 @@ FlexRamDisk::FlexRamDisk(const fs::path &p_path, std::ios::openmode mode,
     if (!is_flex_format)
     {
         // This file container only supports compatible FLEX file formats.
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, path);
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, GetPath());
     }
 
     param.options |= DiskOptions::RAM;
@@ -48,7 +48,7 @@ FlexRamDisk::FlexRamDisk(const fs::path &p_path, std::ios::openmode mode,
     fstream.seekg(param.offset);
     if (fstream.fail())
     {
-        throw FlexException(FERR_READING_FROM, path);
+        throw FlexException(FERR_READING_FROM, GetPath());
     }
 
     // read whole disk content into memory.
@@ -56,7 +56,7 @@ FlexRamDisk::FlexRamDisk(const fs::path &p_path, std::ios::openmode mode,
                  param.byte_p_sector * sectors);
     if (fstream.fail())
     {
-        throw FlexException(FERR_READING_FROM, path);
+        throw FlexException(FERR_READING_FROM, GetPath());
     }
 }
 
@@ -109,7 +109,7 @@ bool FlexRamDisk::close()
 
     if (throwException)
     {
-        throw FlexException(FERR_WRITING_TO, path);
+        throw FlexException(FERR_WRITING_TO, GetPath());
     }
 
     return true;
