@@ -22,7 +22,6 @@
 
 
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 #include "bdir.h"
 #include <string>
 #include <fstream>
@@ -169,11 +168,6 @@ TEST_F(test_BDirectory, fct_GetFiles)
     {
         const auto path = createTestDirectoryPathFor(index);
         const auto items = BDirectory::GetFiles(path.u8string());
-
-        for (const auto &item : items)
-        {
-            std::cout << item << "\n";
-        }
 
         if ((index & HAS_FILES) != 0U)
         {
