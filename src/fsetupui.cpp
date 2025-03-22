@@ -1093,22 +1093,21 @@ QUrl FlexemuOptionsUi::CreateDocumentationUrl(
     return QUrl::fromLocalFile(QString::fromStdString(path.u8string()));
 }
 
-std::string FlexemuOptionsUi::CreateHref(const char *encoded_url,
-                                         const char *description)
+QString FlexemuOptionsUi::CreateHref(const QString &encoded_url,
+                                     const QString &description)
 {
-    return std::string("<a href=\"") + encoded_url +
-           "\">" + description + "</a>";
+    return QString(u8"<a href=\"") + encoded_url +
+           u8"\">" + description + u8"</a>";
 }
 
 void FlexemuOptionsUi::InitializeHardwareHyperlink(const fs::path &doc_dir)
 {
     auto url = CreateDocumentationUrl(doc_dir, fs::u8path(u8"e2hwdesc.htm"));
-    auto href = CreateHref(url.toEncoded().data(),
-                           "Eurocom II hardware description");
+    auto href = CreateHref(url.toString(), u8"Eurocom II hardware description");
 
     l_hardwareLink->setOpenExternalLinks(true);
     l_hardwareLink->setTextFormat(Qt::RichText);
-    l_hardwareLink->setText(QString(href.c_str()));
+    l_hardwareLink->setText(href);
 }
 
 void FlexemuOptionsUi::OnAccepted()

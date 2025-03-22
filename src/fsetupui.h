@@ -104,8 +104,8 @@ private:
 
     static QUrl CreateDocumentationUrl(const fs::path &doc_dir,
                                        const fs::path &html_file);
-    static std::string CreateHref(const char *encoded_url,
-                                  const char *description);
+    static QString CreateHref(const QString &ncoded_url,
+                              const QString &description);
     static QString GetRelativePath(
             const QString &directory,
             const QString &filePath);
