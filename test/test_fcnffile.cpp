@@ -45,8 +45,13 @@ static bool createCnfFile(const fs::path &path)
             "vico1=FD20\n"
             "rtc=FDD0,25\n"
             "pia2=0,1000\n"
-            "[IoDeviceLogging]\n"
+            "[IoDeviceLogging]\n";
+        ofs <<
+#ifdef _WIN32
+            "logFilePath=C:\\dir\\subdir\\subdir\\file.log\n"
+#else
             "logFilePath=/dir/subdir/subdir/file.log\n"
+#endif
             "devices=mmu,pia1,acia1\n"
             "[SERPARAddress]\n"
             "neumon54.hex=EE09\n"
@@ -58,8 +63,13 @@ static bool createCnfFile(const fs::path &path)
             "mon54-6.s19= # \n"
             "[DebugSupport]\n"
             "presetRAM=1\n"
-            "logMdcr=1\n"
+            "logMdcr=1\n";
+        ofs <<
+#ifdef _WIN32
+            "logMdcrFilePath=C:\\dir\\subdir\\subdir\\mdcr.log\n";
+#else
             "logMdcrFilePath=/dir/subdir/subdir/mdcr.log\n";
+#endif
         retval = ofs.good();
         ofs.close();
         return retval;
@@ -172,6 +182,25 @@ TEST(test_fcnffile, fct_ReadIoDevices)
     fs::remove(path);
 }
 
+TEST(test_fcnffile, fct_GetIoDeviceLogging)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf41.conf";
+    ASSERT_TRUE(createCnfFile(path));
+    FlexemuConfigFile cnfFile(path);
+    ASSERT_TRUE(cnfFile.IsValid());
+    const auto &[logPath, devices] = cnfFile.GetIoDeviceLogging();
+#ifdef _WIN32
+    EXPECT_EQ(pair.first, u8"C:\\dir\\subdir\\subdir\\file.log");
+#else
+    EXPECT_EQ(logPath, u8"/dir/subdir/subdir/file.log");
+#endif
+    EXPECT_TRUE(devices.find("mmu") != devices.end());
+    EXPECT_TRUE(devices.find("pia1") != devices.end());
+    EXPECT_TRUE(devices.find("acia1") != devices.end());
+    EXPECT_TRUE(devices.find("pia2") == devices.end());
+    fs::remove(path);
+}
+
 TEST(test_fcnffile, fct_GetDebugSupportOption)
 {
     const auto path = fs::temp_directory_path() / u8"cnf5.conf";
@@ -183,7 +212,11 @@ TEST(test_fcnffile, fct_GetDebugSupportOption)
     value = cnfFile.GetDebugSupportOption("logMdcr");
     EXPECT_EQ(value, "1");
     value = cnfFile.GetDebugSupportOption("logMdcrFilePath");
+#ifdef _WIN32
+    EXPECT_EQ("C:\\dir\\subdir\\subdir\\mdcr.log");
+#else
     EXPECT_EQ(value, "/dir/subdir/subdir/mdcr.log");
+#endif
     value = cnfFile.GetDebugSupportOption("invalidKey");
     EXPECT_TRUE(value.empty());
     fs::remove(path);
@@ -411,7 +444,11 @@ TEST(test_fcnffile, unicode_filename)
     value = cnfFile.GetDebugSupportOption("logMdcr");
     EXPECT_EQ(value, "1");
     value = cnfFile.GetDebugSupportOption("logMdcrFilePath");
+#ifdef _WIN32
+    EXPECT_EQ(value, "C:\\dir\\subdir\\subdir\\mdcr.log");
+#else
     EXPECT_EQ(value, "/dir/subdir/subdir/mdcr.log");
+#endif
     value = cnfFile.GetDebugSupportOption("invalidKey");
     EXPECT_TRUE(value.empty());
     fs::remove(path);
