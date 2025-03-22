@@ -395,11 +395,11 @@ static int load_flex_binary(std::istream &istream, MemoryTarget<DWord> &memtgt,
     return 0;
 }
 
-int load_hexfile(const fs::path &filename, MemoryTarget<DWord> &memtgt,
+int load_hexfile(const fs::path &path, MemoryTarget<DWord> &memtgt,
                  DWord &startAddress)
 {
     Word ch;
-    std::ifstream istream(filename, std::ios_base::in | std::ios_base::binary);
+    std::ifstream istream(path, std::ios_base::in | std::ios_base::binary);
 
     if (!istream.is_open())
     {
@@ -412,7 +412,7 @@ int load_hexfile(const fs::path &filename, MemoryTarget<DWord> &memtgt,
     if (ch != 0x02)
     {
         istream.close();
-        istream.open(filename, std::ios_base::in);
+        istream.open(path, std::ios_base::in);
         if (!istream.is_open())
         {
             return -1; // Could not open file for reading
@@ -437,10 +437,10 @@ int load_hexfile(const fs::path &filename, MemoryTarget<DWord> &memtgt,
     return -3; // Unknown or invalid file format
 }
 
-int load_flex_binary(const fs::path &filename, MemoryTarget<DWord> &memtgt,
+int load_flex_binary(const fs::path &path, MemoryTarget<DWord> &memtgt,
                      DWord &startAddress)
 {
-    std::ifstream istream(filename, std::ios_base::in | std::ios_base::binary);
+    std::ifstream istream(path, std::ios_base::in | std::ios_base::binary);
 
     if (!istream.is_open())
     {
@@ -653,7 +653,7 @@ static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
 }
 
 static int write_hexfile(
-    const fs::path &filename,
+    const fs::path &path,
     const MemorySource<DWord> &memsrc,
     const std::function<int(WBType, std::ostream&, const Byte *, DWord,
         DWord)>& write_buffer,
@@ -667,7 +667,7 @@ static int write_hexfile(
                          std::ios_base::binary :
                          std::ios_base::out |
                          std::ios_base::trunc;
-    std::ofstream ostream(filename, mode);
+    std::ofstream ostream(path, mode);
 
     if (!ostream.is_open())
     {
@@ -732,35 +732,35 @@ static int write_hexfile(
     return result;
 }
 
-int write_intel_hex(const fs::path &filename,
+int write_intel_hex(const fs::path &path,
                     const MemorySource<DWord> &memsrc,
                     DWord startAddress)
 {
-    return write_hexfile(filename, memsrc, write_buffer_intelhex, 32,
+    return write_hexfile(path, memsrc, write_buffer_intelhex, 32,
                          startAddress, false);
 }
 
-int write_motorola_srecord(const fs::path &filename,
+int write_motorola_srecord(const fs::path &path,
                            const MemorySource<DWord> &memsrc,
                            DWord startAddress)
 {
-    return write_hexfile(filename, memsrc, write_buffer_motorola_srec, 32,
+    return write_hexfile(path, memsrc, write_buffer_motorola_srec, 32,
                          startAddress, false);
 }
 
-int write_raw_binary(const fs::path &filename,
+int write_raw_binary(const fs::path &path,
                      const MemorySource<DWord> &memsrc,
                      DWord startAddress)
 {
-    return write_hexfile(filename, memsrc, write_buffer_raw_binary, 32,
+    return write_hexfile(path, memsrc, write_buffer_raw_binary, 32,
                          startAddress, true);
 }
 
-int write_flex_binary(const fs::path &filename,
+int write_flex_binary(const fs::path &path,
                       const MemorySource<DWord> &memsrc,
                       DWord startAddress)
 {
-    return write_hexfile(filename, memsrc, write_buffer_flex_binary, 255,
+    return write_hexfile(path, memsrc, write_buffer_flex_binary, 255,
                          startAddress, true);
 }
 

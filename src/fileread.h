@@ -33,25 +33,25 @@
 namespace fs = std::filesystem;
 
 
-extern int load_hexfile(const fs::path &filename,
+extern int load_hexfile(const fs::path &path,
                         MemoryTarget<DWord> &memtgt,
                         DWord &startAddress);
-extern int load_flex_binary(const fs::path &filename,
+extern int load_flex_binary(const fs::path &path,
                             MemoryTarget<DWord> &memtgt,
                             DWord &startAddress);
-extern int write_flex_binary(const fs::path &filename,
+extern int write_flex_binary(const fs::path &path,
                              const MemorySource<DWord> &memsrc,
                              DWord startAddress =
                                  std::numeric_limits<DWord>::max());
-extern int write_intel_hex(const fs::path &filename,
+extern int write_intel_hex(const fs::path &path,
                            const MemorySource<DWord> &memsrc,
                            DWord startAddress =
                               std::numeric_limits<DWord>::max());
-extern int write_motorola_srecord(const fs::path &filename,
+extern int write_motorola_srecord(const fs::path &path,
                                   const MemorySource<DWord> &memsrc,
                                   DWord startAddress =
                                    std::numeric_limits<DWord>::max());
-extern int write_raw_binary(const fs::path &filename,
+extern int write_raw_binary(const fs::path &path,
                             const MemorySource<DWord> &memsrc,
                             DWord startAddress =
                                 std::numeric_limits<DWord>::max());
