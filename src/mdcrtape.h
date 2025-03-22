@@ -33,8 +33,6 @@
 namespace fs = std::filesystem;
 
 
-const int TYPE_MDCR_CONTAINER = 0x100; /* file container with MDCR format */
-
 class MiniDcrTape;
 
 using MiniDcrTapePtr = std::unique_ptr<MiniDcrTape>;
