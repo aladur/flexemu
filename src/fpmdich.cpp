@@ -610,7 +610,7 @@ void FlexplorerMdiChild::Info()
     diskAttributes.GetTrackSector(tracks, sectors);
 
     auto title = tr("Disk image %1 #%2")
-        .arg(diskAttributes.GetName().c_str())
+        .arg(QString::fromStdString(diskAttributes.GetDiskname()))
         .arg(diskAttributes.GetNumber());
 
     OpenDiskStatusDialog(this, title, diskAttributes);

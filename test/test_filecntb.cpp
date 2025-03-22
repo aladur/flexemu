@@ -107,7 +107,7 @@ protected:
         }
         EXPECT_EQ(diskInfo.GetOptions(), options);
         EXPECT_EQ(diskInfo.GetPath(), path);
-        EXPECT_EQ(diskInfo.GetName(), diskName);
+        EXPECT_EQ(diskInfo.GetDiskname(), diskName);
         EXPECT_EQ(diskInfo.GetNumber(), diskNumber);
         int tracks = 0;
         int sectors = 0;

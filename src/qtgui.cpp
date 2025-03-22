@@ -1432,7 +1432,7 @@ void QtGui::UpdateDiskStatus(Word floppyIndex, DiskStatus oldStatus,
         return tr("Disk #%1 %2")
             .arg(idx)
             .arg(diskAttributes.GetIsFlexFormat() ?
-                QString::fromStdString(diskAttributes.GetName()) :
+                QString::fromStdString(diskAttributes.GetDiskname()) :
                 QString::fromStdString(diskAttributes.GetPath().filename()
                     .u8string()));
     };

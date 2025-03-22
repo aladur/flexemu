@@ -313,7 +313,7 @@ std::string E2floppy::drive_attributes_string(Word drive_nr)
 
         if (diskAttributes.GetIsFlexFormat())
         {
-            stream << "name:       " << diskAttributes.GetName() << " #" <<
+            stream << "name:       " << diskAttributes.GetDiskname() << " #" <<
                                         diskAttributes.GetNumber() << '\n';
         }
         stream << "path:       " << diskAttributes.GetPath() << '\n'

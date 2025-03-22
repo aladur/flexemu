@@ -179,7 +179,7 @@ void OpenDiskStatusDialog(QWidget *parent,
         if (diskAttributes.GetIsFlexFormat())
         {
             model.setItem(row, 0, new QStandardItem(QObject::tr("Name")));
-            text = diskAttributes.GetName().c_str();
+            text = QString::fromStdString(diskAttributes.GetDiskname());
             model.setItem(row++, 1, new QStandardItem(text));
             model.setItem(row, 0, new QStandardItem(QObject::tr("Number")));
             text = QString::number(diskAttributes.GetNumber());

@@ -80,7 +80,7 @@ void DrawnWidget::paintEvent(QPaintEvent *event)
 
         diskAttributes.GetTrackSector(tracks, sectors);
         QString trkSec = tr("%1/%2 trk/sec").arg(tracks).arg(sectors);
-        auto name = QString(diskAttributes.GetName().c_str());
+        auto name = QString::fromStdString((diskAttributes.GetDiskname()));
         QString numberString = tr("#%1").arg(diskAttributes.GetNumber());
         auto date = diskAttributes.GetDate();
         auto qdate = QDate(date.GetYear(), date.GetMonth(), date.GetDay());

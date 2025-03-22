@@ -324,7 +324,7 @@ static int ListDirectoryOfDskFile(const fs::path &dsk_file,
         hasAttributes = true;
         std::cout <<
             "FILE: " << dsk_file.filename() << "  " <<
-            "DISK: " << diskAttributes.GetName() <<
+            "DISK: " << diskAttributes.GetDiskname() <<
             " #" << diskAttributes.GetNumber() <<
             "  CREATED: " << diskAttributes.GetDate().GetDateString(format) <<
             "\n";
@@ -442,7 +442,7 @@ static int SummaryOfDskFile(const fs::path &dsk_file,
         }
         sum_files += file_count;
 
-        auto name = diskAttributes.GetName();
+        auto name = diskAttributes.GetDiskname();
         if (name.empty())
         {
             name = "\"\"";

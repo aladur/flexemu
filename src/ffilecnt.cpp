@@ -509,7 +509,7 @@ bool FlexDisk::GetDiskAttributes(FlexDiskAttributes &diskAttributes) const
         diskAttributes.SetTotalSize((sis.sir.last.sec *
                                     (sis.sir.last.trk + 1)) *
                                     param.byte_p_sector);
-        diskAttributes.SetName(disk_name);
+        diskAttributes.SetDiskname(disk_name);
         diskAttributes.SetNumber(
                 flx::getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     }

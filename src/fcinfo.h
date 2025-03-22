@@ -46,7 +46,7 @@ private:
     fs::path path; // path of container file
     int sectors{0}; // Number of sectors per track
     int tracks{0}; // Number of tracks
-    std::string name; // name of disk
+    std::string diskname; // name of disk
     unsigned int number{0U};// disk number
     DiskType type{}; // disk type
     DiskOptions options{}; // disk options
@@ -67,9 +67,9 @@ public:
     FlexDiskAttributes &operator=(const FlexDiskAttributes &src) = default;
     FlexDiskAttributes &operator=(FlexDiskAttributes &&src) = default;
 
-    void SetName(const std::string &n)
+    void SetDiskname(const std::string &p_diskname)
     {
-        name = n;
+        diskname = p_diskname;
         is_valid = true;
     }
 
@@ -157,9 +157,9 @@ public:
     }
 
     /* Property only valid if GetIsFlexFormat() == true */
-    inline std::string GetName() const
+    inline std::string GetDiskname() const
     {
-        return name;
+        return diskname;
     }
 
     /* Property only valid if GetIsFlexFormat() == true */

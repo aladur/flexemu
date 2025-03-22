@@ -51,7 +51,7 @@ class FlexDiskIteratorImp;
         \
         GetDiskAttributes(diskAttributes);              \
         throw FlexException(FERR_CONTAINER_IS_READONLY, \
-                            diskAttributes.GetName());  \
+                            diskAttributes.GetDiskname());  \
     }
 
 // class FlexDisk implements both the sector and file oriented interface
