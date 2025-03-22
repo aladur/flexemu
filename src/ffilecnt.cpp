@@ -1345,7 +1345,7 @@ void FlexDisk::Create_boot_sectors(BootSectorBuffer_t &bootSectors,
 }
 
 void FlexDisk::Create_sys_info_sector(s_sys_info_sector &sis,
-        const std::string &name,
+        const std::string &filename,
         struct s_formats &format)
 {
     int start;
@@ -1353,7 +1353,7 @@ void FlexDisk::Create_sys_info_sector(s_sys_info_sector &sis,
 
     memset(&sis, 0, sizeof(sis));
 
-    auto diskname = getDiskName(name);
+    auto diskname = getDiskName(filename);
     diskname.resize(FLEX_DISKNAME_LENGTH);
     std::copy_n(diskname.cbegin(), FLEX_DISKNAME_LENGTH,
             std::begin(sis.sir.disk_name));
@@ -1528,8 +1528,8 @@ void FlexDisk::Format_disk(
         }
 
         s_sys_info_sector sis{};
-        const auto diskname = getDiskName(path.filename().u8string());
-        Create_sys_info_sector(sis, diskname, format);
+        const auto filename = path.filename().u8string();
+        Create_sys_info_sector(sis, filename, format);
 
         fstream.write(reinterpret_cast<const char *>(&sis), sizeof(sis));
         if (fstream.fail())
