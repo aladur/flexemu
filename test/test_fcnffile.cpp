@@ -417,3 +417,48 @@ TEST(test_fcnffile, unicode_filename)
     fs::remove(path);
 }
 
+TEST(test_fcnffile, fct_GetIoDeviceLogging_unicode)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf9.conf";
+#ifdef _WIN32
+    const auto *pLogPath = u8"C:\\Temp\\my \u2665 device log File.log";
+#else
+    const auto *pLogPath = u8"/tmp/my \u2665 device log File.log";
+#endif
+    const auto logPath = fs::u8path(pLogPath);
+    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[IoDeviceLogging]\n"
+        "logFilePath= " << logPath.u8string() << " \n"
+        "devices=mmu\n";
+    ofs.close();
+    FlexemuConfigFile cnfFile(path);
+    ASSERT_TRUE(cnfFile.IsValid());
+    const auto pair = cnfFile.GetIoDeviceLogging();
+    EXPECT_EQ(pair.first, std::string(pLogPath));
+    fs::remove(path);
+}
+
+TEST(test_fcnffile, fct_GetDebugSupportOption_unicode)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf10.conf";
+#ifdef _WIN32
+    const auto *pLogPath = u8"C:\\Temp\\my \u2665 mdcr log File.log";
+#else
+    const auto *pLogPath = u8"/tmp/my \u2665 mdcr log File.log";
+#endif
+    const auto logPath = fs::u8path(pLogPath);
+    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[DebugSupport]\n"
+        "logMdcrFilePath= " << logPath.u8string() << " \n";
+    ofs.close();
+    FlexemuConfigFile cnfFile(path);
+    ASSERT_TRUE(cnfFile.IsValid());
+    auto value = fs::u8path(cnfFile.GetDebugSupportOption("logMdcrFilePath"));
+    EXPECT_EQ(value, fs::u8path(pLogPath));
+    fs::remove(path);
+}
+
