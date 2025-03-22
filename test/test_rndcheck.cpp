@@ -61,9 +61,9 @@ protected:
     std::vector<std::string> randomListFiles;
     const fs::path temp_dir{ fs::temp_directory_path() };
 #ifdef _WIN32
-    static const auto perms = fs::perms::all;
+    static const auto write_perms = fs::perms::all;
 #else
-    static const auto perms = fs::perms::owner_write;
+    static const auto write_perms = fs::perms::owner_write;
 #endif
 
 public:
@@ -128,7 +128,7 @@ public:
             if ((idx == RWO || idx == RWDO))
             {
                 fs::permissions(randomListFiles[idx],
-                    perms, fs::perm_options::remove);
+                    write_perms, fs::perm_options::remove);
             }
 
 #ifndef _WIN32
@@ -154,7 +154,7 @@ public:
             if (fs::exists(randomListFiles[idx]))
             {
                 fs::permissions(randomListFiles[idx],
-                    perms, fs::perm_options::add);
+                    write_perms, fs::perm_options::add);
             }
 
 #ifndef _WIN32

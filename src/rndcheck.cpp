@@ -295,9 +295,9 @@ bool RandomFileCheck::RemoveRandomFileAttribute(const std::string &filename)
     }
 #endif
 #ifdef UNIX
-    const auto perms =
+    const auto exec_perms =
         fs::perms::owner_exec | fs::perms::group_exec | fs::perms::others_exec;
-    fs::permissions(path, perms, fs::perm_options::remove);
+    fs::permissions(path, exec_perms, fs::perm_options::remove);
     return true;
 #endif
 

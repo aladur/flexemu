@@ -75,9 +75,9 @@ protected:
     // https://docs.microsoft.com/en-us/cpp/standard-library/filesystem-enumerations?view=vs-2017#perms
     // https://docs.microsoft.com/en-us/cpp/standard-library/filesystem?view=vs-2017
 #ifdef _WIN32
-    static const auto perms = fs::perms::all;
+    static const auto write_perms = fs::perms::all;
 #else
-    static const auto perms = fs::perms::owner_write;
+    static const auto write_perms = fs::perms::owner_write;
 #endif
 
     virtual int GetMaxDiskIndex()
@@ -110,7 +110,8 @@ protected:
                     const auto srcFile = fs::current_path() / "data" /
                         (std::string("testdisk") + ext);
                     ASSERT_TRUE(fs::copy_file(srcFile, diskPath));
-                    fs::permissions(diskPath, perms, fs::perm_options::add);
+                    fs::permissions(diskPath, write_perms,
+                            fs::perm_options::add);
                 }
             }
         }
@@ -120,7 +121,7 @@ protected:
             const auto diskPath = (temp_dir / diskFiles[idx][DIR]).u8string();
             ASSERT_TRUE(fs::create_directory(diskPath)) << "path=" << diskPath;
 #ifndef _WIN32
-            fs::permissions(diskPath, perms, fs::perm_options::add);
+            fs::permissions(diskPath, write_perms, fs::perm_options::add);
 #endif
         }
 
@@ -153,13 +154,15 @@ protected:
 
             if (fs::exists(filePath))
             {
-                fs::permissions(filePath, perms, fs::perm_options::remove);
+                fs::permissions(filePath, write_perms,
+                        fs::perm_options::remove);
             }
 
 #ifndef _WIN32
             if (idx == RO && fs::exists(diskPath))
             {
-                fs::permissions(diskPath, perms, fs::perm_options::remove);
+                fs::permissions(diskPath, write_perms,
+                        fs::perm_options::remove);
             }
 #endif
         }
@@ -179,11 +182,11 @@ protected:
             const auto filePath = diskPath / "test01.txt";
 
 #ifndef _WIN32
-            fs::permissions(diskPath, perms, fs::perm_options::add);
+            fs::permissions(diskPath, write_perms, fs::perm_options::add);
 #endif
             if (fs::exists(filePath))
             {
-                fs::permissions(filePath, perms, fs::perm_options::add);
+                fs::permissions(filePath, write_perms, fs::perm_options::add);
             }
             fs::remove_all(diskPath);
         }
