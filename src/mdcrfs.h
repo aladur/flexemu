@@ -58,7 +58,7 @@ class MdcrFileSystem
 {
     private:
         static void SetFilename(std::vector<Byte>::iterator &iter,
-                         const char *mdcrFilename);
+                         const std::string &mdcrFilename);
         static std::string GetFilename(std::vector<Byte>::const_iterator &iter);
         static Byte CalculateChecksum(std::vector<Byte>::const_iterator &iter,
                                size_t size);
@@ -66,7 +66,7 @@ class MdcrFileSystem
         static const int MaxRecordSize{1024};
 
     public:
-        static std::string CreateMdcrFilename(const char *name,
+        static std::string CreateMdcrFilename(const std::string &name,
                                               bool toUppercase);
 
         static MdcrStatus ReadFile(

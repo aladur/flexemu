@@ -58,13 +58,13 @@ const std::string &GetMdcrError(int index)
 // - Up to 6 ASCII characters
 // - Unused characters filled up with space, ' '
 // - If string is empty or starts with a dot return 'MYFILE'.
-std::string MdcrFileSystem::CreateMdcrFilename(const char *name,
+std::string MdcrFileSystem::CreateMdcrFilename(const std::string &name,
                                                bool toUppercase)
 {
     std::string result = { ' ', ' ', ' ', ' ', ' ', ' ' };
     int index;
 
-    if (name == nullptr || name[0] == '\0' || name[0] == '.')
+    if (name.empty() || (!name.empty() && name[0] == '.'))
     {
         return "MYFILE";
     }
@@ -86,7 +86,7 @@ std::string MdcrFileSystem::CreateMdcrFilename(const char *name,
 
 // Copy the MDCR file name in to the record (up to 6 characters).
 void MdcrFileSystem::SetFilename(std::vector<Byte>::iterator &iter,
-                                 const char *filename)
+                                 const std::string &filename)
 {
     // Make shure that the file name always has exactly 6 characters.
     std::string mdcrFilename =
@@ -217,7 +217,7 @@ MdcrStatus MdcrFileSystem::WriteFile(
     std::vector<Byte> ibuffer;
     std::vector<Byte> obuffer;
     std::string filename = filepath.filename().u8string();
-    std::string mdcrFilename = CreateMdcrFilename(filename.c_str(), toUppercase);
+    std::string mdcrFilename = CreateMdcrFilename(filename, toUppercase);
 
     if (mdcr.IsWriteProtected())
     {
@@ -284,7 +284,7 @@ MdcrStatus MdcrFileSystem::WriteFile(
     // - Checksum: Sum of byte 1 ... 10.
 
     *(iter++) = 0x55;
-    SetFilename(iter, mdcrFilename.c_str());
+    SetFilename(iter, mdcrFilename);
     *(iter++) = (addressRange.lower() >> 8U) & 0xFFU;
     *(iter++) = addressRange.lower() & 0xFFU;
     *(iter++) = (addressRange.upper() >> 8U) & 0xFFU;
