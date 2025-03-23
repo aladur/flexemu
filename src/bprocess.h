@@ -51,13 +51,13 @@ public:
     {
         return arguments;
     };
-    const char *GetDirectory()  const
+    std::string GetDirectory()  const
     {
-        return directory.c_str();
+        return directory;
     };
-    const char *GetExecutable() const
+    std::string GetExecutable() const
     {
-        return executable.c_str();
+        return executable;
     };
 
 protected:
