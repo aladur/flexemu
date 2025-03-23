@@ -57,7 +57,7 @@ namespace fs = std::filesystem;
 // DEBUG_VERBOSE defines the verbosity:
 // 1: Log any read/write access to a sector.
 // 2: Same as 1, additionally log sector dump.
-//#define DEBUG_FILE get_unique_filename("log").c_str()
+//#define DEBUG_FILE get_unique_filename("log")
 #ifdef DEBUG_FILE
     #define DEBUG_VERBOSE 2
     #include "debug.h"

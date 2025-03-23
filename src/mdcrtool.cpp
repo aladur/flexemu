@@ -200,7 +200,7 @@ static int ExtractFromMdcrFile(const fs::path &targetDir, const fs::path &ifile)
                           BMemoryBuffer &memory)
     {
         auto pos = filename.find_last_not_of(' ');
-        std::string outFilename(filename.c_str(), pos+1);
+        std::string outFilename(filename, pos+1);
         const auto path = targetDir / outFilename;
 
         auto result = write_flex_binary(path, memory);

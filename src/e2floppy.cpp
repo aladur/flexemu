@@ -308,8 +308,7 @@ std::string E2floppy::drive_attributes_string(Word drive_nr)
 
         diskAttributes.GetTrackSector(trk, sec);
         stream << "drive       #" << drive_nr << '\n'
-            << "type:       " << diskAttributes.GetTypeString().c_str()
-            << '\n';
+            << "type:       " << diskAttributes.GetTypeString() << '\n';
 
         if (diskAttributes.GetIsFlexFormat())
         {

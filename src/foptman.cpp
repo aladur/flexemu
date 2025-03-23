@@ -503,7 +503,7 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::Color:
-            reg.SetValue(FLEXCOLOR, options.color.c_str());
+            reg.SetValue(FLEXCOLOR, options.color);
             break;
 
         case FlexemuOptionId::NColors:
@@ -596,7 +596,7 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::PrintFont:
-            reg.SetValue(FLEXPRINTFONT, options.printFont.c_str());
+            reg.SetValue(FLEXPRINTFONT, options.printFont);
             break;
 
         case FlexemuOptionId::IsPrintPageBreakDetected:
@@ -605,33 +605,32 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::PrintOrientation:
-            reg.SetValue(FLEXPRINTORIENTATION,
-                    options.printOrientation.c_str());
+            reg.SetValue(FLEXPRINTORIENTATION, options.printOrientation);
             break;
 
         case FlexemuOptionId::PrintPageSize:
-            reg.SetValue(FLEXPRINTPAGESIZE, options.printPageSize.c_str());
+            reg.SetValue(FLEXPRINTPAGESIZE, options.printPageSize);
             break;
 
         case FlexemuOptionId::PrintUnit:
-            reg.SetValue(FLEXPRINTUNIT, options.printUnit.c_str());
+            reg.SetValue(FLEXPRINTUNIT, options.printUnit);
             break;
 
         case FlexemuOptionId::PrintOutputWindowGeometry:
             reg.SetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
-                    options.printOutputWindowGeometry.c_str());
+                    options.printOutputWindowGeometry);
             break;
 
         case FlexemuOptionId::PrintPreviewDialogGeometry:
             reg.SetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
-                    options.printPreviewDialogGeometry.c_str());
+                    options.printPreviewDialogGeometry);
             break;
 
         case FlexemuOptionId::PrintConfigs:
             for (const auto& [subKey, value] : options.printConfigs)
             {
                 const auto key = std::string(FLEXPRINTCONFIG) + subKey;
-                reg.SetValue(key.c_str(), value.c_str());
+                reg.SetValue(key.c_str(), value);
             }
             break;
 
