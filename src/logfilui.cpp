@@ -260,7 +260,7 @@ void Mc6809LoggerConfigUi::OnTextFormat() const
         const auto qPath = QDir::toNativeSeparators(e_logFilename->text());
         auto path = qPath.toStdString();
         path = flx::updateFilename(path, "mc6809", ".log");
-        e_logFilename->setText(path.c_str());
+        e_logFilename->setText(QString::fromStdString(path));
         g_csvSeparator->setEnabled(false);
     }
 }
@@ -272,7 +272,7 @@ void Mc6809LoggerConfigUi::OnCsvFormat() const
         const auto qPath = QDir::toNativeSeparators(e_logFilename->text());
         auto path = qPath.toStdString();
         path = flx::updateFilename(path, "mc6809", ".csv");
-        e_logFilename->setText(path.c_str());
+        e_logFilename->setText(QString::fromStdString(path));
         g_csvSeparator->setEnabled(true);
     }
 }

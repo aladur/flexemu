@@ -262,14 +262,16 @@ PrintOutputWindow::PrintOutputWindow(sOptions &p_options)
 
     toolBarLayout->addStretch(1);
 
-    auto font = GetFont(options.printFont.c_str());
+    auto font = GetFont(QString::fromStdString(options.printFont));
     fontComboBox->setCurrentFont(font);
 
-    auto index = GetOrientationKeys().indexOf(options.printOrientation.c_str());
+    auto index = GetOrientationKeys().indexOf(
+            QString::fromStdString(options.printOrientation));
     orientation = (index >= 0) ? GetOrientationValues()[index] : orientation;
-    index = GetPageSizeKeys().indexOf(options.printPageSize.c_str());
+    index = GetPageSizeKeys().indexOf(
+            QString::fromStdString(options.printPageSize));
     pageSizeId = (index >= 0) ? GetPageSizeValues()[index] : pageSizeId;
-    index = GetUnitKeys().indexOf(options.printUnit.c_str());
+    index = GetUnitKeys().indexOf(QString::fromStdString(options.printUnit));
     unit = (index >= 0) ? GetUnitValues()[index] : unit;
 
     const auto printOutputIcon = QIcon(":/resource/print-output.png");
@@ -762,7 +764,7 @@ void PrintOutputWindow::OnCyclicTimer()
 
 void PrintOutputWindow::OnUpdateGeometry()
 {
-    auto geometry = QString(options.printOutputWindowGeometry.c_str());
+    auto geometry = QString::fromStdString(options.printOutputWindowGeometry);
 
     ::UpdateWindowGeometry(*this, geometry);
 }
@@ -1061,7 +1063,8 @@ void PrintOutputWindow::RestorePrintConfig()
     margins = GetDefaultMarginsFor(pageSizeId);
     if (iter != options.printConfigs.end())
     {
-        auto list = QString(iter->second.c_str()).split(QLatin1Char(separator));
+        auto list = QString::fromStdString(iter->second)
+                        .split(QLatin1Char(separator));
 
         if (list.size() == 5)
         {

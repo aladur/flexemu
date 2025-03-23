@@ -106,7 +106,7 @@ FlexplorerTableModel::FlexplorerTableModel(const fs::path &p_path,
 
 QString FlexplorerTableModel::GetFileType(const FlexDirEntry &dirEntry)
 {
-    QString fileExtension(dirEntry.GetFileExt().c_str());
+    const auto fileExtension(QString::fromStdString(dirEntry.GetFileExt()));
 
     const auto &fileTypes = GetFileTypes();
     for (const auto &fileType : fileTypes)
@@ -147,7 +147,7 @@ QModelIndex FlexplorerTableModel::SetRow(const FlexDirEntry &dirEntry, int row,
     int column = 0;
 
     setData(index(row, column++), row, role);
-    QString fileName(dirEntry.GetTotalFileName().c_str());
+    const auto fileName(QString::fromStdString(dirEntry.GetTotalFileName()));
     setData(index(row, column++), fileName, role);
     auto fileType = GetFileType(dirEntry);
     setData(index(row, column++), fileType, role);
@@ -165,7 +165,8 @@ QModelIndex FlexplorerTableModel::SetRow(const FlexDirEntry &dirEntry, int row,
     QTime qtime(time.GetHour(), time.GetMinute());
     QDateTime qDateTime(qdate, qtime);
     setData(index(row, column++), qDateTime, role);
-    QString attributes(dirEntry.GetAttributesString().c_str());
+    const auto attributes(
+            QString::fromStdString(dirEntry.GetAttributesString()));
     setData(index(row, column), attributes, role);
 
     return index(row, 0);
@@ -317,7 +318,8 @@ QVector<Byte> FlexplorerTableModel::GetAttributes(
     {
         const auto &dirEntry = *iter;
 
-        if (filenames.contains(QString(dirEntry.GetTotalFileName().c_str())))
+        if (filenames.contains(
+                    QString::fromStdString(dirEntry.GetTotalFileName())))
         {
             attributes.append(dirEntry.GetAttributes());
         }
@@ -337,7 +339,8 @@ bool FlexplorerTableModel::GetAttributesString(const QModelIndex &index,
         iter = container->begin();
         if (iter != container->end())
         {
-            attributesString = (*iter).GetAttributesString().c_str();
+            attributesString =
+                QString::fromStdString((*iter).GetAttributesString());
             return true;
         }
     }

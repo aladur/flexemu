@@ -680,7 +680,7 @@ void QtGui::OnAbout()
 
         stream << "<tr><td>&#x2022;</td><td>" << version.first <<
             "</td><td>" << version.second + "</td></tr>";
-        versionsText.append(stream.str().c_str());
+        versionsText.append(QString::fromStdString(stream.str()));
     }
     versionsText.append("</table>");
     ui.e_versions->setOpenExternalLinks(true);
@@ -1393,7 +1393,7 @@ void QtGui::redraw_cpuview_impl(const Mc6809CpuStatus &/*status*/)
 {
     assert(cpuDialog != nullptr);
 
-    cpuUi.e_status->setText(cpustring.c_str());
+    cpuUi.e_status->setText(QString::fromStdString(cpustring));
 }
 
 void QtGui::PopupMessage(const QString &message)

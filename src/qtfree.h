@@ -60,7 +60,7 @@ public:
     UpdateWindowGeometryFtor() = delete;
     UpdateWindowGeometryFtor(QWidget *w, const std::string &p_geometry) :
         widget(w)
-      , geometry(QString(p_geometry.c_str())) { }
+      , geometry(QString::fromStdString(p_geometry)) { }
     UpdateWindowGeometryFtor(const UpdateWindowGeometryFtor &f) = default;
     void operator() ()
     {

@@ -170,7 +170,7 @@ void OpenDiskStatusDialog(QWidget *parent,
         }
 
         model.setItem(row, 0, new QStandardItem(QObject::tr("Type")));
-        text = diskAttributes.GetTypeString().c_str();
+        text = QString::fromStdString(diskAttributes.GetTypeString());
         model.setItem(row++, 1, new QStandardItem(text));
         model.setItem(row, 0, new QStandardItem(QObject::tr("Path")));
         text = QString::fromStdString(diskAttributes.GetPath().u8string());

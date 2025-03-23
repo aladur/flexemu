@@ -122,7 +122,8 @@ int main(int argc, char *argv[])
             msg << "<b>An exception has occured.</b><br>" << ex.what();
 
             QMessageBox::critical(nullptr, PROGRAMNAME " critical",
-                msg.str().c_str(), QMessageBox::Abort, QMessageBox::Abort);
+                QString::fromStdString(msg.str()),
+                QMessageBox::Abort, QMessageBox::Abort);
 
             return_code = 1;
         }

@@ -130,7 +130,7 @@ DiskType FlexplorerMdiChild::GetFlexDiskType() const
 QString FlexplorerMdiChild::GetSupportedAttributes() const
 {
     assert(model);
-    return {model->GetSupportedAttributes().c_str()};
+    return QString::fromStdString(model->GetSupportedAttributes());
 }
 
 int FlexplorerMdiChild::GetSelectedFilesCount() const
@@ -274,13 +274,13 @@ QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
 
         try
         {
-            auto rowIndicesFound =
-                model->FindFiles(buffer.GetFilename().c_str());
+            const auto filename = QString::fromStdString(buffer.GetFilename());
+            auto rowIndicesFound = model->FindFiles(filename);
             if (!rowIndicesFound.isEmpty())
             {
                 auto msg = tr("%1\nalready exists. Overwrite?");
 
-                msg = msg.arg(buffer.GetFilename().c_str());
+                msg = msg.arg(filename);
                 auto answer = QMessageBox::question(this, "FLEXplorer", msg,
                               QMessageBox::Yes | QMessageBox::No,
                               QMessageBox::Yes);
@@ -562,8 +562,8 @@ int FlexplorerMdiChild::SetSelectedAttributes(Byte setMask, Byte clearMask)
                 continue;
             }
 
-            QString attributesString =
-                dirEntry.GetAttributesString().c_str();
+            auto attributesString =
+                QString::fromStdString(dirEntry.GetAttributesString());
             auto attribIndex = model->index(index.row(),
                                       FlexplorerTableModel::COL_ATTRIBUTES);
             try
@@ -619,7 +619,7 @@ void FlexplorerMdiChild::Info()
 void FlexplorerMdiChild::SetupModel(const QString &path)
 {
     model = std::make_unique<FlexplorerTableModel>(
-                path.toStdString().c_str(), options, this);
+                fs::u8path(path.toStdString()), options, this);
     model->Initialize();
     setModel(model.get());
 }

@@ -612,7 +612,7 @@ void FLEXplorer::OnAbout()
 
         stream << "<tr><td>&#x2022;</td><td>" << version.first <<
             "</td><td>" << version.second + "</td></tr>";
-        versionsText.append(stream.str().c_str());
+        versionsText.append(QString::fromStdString(stream.str()));
     }
     versionsText.append("</table>");
     ui.e_versions->setOpenExternalLinks(true);
