@@ -58,8 +58,8 @@ public:
     std::vector<sIoDeviceMapping> ReadIoDevices() const;
     std::string GetDebugSupportOption(const std::string &key) const;
     std::pair<std::string, std::set<std::string> > GetIoDeviceLogging() const;
-    int GetSerparAddress(const fs::path &monitorFilePath) const;
-    Byte GetBootCharacter(const fs::path &monitorFilePath) const;
+    std::optional<int> GetSerparAddress(const fs::path &monitorFilePath) const;
+    std::optional<Byte> GetBootCharacter(const fs::path &monitorFilePath) const;
 
 private:
     fs::path path;

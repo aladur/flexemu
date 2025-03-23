@@ -32,6 +32,7 @@
 #include <deque>
 #include <mutex>
 #include <memory>
+#include <optional>
 
 // key mask for shift, control key
 enum : uint8_t {
@@ -45,7 +46,7 @@ class KeyboardIO
     std::deque<Byte> key_buffer_parallel;
     unsigned int keyMask{0};
     Word init_delay{500};
-    Byte boot_char{};
+    std::optional<Byte> optional_boot_char;
 
 public:
     static void set_bell(Word p_percent);
@@ -57,7 +58,7 @@ public:
     void put_value(unsigned int keyMask);
     void get_value(unsigned int *keyMask) const;
     void set_startup_command(const std::string &startup_command);
-    void set_boot_char(Byte p_boot_char);
+    void set_boot_char(const std::optional<Byte> &p_optional_boot_char);
 
     KeyboardIO();
 };

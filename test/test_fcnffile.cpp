@@ -27,6 +27,7 @@
 #include "flexerr.h"
 #include <fstream>
 #include <filesystem>
+#include <optional>
 
 namespace fs = std::filesystem;
 
@@ -233,25 +234,37 @@ TEST(test_fcnffile, fct_GetSerparAddress)
 #else
     auto monitorFilePath = fs::u8path(u8"/tmp/subdir1/neumon54.hex");
 #endif
-    auto value = cnfFile.GetSerparAddress(monitorFilePath);
-    EXPECT_EQ(value, 0xEE09);
-    value = cnfFile.GetSerparAddress(u8"NEUMON54.hex");
+    auto optional_value = cnfFile.GetSerparAddress(monitorFilePath);
+    EXPECT_TRUE(optional_value.has_value());
+    // false positive
+    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+    EXPECT_EQ(optional_value.value(), 0xEE09);
+    optional_value = cnfFile.GetSerparAddress(u8"NEUMON54.hex");
 #ifdef _WIN32
-    EXPECT_EQ(value, 0xEE09);
+    EXPECT_TRUE(optional_value.has_value());
+    // false positive
+    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+    EXPECT_EQ(optional_value.value(), 0xEE09);
 #else
-    EXPECT_EQ(value, -1);
+    EXPECT_FALSE(optional_value.has_value());
 #endif
-    value = cnfFile.GetSerparAddress(u8"mon54-6.s19");
-    EXPECT_EQ(value, 0xEE30);
+    optional_value = cnfFile.GetSerparAddress(u8"mon54-6.s19");
+    EXPECT_TRUE(optional_value.has_value());
+    // false positive
+    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+    EXPECT_EQ(optional_value.value(), 0xEE30);
     monitorFilePath = fs::u8path(u8"anydir") / u8"mon54.s19";
-    value = cnfFile.GetSerparAddress(monitorFilePath);
-    EXPECT_EQ(value, 0xEE20);
-    value = cnfFile.GetSerparAddress(u8"mon54.s19x");
-    EXPECT_EQ(value, -1);
-    value = cnfFile.GetSerparAddress(u8"");
-    EXPECT_EQ(value, -1);
-    value = cnfFile.GetSerparAddress(u8"unsupported_monitor.hex");
-    EXPECT_EQ(value, -1);
+    optional_value = cnfFile.GetSerparAddress(monitorFilePath);
+    EXPECT_TRUE(optional_value.has_value());
+    // false positive
+    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+    EXPECT_EQ(optional_value.value(), 0xEE20);
+    optional_value = cnfFile.GetSerparAddress(u8"mon54.s19x");
+    EXPECT_FALSE(optional_value.has_value());
+    optional_value = cnfFile.GetSerparAddress(u8"");
+    EXPECT_FALSE(optional_value.has_value());
+    optional_value = cnfFile.GetSerparAddress(u8"unsupported_monitor.hex");
+    EXPECT_FALSE(optional_value.has_value());
     fs::remove(path);
 }
 
@@ -266,25 +279,37 @@ TEST(test_fcnffile, fct_GetBootCharacter)
 #else
     auto monitorFilePath = fs::u8path(u8"/tmp/subdir1/neumon54.hex");
 #endif
-    auto value = cnfFile.GetBootCharacter(monitorFilePath);
-    EXPECT_EQ(value, 'E');
-    value = cnfFile.GetBootCharacter(u8"NEUMON54.hex");
+    auto optional_value = cnfFile.GetBootCharacter(monitorFilePath);
+    EXPECT_TRUE(optional_value.has_value());
+    // false positive
+    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+    EXPECT_EQ(optional_value.value(), 'E');
+    optional_value = cnfFile.GetBootCharacter(u8"NEUMON54.hex");
 #ifdef _WIN32
-    EXPECT_EQ(value, 'E');
+    EXPECT_TRUE(optional_value.has_value());
+    // false positive
+    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+    EXPECT_EQ(optional_value.value(), 'E');
 #else
-    EXPECT_EQ(value, '\0');
+    EXPECT_FALSE(optional_value.has_value());
 #endif
-    value = cnfFile.GetBootCharacter(u8"mon54-6.s19");
-    EXPECT_EQ(value, '#');
+    optional_value = cnfFile.GetBootCharacter(u8"mon54-6.s19");
+    EXPECT_TRUE(optional_value.has_value());
+    // false positive
+    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+    EXPECT_EQ(optional_value.value(), '#');
     monitorFilePath = fs::u8path(u8"anydir") / u8"mon54.s19";
-    value = cnfFile.GetBootCharacter(monitorFilePath);
-    EXPECT_EQ(value, 'a');
-    value = cnfFile.GetBootCharacter(u8"mon54.s19x");
-    EXPECT_EQ(value, '\0');
-    value = cnfFile.GetBootCharacter(u8"");
-    EXPECT_EQ(value, '\0');
-    value = cnfFile.GetBootCharacter(u8"unsupported_monitor.hex");
-    EXPECT_EQ(value, '\0');
+    optional_value = cnfFile.GetBootCharacter(monitorFilePath);
+    EXPECT_TRUE(optional_value.has_value());
+    // false positive
+    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+    EXPECT_EQ(optional_value.value(), 'a');
+    optional_value = cnfFile.GetBootCharacter(u8"mon54.s19x");
+    EXPECT_FALSE(optional_value.has_value());
+    optional_value = cnfFile.GetBootCharacter(u8"");
+    EXPECT_FALSE(optional_value.has_value());
+    optional_value = cnfFile.GetBootCharacter(u8"unsupported_monitor.hex");
+    EXPECT_FALSE(optional_value.has_value());
     fs::remove(path);
 }
 
@@ -396,6 +421,11 @@ TEST(test_fcnffile, fct_GetSerparAddress_exceptions)
     ASSERT_TRUE(cnfFile2.IsValid());
     EXPECT_THAT([&](){ cnfFile2.GetSerparAddress(u8"monitor.hex"); },
         testing::Throws<FlexException>());
+    auto optional_value = cnfFile2.GetSerparAddress(
+            u8"unsupported_monitor.hex");
+    EXPECT_FALSE(optional_value.has_value());
+    EXPECT_THAT([&](){ optional_value.value(); },
+        testing::Throws<std::bad_optional_access>());
     fs::remove(path);
 }
 
@@ -418,6 +448,11 @@ TEST(test_fcnffile, fct_GetBootCharacter_exceptions)
         testing::Throws<FlexException>());
     EXPECT_THAT([&](){ cnfFile1.GetBootCharacter(u8"monitor.xxx"); },
         testing::Throws<FlexException>());
+    auto optional_value = cnfFile1.GetBootCharacter(
+            u8"unsupported_monitor.hex");
+    EXPECT_FALSE(optional_value.has_value());
+    EXPECT_THAT([&](){ optional_value.value(); },
+        testing::Throws<std::bad_optional_access>());
     fs::remove(path);
 
     ofs.open(path, std::ios::out | std::ios::trunc);

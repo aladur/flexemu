@@ -31,6 +31,7 @@
 #include "soptions.h"
 #include <string>
 #include <memory>
+#include <optional>
 
 
 class Memory;
@@ -45,7 +46,7 @@ private:
     const struct sOptions &options;
     Mc146818 *rtc{nullptr}; // RTC is an optional device
     AbstractGui *gui{nullptr};
-    int local_serpar_address{-1};
+    std::optional<Word> local_serpar_address;
 
 public:
     void update_1_second();
@@ -63,7 +64,7 @@ public:
 public:
     bool is_serpar_address_valid() const;
     Word serpar_address() const;
-    void serpar_address(int value);
+    void serpar_address(const std::optional<Word> &optional_value);
     int read_serpar() const;
 
     // BObserver interface

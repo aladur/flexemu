@@ -47,6 +47,7 @@
 #include "scpulog.h"
 #include "cvtwchar.h"
 #include "termimpi.h"
+#include <optional>
 
 
 ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
@@ -282,8 +283,8 @@ int ApplicationRunner::startup(QApplication &app)
 
     FlexemuConfigFile configFile(flx::getFlexemuConfigFile());
 
-    auto address = configFile.GetSerparAddress(options.hex_file);
-    if (address < 0 || !terminalIO.is_terminal_supported())
+    auto optional_address = configFile.GetSerparAddress(options.hex_file);
+    if (!optional_address.has_value() || !terminalIO.is_terminal_supported())
     {
         // The specified hex_file does not support switching between
         // serial/parallel input/output or it is unknown how to switch.
@@ -291,7 +292,7 @@ int ApplicationRunner::startup(QApplication &app)
         // In any of these cases terminal mode has to be switched off.
         options.term_mode = false;
     }
-    inout.serpar_address(address);
+    inout.serpar_address(optional_address);
 
     inout.set_gui(&gui);
 
@@ -310,7 +311,7 @@ int ApplicationRunner::startup(QApplication &app)
     memory.reset_io();
     cpu.reset();
 
-    auto boot_char = configFile.GetBootCharacter(options.hex_file);
+    auto optional_boot_char = configFile.GetBootCharacter(options.hex_file);
     if (options.term_mode && terminalIO.is_terminal_supported())
     {
         terminalIO.set_startup_command(options.startup_command);
@@ -319,7 +320,7 @@ int ApplicationRunner::startup(QApplication &app)
     {
         keyboardIO.set_startup_command(options.startup_command);
     }
-    keyboardIO.set_boot_char(boot_char);
+    keyboardIO.set_boot_char(optional_boot_char);
 
     // start CPU thread
     cpuThread = std::make_unique<std::thread>(&Scheduler::run, &scheduler);

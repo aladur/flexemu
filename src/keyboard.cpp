@@ -34,7 +34,7 @@ KeyboardIO::KeyboardIO()
 void KeyboardIO::reset_parallel()
 {
     init_delay = 500;
-    boot_char = '\0';
+    optional_boot_char.reset();
     std::lock_guard<std::mutex> guard(parallel_mutex);
     key_buffer_parallel.clear();
 }
@@ -56,7 +56,7 @@ bool KeyboardIO::has_key_parallel(bool &do_notify)
 {
     do_notify = false;
 
-    if (boot_char != '\0')
+    if (optional_boot_char.has_value())
     {
         do_notify = true;
         return true;
@@ -92,10 +92,10 @@ Byte KeyboardIO::read_char_parallel(bool &do_notify)
 
     do_notify = false;
 
-    if (boot_char != '\0')
+    if (optional_boot_char.has_value())
     {
-        result = boot_char;
-        boot_char = '\0';
+        result = optional_boot_char.value();
+        optional_boot_char.reset();
         std::lock_guard<std::mutex> guard(parallel_mutex);
         if (!key_buffer_parallel.empty())
         {
@@ -181,8 +181,8 @@ void KeyboardIO::set_startup_command(const std::string &startup_command)
     }
 }
 
-void KeyboardIO::set_boot_char(Byte p_boot_char)
+void KeyboardIO::set_boot_char(const std::optional<Byte> &p_optional_boot_char)
 {
-    boot_char = p_boot_char;
+    optional_boot_char = p_optional_boot_char;
 }
 

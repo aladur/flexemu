@@ -29,6 +29,7 @@
 #include "absgui.h"
 #include "memory.h"
 #include "soptions.h"
+#include <optional>
 
 
 Inout::Inout(const struct sOptions &p_options, Memory &p_memory) :
@@ -93,18 +94,20 @@ void Inout::write_char_serial(Byte value)
 
 Word Inout::serpar_address() const
 {
-    return static_cast<Word>(local_serpar_address);
+    // Intentionally throw exception if value not set.
+    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+    return local_serpar_address.value();
 }
 
 bool Inout::is_serpar_address_valid() const
 {
-    return local_serpar_address >= 0 && local_serpar_address <= 0xffff;
+    return local_serpar_address.has_value();
 }
 
 // Set address of SERPAR label. A value < 0 invalidates the address.
-void Inout::serpar_address(int value)
+void Inout::serpar_address(const std::optional<Word> &optional_value)
 {
-    local_serpar_address = value;
+    local_serpar_address = optional_value;
 }
 
 int Inout::read_serpar() const

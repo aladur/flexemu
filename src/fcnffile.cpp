@@ -150,7 +150,8 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
     return deviceMappings;
 }
 
-int FlexemuConfigFile::GetSerparAddress(const fs::path &monitorFilePath)
+std::optional<int> FlexemuConfigFile::GetSerparAddress(
+        const fs::path &monitorFilePath)
     const
 {
     std::string fileName = monitorFilePath.filename().u8string();
@@ -194,7 +195,7 @@ int FlexemuConfigFile::GetSerparAddress(const fs::path &monitorFilePath)
                                         iniFile.GetPath());
                 }
 
-                return address;
+                return {address};
             }
 
             auto lineNumber = iniFile.GetLineNumber(section, iter.first);
@@ -205,7 +206,7 @@ int FlexemuConfigFile::GetSerparAddress(const fs::path &monitorFilePath)
         }
     }
 
-    return -1;
+    return {};
 }
 
 std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
@@ -321,11 +322,10 @@ bool FlexemuConfigFile::IsValid() const
     return iniFile.IsValid();
 }
 
-Byte FlexemuConfigFile::GetBootCharacter(const fs::path &monitorFilePath)
-    const
+std::optional<Byte> FlexemuConfigFile::GetBootCharacter(
+        const fs::path &monitorFilePath) const
 {
     std::string fileName = monitorFilePath.filename().u8string();
-    Byte result{};
 
 #ifdef _WIN32
     flx::strlower(fileName);
@@ -354,9 +354,9 @@ Byte FlexemuConfigFile::GetBootCharacter(const fs::path &monitorFilePath)
                                         iter.first + "=" + iter.second,
                                         iniFile.GetPath());
             }
-            result = static_cast<Byte>(iter.second[0]);
+            return {iter.second[0]};
         }
     }
 
-    return result;
+    return {};
 }
