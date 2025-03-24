@@ -31,6 +31,10 @@
 #include "soptions.h"
 #include <string>
 #include <array>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 enum : uint8_t {
 MAX_COMMAND = 128,
@@ -64,6 +68,7 @@ protected:
     // private interface:
 private:
     std::string next_token(command_t::iterator &iter, int &count);
+    static fs::path convert_path(const std::string& path);
 
     // public interface
 public:

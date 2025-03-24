@@ -120,21 +120,6 @@ bool E2floppy::mount_drive(const fs::path &path,
     {
         IFlexDiskBySectorPtr pfloppy;
 
-#ifdef _WIN32
-        auto sPath = containerPath.u8string();
-        for (auto it = sPath.begin(); it != sPath.end(); ++it)
-        {
-            if (*it == '|')
-            {
-                *it = ':';
-            }
-            if (*it == '/')
-            {
-                *it = '\\';
-            }
-        }
-        containerPath = fs::u8path(sPath);
-#endif
         const auto status = fs::status(containerPath);
         bool pathExists = fs::exists(status);
         if (pathExists && fs::is_directory(status))

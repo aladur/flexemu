@@ -345,10 +345,11 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("mount") == 0)
                 {
-                    if (!fdc.mount_drive(fs::u8path(arg2), number))
+                    const auto path = convert_path(arg2);
+                    if (!fdc.mount_drive(path, number))
                     {
                         answer_stream << "EMU error: "
-                                         "Unable to mount " << arg2 <<
+                                         "Unable to mount " << path <<
                                          " to drive #" << number << ".";
                         answer = answer_stream.str();
                     }
@@ -439,3 +440,23 @@ void Command::writeIo(Word /*offset*/, Byte val)
     }
 }
 
+fs::path Command::convert_path(const std::string& path)
+{
+#ifdef _WIN32
+    auto sPath = path;
+    for (auto it = sPath.begin(); it != sPath.end(); ++it)
+    {
+        if (*it == '|')
+        {
+            *it = ':';
+        }
+        if (*it == '/')
+        {
+            *it = '\\';
+        }
+    }
+    return fs::u8path(sPath);
+#else
+    return fs::u8path(path);
+#endif
+}
