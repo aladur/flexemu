@@ -28,6 +28,7 @@
 #include "rndcheck.h"
 #include "cvtwchar.h"
 #include <numeric>
+#include <array>
 #include <fstream>
 #include <filesystem>
 #include <fmt/format.h>
@@ -55,10 +56,10 @@ protected:
     const int RWA{7}; // read-write disk directory with attributes.
 
     const std::array<const char *, 8> diskdirs{{
-        "testdir_ro", "testdir_rw", "testdir_ ", "testdir_\u2665",
+        "testdir_ro", "testdir_rw", "testdir_ sp", "testdir_\u2665",
         "testdir_rwo", "testdir_rwd", "testdir_rwdo", "testdir_rwa"
     }};
-    std::vector<std::string> randomListFiles;
+    std::vector<fs::path> randomListFiles;
     const fs::path temp_dir{ fs::temp_directory_path() };
 #ifdef _WIN32
     static const auto write_perms = fs::perms::all;
@@ -432,7 +433,7 @@ TEST_F(test_FlexRandomFileFixture, fct_IsValidSectorMap)
 
 TEST_F(test_FlexRandomFileFixture, fct_UpdateRandomListToFile)
 {
-    const std::array<const char *, 8> randomListFiles{
+    const std::array<const char *, 8> randomListFileNames{
         RANDOM_FILE_LIST,
         RANDOM_FILE_LIST_NEW,
         RANDOM_FILE_LIST_NEW,
@@ -443,7 +444,7 @@ TEST_F(test_FlexRandomFileFixture, fct_UpdateRandomListToFile)
         RANDOM_FILE_LIST_NEW,
     };
 
-    ASSERT_EQ(diskdirs.size(), randomListFiles.size());
+    ASSERT_EQ(diskdirs.size(), randomListFileNames.size());
 
     for (int idx = RO; idx <= RWA; ++idx)
     {
@@ -470,7 +471,7 @@ TEST_F(test_FlexRandomFileFixture, fct_UpdateRandomListToFile)
         EXPECT_EQ(randomFileCheck.UpdateRandomListToFile(), idx == RWA) <<
             "dir=" << diskdir;
 
-        auto randomListFile = diskdir / randomListFiles[idx];
+        auto randomListFile = diskdir / randomListFileNames[idx];
         bool isExecuteTest = true;
 #ifdef _WIN32
         // Directories on Windows have nothing like POSIX permissions.

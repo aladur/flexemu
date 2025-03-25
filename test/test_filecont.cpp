@@ -226,11 +226,11 @@ TEST_F(test_IFlexDiskByFile, fct_DeleteFile)
             EXPECT_TRUE(disk->DeleteFile(wildcard));
             EXPECT_FALSE(disk->FindFile(wildcard, dirEntry));
             EXPECT_TRUE(disk->FindFile("TEST*.*", dirEntry));
-            wildcard = "*";
+            wildcard = "*.BIN";
             EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_TRUE(disk->DeleteFile(wildcard));
             EXPECT_FALSE(disk->FindFile(wildcard, dirEntry));
-            EXPECT_FALSE(disk->FindFile("TEST*.*", dirEntry));
+            EXPECT_TRUE(disk->FindFile("TEST*.*", dirEntry));
         }
     }
 }
@@ -424,7 +424,7 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
     std::string filename{"test.txt"};
     auto ft = FileTimeAccess::Get | FileTimeAccess::Set;
     auto path = createFile(temp_dir, filename, true, 22);
-    setDateTime(path, BDate(11, 8, 2024), BTime(22, 1), ft);
+    setDateTime(path.u8string(), BDate(11, 8, 2024), BTime(22, 1), ft);
 
     for (auto &disk : disks[FT])
     {

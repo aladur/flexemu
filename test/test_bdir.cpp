@@ -24,6 +24,7 @@
 #include "gtest/gtest.h"
 #include "bdir.h"
 #include <string>
+#include <array>
 #include <fstream>
 #include <filesystem>
 

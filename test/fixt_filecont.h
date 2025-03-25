@@ -56,7 +56,7 @@ protected:
     const std::array<std::array<const char *, 3>, 8> diskFiles{{
         {"testdisk_ro.dsk", "testdisk_ro.flx", "testdir_ro"},
         {"testdisk_rw.dsk", "testdisk_rw.flx", "testdir_rw"},
-        {"testdisk_ .dsk", "testdisk_ .flx", "testdir_ "},
+        {"testdisk_ .dsk", "testdisk_ .flx", "testdir_ sp"},
         {u8"testdisk_\u2665.dsk", "testdisk_\u2665.flx", "testdir_\u2665"},
         {"testdisk_ft.dsk", "testdisk_ft.flx", "testdir_ft"},
         {"testdisk_tgt.dsk", "testdisk_tgt.flx", "testdir_tgt"},
@@ -118,7 +118,7 @@ protected:
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
-            const auto diskPath = (temp_dir / diskFiles[idx][DIR]).u8string();
+            const auto diskPath = temp_dir / diskFiles[idx][DIR];
             ASSERT_TRUE(fs::create_directory(diskPath)) << "path=" << diskPath;
 #ifndef _WIN32
             fs::permissions(diskPath, write_perms, fs::perm_options::add);
@@ -143,7 +143,8 @@ protected:
                 const auto &ft = (idx == FT) ? with_ft : no_ft;
                 const auto filePath =
                     createFile(diskPath, filename, isTxt, fi);
-                setDateTime(filePath, BDate(11, 8, 2024), BTime(22, 1), ft);
+                setDateTime(filePath.u8string(), BDate(11, 8, 2024),
+                    BTime(22, 1), ft);
             }
         });
 
@@ -192,12 +193,12 @@ protected:
         }
     }
 
-    static std::string createFile(
+    static fs::path createFile(
             const fs::path &directory,
             const std::string &filename,
             bool isText, int sectors)
     {
-        const auto path = (directory / filename).u8string();
+        const auto path = directory / filename;
         const auto mode =
             isText ? std::ios::out : (std::ios::out | std::ios::binary);
         std::array<Byte, 63> line{};
@@ -214,7 +215,7 @@ protected:
             std::iota(line.begin(), line.end(), '\0');
         }
 
-        EXPECT_TRUE(ofs.is_open());
+        EXPECT_TRUE(ofs.is_open()) << "path=" << path << "\n";
         for (int sector = 0; sector < sectors; ++sector)
         {
             ofs.write(reinterpret_cast<const char *>(line.data()), line.size());

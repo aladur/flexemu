@@ -191,7 +191,7 @@ TEST(test_fcnffile, fct_GetIoDeviceLogging)
     ASSERT_TRUE(cnfFile.IsValid());
     const auto &[logPath, devices] = cnfFile.GetIoDeviceLogging();
 #ifdef _WIN32
-    EXPECT_EQ(pair.first, u8"C:\\dir\\subdir\\subdir\\file.log");
+    EXPECT_EQ(logPath, u8"C:\\dir\\subdir\\subdir\\file.log");
 #else
     EXPECT_EQ(logPath, u8"/dir/subdir/subdir/file.log");
 #endif
@@ -214,9 +214,9 @@ TEST(test_fcnffile, fct_GetDebugSupportOption)
     EXPECT_EQ(value, "1");
     value = cnfFile.GetDebugSupportOption("logMdcrFilePath");
 #ifdef _WIN32
-    EXPECT_EQ("C:\\dir\\subdir\\subdir\\mdcr.log");
+    EXPECT_EQ(value, u8"C:\\dir\\subdir\\subdir\\mdcr.log");
 #else
-    EXPECT_EQ(value, "/dir/subdir/subdir/mdcr.log");
+    EXPECT_EQ(value, u8"/dir/subdir/subdir/mdcr.log");
 #endif
     value = cnfFile.GetDebugSupportOption("invalidKey");
     EXPECT_TRUE(value.empty());
