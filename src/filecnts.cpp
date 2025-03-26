@@ -26,6 +26,7 @@
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <iostream>
 
 std::ostream& operator<<(std::ostream& os, const st_t &st)
 {
@@ -129,6 +130,7 @@ std::string getDiskName(const std::string &filename)
 
     if (!filename.empty() && filename[0] == '.')
     {
+        std::cout << "getDiskName filename=" << filename << " diskname=" << "FLEXDISK" << std::endl;
         return "FLEXDISK";
     }
 
@@ -154,6 +156,7 @@ std::string getDiskName(const std::string &filename)
          ++i;
     }
 
+    std::cout << "getDiskName filename=" << filename << " diskname=" << diskname << std::endl;
     return diskname;
 }
 

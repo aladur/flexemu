@@ -40,6 +40,7 @@
 #include "bdir.h"
 #include "cvtwchar.h"
 #include <filesystem>
+#include <iostream>
 
 
 namespace fs = std::filesystem;
@@ -55,17 +56,18 @@ PathList_t BDirectory::GetSubDirectories(const fs::path &p_path)
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 
-    const auto wFilePattern(
-            ConvertToUtf16String((p_path / "*.*").u8string()));
-    auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
+    std::cout << "path=" << p_path.u8string() << std::endl;
+    auto hdl = FindFirstFile((p_path / "*.*").wstring().c_str(), &pentry);
     if (hdl != INVALID_HANDLE_VALUE)
     {
+        std::cout << "FindFirstFile return=HANDLE" << std::endl;
         do
         {
             if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY &&
                 pentry.cFileName[0] != '.')
             {
                 subDirList.push_back(ConvertToUtf8String(pentry.cFileName));
+                std::cout << "   cFileName=" << *subDirList.rbegin() << std::endl;
             }
         }
         while (FindNextFile(hdl, &pentry) != 0);
@@ -106,11 +108,11 @@ PathList_t BDirectory::GetFiles(const fs::path &p_path)
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 
-    const auto wFilePattern(
-            ConvertToUtf16String((p_path / "*.*").u8string()));
-    auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
+    std::cout << "path=" << p_path.u8string() << std::endl;
+    auto hdl = FindFirstFile((p_path / "*.*").wstring().c_str(), &pentry);
     if (hdl != INVALID_HANDLE_VALUE)
     {
+        std::cout << "FindFirstFile return=HANDLE" << std::endl;
         do
         {
             if ((pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 &&
@@ -118,6 +120,7 @@ PathList_t BDirectory::GetFiles(const fs::path &p_path)
                 (pentry.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0)
             {
                 fileList.push_back(ConvertToUtf8String(pentry.cFileName));
+                std::cout << "   cFileName=" << *fileList.rbegin() << std::endl;
             }
         }
         while (FindNextFile(hdl, &pentry) != 0);

@@ -970,6 +970,7 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
 {
     struct stat sbuf{};
 
+    std::cout << "initialize_flex_sys_info_sectors path=" << directory.filename().u8string() << std::endl;
     if (!stat(directory.u8string().c_str(), &sbuf))
     {
         auto &sis = flex_sys_info[0];
@@ -995,6 +996,10 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
         std::fill(std::begin(sis.unused2), std::end(sis.unused2), '\0');
 
         flex_sys_info[1] = flex_sys_info[0];
+    }
+    else
+    {
+        std::cout << "   stat() failed" << std::endl;
     }
 }
 
