@@ -39,48 +39,50 @@ protected:
     static const unsigned HAS_UTF8{4U};
     static const unsigned MAX_INDEX{7U};
 
-    static constexpr std::array<const char *, 8> filenames{{
-        u8"f", u8"filename.txt", u8"_filename.txt",
-        u8"~file", u8"_", u8"@",
-        u8"file_sp_ .txt",
-        u8"this_is_a_very_long_filename_with_an.extension",
+    static constexpr std::array<const char *, 9> filenames{{
+        "f", "filename.txt", "_filename.txt",
+        "~file", "_", "@",
+        "file_sp_ .txt",
+        "this_is_a_very_long_filename_with_an.extension",
+        u8"filename\u2665.ext\u2665",
     }};
 
-    static constexpr std::array<const char *, 8> subdirnames{{
-        u8"d", u8"dirname", u8"_dir.ext",
-        u8"~dir", u8"__", u8"@@",
-        u8"dir_sp_ .txt",
-        u8"this_is_a_very_long_dirname",
+    static constexpr std::array<const char *, 9> subdirnames{{
+        "d", "dirname", "_dir.ext",
+        "~dir", "__", "@@",
+        "dir_sp_ .ext",
+        "this_is_a_very_long_dirname",
+        u8"directory\u2665",
     }};
 
     static fs::path createTestDirectoryPathFor(unsigned index)
     {
-        std::string dirname = u8"testdir";
+        fs::path dirname("testdir");
         bool withUtf8 = ((index & HAS_UTF8) != 0);
 
         if (index & HAS_FILES)
         {
-            dirname += u8"_files";
+            dirname += "_files";
         }
 
         if (index & HAS_SUBDIRS)
         {
-            dirname += u8"_subdirs";
+            dirname += "_subdirs";
         }
 
         if (withUtf8)
         {
-            dirname += u8"_utf8\u2665";
+            dirname += fs::u8path(u8"_utf8\u2665");
         }
 
         return fs::temp_directory_path() / dirname;
     }
 
-    static std::string createNameFor(const std::string &name, bool withUtf8)
+    static fs::path createNameFor(const fs::path &name, bool withUtf8)
     {
-        const auto prefix = std::string(withUtf8 ? u8"utf8\u2665_" : u8"");
-
-        return prefix + name;
+        auto path = fs::path(withUtf8 ? u8"utf8\u2665_" : "");
+        path += name;
+        return path;
     }
 
     static void addFiles(const fs::path &dirname, bool withUtf8)
@@ -90,7 +92,7 @@ protected:
             auto path = dirname / createNameFor(filename, withUtf8);
             std::ofstream ofs(path);
 
-            ASSERT_TRUE(ofs.is_open());
+            ASSERT_TRUE(ofs.is_open()) << path.u8string();
             ofs << "arbitrary_file_content";
             ofs.close();
         }
@@ -118,7 +120,7 @@ public:
             std::error_code error;
 
             fs::create_directory(path, error);
-            ASSERT_TRUE(!error);
+            ASSERT_TRUE(!error) << path.u8string();
 
             if ((index & HAS_FILES) != 0)
             {
@@ -139,7 +141,7 @@ public:
             std::error_code error;
 
             fs::remove_all(path, error);
-            ASSERT_TRUE(!error);
+            ASSERT_TRUE(!error) << path.u8string();
         }
     }
 
@@ -150,15 +152,15 @@ TEST_F(test_BDirectory, fct_GetSubDirectories)
     for (unsigned index = 0; index <= MAX_INDEX; ++index)
     {
         const auto path = createTestDirectoryPathFor(index);
-        const auto items = BDirectory::GetSubDirectories(path.u8string());
+        const auto items = BDirectory::GetSubDirectories(path);
 
         if ((index & HAS_SUBDIRS) != 0U)
         {
-            ASSERT_EQ(items.size(), subdirnames.size());
+            ASSERT_EQ(items.size(), subdirnames.size()) << path.u8string();
         }
         else
         {
-            ASSERT_TRUE(items.empty());
+            ASSERT_TRUE(items.empty()) << path.u8string();
         }
     }
 }
@@ -168,15 +170,15 @@ TEST_F(test_BDirectory, fct_GetFiles)
     for (unsigned index = 0; index <= MAX_INDEX; ++index)
     {
         const auto path = createTestDirectoryPathFor(index);
-        const auto items = BDirectory::GetFiles(path.u8string());
+        const auto items = BDirectory::GetFiles(path);
 
         if ((index & HAS_FILES) != 0U)
         {
-            ASSERT_EQ(items.size(), filenames.size());
+            ASSERT_EQ(items.size(), filenames.size()) << path.u8string();
         }
         else
         {
-            ASSERT_TRUE(items.empty());
+            ASSERT_TRUE(items.empty()) << path.u8string();
         }
     }
 }

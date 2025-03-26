@@ -55,9 +55,7 @@ PathList_t BDirectory::GetSubDirectories(const fs::path &p_path)
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 
-    const auto wFilePattern(
-            ConvertToUtf16String((p_path / "*.*").u8string()));
-    auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
+    auto hdl = FindFirstFile((p_path / "*.*").wstring().c_str(), &pentry);
     if (hdl != INVALID_HANDLE_VALUE)
     {
         do
@@ -106,9 +104,7 @@ PathList_t BDirectory::GetFiles(const fs::path &p_path)
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 
-    const auto wFilePattern(
-            ConvertToUtf16String((p_path / "*.*").u8string()));
-    auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
+    auto hdl = FindFirstFile((p_path / "*.*").wstring().c_str(), &pentry);
     if (hdl != INVALID_HANDLE_VALUE)
     {
         do

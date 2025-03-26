@@ -63,6 +63,7 @@ protected:
 
         const auto mode = std::ios::in | std::ios::out | std::ios::binary;
         const auto romode = std::ios::in | std::ios::binary;
+        fs::path diskPath;
 
         for (int idx = RO; idx <= GetMaxDiskIndex(); ++idx)
         {
@@ -72,25 +73,25 @@ protected:
 
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
-                const auto diskPath = temp_dir / diskFiles[idx][tidx];
+                diskPath = diskPaths[idx][tidx];
                 pdisk = (idx == RAM || idx == ROM) ?
                     new FlexRamDisk(diskPath, ios_mode, ft) :
                     new FlexDisk(diskPath, ios_mode, ft);
                 disks[idx][tidx].reset(cast(pdisk));
-                ASSERT_NE(disks[idx][tidx].get(), nullptr)
-                    << "path=" << diskPath;
+                ASSERT_NE(disks[idx][tidx].get(), nullptr) <<
+                    "path=" << diskPath.u8string();
             }
         }
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
-            const auto diskPath = temp_dir / diskFiles[idx][DIR];
+            diskPath = diskPaths[idx][DIR];
             const auto &ft = (idx == FT) ? with_ft : no_ft;
             auto *pdir = new FlexDirectoryDiskBySector(diskPath,
                     ft, tracks, sectors);
             disks[idx][DIR].reset(cast(pdir));
-            ASSERT_NE(disks[idx][DIR].get(), nullptr)
-                << "path=" << diskPath;
+            ASSERT_NE(disks[idx][DIR].get(), nullptr) <<
+                "path=" << diskPath.u8string();
         }
     }
 
@@ -137,28 +138,32 @@ TEST_F(test_IFlexDiskBySector, fct_ReadSector)
             {
                 for (int sector = 1; sector <= sectors; ++sector)
                 {
-                    EXPECT_TRUE(disk->ReadSector(buffer.data(), track, sector))
-                        << "path=" << disk->GetPath() << " track=" << track <<
-                           " sector=" << sector;
+                    EXPECT_TRUE(disk->ReadSector(buffer.data(),
+                                track, sector)) <<
+                        "path=" << disk->GetPath().u8string() <<
+                        " track=" << track << " sector=" << sector;
                 }
 
-                EXPECT_FALSE(disk->ReadSector(buffer.data(), track, 0))
-                        << "path=" << disk->GetPath() << " track=" << track;
-                EXPECT_FALSE(disk->ReadSector(buffer.data(), track, -1))
-                        << "path=" << disk->GetPath() << " track=" << track;
+                EXPECT_FALSE(disk->ReadSector(buffer.data(), track, 0)) <<
+                        "path=" << disk->GetPath().u8string() <<
+                        " track=" << track;
+                EXPECT_FALSE(disk->ReadSector(buffer.data(), track, -1)) <<
+                        "path=" << disk->GetPath().u8string() <<
+                        " track=" << track;
                 EXPECT_FALSE(disk->ReadSector(buffer.data(), track,
-                            sectors + 1))
-                        << "path=" << disk->GetPath() << " track=" << track;
+                            sectors + 1)) <<
+                        "path=" << disk->GetPath().u8string() <<
+                        " track=" << track;
             }
 
-            EXPECT_FALSE(disk->ReadSector(buffer.data(), -1, 1))
-                    << "path=" << disk->GetPath();
-            EXPECT_FALSE(disk->ReadSector(buffer.data(), 0, -1))
-                    << "path=" << disk->GetPath();
-            EXPECT_FALSE(disk->ReadSector(buffer.data(), -1, -1))
-                    << "path=" << disk->GetPath();
-            EXPECT_FALSE(disk->ReadSector(buffer.data(), tracks, 1))
-                    << "path=" << disk->GetPath();
+            EXPECT_FALSE(disk->ReadSector(buffer.data(), -1, 1)) <<
+                    "path=" << disk->GetPath().u8string();
+            EXPECT_FALSE(disk->ReadSector(buffer.data(), 0, -1)) <<
+                    "path=" << disk->GetPath().u8string();
+            EXPECT_FALSE(disk->ReadSector(buffer.data(), -1, -1)) <<
+                    "path=" << disk->GetPath().u8string();
+            EXPECT_FALSE(disk->ReadSector(buffer.data(), tracks, 1)) <<
+                    "path=" << disk->GetPath().u8string();
         }
     }
 }
@@ -178,23 +183,24 @@ TEST_F(test_IFlexDiskBySector, fct_ReadSector_content)
             {
                 continue;
             }
+
             EXPECT_TRUE(disk->ReadSector(
                         reinterpret_cast<Byte *>(&sis), 0, 3))
-                    << "path=" << disk->GetPath();
+                    << "path=" << disk->GetPath().u8string();
             auto name = flx::getstr<>(sis.sir.disk_name);
             EXPECT_EQ(name, tidx == DIR ? "TESTDIR_" : "TESTDISK")
-                    << "path=" << disk->GetPath();
+                    << "path=" << disk->GetPath().u8string();
 
             for (int didx = 5; didx <= 6; ++didx)
             {
                 EXPECT_TRUE(disk->ReadSector(
                             reinterpret_cast<Byte *>(&dirSector), 0, didx))
-                        << "path=" << disk->GetPath();
+                        << "path=" << disk->GetPath().u8string();
                 for (const auto &dir_entry : dirSector.dir_entries)
                 {
                     auto filestem = flx::getstr<>(dir_entry.filename);
                     EXPECT_THAT(filestem, StartsWith("TEST"))
-                        << "path=" << disk->GetPath();
+                        << "path=" << disk->GetPath().u8string();
                     auto fileext = flx::getstr<>(dir_entry.file_ext);
                     EXPECT_TRUE(fileext == "BIN" || fileext == "TXT");
                 }
@@ -237,15 +243,15 @@ TEST_F(test_IFlexDiskBySector, fct_WriteSector)
                 for (int sector = 1; sector <= sectors; ++sector)
                 {
                     EXPECT_EQ(disk->WriteSector(buffer.data(),
-                                track, sector), idx != RO && idx != ROM)
-                        << "path=" << disk->GetPath() << " track=" << track <<
-                           " sector=" << sector;
+                                track, sector), idx != RO && idx != ROM) <<
+                        "path=" << disk->GetPath().u8string() <<
+                        " track=" << track << " sector=" << sector;
                 }
             }
             FlexDiskCheck checker(*disk, ft_access);
 
-            EXPECT_EQ(checker.CheckFileSystem(), idx == RO || idx == ROM)
-                << " path=" << disk->GetPath();
+            EXPECT_EQ(checker.CheckFileSystem(), idx == RO || idx == ROM) <<
+                " path=" << disk->GetPath().u8string();
         }
     }
 }
@@ -266,8 +272,8 @@ TEST_F(test_IFlexDiskBySector, fct_FormatSector)
                 continue;
             }
 
-            EXPECT_FALSE(disk->FormatSector(buffer.data(), 0, 1, 0, 1))
-                << "path=" << disk->GetPath();
+            EXPECT_FALSE(disk->FormatSector(buffer.data(), 0, 1, 0, 1)) <<
+                "path=" << disk->GetPath().u8string();
         }
     }
 
@@ -277,7 +283,7 @@ TEST_F(test_IFlexDiskBySector, fct_FormatSector)
         std::ios::binary;
     const auto path = temp_dir / "format_sector.flx";
     std::ofstream fs(path, mode);
-    ASSERT_TRUE(fs.is_open());
+    ASSERT_TRUE(fs.is_open()) << "path=" << path.u8string();
     fs.close();
     auto disk = static_cast<IFlexDiskBySectorPtr>(
             new FlexDisk(path, mode, ft_access));
@@ -320,7 +326,7 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_flex_disk)
         }
 
         std::fstream fs(path, newmode);
-        ASSERT_TRUE(fs.is_open());
+        ASSERT_TRUE(fs.is_open()) << "path=" << path.u8string();
         fs.close();
 
         auto disk = static_cast<IFlexDiskBySectorPtr>(
@@ -379,7 +385,7 @@ TEST_F(test_IFlexDiskBySector, FormatSector_format_flex_disk_interleave)
     const int interleave = 3;
 
     std::fstream fs(path, newmode);
-    ASSERT_TRUE(fs.is_open());
+    ASSERT_TRUE(fs.is_open()) << "path=" << path.u8string();
     fs.close();
 
     auto disk = static_cast<IFlexDiskBySectorPtr>(
@@ -480,7 +486,8 @@ TEST_F(test_IFlexDiskBySector, fct_IsFlexFormat)
                 continue;
             }
 
-            EXPECT_TRUE(disk->IsFlexFormat()) << "path=" << disk->GetPath();
+            EXPECT_TRUE(disk->IsFlexFormat()) <<
+                "path=" << disk->GetPath();
         }
     }
 }
@@ -500,13 +507,15 @@ TEST_F(test_IFlexDiskBySector, fct_IsTrackValid)
 
             for (int track = 0; track < tracks; ++track)
             {
-                EXPECT_TRUE(disk->IsTrackValid(track))
-                        << "path=" << disk->GetPath() << " track=" << track;
+                EXPECT_TRUE(disk->IsTrackValid(track)) <<
+                    "path=" << disk->GetPath().u8string() <<
+                    " track=" << track;
             }
 
-            EXPECT_FALSE(disk->IsTrackValid(-1)) << "path=" << disk->GetPath();
-            EXPECT_FALSE(disk->IsTrackValid(tracks))
-                << "path=" << disk->GetPath();
+            EXPECT_FALSE(disk->IsTrackValid(-1)) <<
+                "path=" << disk->GetPath().u8string();
+            EXPECT_FALSE(disk->IsTrackValid(tracks)) <<
+                "path=" << disk->GetPath().u8string();
         }
     }
 }
@@ -528,26 +537,29 @@ TEST_F(test_IFlexDiskBySector, fct_IsSectorValid)
             {
                 for (int sector = 1; sector <= sectors; ++sector)
                 {
-                    EXPECT_TRUE(disk->IsSectorValid(track, sector))
-                        << "track=" << track << " sector=" << sector;
+                    EXPECT_TRUE(disk->IsSectorValid(track, sector)) <<
+                        "track=" << track << " sector=" << sector;
                 }
 
-                EXPECT_FALSE(disk->IsSectorValid(track, 0))
-                    << "path=" << disk->GetPath() << " track=" << track;
-                EXPECT_FALSE(disk->IsSectorValid(track, -1))
-                    << "path=" << disk->GetPath() << " track=" << track;
-                EXPECT_FALSE(disk->IsSectorValid(track, sectors + 1))
-                    << "path=" << disk->GetPath() << " track=" << track;
+                EXPECT_FALSE(disk->IsSectorValid(track, 0)) <<
+                    "path=" << disk->GetPath().u8string() <<
+                    " track=" << track;
+                EXPECT_FALSE(disk->IsSectorValid(track, -1)) <<
+                    "path=" << disk->GetPath().u8string() <<
+                    " track=" << track;
+                EXPECT_FALSE(disk->IsSectorValid(track, sectors + 1)) <<
+                    "path=" << disk->GetPath().u8string() <<
+                    " track=" << track;
             }
 
             EXPECT_FALSE(disk->IsSectorValid(-1, 1))
-                    << "path=" << disk->GetPath();
+                    << " path=" << disk->GetPath().u8string();
             EXPECT_FALSE(disk->IsSectorValid(0, -1))
-                    << "path=" << disk->GetPath();
+                    << " path=" << disk->GetPath().u8string();
             EXPECT_FALSE(disk->IsSectorValid(-1, -1))
-                    << "path=" << disk->GetPath();
+                    << " path=" << disk->GetPath().u8string();
             EXPECT_FALSE(disk->IsSectorValid(tracks, 1))
-                    << "path=" << disk->GetPath();
+                    << " path=" << disk->GetPath().u8string();
         }
     }
 }
@@ -566,7 +578,7 @@ TEST_F(test_IFlexDiskBySector, fct_GetBytesPerSector)
             }
 
             EXPECT_EQ(disk->GetBytesPerSector(), SECTOR_SIZE)
-                << " path=" << disk->GetPath();
+                << " path=" << disk->GetPath().u8string();
         }
     }
 }
@@ -588,7 +600,7 @@ TEST_F(test_IFlexDiskBySector, exec_FlexDiskCheck)
 
             FlexDiskCheck checker(*disk, ft_access);
             EXPECT_TRUE(checker.CheckFileSystem())
-                << " path=" << disk->GetPath();
+                << " path=" << disk->GetPath().u8string();
         }
     }
 }

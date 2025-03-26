@@ -39,7 +39,7 @@ protected:
     FileTimeAccess no_ft{FileTimeAccess::NONE};
     FileTimeAccess with_ft{FileTimeAccess::Get | FileTimeAccess::Set};
 
-    // First index of diskPaths or disks:
+    // First index of diskFiles, diskPaths or disks:
     const int RO{0}; // read-only disk image index.
     const int RW{1}; // read-write disk image index.
     const int SP{2}; // read-write disk image index with space in path.
@@ -48,7 +48,7 @@ protected:
     const int TGT{5};// read-write disk image index used as copy target.
     const int ROM{6}; // read-only disk image index stored in RAM (DSK only).
     const int RAM{7}; // read-write disk image index stored in RAM (DSK only).
-    // Second index of diskPaths or disks:
+    // Second index of diskFiles, diskPaths or disks:
     const int DSK{0};// *.dsk disk image file index.
     const int FLX{1};// *.flx disk image file index.
     const int DIR{2};// directory disk index.
@@ -57,12 +57,13 @@ protected:
         {"testdisk_ro.dsk", "testdisk_ro.flx", "testdir_ro"},
         {"testdisk_rw.dsk", "testdisk_rw.flx", "testdir_rw"},
         {"testdisk_ .dsk", "testdisk_ .flx", "testdir_ sp"},
-        {u8"testdisk_\u2665.dsk", "testdisk_\u2665.flx", "testdir_\u2665"},
+        {u8"testdisk_\u2665.dsk", u8"testdisk_\u2665.flx", u8"testdir_\u2665"},
         {"testdisk_ft.dsk", "testdisk_ft.flx", "testdir_ft"},
         {"testdisk_tgt.dsk", "testdisk_tgt.flx", "testdir_tgt"},
         {"testdisk_rom.dsk", "testdisk_rom.flx", ""},
         {"testdisk_ram.dsk", "testdisk_ram.flx", ""},
     }};
+    std::array<std::array<fs::path, 3>, 8> diskPaths;
 
     const int tracks = 35;
     const int sectors = 10;
@@ -92,11 +93,30 @@ protected:
 
     void SetUp() override
     {
+        fs::path diskPath;
+
+        ASSERT_EQ(diskFiles.size(), diskPaths.size());
+        ASSERT_EQ(diskFiles[RO].size(), diskPaths[RO].size());
+
+        for (int idx = RO; idx <= RAM; ++idx)
+        {
+            for (int tidx = DSK; tidx <= DIR; ++tidx)
+            {
+                if (diskFiles[idx][tidx][0] == '\0')
+                {
+                    continue;
+                }
+
+                diskPath = temp_dir / fs::u8path(diskFiles[idx][tidx]);
+                diskPaths[idx][tidx] = diskPath;
+            }
+        }
+
         for (int idx = RO; idx <= GetMaxDiskIndex(); ++idx)
         {
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
-                const auto diskPath = temp_dir / diskFiles[idx][tidx];
+                diskPath = diskPaths[idx][tidx];
                 if (idx == TGT)
                 {
                     auto *pdisk = FlexDisk::Create(diskPath,
@@ -118,7 +138,7 @@ protected:
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
-            const auto diskPath = temp_dir / diskFiles[idx][DIR];
+            diskPath = diskPaths[idx][DIR];
             ASSERT_TRUE(fs::create_directory(diskPath)) << "path=" << diskPath;
 #ifndef _WIN32
             fs::permissions(diskPath, write_perms, fs::perm_options::add);
@@ -134,15 +154,14 @@ protected:
             const auto filename = fmt::format("test{:02}.{}", fi, ext);
             for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
             {
-                const auto diskPath = temp_dir / diskFiles[idx][DIR];
+                diskPath = diskPaths[idx][DIR];
                 if (idx == TGT)
                 {
                     continue;
                 }
 
                 const auto &ft = (idx == FT) ? with_ft : no_ft;
-                const auto filePath =
-                    createFile(diskPath, filename, isTxt, fi);
+                const auto filePath = createFile(diskPath, filename, isTxt, fi);
                 setDateTime(filePath.u8string(), BDate(11, 8, 2024),
                     BTime(22, 1), ft);
             }
@@ -150,7 +169,7 @@ protected:
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
-            const auto diskPath = temp_dir / diskFiles[idx][DIR];
+            diskPath = diskPaths[idx][DIR];
             const auto filePath = diskPath / "test01.txt";
 
             if (fs::exists(filePath))
@@ -173,13 +192,13 @@ protected:
     {
         for (int idx = RO; idx <= GetMaxDiskIndex(); ++idx)
         {
-            fs::remove(temp_dir / diskFiles[idx][DSK]);
-            fs::remove(temp_dir / diskFiles[idx][FLX]);
+            fs::remove(diskPaths[idx][DSK]);
+            fs::remove(diskPaths[idx][FLX]);
         }
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
-            const auto diskPath = temp_dir / diskFiles[idx][DIR];
+            const auto diskPath = diskPaths[idx][DIR];
             const auto filePath = diskPath / "test01.txt";
 
 #ifndef _WIN32

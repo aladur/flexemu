@@ -306,6 +306,8 @@ CpuState Mc6809::runloop()
                 if (((events & Event::BreakPoint) != Event::NONE) &&
                     ((events & Event::IgnoreBP) == Event::NONE))
                 {
+                    // False positives.
+                    // NOLINTBEGIN(bugprone-unchecked-optional-access)
                     if ((bp[0].has_value() && PC == bp[0].value()) ||
                         (bp[1].has_value() && PC == bp[1].value()) ||
                         (bp[2].has_value() && PC == bp[2].value()))
@@ -319,6 +321,7 @@ CpuState Mc6809::runloop()
                         new_state = CpuState::Stop;
                         break;
                     }
+                    // NOLINTEND(bugprone-unchecked-optional-access)
                 }
 
                 events &= ~Event::IgnoreBP;

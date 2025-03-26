@@ -36,6 +36,7 @@
 #include <cassert>
 #include <iostream>
 #include <filesystem>
+#include <chrono>
 #include <sys/stat.h>
 #include "filecntb.h"
 #include "fattrib.h"
@@ -751,7 +752,8 @@ void FlexDirectoryDiskBySector::add_to_directory(
     std::string extension,
     SDWord dir_idx,
     bool is_random,
-    const struct stat &stat,
+    std::time_t mtime,
+    uintmax_t file_size,
     const st_t &begin,
     const st_t &end,
     bool is_file_wp)
@@ -765,9 +767,9 @@ void FlexDirectoryDiskBySector::add_to_directory(
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    const struct tm *lt = localtime(&stat.st_mtime);
+    const struct tm *lt = localtime(&mtime);
     auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt->tm_year;
-    auto records = static_cast<Word>((stat.st_size + (DBPS - 1)) / DBPS);
+    auto records = static_cast<Word>((file_size + (DBPS - 1)) / DBPS);
     auto &dir_entry =
       flex_directory[dir_idx / DIRENTRIES].dir_entries[dir_idx % DIRENTRIES];
     name.resize(FLEX_BASEFILENAME_LENGTH);
@@ -939,13 +941,12 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
                 const auto pFilename(fs::u8path(flx::toupper(filename)));
                 const auto name(pFilename.stem().u8string());
                 auto extension(pFilename.extension().u8string().substr(1));
-                struct stat sbuf{};
-
                 bool is_file_wp = (access(path.u8string().c_str(), W_OK) != 0);
-                stat(path.u8string().c_str(), &sbuf);
+                const auto ftime = fs::last_write_time(path);
+                const auto mtime = flx::to_time_t(ftime);
                 add_to_directory(name, extension,
-                                 dir_idx, is_random, sbuf, begin,
-                                 end, is_file_wp);
+                                 dir_idx, is_random, mtime, file_size,
+                                 begin, end, is_file_wp);
 
                 if (is_random)
                 {
@@ -968,34 +969,32 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
 // Initialize the FLEX system info sector.
 void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
 {
-    struct stat sbuf{};
+    const auto ftime = fs::last_write_time(directory);
+    const auto mtime = flx::to_time_t(ftime);
 
-    if (!stat(directory.u8string().c_str(), &sbuf))
-    {
-        auto &sis = flex_sys_info[0];
-        const struct tm *lt = localtime(&sbuf.st_mtime);
-        auto diskname = getDiskName(directory.filename().u8string());
+    auto &sis = flex_sys_info[0];
+    const struct tm *lt = localtime(&mtime);
+    auto diskname = getDiskName(directory.filename().u8string());
 
-        std::fill(std::begin(sis.unused1), std::end(sis.unused1), '\0');
-        diskname.resize(FLEX_DISKNAME_LENGTH);
-        std::copy_n(diskname.cbegin(), FLEX_DISKNAME_LENGTH,
-                    std::begin(sis.sir.disk_name));
-        std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext),
-                  '\0');
-        flx::setValueBigEndian<Word>(&sis.sir.disk_number[0], number);
-        sis.sir.fc_start = st_t{0, 0};
-        sis.sir.fc_end = st_t{0, 0};
-        flx::setValueBigEndian<Word>(&sis.sir.free[0], 0U);
-        sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
-        sis.sir.day = static_cast<Byte>(lt->tm_mday);
-        auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt->tm_year;
-        sis.sir.year = static_cast<Byte>(year);
-        sis.sir.last = st_t{static_cast<Byte>(param.max_track),
-                            static_cast<Byte>(param.max_sector)};
-        std::fill(std::begin(sis.unused2), std::end(sis.unused2), '\0');
+    std::fill(std::begin(sis.unused1), std::end(sis.unused1), '\0');
+    diskname.resize(FLEX_DISKNAME_LENGTH);
+    std::copy_n(diskname.cbegin(), FLEX_DISKNAME_LENGTH,
+                std::begin(sis.sir.disk_name));
+    std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext),
+              '\0');
+    flx::setValueBigEndian<Word>(&sis.sir.disk_number[0], number);
+    sis.sir.fc_start = st_t{0, 0};
+    sis.sir.fc_end = st_t{0, 0};
+    flx::setValueBigEndian<Word>(&sis.sir.free[0], 0U);
+    sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
+    sis.sir.day = static_cast<Byte>(lt->tm_mday);
+    auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt->tm_year;
+    sis.sir.year = static_cast<Byte>(year);
+    sis.sir.last = st_t{static_cast<Byte>(param.max_track),
+                        static_cast<Byte>(param.max_sector)};
+    std::fill(std::begin(sis.unused2), std::end(sis.unused2), '\0');
 
-        flex_sys_info[1] = flex_sys_info[0];
-    }
+    flex_sys_info[1] = flex_sys_info[0];
 }
 
 

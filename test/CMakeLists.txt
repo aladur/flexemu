@@ -39,7 +39,6 @@ endif()
 #################################
 
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
-find_package(Threads REQUIRED)
 
 # Copy test files to binary dir. They are needed when executing unittests.
 file(COPY data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -152,7 +151,6 @@ target_compile_definitions(unittests PRIVATE
 target_link_libraries(unittests PRIVATE
     flexemu::libflex
     fmt::fmt
-    Threads::Threads
     gtest
 )
 # Working directory of the unittests executable is test subdirectory
@@ -239,7 +237,6 @@ if(UNIX)
     target_link_libraries(test_gccasm PRIVATE
         flexemu::libflex
         fmt::fmt
-        Threads::Threads
     )
 
 # Add custom target always executed to update test/metadata.json.

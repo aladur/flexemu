@@ -62,6 +62,7 @@ protected:
 
         const auto mode = std::ios::in | std::ios::out | std::ios::binary;
         const auto romode = std::ios::in | std::ios::binary;
+        fs::path diskPath;
 
         for (int idx = RO; idx <= TGT; ++idx)
         {
@@ -71,7 +72,7 @@ protected:
 
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
-                const auto diskPath = temp_dir / diskFiles[idx][tidx];
+                diskPath = diskPaths[idx][tidx];
                 pdisk = (idx == RAM || idx == ROM) ?
                     new FlexRamDisk(diskPath, ios_mode, ft) :
                     new FlexDisk(diskPath, ios_mode, ft);
@@ -83,10 +84,9 @@ protected:
         std::vector<int> dirIndices{RO, RW, FT, TGT};
         for (int idx : dirIndices)
         {
-            const auto diskPath = temp_dir / diskFiles[idx][DIR];
+            diskPath = diskPaths[idx][DIR];
             const auto &ft = (idx == FT) ? with_ft : no_ft;
-            auto *pdir =
-                    new FlexDirectoryDiskByFile(diskPath, ft);
+            auto *pdir = new FlexDirectoryDiskByFile(diskPath, ft);
             disks[idx][DIR].reset(cast(pdir));
             ASSERT_NE(disks[idx][DIR].get(), nullptr);
         }
@@ -288,8 +288,8 @@ TEST_F(test_IFlexDiskByFile, fct_RenameFile)
 
 TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
 {
-    static const auto diskPathDsk = (temp_dir / diskFiles[RW][DSK]).u8string();
-    static const auto diskPathFlx = (temp_dir / diskFiles[RW][FLX]).u8string();
+    static const auto diskPathDsk = diskPaths[RW][DSK].u8string();
+    static const auto diskPathFlx = diskPaths[RW][FLX].u8string();
     const std::vector<int> indices{RW, RAM};
 
     for (int idx : indices)
@@ -561,7 +561,7 @@ TEST_F(test_IFlexDiskByFile, fct_FileCopy)
 
 TEST_F(test_IFlexDiskByFile, fct_GetSupportedAttributes)
 {
-    static const auto diskPath = (temp_dir / diskFiles[RW][DIR]).u8string();
+    static const auto diskPath = diskPaths[RW][DIR].u8string();
     for (auto &disk : disks[RW])
     {
         const std::string attr = (disk->GetPath().u8string() == diskPath) ?

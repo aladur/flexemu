@@ -36,6 +36,7 @@
 #include <array>
 #include <unordered_map>
 #include <filesystem>
+#include <ctime>
 
 namespace fs = std::filesystem;
 
@@ -182,7 +183,8 @@ private:
         std::string ext,
         SDWord dir_idx,
         bool is_random,
-        const struct stat &stat,
+        std::time_t mtime,
+        uintmax_t file_size,
         const st_t &begin,
         const st_t &end,
         bool is_file_wp);
