@@ -294,7 +294,11 @@ bool FlexDirectoryDiskByFile::GetDiskAttributes(
 
     struct stat sbuf{};
 
+#ifdef _WIN32
+    if (_wstat(directory.wstring().c_str(), &sbuf) == 0)
+ #else
     if (stat(directory.u8string().c_str(), &sbuf) == 0)
+ #endif
     {
         const struct tm *lt = localtime(&sbuf.st_mtime);
         diskAttributes.SetDate({lt->tm_mday,

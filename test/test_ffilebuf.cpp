@@ -181,7 +181,11 @@ TEST(test_ffilebuf, fct_ReadFromFile)
     ffb.SetDateTime(BDate{}, BTime{});
     ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
     struct stat sbuf{};
+#ifdef _WIN32
+    ASSERT_EQ(_wstat(path.wstring().c_str(), &sbuf), 0);
+#else
     ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
+#endif
     struct tm *time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 2003);
@@ -197,7 +201,11 @@ TEST(test_ffilebuf, fct_ReadFromFile)
     ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
     ffb.SetDateTime(BDate{}, BTime{});
     ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::Get));
+#ifdef _WIN32
+    ASSERT_EQ(_wstat(path.wstring().c_str(), &sbuf), 0);
+#else
     ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
+#endif
     time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 2003);
@@ -212,7 +220,11 @@ TEST(test_ffilebuf, fct_ReadFromFile)
     ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
     ffb.SetDateTime(BDate{}, BTime{});
     ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::Get));
+#ifdef _WIN32
+    ASSERT_EQ(_wstat(path.wstring().c_str(), &sbuf), 0);
+#else
     ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
+#endif
     time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 2008);
@@ -243,7 +255,11 @@ TEST(test_ffilebuf, fct_WriteToFile)
     auto status = fs::status(path);
     EXPECT_TRUE(fs::is_regular_file(status));
     struct stat sbuf{};
+#ifdef _WIN32
+    ASSERT_EQ(_wstat(path.wstring().c_str(), &sbuf), 0);
+#else
     ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
+#endif
     struct tm *time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 1985);
@@ -262,7 +278,11 @@ TEST(test_ffilebuf, fct_WriteToFile)
     EXPECT_EQ(fs::file_size(path), ffb.GetFileSize());
     status = fs::status(path);
     EXPECT_TRUE(fs::is_regular_file(status));
+#ifdef _WIN32
+    ASSERT_EQ(_wstat(path.wstring().c_str(), &sbuf), 0);
+#else
     ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
+#endif
     time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 1985);
@@ -281,7 +301,11 @@ TEST(test_ffilebuf, fct_WriteToFile)
     EXPECT_EQ(fs::file_size(path), ffb.GetFileSize());
     status = fs::status(path);
     EXPECT_TRUE(fs::is_regular_file(status));
+#ifdef _WIN32
+    ASSERT_EQ(_wstat(path.wstring().c_str(), &sbuf), 0);
+#else
     ASSERT_EQ(stat(path.u8string().c_str(), &sbuf), 0);
+#endif
     time = localtime(&sbuf.st_mtime);
     ASSERT_NE(time, nullptr);
     EXPECT_EQ(time->tm_year + 1900, 1992);

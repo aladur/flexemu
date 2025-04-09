@@ -593,7 +593,11 @@ bool FlexFileBuffer::WriteToFile(const fs::path &path,
         struct tm file_time{};
         struct stat sbuf{};
 
+#ifdef _WIN32
+        _wstat(path.wstring().c_str(), &sbuf);
+#else
         stat(path.u8string().c_str(), &sbuf);
+#endif
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec = 0;
         file_time.tm_min = setFileTime ? fileHeader.minute : 0;
@@ -656,7 +660,11 @@ bool FlexFileBuffer::ReadFromFile(const fs::path &path,
 
                 SetAdjustedFilename(filename);
 
+#ifdef _WIN32
+                _wstat(absPath.wstring().c_str(), &sbuf);
+#else
                 stat(absPath.u8string().c_str(), &sbuf);
+#endif
                 struct tm *lt = localtime(&sbuf.st_mtime);
                 const bool getFileTime =
                 (fileTimeAccess & FileTimeAccess::Get) == FileTimeAccess::Get;

@@ -1212,15 +1212,20 @@ void FlexDirectoryDiskBySector::check_for_changed_file_attr(Word ds_idx,
 bool FlexDirectoryDiskBySector::set_file_time(const char *ppath, Byte month,
         Byte day, Byte year, Byte hour, Byte minute) const
 {
-    struct stat statbuf{};
+    const auto path(fs::u8path(ppath));
+    struct stat sbuf{};
     struct utimbuf timebuf{};
     struct tm file_time{};
     const bool setFileTime =
         (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
 
-    if (stat(ppath, &statbuf) >= 0)
+#ifdef _WIN32
+    if (_wstat(path.wstring().c_str(), &sbuf) == 0)
+#else
+    if (stat(path.u8string().c_str(), &sbuf) == 0)
+#endif
     {
-        timebuf.actime = statbuf.st_atime;
+        timebuf.actime = sbuf.st_atime;
         file_time.tm_sec = 0;
         file_time.tm_min = setFileTime ? minute : 0;
         file_time.tm_hour = setFileTime ? hour : 0;

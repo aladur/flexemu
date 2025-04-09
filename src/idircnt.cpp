@@ -204,7 +204,11 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         if (searchOneFile)
         {
             fileName = flx::tolower(wildcard);
+#ifdef _WIN32
+            if (_wstat((path / fileName).wstring().c_str(), &sbuf) == 0 &&
+#else
             if (stat((path / fileName).u8string().c_str(), &sbuf) == 0 &&
+#endif
                     !searchOneFileAtEnd)
             {
                 isValid = true;
@@ -235,7 +239,11 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
     }
     while (isValid &&
             (!flx::isFlexFilename(fileName) ||
+#ifdef _WIN32
+            _wstat((path / fileName).wstring().c_str(), &sbuf) != 0 ||
+#else
             stat((path / fileName).u8string().c_str(), &sbuf) != 0 ||
+#endif
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !flx::multimatches(fileName, wildcard, ';', true)));
@@ -372,7 +380,11 @@ bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
     const auto filePath = base->GetPath() /
         flx::tolower(dirEntry.GetTotalFileName());
 
+#ifdef _WIN32
+    if (_wstat(filePath.wstring().c_str(), &sbuf) == 0)
+#else
     if (stat(filePath.u8string().c_str(), &sbuf) == 0)
+#endif
     {
         struct utimbuf timebuf{};
         struct tm file_time{};

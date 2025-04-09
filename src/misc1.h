@@ -124,6 +124,8 @@ constexpr const char *COPYRIGHT_MESSAGE = \
 /* adapt platform specifics: */
 
 #ifdef _MSC_VER
+    #define stat _stat64i32
+    #define access _access
     #define access _access
     #define unlink _unlink
     #define getcwd _getcwd
