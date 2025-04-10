@@ -110,7 +110,12 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         directory = fs::u8path(sPath);
     }
 
+#ifdef _WIN32
+    if ((_waccess(directory.wstring().c_str(), W_OK) != 0) ||
+#else
     if ((access(sPath.c_str(), W_OK) != 0) ||
+#endif
+
             randomFileCheck.IsWriteProtected())
     {
         attributes |= WRITE_PROTECT;
@@ -941,7 +946,12 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
                 const auto pFilename(fs::u8path(flx::toupper(filename)));
                 const auto name(pFilename.stem().u8string());
                 auto extension(pFilename.extension().u8string().substr(1));
-                bool is_file_wp = (access(path.u8string().c_str(), W_OK) != 0);
+                bool is_file_wp =
+#ifdef _WIN32
+                    (_waccess(path.wstring().c_str(), W_OK) != 0);
+#else
+                    (access(path.u8string().c_str(), W_OK) != 0);
+#endif
                 const auto ftime = fs::last_write_time(path);
                 const auto mtime = flx::to_time_t(ftime);
                 add_to_directory(name, extension,

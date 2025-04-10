@@ -653,7 +653,11 @@ bool FlexFileBuffer::ReadFromFile(const fs::path &path,
                     }
                 }
 
+#ifdef _WIN32
+                if(_waccess(absPath.wstring().c_str(), W_OK))
+#else
                 if(access(absPath.u8string().c_str(), W_OK))
+#endif
                 {
                     SetAttributes(FLX_READONLY);
                 }

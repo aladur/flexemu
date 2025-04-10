@@ -74,7 +74,11 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
         throw FlexException(FERR_UNABLE_TO_OPEN, directory);
     }
 
+#ifdef _WIN32
+    if ((_waccess(directory.wstring().c_str(), W_OK) != 0) ||
+#else
     if ((access(directory.u8string().c_str(), W_OK) != 0) ||
+#endif
          randomFileCheck.IsWriteProtected())
     {
         attributes |= WRITE_PROTECT;

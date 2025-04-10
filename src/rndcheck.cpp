@@ -58,9 +58,13 @@ RandomFileCheck::RandomFileCheck(fs::path p_directory)
         // If file random exists but directory does not allow to create new
         // files, like .random set read-only state.
 
-        isWriteProtected = (access(directory.u8string().c_str(), W_OK) != 0) ?
-            true :
-            isWriteProtected;
+        isWriteProtected =
+#ifdef _WIN32
+            (_waccess(directory.wstring().c_str(), W_OK) != 0) ?
+#else
+            (access(directory.u8string().c_str(), W_OK) != 0) ?
+#endif
+                true : isWriteProtected;
     }
 
     if (!path.empty())
@@ -90,8 +94,13 @@ RandomFileCheck::RandomFileCheck(fs::path p_directory)
         WriteRandomListToFile();
 
         if (!isDirty && idx == 1 &&
+#ifdef _WIN32
+                _waccess(directory.wstring().c_str(), W_OK) == 0 &&
+                _waccess(path.wstring().c_str(), W_OK) == 0)
+#else
                 access(directory.u8string().c_str(), W_OK) == 0 &&
                 access(path.u8string().c_str(), W_OK) == 0)
+#endif
         {
             // Remove old random list file.
             fs::remove(path);
