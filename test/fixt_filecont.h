@@ -22,6 +22,7 @@
 
 
 #include "gtest/gtest.h"
+#include "misc1.h"
 #include "ffilecnt.h"
 #include "dircont.h"
 #include <array>
@@ -246,7 +247,7 @@ protected:
         return path;
     }
 
-    static bool setDateTime(const std::string &path, const BDate &date,
+    static bool setDateTime(const fs::path &path, const BDate &date,
             const BTime &time, FileTimeAccess ft_access)
     {
       struct stat sbuf{};
@@ -255,7 +256,11 @@ protected:
       const bool setFileTime =
           (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
 
-      if (stat(path.c_str(), &sbuf) == 0)
+#ifdef _WIN32
+      if (_wstat(path.wstring().c_str(), &sbuf) == 0)
+#else
+      if (stat(path.u8string().c_str(), &sbuf) == 0)
+#endif
       {
           timebuf.actime = sbuf.st_atime;
           file_time.tm_sec = 0;
@@ -267,7 +272,11 @@ protected:
           file_time.tm_isdst = -1;
           timebuf.modtime = mktime(&file_time);
 
-          return utime(path.c_str(), &timebuf) == 0;
+#ifdef _WIN32
+          return _wutime(path.wstring().c_str(), &timebuf) == 0;
+#else
+          return utime(path.u8string().c_str(), &timebuf) == 0;
+#endif
       }
 
       return false;

@@ -400,7 +400,11 @@ bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
         timebuf.modtime = mktime(&file_time);
 
         return (timebuf.modtime >= 0 &&
+#ifdef _WIN32
+                _wutime(filePath.wstring().c_str(), &timebuf) == 0);
+#else
                 utime(filePath.u8string().c_str(), &timebuf) == 0);
+#endif
     }
 
     return false;

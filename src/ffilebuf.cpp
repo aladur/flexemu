@@ -608,7 +608,11 @@ bool FlexFileBuffer::WriteToFile(const fs::path &path,
         file_time.tm_isdst = -1;
         timebuf.modtime = mktime(&file_time);
         return (timebuf.modtime >= 0 &&
+#ifdef _WIN32
+                _wutime(path.wstring().c_str(), &timebuf) == 0);
+#else
                 utime(path.u8string().c_str(), &timebuf) == 0);
+#endif
     }
 
     return result;

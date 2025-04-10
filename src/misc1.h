@@ -125,6 +125,7 @@ constexpr const char *COPYRIGHT_MESSAGE = \
 
 #ifdef _MSC_VER
     #define stat _stat64i32
+    #define utimbuf _utimbuf
     #define access _access
     #define access _access
     #define unlink _unlink
