@@ -205,7 +205,7 @@ public:
     static void setFileAttribute(const fs::path &path)
     {
 #ifdef _WIN32
-        const auto wPath = ConvertToUtf16String(path.u8string());
+        const auto wPath = path.wstring();
         DWord attributes = GetFileAttributes(wPath.c_str());
 
         if (attributes != INVALID_FILE_ATTRIBUTES)

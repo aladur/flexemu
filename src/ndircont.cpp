@@ -870,8 +870,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
 
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
-    const auto wWildcard(
-        ConvertToUtf16String((directory / u8"*.*").u8string()));
+    const auto wWildcard((directory / "*.*").wstring());
 
     auto hdl = FindFirstFile(wWildcard.c_str(), &pentry);
 

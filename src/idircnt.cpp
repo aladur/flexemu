@@ -95,7 +95,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
     // repeat until a valid directory entry found
 #ifdef _WIN32
-    const auto pattern = (base->GetPath() / u8"*.*").u8string();
+    const auto pattern = base->GetPath() / "*.*";
     WIN32_FIND_DATA findData{};
 
     // do-while loop in this context improves code readability.
@@ -107,8 +107,8 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         if (searchOneFile)
         {
             fileName = wildcard;
-            const auto filePattern = (base->GetPath() / fileName).u8string();
-            dirHdl = FindFirstFile(ConvertToUtf16String(filePattern).c_str(),
+            const auto oneFilePattern = base->GetPath() / fileName;
+            dirHdl = FindFirstFile(oneFilePattern.wstring().c_str(),
                 &findData);
             if (dirHdl != INVALID_HANDLE_VALUE && !searchOneFileAtEnd)
             {
@@ -120,8 +120,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         {
             if (dirHdl == nullptr)
             {
-                dirHdl = FindFirstFile(ConvertToUtf16String(pattern).c_str(),
-                                       &findData);
+                dirHdl = FindFirstFile(pattern.wstring().c_str(), &findData);
                 if (dirHdl != INVALID_HANDLE_VALUE)
                 {
                     isValid = true;

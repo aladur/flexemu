@@ -480,8 +480,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
             {
 #ifdef _WIN32
                 SHELLEXECUTEINFO execInfo;
-                std::wstring wTempFile =
-                    ConvertToUtf16String(tempFile.u8string());
+                const auto wTempFile = tempFile.wstring();
 
                 memset(&execInfo, 0, sizeof(execInfo));
                 execInfo.cbSize = sizeof(execInfo);

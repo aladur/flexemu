@@ -267,10 +267,10 @@ bool FlexDirectoryDiskByFile::GetDiskAttributes(
     DWORD bytesPerSector;
     DWORD numberOfFreeClusters;
     DWORD totalNumberOfClusters;
-    const auto rootPath =
-        (directory.root_name() / directory.root_directory()).u8string();
+    const auto wRootPath =
+        (directory.root_name() / directory.root_directory()).wstring();
 
-    BOOL success = GetDiskFreeSpace(ConvertToUtf16String(rootPath).c_str(),
+    BOOL success = GetDiskFreeSpace(wRootPath.c_str(),
         &sectorsPerCluster, &bytesPerSector, &numberOfFreeClusters,
         &totalNumberOfClusters);
 

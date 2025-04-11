@@ -271,8 +271,7 @@ bool RandomFileCheck::HasRandomFileAttribute(const std::string &filename) const
     const auto path = directory / flx::tolower(filename);
 
 #ifdef _WIN32
-    const auto wPath = ConvertToUtf16String(path.u8string());
-    DWord attributes = GetFileAttributes(wPath.c_str());
+    DWord attributes = GetFileAttributes(path.wstring().c_str());
 
     return (attributes != INVALID_FILE_ATTRIBUTES &&
             (attributes & FILE_ATTRIBUTE_HIDDEN) != 0U);
@@ -294,7 +293,7 @@ bool RandomFileCheck::RemoveRandomFileAttribute(const std::string &filename)
     const auto path = directory / flx::tolower(filename);
 
 #ifdef _WIN32
-    const auto wPath = ConvertToUtf16String(path.u8string());
+    const auto wPath = path.wstring();
     DWord attributes = GetFileAttributes(wPath.c_str());
 
     if (attributes != INVALID_FILE_ATTRIBUTES)
@@ -392,8 +391,7 @@ void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
 
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
-    const auto wWildcard(
-        ConvertToUtf16String((directory / u8"*.*").u8string()));
+    const auto wWildcard((directory / u8"*.*").wstring());
 
     auto hdl = FindFirstFile(wWildcard.c_str(), &pentry);
 
