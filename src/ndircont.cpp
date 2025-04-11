@@ -1219,10 +1219,9 @@ void FlexDirectoryDiskBySector::check_for_changed_file_attr(Word ds_idx,
 
 // Return false if not successful otherwise return true.
 // years < 75 will be represented as >= 2000
-bool FlexDirectoryDiskBySector::set_file_time(const char *ppath, Byte month,
-        Byte day, Byte year, Byte hour, Byte minute) const
+bool FlexDirectoryDiskBySector::set_file_time(const fs::path &path,
+        Byte month, Byte day, Byte year, Byte hour, Byte minute) const
 {
-    const auto path(fs::u8path(ppath));
     struct stat sbuf{};
     struct utimbuf timebuf{};
     struct tm file_time{};
@@ -1260,7 +1259,7 @@ bool FlexDirectoryDiskBySector::set_file_time(const char *ppath, Byte month,
 }
 
 // Set back the file time to the date in the emulated file system.
-bool FlexDirectoryDiskBySector::update_file_time(const char *path,
+bool FlexDirectoryDiskBySector::update_file_time(const fs::path &path,
                                                  SDWord file_id) const
 {
     if (file_id >= 0)
@@ -1348,7 +1347,7 @@ void FlexDirectoryDiskBySector::check_for_new_file(Word ds_idx,
                 LOG_XX("      new file {}, was {}\n",
                         new_name, iter.second.filename);
 #endif
-                set_file_time(new_path.u8string().c_str(),
+                set_file_time(new_path,
                     dir_sector.dir_entries[i].month,
                     dir_sector.dir_entries[i].day,
                     dir_sector.dir_entries[i].year,
@@ -1531,7 +1530,7 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
                     {
                         // The host file system changes the modification time.
                         // Set it back to the time of the emulated file system.
-                        update_file_time(path.u8string().c_str(), link.file_id);
+                        update_file_time(path, link.file_id);
                     }
                 }
 
@@ -1787,7 +1786,7 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                     {
                         // The host file system changes the modification time.
                         // Set it back to the time of the emulated file system.
-                        update_file_time(path.u8string().c_str(), link.file_id);
+                        update_file_time(path, link.file_id);
                     }
                 }
             }

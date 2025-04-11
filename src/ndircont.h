@@ -199,13 +199,13 @@ private:
     void check_for_changed_file_attr(Word ds_idx, s_dir_sector &d);
     bool extend_directory(SDWord sec_idx, const s_dir_sector &d);
     bool set_file_time(
-        const char *ppath,
+        const fs::path &path,
         Byte month,
         Byte day,
         Byte year,
         Byte hour,
         Byte minute) const;
-    bool update_file_time(const char *path, SDWord file_id) const;
+    bool update_file_time(const fs::path &path, SDWord file_id) const;
     st_t link_address() const;
     bool is_last_of_free_chain(const st_t &track_sector) const;
     SDWord id_of_new_file(const st_t &track_sector);
