@@ -405,28 +405,6 @@ fs::path flx::getHomeDirectory()
 }
 #endif
 
-fs::path flx::getCurrentPath()
-{
-#ifdef _WIN32
-    DWORD size = GetCurrentDirectory(0, nullptr);
-    auto buffer = std::unique_ptr<wchar_t[]>(new wchar_t[size]);
-
-    if (GetCurrentDirectory(size, buffer.get()) > 0)
-    {
-        return buffer.get();
-    }
-#else
-    std::array<char, PATH_MAX> buffer{};
-
-    if (getcwd(buffer.data(), buffer.size()))
-    {
-        return buffer.data();
-    }
-#endif
-
-    return {};
-}
-
 bool flx::isAbsolutePath(const std::string &path)
 {
 #ifdef _WIN32

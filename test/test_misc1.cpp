@@ -309,15 +309,6 @@ TEST(test_misc1, fct_getHomeDirectory)
     EXPECT_TRUE(result);
 }
 
-TEST(test_misc1, fct_getCurrentPath)
-{
-    auto path = flx::getCurrentPath();
-    const auto status = fs::status(path);
-    bool result = fs::exists(path) && fs::is_directory(status);
-
-    EXPECT_TRUE(result);
-}
-
 TEST(test_misc1, fct_getHostName)
 {
     auto result = flx::getHostName();
