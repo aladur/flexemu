@@ -33,19 +33,22 @@
 #include <numeric>
 #include <algorithm>
 #include <ctime>
+#include <functional>
 #include <sys/stat.h>
-//#include <fmt/format.h>
+#include <fmt/format.h>
 
 
 namespace fs = std::filesystem;
 
-/*
-auto print_fct = [](const Byte b){
-    std::cout << fmt::format("{:02X} ", static_cast<Word>(b));
+class test_ffilebuf : public ::testing::Test
+{
+protected:
+    std::function<void(const Byte b)> print_fct = [](const Byte b){
+        std::cout << fmt::format("{:02X} ", static_cast<Word>(b));
+    };
 };
-*/
 
-TEST(test_ffilebuf, fct_default_ctor)
+TEST_F(test_ffilebuf, fct_default_ctor)
 {
     FlexFileBuffer ffb;
     EXPECT_TRUE(ffb.IsEmpty());
@@ -61,7 +64,7 @@ TEST(test_ffilebuf, fct_default_ctor)
     EXPECT_NO_THROW({ ffb.FillWith(); });
 }
 
-TEST(test_ffilebuf, fct_move_ctor)
+TEST_F(test_ffilebuf, fct_move_ctor)
 {
     std::string test_file("test.txt");
     auto path = fs::temp_directory_path() / test_file;
@@ -110,7 +113,7 @@ TEST(test_ffilebuf, fct_move_ctor)
     fs::remove(path);
 }
 
-TEST(test_ffilebuf, fct_copy_ctor)
+TEST_F(test_ffilebuf, fct_copy_ctor)
 {
     std::string test_file("test.txt");
     auto path = fs::temp_directory_path() / test_file;
@@ -158,7 +161,7 @@ TEST(test_ffilebuf, fct_copy_ctor)
     fs::remove(path);
 }
 
-TEST(test_ffilebuf, fct_ReadFromFile)
+TEST_F(test_ffilebuf, fct_ReadFromFile)
 {
     std::string test_file("test.txt");
     auto path = fs::temp_directory_path() / test_file;
@@ -235,7 +238,7 @@ TEST(test_ffilebuf, fct_ReadFromFile)
     fs::remove(path);
 }
 
-TEST(test_ffilebuf, fct_WriteToFile)
+TEST_F(test_ffilebuf, fct_WriteToFile)
 {
     std::string test_file("test.txt");
     auto path = fs::temp_directory_path() / test_file;
@@ -330,7 +333,7 @@ TEST(test_ffilebuf, fct_WriteToFile)
 #endif
 }
 
-TEST(test_ffilebuf, fct_get_set)
+TEST_F(test_ffilebuf, fct_get_set)
 {
     std::string test_file("test.txt");
     FlexFileBuffer ffb;
@@ -362,7 +365,7 @@ TEST(test_ffilebuf, fct_get_set)
 
 }
 
-TEST(test_ffilebuf, fct_header_get_set)
+TEST_F(test_ffilebuf, fct_header_get_set)
 {
     FlexFileBuffer ffb;
     tFlexFileHeader header_src{};
@@ -400,7 +403,7 @@ TEST(test_ffilebuf, fct_header_get_set)
             testing::Throws<FlexException>());
 }
 
-TEST(test_ffilebuf, fct_buffer_get_set)
+TEST_F(test_ffilebuf, fct_buffer_get_set)
 {
     FlexFileBuffer ffb;
     int size = 4;
@@ -433,7 +436,7 @@ TEST(test_ffilebuf, fct_buffer_get_set)
     EXPECT_TRUE(std::all_of(p, &p[size], compare_fct));
 }
 
-TEST(test_ffilebuf, fct_buffer_CopyFrom)
+TEST_F(test_ffilebuf, fct_buffer_CopyFrom)
 {
     FlexFileBuffer ffb;
     std::vector<Byte> data(16U);
@@ -463,7 +466,7 @@ TEST(test_ffilebuf, fct_buffer_CopyFrom)
             testing::Throws<FlexException>());
 }
 
-TEST(test_ffilebuf, fct_buffer_CopyTo)
+TEST_F(test_ffilebuf, fct_buffer_CopyTo)
 {
     FlexFileBuffer ffb;
     std::string data;
@@ -510,7 +513,7 @@ TEST(test_ffilebuf, fct_buffer_CopyTo)
     fs::remove(path);
 }
 
-TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
+TEST_F(test_ffilebuf, fct_ConvertToFlexTextFile)
 {
     FlexFileBuffer ffb;
     auto path = fs::temp_directory_path() / u8"test.txt";
@@ -598,7 +601,7 @@ TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
     fs::remove(path);
 }
 
-TEST(test_ffilebuf, fct_ConvertToDumpFile)
+TEST_F(test_ffilebuf, fct_ConvertToDumpFile)
 {
     FlexFileBuffer ffb;
     std::string test_file(u8"test");
@@ -656,7 +659,7 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
     fs::remove(fs::current_path() / u8"data" / RANDOM_FILE_LIST_NEW);
 }
 
-TEST(test_ffilebuf, fct_bin_file)
+TEST_F(test_ffilebuf, fct_bin_file)
 {
     FlexFileBuffer ffb;
     auto path = fs::temp_directory_path() / u8"test";
