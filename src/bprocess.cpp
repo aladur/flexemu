@@ -27,12 +27,16 @@
     #include <sys/wait.h>
     #include <string>
     #include <vector>
+    #include <filesystem>
 #endif
 #include "bprocess.h"
 #include "cvtwchar.h"
 
-BProcess::BProcess(std::string p_executable,
-                   std::string p_directory /* = "" */,
+namespace fs = std::filesystem;
+
+
+BProcess::BProcess(fs::path p_executable,
+                   fs::path p_directory /* = "" */,
                    std::vector<std::string> p_arguments /* = {} */)
     : executable(std::move(p_executable))
     , directory(std::move(p_directory))
@@ -45,7 +49,7 @@ void BProcess::AddArgument(const std::string &argument)
     arguments.push_back(argument);
 }
 
-void BProcess::SetDirectory(const std::string &p_directory)
+void BProcess::SetDirectory(const fs::path &p_directory)
 {
     directory = p_directory;
 }
@@ -65,8 +69,8 @@ bool BProcess::Start()
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
 
-    const auto wExecutable(ConvertToUtf16String(executable));
-    const auto wDirectory(ConvertToUtf16String(directory));
+    const auto wExecutable(executable.wstring());
+    const auto wDirectory(directory.wstring());
     std::wstring wArguments;
 
     memset((void *)&si, 0, sizeof(STARTUPINFO));
@@ -149,9 +153,10 @@ int BProcess::Wait()
 bool BProcess::Start()
 {
     std::vector<char *> argv;
+    auto sExecutable = executable.u8string();
     struct sigaction default_action{};
 
-    argv.push_back(executable.data());
+    argv.push_back(sExecutable.data());
     for (auto &argument : arguments)
     {
         argv.push_back(argument.data());
@@ -169,10 +174,12 @@ bool BProcess::Start()
 
         if (!directory.empty())
         {
-            if (chdir(directory.c_str()) < 0)
-                {
+            std::error_code ec;
+            fs::current_path(directory, ec);
+            if (ec)
+            {
                     // What to do here?
-                }
+            }
         }
 
         execvp(argv[0], argv.data());

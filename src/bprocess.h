@@ -26,6 +26,10 @@
 #include "misc1.h"
 #include <vector>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 
 // This class describes a platform independant Process interface
 
@@ -33,8 +37,8 @@ class BProcess
 {
 public:
     explicit BProcess(
-             std::string p_executable,
-             std::string p_directory = "",
+             fs::path p_executable,
+             fs::path p_directory = "",
              std::vector<std::string> p_arguments = {});
 #ifdef _WIN32
     ~BProcess();
@@ -43,7 +47,7 @@ public:
     ~BProcess() = default;
 #endif
     void AddArgument(const std::string &argument);
-    void SetDirectory(const std::string &p_directory);
+    void SetDirectory(const fs::path &p_directory);
     bool Start(); // Start the Process if not started yet
     bool IsRunning() const; // Check if Process is running
     int Wait(); // Wait until process exited and return exit status
@@ -51,18 +55,18 @@ public:
     {
         return arguments;
     };
-    std::string GetDirectory()  const
+    fs::path GetDirectory()  const
     {
         return directory;
     };
-    std::string GetExecutable() const
+    fs::path GetExecutable() const
     {
         return executable;
     };
 
 protected:
-    std::string executable;
-    std::string directory;
+    fs::path executable;
+    fs::path directory;
     std::vector<std::string> arguments;
 
 #ifdef _WIN32
