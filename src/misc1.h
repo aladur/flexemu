@@ -128,7 +128,6 @@ constexpr const char *COPYRIGHT_MESSAGE = \
     #define utimbuf _utimbuf
     #define access _access
     #define access _access
-    #define unlink _unlink
     #define getcwd _getcwd
     #define chdir _chdir
     #include <io.h>
