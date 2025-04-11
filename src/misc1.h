@@ -127,9 +127,6 @@ constexpr const char *COPYRIGHT_MESSAGE = \
     #define stat _stat64i32
     #define utimbuf _utimbuf
     #define access _access
-    #define access _access
-    #define getcwd _getcwd
-    #define chdir _chdir
     #include <io.h>
 #endif
 
