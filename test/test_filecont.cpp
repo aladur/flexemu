@@ -148,31 +148,36 @@ TEST_F(test_IFlexDiskByFile, fct_FindFile)
             EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_FALSE(dirEntry.IsEmpty());
             EXPECT_EQ(dirEntry.GetTotalFileName(), wildcard);
-            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE);
+            EXPECT_EQ(dirEntry.GetFileSize(),
+                static_cast<unsigned>(SECTOR_SIZE));
             EXPECT_EQ(dirEntry.GetAttributes(), FLX_READONLY);
             wildcard = "TEST10.TXT";
             EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_FALSE(dirEntry.IsEmpty());
             EXPECT_EQ(dirEntry.GetTotalFileName(), wildcard);
-            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 10);
+            EXPECT_EQ(dirEntry.GetFileSize(),
+                static_cast<unsigned>(SECTOR_SIZE * 10));
             EXPECT_EQ(dirEntry.GetAttributes(), 0);
             wildcard = "TEST02.BIN";
             EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_FALSE(dirEntry.IsEmpty());
             EXPECT_EQ(dirEntry.GetTotalFileName(), wildcard);
-            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 2);
+            EXPECT_EQ(dirEntry.GetFileSize(),
+                static_cast<unsigned>(SECTOR_SIZE * 2));
             EXPECT_EQ(dirEntry.GetAttributes(), 0);
             wildcard = "TEST09.BIN";
             EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_FALSE(dirEntry.IsEmpty());
             EXPECT_EQ(dirEntry.GetTotalFileName(), wildcard);
-            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 9);
+            EXPECT_EQ(dirEntry.GetFileSize(),
+                static_cast<unsigned>(SECTOR_SIZE * 9));
             EXPECT_EQ(dirEntry.GetAttributes(), 0);
             wildcard = "test05.bin";
             EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_FALSE(dirEntry.IsEmpty());
             EXPECT_EQ(dirEntry.GetTotalFileName(), flx::toupper(wildcard));
-            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 5);
+            EXPECT_EQ(dirEntry.GetFileSize(),
+                static_cast<unsigned>(SECTOR_SIZE * 5));
             EXPECT_EQ(dirEntry.GetAttributes(), 0);
             wildcard = "";
             EXPECT_FALSE(disk->FindFile(wildcard, dirEntry));
@@ -370,7 +375,8 @@ TEST_F(test_IFlexDiskByFile, fct_ReadToBuffer)
             std::string filename = "TEST05.TXT";
             auto buffer = disk->ReadToBuffer(filename);
             EXPECT_FALSE(buffer.IsEmpty());
-            EXPECT_EQ(buffer.GetFileSize(), (SECTOR_SIZE - 4) * 5);
+            EXPECT_EQ(buffer.GetFileSize(),
+                static_cast<unsigned>((SECTOR_SIZE - 4) * 5));
             EXPECT_EQ(buffer.GetFilename(), filename);
             EXPECT_TRUE(buffer.IsFlexTextFile());
             EXPECT_EQ(buffer.GetDate(), BDate(11, 8, 2024));
@@ -379,7 +385,8 @@ TEST_F(test_IFlexDiskByFile, fct_ReadToBuffer)
             filename = "TEST10.BIN";
             buffer = disk->ReadToBuffer(filename);
             EXPECT_FALSE(buffer.IsEmpty());
-            EXPECT_EQ(buffer.GetFileSize(), (SECTOR_SIZE - 4) * 10);
+            EXPECT_EQ(buffer.GetFileSize(),
+                static_cast<unsigned>((SECTOR_SIZE - 4) * 10));
             EXPECT_EQ(buffer.GetFilename(), filename);
             EXPECT_FALSE(buffer.IsFlexTextFile());
             EXPECT_EQ(buffer.GetDate(), BDate(11, 8, 2024));
@@ -437,7 +444,8 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
         EXPECT_FALSE(dirEntry.IsEmpty());
         filename = flx::toupper(filename);
         EXPECT_EQ(dirEntry.GetTotalFileName(), filename);
-        EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 22);
+        EXPECT_EQ(dirEntry.GetFileSize(),
+            static_cast<unsigned>(SECTOR_SIZE * 22));
         EXPECT_EQ(dirEntry.GetDate(), BDate(11, 8, 2024));
         EXPECT_EQ(dirEntry.GetTime(), BTime(22, 1));
     }
@@ -461,7 +469,8 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
             EXPECT_FALSE(dirEntry.IsEmpty());
             filename = flx::toupper(filename);
             EXPECT_EQ(dirEntry.GetTotalFileName(), filename);
-            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 22);
+            EXPECT_EQ(dirEntry.GetFileSize(),
+                static_cast<unsigned>(SECTOR_SIZE * 22));
             EXPECT_EQ(dirEntry.GetDate(), BDate(11, 8, 2024));
             EXPECT_EQ(dirEntry.GetTime(), BTime());
         }

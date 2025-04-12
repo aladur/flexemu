@@ -90,16 +90,19 @@ TEST(test_bmembuf, member_CopyFrom)
 {
     BMemoryBuffer buffer(0x4000U);
     std::vector<Byte> buffer_src1{ 1, 2, 3, 4, 5, 6, 7, 8 };
-    buffer.CopyFrom(buffer_src1.data(), 0x1000U, buffer_src1.size());
+    buffer.CopyFrom(buffer_src1.data(), 0x1000U,
+        static_cast<DWord>(buffer_src1.size()));
     std::vector<Byte> buffer_src2{ 250, 251, 252, 252, 253, 254, 255 };
-    buffer.CopyFrom(buffer_src2.data(), 0x3FFC, buffer_src2.size());
+    buffer.CopyFrom(buffer_src2.data(), 0x3FFC,
+        static_cast<DWord>(buffer_src2.size()));
     EXPECT_EQ(buffer.GetAddressRanges().size(), 2U);
     EXPECT_EQ(buffer.GetAddressRanges().at(0U).lower(), 0x1000U);
     EXPECT_EQ(buffer.GetAddressRanges().at(0U).upper(), 0x1007U);
     EXPECT_EQ(buffer.GetAddressRanges().at(1U).lower(), 0x3FFCU);
     EXPECT_EQ(buffer.GetAddressRanges().at(1U).upper(), 0x3FFFU);
 
-    buffer.CopyFrom(buffer_src2.data(), 0x3FF5, buffer_src2.size());
+    buffer.CopyFrom(buffer_src2.data(), 0x3FF5,
+        static_cast<DWord>(buffer_src2.size()));
     EXPECT_EQ(buffer.GetAddressRanges().size(), 2U);
     EXPECT_EQ(buffer.GetAddressRanges().at(1U).lower(), 0x3FF5U);
     EXPECT_EQ(buffer.GetAddressRanges().at(1U).upper(), 0x3FFFU);
@@ -113,14 +116,16 @@ TEST(test_bmembuf, member_CopyTo)
 {
     BMemoryBuffer buffer(0x4000U);
     std::vector<Byte> buffer_src1{ 1, 2, 3, 4, 5, 6, 7, 8 };
-    buffer.CopyFrom(buffer_src1.data(), 0x1000U, buffer_src1.size());
+    buffer.CopyFrom(buffer_src1.data(), 0x1000U,
+        static_cast<DWord>(buffer_src1.size()));
     std::array<Byte, 10> buffer_tgt1{};
     buffer.CopyTo(buffer_tgt1.data(), 0x1000U, 10);
     std::array<Byte, 10> buffer_cmp1{ 1, 2, 3, 4, 5, 6, 7, 8, 0, 0 };
     EXPECT_EQ(buffer_tgt1, buffer_cmp1);
 
     std::vector<Byte> buffer_src2{ 250, 251, 252, 253, 254, 255 };
-    buffer.CopyFrom(buffer_src2.data(), 0x3FFC, buffer_src2.size());
+    buffer.CopyFrom(buffer_src2.data(), 0x3FFC,
+        static_cast<DWord>(buffer_src2.size()));
     std::array<Byte, 6> buffer_tgt2_1{};
     buffer.CopyTo(buffer_tgt2_1.data(), 0x3FFC, 10);
     std::array<Byte, 6> buffer_cmp2{ 250, 251, 252, 253, 0, 0 };

@@ -810,7 +810,7 @@ TEST(test_da6809, dis_indexed_modes_illegal)
     }
 }
 
-static std::string GetRegisterName(Byte code)
+static std::string GetRegisterName(unsigned code)
 {
     static const std::array<const char *, 16> registers{
         "D", "X", "Y", "U", "S", "PC", "??", "??",
@@ -869,7 +869,7 @@ TEST(test_da6809, dis_exg_tfr)
     }
 }
 
-static std::string GetRegisterList(Byte postbyte,
+static std::string GetRegisterList(unsigned postbyte,
         const std::string &nonstack_reg)
 {
     static const std::array<const char *, 8> reg_names{
@@ -919,7 +919,7 @@ TEST(test_da6809, dis_psh_pul)
     {
         memory[0] = opcode;
 
-        for (int postbyte = 0; postbyte < 256; ++postbyte)
+        for (unsigned postbyte = 0U; postbyte < 256U; ++postbyte)
         {
             memory[1] = static_cast<Byte>(postbyte);
 
@@ -1052,7 +1052,7 @@ TEST(test_da6809, dis_flex_labels)
 TEST(test_da6809, fct_getByteSize_page1)
 {
     Da6809 da;
-    DWord pc = 0U;
+    unsigned pc = 0U;
     static const Byte X = 1; // size of illegal instruction
     static const std::vector<Byte> memory
     {
@@ -1115,7 +1115,7 @@ TEST(test_da6809, fct_getByteSize_page1)
         // Check all illegal opcodes.
         0x14, 0x15, 0x18, 0x1B, 0x38, 0x87, 0x8F, 0xC7, 0xCD, 0xCF,
     };
-    static const std::vector<int> expected_bytes
+    static const std::vector<unsigned> expected_bytes
     {
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
         1, 1, 3, 3, 1, 2, 2, 1, 2, 2,
@@ -1144,7 +1144,7 @@ TEST(test_da6809, fct_getByteSize_page1)
     };
     auto iexpected_bytes = expected_bytes.cbegin();
 
-    while (pc < static_cast<Word>(memory.size()))
+    while (pc < memory.size())
     {
         const auto bytes = da.getByteSize(&memory[pc]);
 
@@ -1156,7 +1156,7 @@ TEST(test_da6809, fct_getByteSize_page1)
 TEST(test_da6809, fct_getByteSize_page2)
 {
     Da6809 da;
-    Word pc = 0U;
+    unsigned pc = 0U;
     static const Byte Y = 2; // size of illegal instruction
     static const std::vector<Byte> memory
     {
@@ -1191,7 +1191,7 @@ TEST(test_da6809, fct_getByteSize_page2)
 
 
     };
-    static const std::vector<int> expected_bytes
+    static const std::vector<unsigned> expected_bytes
     {
         4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
         2,
@@ -1215,7 +1215,7 @@ TEST(test_da6809, fct_getByteSize_page2)
     };
     auto iexpected_bytes = expected_bytes.cbegin();
 
-    while (pc < static_cast<Word>(memory.size()))
+    while (pc < memory.size())
     {
         const auto bytes = da.getByteSize(&memory[pc]);
         EXPECT_EQ(bytes, *(iexpected_bytes++));
@@ -1226,7 +1226,7 @@ TEST(test_da6809, fct_getByteSize_page2)
 TEST(test_da6809, fct_getByteSize_page3)
 {
     Da6809 da;
-    Word pc = 0U;
+    unsigned pc = 0U;
     static const Byte Y = 2; // illegal instruction
     static const std::vector<Byte> memory
     {
@@ -1250,7 +1250,7 @@ TEST(test_da6809, fct_getByteSize_page3)
 
 
     };
-    static const std::vector<int> expected_bytes
+    static const std::vector<unsigned> expected_bytes
     {
         2,
         4, 4,
@@ -1269,7 +1269,7 @@ TEST(test_da6809, fct_getByteSize_page3)
     };
     auto iexpected_bytes = expected_bytes.cbegin();
 
-    while (pc < static_cast<Word>(memory.size()))
+    while (pc < memory.size())
     {
         const auto bytes = da.getByteSize(&memory[pc]);
         EXPECT_EQ(bytes, *(iexpected_bytes++));

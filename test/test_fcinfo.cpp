@@ -129,7 +129,7 @@ TEST(test_fcinfo, get_set)
     info.SetDiskname("testname");
     EXPECT_EQ(info.GetDiskname(), "testname");
     info.SetNumber(4711);
-    EXPECT_EQ(info.GetNumber(), 4711);
+    EXPECT_EQ(info.GetNumber(), 4711U);
     info.SetTrackSector(22, 47);
     int tracks = 0;
     int sectors = 0;

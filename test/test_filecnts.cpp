@@ -577,7 +577,8 @@ TEST_F(test_IFlexDiskBySector, fct_GetBytesPerSector)
                 continue;
             }
 
-            EXPECT_EQ(disk->GetBytesPerSector(), SECTOR_SIZE)
+            EXPECT_EQ(disk->GetBytesPerSector(),
+                static_cast<unsigned>(SECTOR_SIZE))
                 << " path=" << disk->GetPath().u8string();
         }
     }

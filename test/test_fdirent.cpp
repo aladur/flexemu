@@ -34,7 +34,7 @@ TEST(test_fdirent, default_ctor)
     int tracks;
     int sectors;
 
-    EXPECT_EQ(de.GetFileSize(), 0);
+    EXPECT_EQ(de.GetFileSize(), 0U);
     EXPECT_EQ(de.GetAttributes(), 0U);
     EXPECT_EQ(de.GetSectorMap(), 0);
     EXPECT_EQ(de.IsRandom(), 0);
@@ -72,7 +72,7 @@ TEST(test_fdirent, copy_ctor)
     int tracks;
     int sectors;
 
-    EXPECT_EQ(de_tgt.GetFileSize(), 12877);
+    EXPECT_EQ(de_tgt.GetFileSize(), 12877U);
     EXPECT_EQ(de_tgt.GetAttributes(), WRITE_PROTECT | CATALOG_PROTECT);
     EXPECT_EQ(de_tgt.GetSectorMap(), IS_RANDOM_FILE);
     de_tgt.GetStartTrkSec(tracks, sectors);
@@ -112,7 +112,7 @@ TEST(test_fdirent, move_ctor)
     int tracks;
     int sectors;
 
-    EXPECT_EQ(de_tgt.GetFileSize(), 128);
+    EXPECT_EQ(de_tgt.GetFileSize(), 128U);
     EXPECT_EQ(de_tgt.GetAttributes(), WRITE_PROTECT);
     EXPECT_EQ(de_tgt.GetSectorMap(), IS_RANDOM_FILE);
     de_tgt.GetStartTrkSec(tracks, sectors);
@@ -154,7 +154,7 @@ TEST(test_fdirent, copy_assignment)
     int tracks;
     int sectors;
 
-    EXPECT_EQ(de_tgt.GetFileSize(), 5690223);
+    EXPECT_EQ(de_tgt.GetFileSize(), 5690223U);
     EXPECT_EQ(de_tgt.GetAttributes(), CATALOG_PROTECT);
     EXPECT_EQ(de_tgt.GetSectorMap(), IS_RANDOM_FILE);
     de_tgt.GetStartTrkSec(tracks, sectors);
@@ -194,7 +194,7 @@ TEST(test_fdirent, move_assignment)
     int tracks;
     int sectors;
 
-    EXPECT_EQ(de_tgt.GetFileSize(), 829);
+    EXPECT_EQ(de_tgt.GetFileSize(), 829U);
     EXPECT_EQ(de_tgt.GetAttributes(), DELETE_PROTECT | CATALOG_PROTECT);
     EXPECT_EQ(de_tgt.GetSectorMap(), IS_RANDOM_FILE);
     de_tgt.GetStartTrkSec(tracks, sectors);
@@ -234,7 +234,7 @@ TEST(test_fdirent, get_set)
     de.SetTime(time);
     de.SetTotalFileName("get_set.tst");
 
-    EXPECT_EQ(de.GetFileSize(), 18888);
+    EXPECT_EQ(de.GetFileSize(), 18888U);
     EXPECT_EQ(de.GetAttributes(), DELETE_PROTECT | WRITE_PROTECT);
     de.SetAttributes(CATALOG_PROTECT, WRITE_PROTECT);
     EXPECT_EQ(de.GetAttributes(), DELETE_PROTECT | CATALOG_PROTECT);

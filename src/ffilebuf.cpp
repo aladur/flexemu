@@ -627,7 +627,7 @@ bool FlexFileBuffer::ReadFromFile(const fs::path &path,
     {
         std::ifstream istream(absPath, std::ios::in | std::ios::binary);
 
-        Realloc(fs::file_size(absPath));
+        Realloc(static_cast<DWord>(fs::file_size(absPath)));
 
         if (istream.is_open())
         {

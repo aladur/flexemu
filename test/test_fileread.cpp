@@ -52,7 +52,7 @@ struct TestMemory : public MemoryTarget<DWord>, public MemorySource<DWord>
         }
         if (address + secureSize >= buffer.size())
         {
-            secureSize -= address + size - buffer.size();
+            secureSize -= address + size - static_cast<DWord>(buffer.size());
         }
         memcpy(buffer.data() + address, source, secureSize);
 
@@ -74,7 +74,7 @@ struct TestMemory : public MemoryTarget<DWord>, public MemorySource<DWord>
 
         if (address + secureSize >= buffer.size())
         {
-            secureSize -= address + size - buffer.size();
+            secureSize -= address + size - static_cast<DWord>(buffer.size());
         }
 
         memcpy(target, buffer.data() + address, secureSize);
@@ -103,7 +103,7 @@ TEST(test_fileread, fct_load_hexfile)
         if (test_file.find("hex") == std::string::npos)
         {
             // Intel-hex does not support start address.
-            EXPECT_EQ(start_addr, 0xC100);
+            EXPECT_EQ(start_addr, 0xC100U);
         }
         EXPECT_EQ(memory.buffer[0xC0FF], 0x00);
         EXPECT_EQ(memory.buffer[0xC100], 0x20);
@@ -162,7 +162,7 @@ TEST(test_fileread, fct_load_hexfile__intel)
         ASSERT_EQ(result, expected_results[index++]);
         if (result == 0)
         {
-            EXPECT_EQ(start_addr, 0x0000);
+            EXPECT_EQ(start_addr, 0x0000U);
             EXPECT_EQ(memory.buffer[0x00FF], 0x00);
             EXPECT_EQ(memory.buffer[0x0100], 0x01);
             EXPECT_EQ(memory.buffer[0x0103], 0x09);
@@ -212,7 +212,7 @@ TEST(test_fileread, fct_load_hexfile__motorola)
         ASSERT_EQ(result, expected_results[index++]);
         if (result == 0)
         {
-            EXPECT_EQ(start_addr, 0x0100);
+            EXPECT_EQ(start_addr, 0x0100U);
             EXPECT_EQ(memory.buffer[0x00FF], 0x00);
             EXPECT_EQ(memory.buffer[0x0100], 0x01);
             EXPECT_EQ(memory.buffer[0x0103], 0x09);
@@ -257,7 +257,7 @@ TEST(test_fileread, fct_load_hexfile__flex_binary)
         {
             if (index >= 4)
             {
-                EXPECT_EQ(start_addr, 0x0100);
+                EXPECT_EQ(start_addr, 0x0100U);
             }
             if (index != 5)
             {
@@ -294,8 +294,9 @@ TEST(test_fileread, fct_write_flex_binary)
     DWord start_addr = 0xC100U;
     for (const auto &file_content : file_contents)
     {
-        memory.CopyFrom(file_content.data(), start_addr, file_content.size());
-        start_addr += 0x100;
+        memory.CopyFrom(file_content.data(), start_addr,
+            static_cast<DWord>(file_content.size()));
+        start_addr += 0x100U;
     }
     const auto path = fs::temp_directory_path() / u8"test_flex_binary.cmd";
     auto result = write_flex_binary(path, memory, 0xC100);
@@ -330,8 +331,9 @@ TEST(test_fileread, fct_write_intel_hex)
     DWord start_addr = 0xC100U;
     for (const auto &file_content : file_contents)
     {
-        memory.CopyFrom(file_content.data(), start_addr, file_content.size());
-        start_addr += 0x100;
+        memory.CopyFrom(file_content.data(), start_addr,
+            static_cast<DWord>(file_content.size()));
+        start_addr += 0x100U;
     }
     const auto path = fs::temp_directory_path() / u8"test_intel_hex.hex";
     auto result = write_intel_hex(path, memory, 0xC100);
@@ -368,8 +370,9 @@ TEST(test_fileread, fct_write_motorola_srecord)
     DWord start_addr = 0xC100U;
     for (const auto &file_content : file_contents)
     {
-        memory.CopyFrom(file_content.data(), start_addr, file_content.size());
-        start_addr += 0x100;
+        memory.CopyFrom(file_content.data(), start_addr,
+            static_cast<DWord>(file_content.size()));
+        start_addr += 0x100U;
     }
     const auto path = fs::temp_directory_path() / u8"test_motorola.s19";
     auto result = write_motorola_srecord(path, memory, 0xC100);
@@ -400,8 +403,9 @@ TEST(test_fileread, fct_write_raw_binary)
     DWord start_addr = 0xC100U;
     for (const auto &file_content : file_contents)
     {
-        memory.CopyFrom(file_content.data(), start_addr, file_content.size());
-        start_addr += 0x100;
+        memory.CopyFrom(file_content.data(), start_addr,
+            static_cast<DWord>(file_content.size()));
+        start_addr += 0x100U;
     }
     const auto path = fs::temp_directory_path() / u8"test_raw_binary.dmp";
     auto result = write_raw_binary(path, memory, 0xC100);

@@ -56,7 +56,7 @@ TEST(test_colors, fct_getColorForName)
     EXPECT_TRUE(flx::getColorForName("orange", rgbColor));
     EXPECT_EQ(rgbColor, 0x00A5FFU);
     EXPECT_TRUE(flx::getColorForName("violet", rgbColor));
-    EXPECT_EQ(rgbColor, 0xEE82EE);
+    EXPECT_EQ(rgbColor, 0xEE82EEU);
     EXPECT_FALSE(flx::getColorForName("invalid", rgbColor));
 }
 

@@ -244,9 +244,10 @@ TEST_F(test_ffilebuf, fct_WriteToFile)
     auto path = fs::temp_directory_path() / test_file;
     std::string content("testfile content WriteToFile");
     FlexFileBuffer ffb;
-    ffb.Realloc(content.size() + 1);
+    ffb.Realloc(static_cast<DWord>(content.size() + 1U));
     ffb.SetDateTime(BDate(15, 2, 1985), BTime(18, 12));
-    ffb.CopyFrom(reinterpret_cast<const Byte *>(content.c_str()), content.size() + 1);
+    ffb.CopyFrom(reinterpret_cast<const Byte *>(content.c_str()),
+        static_cast<DWord>(content.size() + 1U));
     fs::remove(path);
 
     // Write file to temp directory.
@@ -429,7 +430,7 @@ TEST_F(test_ffilebuf, fct_buffer_get_set)
     p = static_cast<const Byte *>(ffb);
     expected = '\0';
     EXPECT_TRUE(std::all_of(p, &p[size], compare_fct));
-    expected = '\xAA';
+    expected = 0xAAU;
     ffb.FillWith(expected);
     size = 6;
     ffb.Realloc(size, true);
@@ -449,10 +450,11 @@ TEST_F(test_ffilebuf, fct_buffer_CopyFrom)
     ffb.Realloc(16U);
 
     // Copy from data with size and offset (size + offset too large).
-    EXPECT_FALSE(ffb.CopyFrom(data.data(), data.size(), 1U));
+    EXPECT_FALSE(ffb.CopyFrom(data.data(),
+        static_cast<DWord>(data.size()), 1U));
 
     // Copy from data with size.
-    EXPECT_TRUE(ffb.CopyFrom(data.data(), data.size()));
+    EXPECT_TRUE(ffb.CopyFrom(data.data(), static_cast<DWord>(data.size())));
     const Byte *p = static_cast<const Byte *>(ffb);
     EXPECT_TRUE(std::equal(p, p+16, data.cbegin()));
 
@@ -486,18 +488,19 @@ TEST_F(test_ffilebuf, fct_buffer_CopyTo)
     std::iota(expected.begin(), expected.end(), '\0');
 
     // Copy to target without offset.
-    EXPECT_TRUE(ffb.CopyTo(target.data(), target.size(), 0U));
+    const auto tgt_size = static_cast<DWord>(target.size());
+    EXPECT_TRUE(ffb.CopyTo(target.data(), tgt_size, 0U));
     EXPECT_TRUE(std::equal(target.cbegin(), target.cend(), expected.cbegin()));
 
     // Copy to target with size, offset and no stuff byte.
-    EXPECT_FALSE(ffb.CopyTo(target.data(), target.size(), 5U));
+    EXPECT_FALSE(ffb.CopyTo(target.data(), tgt_size, 5U));
 
     // Copy to target with size, offset (too large) and stuff byte.
-    EXPECT_FALSE(ffb.CopyTo(target.data(), target.size(), 16U, '\0'));
+    EXPECT_FALSE(ffb.CopyTo(target.data(), tgt_size, 16U, '\0'));
 
     // Copy to target with size, offset and stuff byte.
     // (size + offset is too large for buffer).
-    EXPECT_TRUE(ffb.CopyTo(target.data(), target.size(), 5U, 0xE5));
+    EXPECT_TRUE(ffb.CopyTo(target.data(), tgt_size, 5U, 0xE5));
     std::iota(expected.begin(), expected.begin() + 11, '\x5');
     std::fill(expected.begin() + 11, expected.end(), '\xE5');
     EXPECT_TRUE(std::equal(target.cbegin(), target.cend(), expected.cbegin()));
@@ -505,9 +508,10 @@ TEST_F(test_ffilebuf, fct_buffer_CopyTo)
     expected.resize(11U);
     std::iota(expected.begin(), expected.end(), '\x5');
     // Copy to target with size and offset (size + offset fits in buffer).
-    EXPECT_TRUE(ffb.CopyTo(target.data(), target.size(), 5));
+    EXPECT_TRUE(ffb.CopyTo(target.data(),
+        static_cast<DWord>(target.size()), 5U));
     EXPECT_TRUE(std::equal(target.cbegin(), target.cend(), expected.cbegin()));
-    EXPECT_THAT([&](){ ffb.CopyTo(nullptr, 0); },
+    EXPECT_THAT([&](){ ffb.CopyTo(nullptr, 0U); },
             testing::Throws<FlexException>());
 
     fs::remove(path);

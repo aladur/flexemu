@@ -801,7 +801,7 @@ SectorMap_t FlexDirectoryDiskBySector::create_sector_map(
 {
     SectorMap_t sectorMap{};
 
-    DWord data_size = file_size - (DBPS * 2);
+    auto data_size = static_cast<DWord>(file_size - (DBPS * 2));
     Word remaining_sectors = static_cast<Word>((data_size + DBPS - 1U) / DBPS);
 
     if (data_size == 0)

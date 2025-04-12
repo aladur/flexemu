@@ -51,8 +51,8 @@ TEST(test_bintervl, default_ctor)
     EXPECT_EQ(iv5.lower(), -8);
     EXPECT_EQ(iv5.upper(), 8);
     BDWInterval iv6(0x10000000L, 0x20000000L);
-    EXPECT_EQ(iv6.lower(), 0x10000000L);
-    EXPECT_EQ(iv6.upper(), 0x20000000L);
+    EXPECT_EQ(iv6.lower(), 0x10000000LU);
+    EXPECT_EQ(iv6.upper(), 0x20000000LU);
     BFInterval iv7(2.5F, 5.5F);
     EXPECT_EQ(iv7.lower(), 2.5F);
     EXPECT_EQ(iv7.upper(), 5.5F);
@@ -64,16 +64,16 @@ TEST(test_bintervl, copy_ctor)
 {
     BDWInterval iv_src(0L, 0xFFFFFFFF);
     BDWInterval iv_tgt(iv_src);
-    EXPECT_EQ(iv_tgt.lower(), 0L);
-    EXPECT_EQ(iv_tgt.upper(), 0xFFFFFFFFL);
+    EXPECT_EQ(iv_tgt.lower(), 0LU);
+    EXPECT_EQ(iv_tgt.upper(), 0xFFFFFFFFLU);
 }
 
 TEST(test_bintervl, copy_assignment)
 {
     BDWInterval iv_src(0L, 0xFFFFFFFF);
     BDWInterval iv_tgt = iv_src;
-    EXPECT_EQ(iv_tgt.lower(), 0L);
-    EXPECT_EQ(iv_tgt.upper(), 0xFFFFFFFFL);
+    EXPECT_EQ(iv_tgt.lower(), 0LU);
+    EXPECT_EQ(iv_tgt.upper(), 0xFFFFFFFFLU);
 }
 
 TEST(test_bintervl, get_set)
@@ -81,9 +81,9 @@ TEST(test_bintervl, get_set)
     BWInterval iv1;
     EXPECT_EQ(width(iv1), 0);
     iv1.assign(8, 0xFFFF);
-    EXPECT_EQ(iv1.lower(), 8);
-    EXPECT_EQ(iv1.upper(), 0xFFFF);
-    EXPECT_EQ(width(iv1), 65527);
+    EXPECT_EQ(iv1.lower(), 8U);
+    EXPECT_EQ(iv1.upper(), 0xFFFFU);
+    EXPECT_EQ(width(iv1), 65527U);
     EXPECT_THAT([&]() { iv1.assign(1,0); },
             testing::Throws<std::invalid_argument>());
     const auto [lower,upper] = iv1.get();
@@ -94,8 +94,8 @@ TEST(test_bintervl, get_set)
     EXPECT_EQ(os.str(), "[8,65535]");
     BWInterval iv2{4, 32};
     auto iv3 = hull(iv1, iv2);
-    EXPECT_EQ(iv3.lower(), 4);
-    EXPECT_EQ(iv3.upper(), 65535);
+    EXPECT_EQ(iv3.lower(), 4U);
+    EXPECT_EQ(iv3.upper(), 65535U);
 }
 
 TEST(test_bintervl, singleton)

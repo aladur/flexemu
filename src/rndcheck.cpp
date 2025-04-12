@@ -226,7 +226,7 @@ bool RandomFileCheck::IsValidSectorMap(const SectorMap_t &sectorMap,
     st_t trk_sec{};
     Byte sectorCount = 0U;
     uint32_t sectorSum = 0U;
-    const uint32_t expectedSectors = (fileSize - (2 * DBPS) + DBPS - 1) / DBPS;
+    const auto expectedSectors = (fileSize - (2 * DBPS) + DBPS - 1) / DBPS;
     bool hasAllSectorsFound = false;
     // NOLINTNEXTLINE(readability-qualified-auto)
     auto iter = sectorMap.cbegin();

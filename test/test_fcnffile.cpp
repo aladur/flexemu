@@ -424,7 +424,7 @@ TEST(test_fcnffile, fct_GetSerparAddress_exceptions)
     auto optional_value = cnfFile2.GetSerparAddress(
             u8"unsupported_monitor.hex");
     EXPECT_FALSE(optional_value.has_value());
-    EXPECT_THAT([&](){ optional_value.value(); },
+    EXPECT_THAT([&]() { auto v = optional_value.value(); (void)v; },
         testing::Throws<std::bad_optional_access>());
     fs::remove(path);
 }
@@ -451,7 +451,7 @@ TEST(test_fcnffile, fct_GetBootCharacter_exceptions)
     auto optional_value = cnfFile1.GetBootCharacter(
             u8"unsupported_monitor.hex");
     EXPECT_FALSE(optional_value.has_value());
-    EXPECT_THAT([&](){ optional_value.value(); },
+    EXPECT_THAT([&]() { auto v = optional_value.value(); (void)v; },
         testing::Throws<std::bad_optional_access>());
     fs::remove(path);
 
