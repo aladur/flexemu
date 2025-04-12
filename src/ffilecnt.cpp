@@ -527,7 +527,7 @@ bool FlexDisk::GetDiskAttributes(FlexDiskAttributes &diskAttributes) const
             param.max_track ? param.max_track + 1 : 0,
             param.max_sector);
     diskAttributes.SetIsFlexFormat(is_flex_format);
-    diskAttributes.SetPath(path.u8string());
+    diskAttributes.SetPath(path);
     diskAttributes.SetType(param.type);
     diskAttributes.SetOptions(param.options);
     diskAttributes.SetAttributes(attributes);

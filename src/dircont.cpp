@@ -320,7 +320,7 @@ bool FlexDirectoryDiskByFile::GetDiskAttributes(
 
     diskAttributes.SetDiskname(diskname);
     diskAttributes.SetNumber(disk_number);
-    diskAttributes.SetPath(directory.u8string());
+    diskAttributes.SetPath(directory);
     diskAttributes.SetType(GetFlexDiskType());
     diskAttributes.SetOptions(GetFlexDiskOptions());
     diskAttributes.SetAttributes(attributes);

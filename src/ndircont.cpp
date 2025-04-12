@@ -204,7 +204,7 @@ bool FlexDirectoryDiskBySector::GetDiskAttributes(
     diskAttributes.SetDiskname(disk_name);
     diskAttributes.SetNumber(
             flx::getValueBigEndian<Word>(&sis.sir.disk_number[0]));
-    diskAttributes.SetPath(directory.u8string());
+    diskAttributes.SetPath(directory);
     diskAttributes.SetType(param.type);
     diskAttributes.SetOptions(param.options);
     diskAttributes.SetAttributes(attributes);
