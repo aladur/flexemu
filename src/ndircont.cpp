@@ -797,7 +797,7 @@ void FlexDirectoryDiskBySector::add_to_directory(
 }
 
 SectorMap_t FlexDirectoryDiskBySector::create_sector_map(
-        const std::string &path, std::uintmax_t file_size, const st_t &begin)
+        const fs::path &path, std::uintmax_t file_size, const st_t &begin)
 {
     SectorMap_t sectorMap{};
 

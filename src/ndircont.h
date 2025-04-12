@@ -189,7 +189,7 @@ private:
         const st_t &end,
         bool is_file_wp);
     SectorMap_t create_sector_map(
-                           const std::string &path,
+                           const fs::path &path,
                            std::uintmax_t size,
                            const st_t &begin);
     void check_for_delete(Word ds_idx, const s_dir_sector &d);
