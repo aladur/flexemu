@@ -151,6 +151,8 @@ private:
     bool isSeekError(Byte new_track) const override;
     Word getBytesPerSector() const override;
     Byte getSizeCode() const;
+
+    static std::string to_ascii_path(const fs::path &path);
 };
 
 #endif /* #ifndef __fromflex__ */

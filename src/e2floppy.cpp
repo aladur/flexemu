@@ -37,6 +37,7 @@
 #include <cassert>
 #include <array>
 #include <filesystem>
+#include <codecvt>
 
 namespace fs = std::filesystem;
 
@@ -275,6 +276,32 @@ bool E2floppy::umount_all_drives()
     return result;
 }
 
+// Convert a given path by only displaying ascii characters. Any non-ascii
+// characters are replaced by an underscore.
+std::string E2floppy::to_ascii_path(const fs::path &path)
+{
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
+    const auto u32path = convert.from_bytes(path.u8string());
+    std::string ascii_path;
+
+    for (auto ch : u32path)
+    {
+        if (ch < ' ')
+        {
+            continue;
+        }
+
+        if (ch > '~')
+        {
+            ch = '_';
+        }
+
+        ascii_path.push_back(static_cast<char>(ch));
+    }
+
+    return ascii_path;
+}
+
 std::string E2floppy::drive_attributes_string(Word drive_nr)
 {
     auto diskAttributes = drive_attributes(drive_nr);
@@ -290,6 +317,7 @@ std::string E2floppy::drive_attributes_string(Word drive_nr)
         int sec;
         bool is_write_protected = diskAttributes.GetIsWriteProtected();
         bool is_flex_format = diskAttributes.GetIsFlexFormat();
+        const auto ascii_path = to_ascii_path(diskAttributes.GetPath());
 
         diskAttributes.GetTrackSector(trk, sec);
         stream << "drive       #" << drive_nr << '\n'
@@ -300,7 +328,7 @@ std::string E2floppy::drive_attributes_string(Word drive_nr)
             stream << "name:       " << diskAttributes.GetDiskname() << " #" <<
                                         diskAttributes.GetNumber() << '\n';
         }
-        stream << "path:       " << diskAttributes.GetPath() << '\n'
+        stream << "path:       " << ascii_path << '\n'
                << "tracks:     " << trk << '\n'
                << "sectors:    " << sec << '\n'
                << "write-prot: " << (is_write_protected ? "yes" : "no") << '\n'
