@@ -27,6 +27,7 @@
 #include <array>
 #include <fstream>
 #include <filesystem>
+#include <algorithm>
 
 namespace fs = std::filesystem;
 
@@ -108,8 +109,8 @@ protected:
             fs::create_directories(path, error);
             ASSERT_TRUE(!error);
         }
-
     }
+
 public:
     void SetUp() override
     {
@@ -149,14 +150,28 @@ public:
 
 TEST_F(test_BDirectory, fct_GetSubDirectories)
 {
+    bool withUtf8 = false;
+    const auto transformType_fct =
+        [&](const char *src){
+            return createNameFor(src, withUtf8).u8string();
+        };
+
     for (unsigned index = 0; index <= MAX_INDEX; ++index)
     {
         const auto path = createTestDirectoryPathFor(index);
-        const auto items = BDirectory::GetSubDirectories(path);
+        auto items = BDirectory::GetSubDirectories(path);
+        withUtf8 = ((index & HAS_UTF8) != 0);
 
         if ((index & HAS_SUBDIRS) != 0U)
         {
+            PathList_t expectedItems;
+
             ASSERT_EQ(items.size(), subdirnames.size()) << path.u8string();
+            std::transform(subdirnames.cbegin(), subdirnames.cend(),
+                std::back_inserter(expectedItems), transformType_fct);
+            std::sort(items.begin(), items.end());
+            std::sort(expectedItems.begin(), expectedItems.end());
+            ASSERT_EQ(items, expectedItems) << path.u8string();
         }
         else
         {
@@ -167,14 +182,28 @@ TEST_F(test_BDirectory, fct_GetSubDirectories)
 
 TEST_F(test_BDirectory, fct_GetFiles)
 {
+    bool withUtf8 = false;
+    const auto transformType_fct =
+        [&](const char *src){
+            return createNameFor(src, withUtf8).u8string();
+        };
+
     for (unsigned index = 0; index <= MAX_INDEX; ++index)
     {
         const auto path = createTestDirectoryPathFor(index);
-        const auto items = BDirectory::GetFiles(path);
+        auto items = BDirectory::GetFiles(path);
+        withUtf8 = ((index & HAS_UTF8) != 0);
 
         if ((index & HAS_FILES) != 0U)
         {
+            PathList_t expectedItems;
+
             ASSERT_EQ(items.size(), filenames.size()) << path.u8string();
+            std::transform(filenames.cbegin(), filenames.cend(),
+                std::back_inserter(expectedItems), transformType_fct);
+            std::sort(items.begin(), items.end());
+            std::sort(expectedItems.begin(), expectedItems.end());
+            ASSERT_EQ(items, expectedItems) << path.u8string();
         }
         else
         {
