@@ -421,7 +421,7 @@ fi
 subdir=""
 qtsubdirversions=("6.2" "6.5")
 qtsubdirpatchver=( 11    4   )
-for (( i=0; i<${#qtsubdir[@]}; i++ ))
+for (( i=0; i<${#qtsubdirversions[@]}; i++ ))
 do
     if [ "${qtsubdirversions[$i]}" == "$qtmamiversion" ] && [ $qtpatch -ge ${qtsubdirpatchver[$i]} ]; then
         subdir="/src"
@@ -469,7 +469,7 @@ if [ "$delete" = "yes" ]; then
  fi
 
 # Download files (Only if package not already downloaded or deleted before)
-# Execute a checksum valitation.
+# Execute a checksum validation.
 for url in $urls
 do
     file=$(basename "$url")
@@ -477,7 +477,6 @@ do
         echo download site: $baseurl
         echo downloading $file...
         curl $curl_progress -# -f -L $url > "$qtdir/$file"
-        ret1="$?"
         if [ ! "$?" == "0" ]; then
             echo "**** Error: Download of $file failed. Aborted." >&2
             echo "**** URL: $url" >&2
@@ -489,7 +488,7 @@ do
         if [ ! "$?" == "0" ]; then
             echo "**** Error: Download of $md5sumfile failed. Aborted." >&2
             echo "**** URL: $md5sums" >&2
-            rm -f $file
+            rm -f $qtdir/$file
             exit 1
         fi
         md5sum=`cat $md5sumfile | sed -n "s/\([0-9a-z]\+\) \+${qtfile}$/\1/p"`
@@ -535,6 +534,14 @@ do
         fi
     fi
 done
+
+# Since Qt 6.9.0 building Qt on VS2019 aborts with an error.
+# See also:
+# https://doc.qt.io/qt-6.9/windows.html
+if [ "$qtmaversion" == "6" ] && [ ${qtmiversion} -ge 9 ] && [ "$vsversion" == "2019" ]; then
+    echo "**** Error: Qt >= 6.9.0 can not be build with Visual Studio 2019." >&2
+    exit 2
+fi
 
 # Since Qt 6.8.0 only MSVC 2022 is supported.
 # A cmake flag -DQT_NO_MSVC_MIN_VERSION_CHECK:BOOL=ON
