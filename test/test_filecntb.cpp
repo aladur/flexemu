@@ -225,7 +225,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
         ofs.write(reinterpret_cast<const char *>(jvcHeader.data()),
                 jvcHeaderSize);
         const auto size = ifs.tellg();
-        std::string buffer(size, '\0');
+        std::string buffer(static_cast<int>(size), '\0');
         ifs.seekg(0);
         if (ifs.read(buffer.data(), size))
         {

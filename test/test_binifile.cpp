@@ -30,59 +30,63 @@
 
 namespace fs = std::filesystem;
 
-static void print(std::ostream &os, const std::string &section,
-           const std::map<std::string, std::string> &map)
+class test_binifile : public ::testing::Test
 {
-    os << "Section=\"" << section << "\"\n";
-    for (const auto &[key, value] : map)
+protected:
+    static void print(std::ostream &os, const std::string &section,
+               const std::map<std::string, std::string> &map)
     {
-        os << "  key=" << key << " value=" << value << "\n";
+        os << "Section=\"" << section << "\"\n";
+        for (const auto &[key, value] : map)
+        {
+            os << "  key=" << key << " value=" << value << "\n";
+        }
     }
-}
 
-static bool createIniFile(const fs::path &path)
-{
-    std::ofstream ofs(path);
-    bool retval = false;
-
-    if (ofs.is_open())
+    static bool createIniFile(const fs::path &path)
     {
-        ofs <<
-            "key11=value11\n"
-            "key12=value12\n"
-            "[ ]\n"
-            "key13=value13\n"
-            "[SECTION2]\n"
-            "key21=value21\n"
-            "key22=value22\n"
-            "[SECTION2]\n"
-            "key23=value23\n"
-            "[  Section._-~@ 3    ]   \n"
-            "#  key30=value30\n"
-            ";  key30=value30\n"
-            "#\n"
-            ";\n"
-            "key31=value31\n"
-            "key32 = value32\n"
-            "key33     =     value 33     \n"
-            "key34\t=\tvalue34    \n"
-            "key35     \t=\t   value35\n"
-            "key36=\n"
-            "key37\n"
-            "k=v\n"
-            "[SECTION2]\n"
-            "key24=value24\n"
-            "[ ]\n"
-            "key14=value14\n";
-        retval = ofs.good();
-        ofs.close();
+        std::ofstream ofs(path);
+        bool retval = false;
+
+        if (ofs.is_open())
+        {
+            ofs <<
+                "key11=value11\n"
+                "key12=value12\n"
+                "[ ]\n"
+                "key13=value13\n"
+                "[SECTION2]\n"
+                "key21=value21\n"
+                "key22=value22\n"
+                "[SECTION2]\n"
+                "key23=value23\n"
+                "[  Section._-~@ 3    ]   \n"
+                "#  key30=value30\n"
+                ";  key30=value30\n"
+                "#\n"
+                ";\n"
+                "key31=value31\n"
+                "key32 = value32\n"
+                "key33     =     value 33     \n"
+                "key34\t=\tvalue34    \n"
+                "key35     \t=\t   value35\n"
+                "key36=\n"
+                "key37\n"
+                "k=v\n"
+                "[SECTION2]\n"
+                "key24=value24\n"
+                "[ ]\n"
+                "key14=value14\n";
+            retval = ofs.good();
+            ofs.close();
+            return retval;
+        }
+
         return retval;
     }
+};
 
-    return retval;
-}
-
-TEST(test_binifile, ctor)
+TEST_F(test_binifile, ctor)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
@@ -92,7 +96,7 @@ TEST(test_binifile, ctor)
     fs::remove(path);
 }
 
-TEST(test_binifile, move_ctor)
+TEST_F(test_binifile, move_ctor)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
@@ -114,7 +118,7 @@ TEST(test_binifile, move_ctor)
     fs::remove(path);
 }
 
-TEST(test_binifile, move_assignment)
+TEST_F(test_binifile, move_assignment)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
@@ -136,7 +140,7 @@ TEST(test_binifile, move_assignment)
     fs::remove(path);
 }
 
-TEST(test_binifile, fct_ReadSection)
+TEST_F(test_binifile, fct_ReadSection)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
@@ -168,7 +172,7 @@ TEST(test_binifile, fct_ReadSection)
     fs::remove(path);
 }
 
-TEST(test_binifile, fct_GetLineNumber)
+TEST_F(test_binifile, fct_GetLineNumber)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
     EXPECT_TRUE(createIniFile(path));
@@ -187,7 +191,7 @@ TEST(test_binifile, fct_GetLineNumber)
     EXPECT_EQ(lineNumber, 0);
     fs::remove(path);
 }
-TEST(test_binifile, fct_ReadSection_exceptions)
+TEST_F(test_binifile, fct_ReadSection_exceptions)
 {
     const auto path1 = fs::temp_directory_path() / u8"ini_file1.ini";
     std::ofstream ofs(path1);
@@ -251,7 +255,7 @@ TEST(test_binifile, fct_ReadSection_exceptions)
     fs::remove(path5);
 }
 
-TEST(test_binifile, unicode_filename)
+TEST_F(test_binifile, unicode_filename)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1_\u2665.ini";
     EXPECT_TRUE(createIniFile(path));

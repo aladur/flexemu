@@ -56,8 +56,16 @@ TEST(test_bintervl, default_ctor)
     BFInterval iv7(2.5F, 5.5F);
     EXPECT_EQ(iv7.lower(), 2.5F);
     EXPECT_EQ(iv7.upper(), 5.5F);
+#ifdef _MSC_VER
+// Disable warning to intentionally testing this case.
+#pragma warning( push )
+#pragma warning( disable : 4244 )
+#endif
     EXPECT_THAT([&]() { BIntInterval iv8(1.0F, -1.0F); },
             testing::Throws<std::invalid_argument>());
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 TEST(test_bintervl, copy_ctor)
