@@ -8,6 +8,11 @@ on:
 jobs:
   macos-build-and-test:
     runs-on: macos-latest
+    defaults:
+      run:
+        # Use bash login shell sourcing ~/.bash_profile
+        # Keep exit code when using pipes.
+        shell: bash -leo pipefail {0}
     env:
       CC: clang
       CXX: clang++
