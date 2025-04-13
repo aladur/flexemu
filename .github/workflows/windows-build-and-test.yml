@@ -151,9 +151,6 @@ jobs:
         shell: cmd
         continue-on-error: false
         run: |
-          chcp
-          chcp 65001
-          set LC_ALL=C.UTF-8
           echo ===== Release =====
           cd buildWin32\test
           ..\bin\Release\unittests.exe || exit /b
@@ -187,9 +184,6 @@ jobs:
         shell: cmd
         continue-on-error: false
         run: |
-          chcp
-          chcp 65001
-          set LC_ALL=C.UTF-8
           echo ===== Release =====
           cd buildx64\test
           ..\bin\Release\unittests.exe || exit /b

@@ -23,6 +23,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <iostream>
 #endif
 #include "gtest/gtest.h"
 
@@ -32,6 +33,7 @@ int main(int argc, char *argv[])
 #ifdef _WIN32
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
+    std::cout << "Current ANSI code page is " << GetACP() << "\n";
 #endif
 
     ::testing::InitGoogleTest(&argc, argv);
