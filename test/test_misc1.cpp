@@ -115,7 +115,7 @@ TEST(test_misc1, fct_getstr)
         char arr11[8]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
         char arr12[8]{'1', '2', '3', '4', '5', '6', '7', '8'};
     } s;
-    EXPECT_EQ(sizeof(s), 16);
+    EXPECT_EQ(sizeof(s), 16U);
     EXPECT_EQ(sizeof(s.arr11), 8U);
     EXPECT_EQ(sizeof(s.arr12), 8U);
     auto str11 = flx::getstr<>(s.arr11);
@@ -389,38 +389,38 @@ TEST(test_misc1, fct_isPathsEqual)
 TEST(test_misc1, fct_split)
 {
     const auto strings1 = flx::split("abc;xyz;klm", ';', false);
-    ASSERT_EQ(strings1.size(), 3);
+    ASSERT_EQ(strings1.size(), 3U);
     EXPECT_EQ(strings1[0], "abc");
     EXPECT_EQ(strings1[1], "xyz");
     EXPECT_EQ(strings1[2], "klm");
     const auto strings2 = flx::split("abc;xyz;", ';', false);
-    ASSERT_EQ(strings2.size(), 2);
+    ASSERT_EQ(strings2.size(), 2U);
     EXPECT_EQ(strings2[0], "abc");
     EXPECT_EQ(strings2[1], "xyz");
     const auto strings3 = flx::split("**klm**", '*', false);
-    ASSERT_EQ(strings3.size(), 1);
+    ASSERT_EQ(strings3.size(), 1U);
     EXPECT_EQ(strings3[0], "klm");
     const auto strings4 = flx::split("", ';', false);
     ASSERT_TRUE(strings4.empty());
     const auto strings5 = flx::split("|||", '|', false);
     ASSERT_TRUE(strings5.empty());
     const auto strings6 = flx::split("abc;xyz;", ';', true);
-    ASSERT_EQ(strings6.size(), 3);
+    ASSERT_EQ(strings6.size(), 3U);
     EXPECT_EQ(strings6[0], "abc");
     EXPECT_EQ(strings6[1], "xyz");
     const auto strings7 = flx::split(";xyz;klm", ';', true);
-    ASSERT_EQ(strings7.size(), 3);
+    ASSERT_EQ(strings7.size(), 3U);
     EXPECT_TRUE(strings7[0].empty());
     EXPECT_EQ(strings7[1], "xyz");
     EXPECT_EQ(strings7[2], "klm");
     const auto strings8 = flx::split("**klm**", '*', true);
-    ASSERT_EQ(strings8.size(), 5);
+    ASSERT_EQ(strings8.size(), 5U);
     EXPECT_EQ(strings8[2], "klm");
     const auto strings9 = flx::split("", ';', true);
-    ASSERT_EQ(strings9.size(), 1);
+    ASSERT_EQ(strings9.size(), 1U);
     EXPECT_TRUE(strings9[0].empty());
     const auto strings10 = flx::split("|||", '|', true);
-    ASSERT_EQ(strings10.size(), 4);
+    ASSERT_EQ(strings10.size(), 4U);
 }
 
 TEST(test_misc1, fct_isFlexFilename)

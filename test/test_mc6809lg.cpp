@@ -210,7 +210,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     EXPECT_EQ(result.doCount, 1);
     EXPECT_EQ(result.repeatCount, 1);
     EXPECT_EQ(result.lineCount, 8);
-    EXPECT_EQ(result.repeatValues.size(), 1);
+    EXPECT_EQ(result.repeatValues.size(), 1U);
     EXPECT_EQ(result.repeatValues[0], 5);
     EXPECT_EQ(result.countForMnemonic["LDA"], 1);
     EXPECT_EQ(result.countForMnemonic["DECA"], 2);
