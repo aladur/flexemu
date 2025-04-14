@@ -34,7 +34,7 @@ build_task:
   install_script: cd bld; make install
 
   test_script:
-    - sudo -u user sh -c "cd bld; make test ARGS=-V | tee unittests.log"
+    - sudo -u user sh -ec "cd bld; make test ARGS='-V -O unittests.log'"
     - sudo -u user bld/bin/test_gccasm
     - sudo -u user ldd bld/bin/flexemu
     - sudo -u user ldd bld/bin/flexplorer
