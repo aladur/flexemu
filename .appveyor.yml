@@ -38,6 +38,7 @@ install:
       VER=`cmake --version | sed -nE $CMAKEVER`
       echo "cmake version:" $VER
       git submodule update --init --recursive
+      echo "shell: $SHELL"
 
 for:
   -
@@ -51,10 +52,13 @@ for:
     after_build:
       - sh: sudo make install
     test_script:
+      - make test ARGS="-V -O unittests.log"
+      - bin/test_gccasm
       - $LDD bin/flexemu
       - $LDD bin/flexplorer
-      - make -j5 test ARGS=-V | tee unittests.log
-      - bin/test_gccasm
+      - bin/dsktool -V
+      - bin/mdcrtool -V
+      - bin/flex2hex -V
       - bin/dsktool -l ../disks/games.dsk
       - bin/dsktool -f new.dsk -S 80dsdd
       - bin/dsktool -C ../disks/system.dsk -T new.dsk
