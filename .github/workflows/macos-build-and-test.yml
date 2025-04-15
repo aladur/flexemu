@@ -62,7 +62,7 @@ jobs:
 
       - name: Test
         run: |
-          cd bld; make -j5 test ARGS=-V | tee unittests.log; cd ..
+          cd bld; make -j5 test ARGS="-V -O unittests.log"; cd ..
           bld/bin/test_gccasm
           otool -L bld/bin/flexemu
           otool -L bld/bin/flexplorer
