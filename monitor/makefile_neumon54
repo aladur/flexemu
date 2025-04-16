@@ -1,0 +1,23 @@
+# makefile to assemble neumon54.
+#
+# Syntax:
+#     make -f makefile_neumon54 clean
+#     make -f makefile_neumon54
+#
+# The MC6809 assembler a09 has to be in the path.
+# It can be downloaded from:
+#     https://github.com/Arakula/A09
+
+ASEMB=a09
+RM=rm
+SOURCE=neumon54.asm
+TARGET=$(patsubst %.asm,%.hex,$(SOURCE))
+LIST=$(patsubst %.asm,%.lst,$(SOURCE))
+
+all: $(TARGET)
+
+$(TARGET): $(SOURCE)
+	$(ASEMB) -X$(TARGET) -L$(LIST) $<
+
+clean:
+	$(RM) -f $(TARGET) $(LIST)

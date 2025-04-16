@@ -23,6 +23,7 @@
 ;                               A09 V1.37 (https://github.com/Arakula/A09)
 ;                               asm6809 V2.11 (http://www.6809.org.uk/asm6809/)
 ; 17.09.2018 W. Schwotzer       Fully translated to english
+; 16.04.2025 W. Schwotzer       Support input of NUL key (hex 00)
 
 ; SYM 6
 ; OPT -G,P,M,E,-C,
@@ -98,7 +99,7 @@ HIGHLI RMB  1         ;highlight flag
 DEUTSC RMB  1         ;FlAG for characterset
 NEWCHR RMB  1         ;last input from parallel keyboard
 CURSOR RMB  1         ;Cursor visible / unvisible
-UNUSED RMB  1
+ISNEWC RMB  1         ;FLAG for new input in NEWCHR
 COMMAN RMB  18        ;command at interrupt
 BRPEND EQU  *
 
@@ -820,12 +821,13 @@ INOCUR BSR  TSTIN
 STATUS TST  SERPAR
        BNE  SERSTA   ;check serial status
 PSTATU PSHS A
-       TST  NEWCHR   ;look for char that has not been fetched
+       TST  ISNEWC   ;look for char that has not been fetched
        BNE  NOTEMP   ;found one
        LDA  PIA1AC
        BPL  ISEMPT   ;empty
        LDA  PIA1AD   ;get char from PIA
        STA  NEWCHR   ;and save it
+       COM  ISNEWC   ;indicate new char available
 ISEMPT ORCC #%00000100  ;set ZERO Flag
 NOTEMP PULS A,PC
 ;
@@ -840,7 +842,7 @@ TSTINP BSR  PSTATU   ;check parallel only
        RTS           ;else return
 ;
 INPPAR LDA  NEWCHR   ;get character
-       CLR  NEWCHR   ;and clear status
+       CLR  ISNEWC   ;and clear FLAG
 ;
 CNVERT CMPA #$19     ;Ctrl-Y
        BEQ  TRANS1   ;Toggle upper/lower case

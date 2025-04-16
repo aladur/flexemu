@@ -8,7 +8,7 @@ pkgdata_DATA = \
 	neumon54.hex
 
 extra_files = \
-	asneumon \
+	makefile_neumon54 \
 	coltab.asm \
 	coltab.lst \
 	coltab.org \

@@ -32,162 +32,164 @@ cursor with CTRL-F
 (http://www.6809.org.uk/asm6809/)
                       ; 17.09.2018 W. Schwotzer       Fully translated to 
 english
- 
+                      ; 16.04.2025 W. Schwotzer       Support input of NUL key 
+(hex 00)
+
                       ; SYM 6
                       ; OPT -G,P,M,E,-C,
- 
+
                       ; Command line for asm6809:
                       ;    asm6809 --setdp=0 -H -l neumon54.lst -o 
 neumon54.hex neumon54.asm
                       ; Command line for a09:
                       ;    a09 -Xneumon54.hex -Lneumon54.lst neumon54.asm
                       ;
- 
- 
+
+
                       ; PAG
-                      VERS   EQU  4      ;for ELTEC compatibility
- 
-                      ANFANG EQU  $F000
-                      DIRPAG EQU  $EF00
- 
-                      DRCTPG EQU  DIRPAG/$100
+ 0004                 VERS   EQU  4      ;for ELTEC compatibility
+
+ F000                 ANFANG EQU  $F000
+ EF00                 DIRPAG EQU  $EF00
+
+ 00EF                 DRCTPG EQU  DIRPAG/$100
                       ;       SETDP  DRCTPG
- 
+
                       ; Zero-Page Locations
                              ORG  DIRPAG
- 
-                      DUMMY  RMB  1          ;fill byte
-                      INSRTF RMB  1          ;insert mode flag
-                      ESCFLG RMB  1          ;escape sequence flag
-                      DBASE  RMB  2          ;display base address pointer
-                      XADDR  RMB  2          ;x-coordinate of cursor
-                      YADDR  RMB  2          ;y-coordinate of cursor
-                      EOLNX  RMB  2          ;end of line pointer
-                      SCROFS RMB  1          ;screen offset from display
-                      BOTTOM RMB  2          ;bottom line pointer
-                      INVFLG RMB  1          ;invert flag
-                      NEWST1 RMB  1          ;second entry flag
-                      NEWST2 RMB  1          ;new stack active
-                      SAVEST RMB  2          ;save user stack
-                      GYADDR RMB  2          ;dot flag
-                      GXADDR RMB  2          ;save for x-coordinate
-                      PGEFLG RMB  1          ;page flag 511/256 lines
-                      COLTAB RMB  6*4+1      ;color table FF ends the
-                             RMB  1          ;dummy
-                      NRLINS RMB  1          ;number of lines per char
-                      EMPTY1 RMB  1          ;empty lines
-                      EMPTY2 RMB  1
-                      EMPTY3 RMB  1
-                      LINES  RMB  1          ;lines of char's per page
-                      NRCHR  RMB  1          ;no of char's per line
-                      SCRLIN RMB  2          ;used lines per screen
-                      MULINS RMB  1          ;lines per chr. without e??
-                             RMB  1          ;dummy
-                      CHROFS RMB  1          ;chara. offset
-                      INTPAG RMB  1          ;init on page
-                      CTLTA  RMB  2          ;control character table
-                      CHATAB RMB  2          ;character table
-                      SCREN1 RMB  2          ;RAM bank for screen
-                      SCREN2 RMB  2          ;second page
-                      ESCVC  RMB  2          ;escape vector
-                      ESCTBL RMB  2          ;escape table
-                      SOFT   RMB  2          ;softscroll
-                      XBOTOM RMB  2          ;bottom pointer
-                      BUMPV  RMB  2          ;bump vector
+
+ EF00                 DUMMY  RMB  1          ;fill byte
+ EF01                 INSRTF RMB  1          ;insert mode flag
+ EF02                 ESCFLG RMB  1          ;escape sequence flag
+ EF03                 DBASE  RMB  2          ;display base address pointer
+ EF05                 XADDR  RMB  2          ;x-coordinate of cursor
+ EF07                 YADDR  RMB  2          ;y-coordinate of cursor
+ EF09                 EOLNX  RMB  2          ;end of line pointer
+ EF0B                 SCROFS RMB  1          ;screen offset from display
+ EF0C                 BOTTOM RMB  2          ;bottom line pointer
+ EF0E                 INVFLG RMB  1          ;invert flag
+ EF0F                 NEWST1 RMB  1          ;second entry flag
+ EF10                 NEWST2 RMB  1          ;new stack active
+ EF11                 SAVEST RMB  2          ;save user stack
+ EF13                 GYADDR RMB  2          ;dot flag
+ EF15                 GXADDR RMB  2          ;save for x-coordinate
+ EF17                 PGEFLG RMB  1          ;page flag 511/256 lines
+ EF18                 COLTAB RMB  6*4+1      ;color table FF ends the
+ EF31                        RMB  1          ;dummy
+ EF32                 NRLINS RMB  1          ;number of lines per char
+ EF33                 EMPTY1 RMB  1          ;empty lines
+ EF34                 EMPTY2 RMB  1
+ EF35                 EMPTY3 RMB  1
+ EF36                 LINES  RMB  1          ;lines of char's per page
+ EF37                 NRCHR  RMB  1          ;no of char's per line
+ EF38                 SCRLIN RMB  2          ;used lines per screen
+ EF3A                 MULINS RMB  1          ;lines per chr. without e??
+ EF3B                        RMB  1          ;dummy
+ EF3C                 CHROFS RMB  1          ;chara. offset
+ EF3D                 INTPAG RMB  1          ;init on page
+ EF3E                 CTLTA  RMB  2          ;control character table
+ EF40                 CHATAB RMB  2          ;character table
+ EF42                 SCREN1 RMB  2          ;RAM bank for screen
+ EF44                 SCREN2 RMB  2          ;second page
+ EF46                 ESCVC  RMB  2          ;escape vector
+ EF48                 ESCTBL RMB  2          ;escape table
+ EF4A                 SOFT   RMB  2          ;softscroll
+ EF4C                 XBOTOM RMB  2          ;bottom pointer
+ EF4E                 BUMPV  RMB  2          ;bump vector
                       ;
                       ;       OPT  NOL
-                      ORIG   SET  *
+ EF50                 ORIG   SET  *
                       ;       OPT  LIS
- 
+
                              ORG  DIRPAG+$58
- 
-                      HIGHLI RMB  1         ;highlight flag
-                      DEUTSC RMB  1         ;FlAG for characterset
-                      NEWCHR RMB  1         ;last input from parallel keyboard
-                      CURSOR RMB  1         ;Cursor visible / unvisible
-                      UNUSED RMB  1
-                      COMMAN RMB  18        ;command at interrupt
-                      BRPEND EQU  *
- 
+
+ EF58                 HIGHLI RMB  1         ;highlight flag
+ EF59                 DEUTSC RMB  1         ;FlAG for characterset
+ EF5A                 NEWCHR RMB  1         ;last input from parallel keyboard
+ EF5B                 CURSOR RMB  1         ;Cursor visible / unvisible
+ EF5C                 ISNEWC RMB  1         ;FLAG for new input in NEWCHR
+ EF5D                 COMMAN RMB  18        ;command at interrupt
+ EF6F                 BRPEND EQU  *
+
                              ORG  DIRPAG+$70
- 
-                      SW3VEC RMB  2          ;---
-                      SW2VEC RMB  2
-                      FIRQVC RMB  2          ;Interrupt-
-                      IRQVEC RMB  2          ;vectors
-                      SWIVEC RMB  2
-                      NMIVEC RMB  2          ;---
-                      SAVUST RMB  2          ;user Stack
-                      MEMADR RMB  2          ;Memory-Address
-                      TEMPX  RMB  2          ;temporary
-                      TEMPY  RMB  2          ;memory
-                      TEMPA  RMB  1          ;
-                      LODFLG RMB  1          ;loadingflag
-                      SERPAR RMB  1          ;seriell/parallel flag
-                      LOCCNT RMB  1          ;memorycell counter
-                      BYTANZ RMB  1          ;bytecount
-                      CHECKS RMB  1          ;checksumcounter
-                      TEMP   RMB  1
-                      UL     RMB  1          ;upper/lower case flag
- 
+
+ EF70                 SW3VEC RMB  2          ;---
+ EF72                 SW2VEC RMB  2
+ EF74                 FIRQVC RMB  2          ;Interrupt-
+ EF76                 IRQVEC RMB  2          ;vectors
+ EF78                 SWIVEC RMB  2
+ EF7A                 NMIVEC RMB  2          ;---
+ EF7C                 SAVUST RMB  2          ;user Stack
+ EF7E                 MEMADR RMB  2          ;Memory-Address
+ EF80                 TEMPX  RMB  2          ;temporary
+ EF82                 TEMPY  RMB  2          ;memory
+ EF84                 TEMPA  RMB  1          ;
+ EF85                 LODFLG RMB  1          ;loadingflag
+ EF86                 SERPAR RMB  1          ;seriell/parallel flag
+ EF87                 LOCCNT RMB  1          ;memorycell counter
+ EF88                 BYTANZ RMB  1          ;bytecount
+ EF89                 CHECKS RMB  1          ;checksumcounter
+ EF8A                 TEMP   RMB  1
+ EF8B                 UL     RMB  1          ;upper/lower case flag
+
                              ORG  DIRPAG+$DE
- 
-                      SAVE   RMB  2          ;pointer for MMU STACK
-                      MMURAM RMB  16         ;RAM for MMU contents
- 
+
+ EFDE                 SAVE   RMB  2          ;pointer for MMU STACK
+ EFE0                 MMURAM RMB  16         ;RAM for MMU contents
+
                       ; HARDWARE ADRESSEN
- 
-                      MMU    EQU  $FFE0      ;Memory Management Unit
+
+ FFE0                 MMU    EQU  $FFE0      ;Memory Management Unit
                       ;
-                      PIA1AD EQU  $FCF0      ;Pia A data- and
-                      PIA1AC EQU  $FCF1      ;controlregister
-                      PIA1BD EQU  $FCF2      ;Pia B Data- and
-                      PIA1BC EQU  $FCF3      ;controlregister
-                      PIA2BD EQU  $FCFA      ;Pia 2B Dataregister
- 
-                      ACIACO EQU  $FCF4      ;ACIA control- und
-                      ACIADA EQU  $FCF5      ;dataregister
- 
-                      VIDPAG EQU  $FCF6      ;videopageregister
-                      BILANF EQU  $FCF7      ;scrollregister
- 
+ FCF0                 PIA1AD EQU  $FCF0      ;Pia A data- and
+ FCF1                 PIA1AC EQU  $FCF1      ;controlregister
+ FCF2                 PIA1BD EQU  $FCF2      ;Pia B Data- and
+ FCF3                 PIA1BC EQU  $FCF3      ;controlregister
+ FCFA                 PIA2BD EQU  $FCFA      ;Pia 2B Dataregister
+
+ FCF4                 ACIACO EQU  $FCF4      ;ACIA control- und
+ FCF5                 ACIADA EQU  $FCF5      ;dataregister
+
+ FCF6                 VIDPAG EQU  $FCF6      ;videopageregister
+ FCF7                 BILANF EQU  $FCF7      ;scrollregister
+
                       ;
                       ; floppycontroler registers
                       ;
-                      FLCOMM EQU  $FD30      ;commandregister
-                      FLSEKT EQU  $FD32      ;sectorregister
-                      FLDATA EQU  $FD33      ;dataregister
-                      FLDRIV EQU  $FD38      ;driveselectregister
+ FD30                 FLCOMM EQU  $FD30      ;commandregister
+ FD32                 FLSEKT EQU  $FD32      ;sectorregister
+ FD33                 FLDATA EQU  $FD33      ;dataregister
+ FD38                 FLDRIV EQU  $FD38      ;driveselectregister
                       ;
                       ; emulator command register
                       ;
-                      EMUCMD EQU  $FD3C
- 
+ FD3C                 EMUCMD EQU  $FD3C
+
                       ; System equates for FLEX 9.1
                       ;
-                      WARMS  EQU  $CD03      ;warmstart entry point
-                      DOCMND EQU  $CD4B      ;call DOS as a subroutine
-                      LINBUF EQU  $C080      ;line buffer
-                      BUFPNT EQU  $CC14      ;line buffer pointer
- 
-                      CLS    EQU  $0C        ;form feed
-                      ESC    EQU  $1B        ;Escape
-                      ENDE   EQU  $1A
-                      BLANK  EQU  $20
- 
-                      ZCASEU EQU  $C0
-                      ZUNUBI EQU  $F03F
-                      UNUBI2 EQU  $FC0F
-                      STACK  EQU  $EF00
-                      STACK2 EQU  STACK-$C0
-                      PIXLIN EQU  84*6       ;Pixels/Line
-                      SCRN1  EQU  $0C0C      ;Video page
-                      SCRN2  EQU  $0808      ;Video page if double res.
-                      BOTOM1 EQU  $00FE
-                      LPCNT  EQU  17
-                      USERST EQU  STACK-$120
- 
- 
+ CD03                 WARMS  EQU  $CD03      ;warmstart entry point
+ CD4B                 DOCMND EQU  $CD4B      ;call DOS as a subroutine
+ C080                 LINBUF EQU  $C080      ;line buffer
+ CC14                 BUFPNT EQU  $CC14      ;line buffer pointer
+
+ 000C                 CLS    EQU  $0C        ;form feed
+ 001B                 ESC    EQU  $1B        ;Escape
+ 001A                 ENDE   EQU  $1A
+ 0020                 BLANK  EQU  $20
+
+ 00C0                 ZCASEU EQU  $C0
+ F03F                 ZUNUBI EQU  $F03F
+ FC0F                 UNUBI2 EQU  $FC0F
+ EF00                 STACK  EQU  $EF00
+ EE40                 STACK2 EQU  STACK-$C0
+ 01F8                 PIXLIN EQU  84*6       ;Pixels/Line
+ 0C0C                 SCRN1  EQU  $0C0C      ;Video page
+ 0808                 SCRN2  EQU  $0808      ;Video page if double res.
+ 00FE                 BOTOM1 EQU  $00FE
+ 0011                 LPCNT  EQU  17
+ EDE0                 USERST EQU  STACK-$120
+
+
                              ORG  ANFANG
                       ;
                       ; Einsprung Tabelle
@@ -198,7 +200,7 @@ neumon54.hex neumon54.asm
  F008 39                     RTS
  F009 7EF392          ZCHEXL JMP  CHEXL     ;Conv. MS-BCD to HEX
  F00C 7EF396          ZCHEXR JMP  CHEXR     ;Conv. LS-BCD to HEX
- F00F 7EF49C          ZIN4HX JMP  IN4HX0    ;Input address
+ F00F 7EF49F          ZIN4HX JMP  IN4HX0    ;Input address
  F012 7EF3CD          ZUINCH JMP  INCH      ;Input 1 character
  F015 7EF420          ZINCHA JMP  INCHA     ;Input 1 char. without echo
  F018 7EF3EA          ZOUTC2 JMP  OUTCH     ;Output 1 character
@@ -211,11 +213,11 @@ neumon54.hex neumon54.asm
  F02D 7EF225          TO_HKS JMP  HKS       ;Warmstart
  F030 7EF40F          ZLOAD0 JMP  LOAD0     ;Input from ACIA
  F033 7EF3F8          ZRECD0 JMP  OUTCHS    ;Output on ACIA
- F036 F5A5            ZSWTCH FDB  SWITCH    ;Switch MMU
- F038 F5D0            ZSWBAK FDB  SWTCHB    ;Switch back MMU
- F03A F478            ZCONVT FDB  CNVERT    ;Convert upper/lower case
- F03C F56A            ZUSRCH FDB  SEARCH    ;Table search
- F03E F578            ZUCOMP FDB  COMPAR    ;String compare
+ F036 F5A8            ZSWTCH FDB  SWITCH    ;Switch MMU
+ F038 F5D3            ZSWBAK FDB  SWTCHB    ;Switch back MMU
+ F03A F47B            ZCONVT FDB  CNVERT    ;Convert upper/lower case
+ F03C F56D            ZUSRCH FDB  SEARCH    ;Table search
+ F03E F57B            ZUCOMP FDB  COMPAR    ;String compare
  F040 FDBA            ZXDCHR FDB  XDCHAR    ;Draw character
  F042 FEC5            ZUXINV FDB  INVCUR    ;Invert cursor
  F044 F44B            ZUSTAT FDB  STATUS    ;Keyboard Status (FLEX compatible)
@@ -223,7 +225,7 @@ neumon54.hex neumon54.asm
                       ;
                       ; command table in main control loop (HKS)
                       ;
-                      HKSTAB EQU  *
+ F046                 HKSTAB EQU  *
  F046 44                     FCC  "D"        ;German char.set
  F047 FFC7                   FDB  GERMAN
  F049 49                     FCC  "I"        ;ASCII char.set
@@ -243,7 +245,7 @@ neumon54.hex neumon54.asm
  F05E 58                     FCC  "X"        ;Flex Warmstart
  F05F F373                   FDB  CFLEX
  F061 5A                     FCC  "Z"        ;Exit emulator
- F062 FA07                   FDB  EMUEXIT
+ F062 FA0A                   FDB  EMUEXIT
                       ;
  F064 2F              MEMTAB FCC  "/"        ;Slash
  F065 F276                   FDB  SLASH
@@ -255,18 +257,18 @@ neumon54.hex neumon54.asm
  F06E F27A                   FDB  LINFED
  F070 0D                     FCB  $0D        ;carriage-return
  F071 F225                   FDB  HKS
-                      ENDHT  EQU  *         ;End of HKS-Table
+ F073                 ENDHT  EQU  *         ;End of HKS-Table
                       ;
                       ; outputtexts
                       ;
                              ORG ANFANG+$7C
  F07C 00              INITSP FCB  0           ; initial value for SERPAR
-                      MESEUR EQU  *
-                      THALLO EQU  *
+ F07D                 MESEUR EQU  *
+ F07D                 THALLO EQU  *
  F07D 4555524F434F4D         FCC  "EUROCOM MONITOR "
  F084 204D4F4E49544F
  F08B 5220
-                      LVN    EQU  *
+ F08D                 LVN    EQU  *
                       ;
                       ;
                       ;       OPT  NOL
@@ -318,10 +320,10 @@ neumon54.hex neumon54.asm
  F0DD 10FFEF7C        NMI1   STS  SAVUST    ;save stack
  F0E1 10CEEF00               LDS  #STACK    ;use own stack
  F0E5 BDF420                 JSR  INCHA     ; get a character
- F0E8 BDF481                 JSR  LOWUP     ; convert to uppercase
+ F0E8 BDF484                 JSR  LOWUP     ; convert to uppercase
  F0EB 8148                   CMPA #'H'      ; is it HARDCOPY ?
  F0ED 261E                   BNE  NORMAL
- 
+
  F0EF 8EC080                 LDX  #LINBUF
  F0F2 BFCC14                 STX  BUFPNT
  F0F5 108EEF5D               LDY  #COMMAN
@@ -333,21 +335,21 @@ neumon54.hex neumon54.asm
  F104 10FEEF7C               LDS  SAVUST
  F108 1CAF                   ANDCC #%10101111         ; CLI
  F10A 7ECD03                 JMP  WARMS
- 
+
  F10D 8142            NORMAL CMPA #'B'        ;user wants to break?
  F10F 2705                   BEQ  NORM1
- 
+
  F111 10FEEF7C               LDS  SAVUST     ;get userstack back
- 
+
  F115 3B                     RTI             ;finish interrupt
- 
+
  F116 BDF1E7          NORM1  JSR  INITI
- 
+
  F119 B6F07C                 LDA  INITSP
  F11C B7EF86                 STA  SERPAR
  F11F 7FEF85                 CLR  LODFLG
  F122 BDF3C1                 JSR  PCRLF
- F125 1603EF                 LBRA IRQEN1     ;output all registers
+ F125 1603F2                 LBRA IRQEN1     ;output all registers
                       ;
                       ; RESTART entry point
                       ;
@@ -373,7 +375,7 @@ neumon54.hex neumon54.asm
  F156 BDF1E7                 JSR  INITI
  F159 B6F07C                 LDA  INITSP
  F15C B7EF86                 STA  SERPAR
- F15F BDF5F0                 JSR  INTSCR    ;from this point RAM extension can 
+ F15F BDF5F3                 JSR  INTSCR    ;from this point RAM extension can 
 be used
  F162 3550                   PULS U,X
  F164 8D52                   BSR  CLRSCR
@@ -400,9 +402,9 @@ be used
  F194 9F7A                   STX  NMIVEC-DIRPAG
  F196 8EF07D                 LDX  #THALLO
  F199 BDF3B7                 JSR  PDATA1
- F19C 8EF501                 LDX  #IRQENT
+ F19C 8EF504                 LDX  #IRQENT
  F19F 9F76                   STX  IRQVEC-DIRPAG
- F1A1 8EF4F5                 LDX  #SWIENT
+ F1A1 8EF4F8                 LDX  #SWIENT
  F1A4 9F78                   STX  SWIVEC-DIRPAG
  F1A6 8EEF5D                 LDX  #COMMAN
  F1A9 108EF0D4               LDY  #DEFCOM
@@ -431,16 +433,16 @@ be used
  F1D0 4F                     CLRA
  F1D1 8E0000                 LDX   #0
  F1D4 CEC000                 LDU   #$C000
- F1D7 BDF8DA                 JSR   CLEARS     ;Clear 1 page from $0-$BFFF
+ F1D7 BDF8DD                 JSR   CLEARS     ;Clear 1 page from $0-$BFFF
  F1DA 35D4                   PULS  B,X,U,PC
  F1DC FFFF                   FCB   $FF,$FF    ;Stuffing bytes
- 
+
  F1DE 1F10            PUSHU  TFR  X,D
  F1E0 3616            PUSHU1 PSHU X,D
  F1E2 AFA3                   STX  ,--Y
  F1E4 EDA3                   STD  ,--Y
  F1E6 39                     RTS
- 
+
  F1E7 86EF            INITI  LDA  #DRCTPG
  F1E9 1F8B                   TFR  A,DP       ;set direct page
  F1EB 8EFCF0                 LDX  #PIA1AD    ;---
@@ -479,7 +481,7 @@ be used
  F22F 8EF0B0                 LDX  #HKSTXT
  F232 BDF3B5                 JSR  PDATA      ; output input prompt ">"
  F235 BDF3CD                 JSR  INCH       ; get character from keyboard
- F238 BDF481                 JSR  LOWUP      ; convert to uppercase
+ F238 BDF484                 JSR  LOWUP      ; convert to uppercase
  F23B CEF046                 LDU  #HKSTAB    ; pointer to input table
  F23E BDF348                 JSR  GETTAS     ; is character in input table ?
  F241 25D8                   BCS  ERRHKS     ; no, error
@@ -490,7 +492,7 @@ be used
                       ;
                       ; MEMORY: output and change contents of memory 
                       ;
- F249 BDF4B1          MEMORY JSR  IN4HX      ;Input 4-digit hex-address
+ F249 BDF4B4          MEMORY JSR  IN4HX      ;Input 4-digit hex-address
  F24C 9F7E                   STX  MEMADR-DIRPAG    ;Save it. Is it correct?
  F24E 25CB                   BCS  ERRHKS     ;no, input-error
  F250 BDF3B1                 JSR  PSPACE     ;output a space
@@ -499,12 +501,12 @@ be used
  F256 301F                   LEAX -$01,X     ;Restore address
                       ;
  F258 BDF3CD          MEMOR2 JSR  INCH       ;Get input character
- F25B BDF481                 JSR  LOWUP      ;To upper case
+ F25B BDF484                 JSR  LOWUP      ;To upper case
  F25E CEF064                 LDU  #MEMTAB    ;Start of memory command table
  F261 BDF348                 JSR  GETTAS     ;Find character in table?
  F264 24E0                   BCC  HKS1       ;yes, execute command
- F266 BDF4DC                 JSR  INHEX1     ;no, input 2-hex digits
- F269 BDF4C6                 JSR  BYTE0      ;get byte value, is it valid?
+ F266 BDF4DF                 JSR  INHEX1     ;no, input 2-hex digits
+ F269 BDF4C9                 JSR  BYTE0      ;get byte value, is it valid?
  F26C 25AD            ERRO6  BCS  ERRHKS     ;no, input error
  F26E A784                   STA  ,X         ;yes, store byte value
  F270 A184                   CMPA ,X         ;byte value written correctly?
@@ -594,7 +596,7 @@ line
  F2FA 20D3                   BRA  ASDUMP     ;jump to output ASCII
                       ;
  F2FC 347F            HALTAN PSHS A,B,X,Y,U,DP,CC
- F2FE BDF466                 JSR  TSTIN      ;keyboard input?
+ F2FE BDF469                 JSR  TSTIN      ;keyboard input?
  F301 2409                   BCC  NOHALT     ;no, jump back
  F303 BDF420                 JSR  INCHA      ;Wait for input character
  F306 810D                   CMPA #$0D       ;Is it a carrige return?
@@ -610,7 +612,7 @@ line
  F31A BFEF82                 STX  TEMPY      ;store it
  F31D 8EF0A7                 LDX  #WERTMS
  F320 BDF3B7                 JSR  PDATA1
- F323 BDF4C4                 JSR  BYTE       ;get value
+ F323 BDF4C7                 JSR  BYTE       ;get value
  F326 BEEF80                 LDX  TEMPX      ;get start address in X
  F329 A784                   STA  ,X         ;store value into address
  F32B BCEF82          PUTLUP CMPX TEMPY      ;reaced end address?
@@ -625,11 +627,11 @@ addr.
                       ;
  F336 BDF3F8          VIDEO0 JSR  OUTCHS   ;Switch ouput to serial port
                       ;
- F339 BDF46B          VIDEO  JSR  TSTINP   ;keyboard input?
+ F339 BDF46E          VIDEO  JSR  TSTINP   ;keyboard input?
  F33C 25F8                   BCS  VIDEO0   ;yes, output to serial port
  F33E BDF413                 JSR  TSTINS   ;input from serial port?
  F341 24F6                   BCC  VIDEO    ;no, loop
- F343 BDF635                 JSR  XDTEXT   ;yes, output to video console
+ F343 BDF638                 JSR  XDTEXT   ;yes, output to video console
  F346 20F1                   BRA  VIDEO    ;loop
                       ;
                       ; Function to find an input character in an input
@@ -655,7 +657,7 @@ char.
                       ;
                       ; GO: Continue at specified address
                       ;
- F35C BDF4B1          GO     JSR  IN4HX    ;Get jump address, ok?
+ F35C BDF4B4          GO     JSR  IN4HX    ;Get jump address, ok?
  F35F 1025FEB8        ERRO3  LBCS ERRHKS   ;no, jump to hks
  F363 1F12                   TFR  X,Y      ;Store address in Y
  F365 BDF3C1                 JSR  PCRLF    ;new line
@@ -679,12 +681,12 @@ compatibility
                       ;
  F379 8EF09A          FROMTO LDX  #TFROM
  F37C 8D39                   BSR  PDATA1   ;output text "FROM"
- F37E BDF4B1                 JSR  IN4HX    ;get start address, ok?
+ F37E BDF4B4                 JSR  IN4HX    ;get start address, ok?
  F381 250E                   BCS  ERRO8    ;no, jump to HKS
  F383 3410                   PSHS X        ;push address
  F385 8EF0A1                 LDX  #TTO
  F388 8D2D                   BSR  PDATA1   ;output text "TO"
- F38A BDF4B1                 JSR  IN4HX    ;get end address, ok?
+ F38A BDF4B4                 JSR  IN4HX    ;get end address, ok?
  F38D 2500                   BCS  ERRO4    ;no, jump to HKS
  F38F 3506            ERRO4  PULS D        ;restore start address in D
  F391 39              ERRO8  RTS
@@ -717,7 +719,7 @@ compatibility
  F3A7 A680                   LDA  ,X+
  F3A9 8DEB                   BSR  CHEXR    ;convert lower nibble
  F3AB 2028                   BRA  OUTA     ;output character
- 
+
                       ; Output hexadecimal 16-bit value located at ,X
                       ; followed by a space.
                       ;
@@ -748,7 +750,7 @@ compatibility
                       ;
  F3C9 0F85            CLRHKS CLR  LODFLG-DIRPAG
  F3CB 2004                   BRA  TOHKS0
- 
+
  F3CD 8D51            INCH   BSR  INCHA    ;Input character with echo
  F3CF 8118                   CMPA #$18     ;Has Ctrl-Y been input?
  F3D1 1027FE50        TOHKS0 LBEQ HKS      ;yes, abort to hks
@@ -759,7 +761,7 @@ compatibility
 return to HKS
                       ;
  F3D5 3402            OUTA   PSHS A
- F3D7 BDF46B                 JSR  TSTINP   ;Input from video console?
+ F3D7 BDF46E                 JSR  TSTINP   ;Input from video console?
  F3DA 2404                   BCC  OUTCH0   ;no, continue
  F3DC 8118                   CMPA #$18     ;Is it Ctrl-X?
  F3DE 27E9                   BEQ  CLRHKS   ;yes, abort to hks
@@ -771,9 +773,9 @@ return to HKS
                       ;
  F3E8 3502            OUTCH1 PULS A
  F3EA 7DEF85          OUTCH  TST  LODFLG
- F3ED 10260244               LBNE XDTEXT
+ F3ED 10260247               LBNE XDTEXT
  F3F1 7DEF86                 TST  SERPAR   ;Is Serial or parallel Output?
- F3F4 1027023D               LBEQ XDTEXT   ;out parallel
+ F3F4 10270240               LBEQ XDTEXT   ;out parallel
                       ;
                       ;
                       ; Output Character to serial port
@@ -791,7 +793,7 @@ return to HKS
  F408 B6FCF4                 LDA  ACIACO
  F40B 8401                   ANDA #%00000001
  F40D 3582                   PULS A,PC
- 
+
  F40F 8DF5            LOAD0  BSR  SERSTA
  F411 26FC                   BNE  LOAD0    ;loop until got input from
                                            ;serial port
@@ -828,180 +830,181 @@ return to HKS
                       ;
                       ; Input without changing cursor
                       ;
- F446 8D1E            INOCUR BSR  TSTIN
+ F446 8D21            INOCUR BSR  TSTIN
  F448 24FC                   BCC  INOCUR
  F44A 39                     RTS
- 
+
  F44B 7DEF86          STATUS TST  SERPAR
  F44E 26B6                   BNE  SERSTA   ;check serial status
  F450 3402            PSTATU PSHS A
- F452 7DEF5A                 TST  NEWCHR   ;look for char that has not been 
+ F452 7DEF5C                 TST  ISNEWC   ;look for char that has not been 
 fetched
- F455 260D                   BNE  NOTEMP   ;found one
+ F455 2610                   BNE  NOTEMP   ;found one
  F457 B6FCF1                 LDA  PIA1AC
- F45A 2A06                   BPL  ISEMPT   ;empty
+ F45A 2A09                   BPL  ISEMPT   ;empty
  F45C B6FCF0                 LDA  PIA1AD   ;get char from PIA
  F45F B7EF5A                 STA  NEWCHR   ;and save it
- F462 1A04            ISEMPT ORCC #%00000100  ;set ZERO Flag
- F464 3582            NOTEMP PULS A,PC
+ F462 73EF5C                 COM  ISNEWC   ;indicate new char available
+ F465 1A04            ISEMPT ORCC #%00000100  ;set ZERO Flag
+ F467 3582            NOTEMP PULS A,PC
                       ;
                       ; Input one Character from PIA
                       ;
- F466 B6EF86          TSTIN  LDA  SERPAR   ;input from serial port?
- F469 26A8                   BNE  TSTINS   ;yes, check ACIA
+ F469 B6EF86          TSTIN  LDA  SERPAR   ;input from serial port?
+ F46C 26A5                   BNE  TSTINS   ;yes, check ACIA
                       ;
- F46B 8DE3            TSTINP BSR  PSTATU   ;check parallel only
- F46D 2603                   BNE  INPPAR   ;found something
- F46F 1CFE                   ANDCC #%11111110 ;CLC
- F471 39                     RTS           ;else return
+ F46E 8DE0            TSTINP BSR  PSTATU   ;check parallel only
+ F470 2603                   BNE  INPPAR   ;found something
+ F472 1CFE                   ANDCC #%11111110 ;CLC
+ F474 39                     RTS           ;else return
                       ;
- F472 B6EF5A          INPPAR LDA  NEWCHR   ;get character
- F475 7FEF5A                 CLR  NEWCHR   ;and clear status
+ F475 B6EF5A          INPPAR LDA  NEWCHR   ;get character
+ F478 7FEF5C                 CLR  ISNEWC   ;and clear FLAG
                       ;
- F478 8119            CNVERT CMPA #$19     ;Ctrl-Y
- F47A 271B                   BEQ  TRANS1   ;Toggle upper/lower case
- F47C 7DEF8B                 TST  UL
- F47F 2713                   BEQ  TRANS2   ;Uppercase only?
- F481 8161            LOWUP  CMPA #'a'     ;Yes
- F483 250F                   BCS  TRANS2   ;lower than a
- F485 817D                   CMPA #'}'     ;
- F487 240B                   BCC  TRANS2   ;higher than }
- F489 7DEF59                 TST  DEUTSC
- F48C 2604                   BNE  DO_CNV   ;if german convert now
- F48E 817B                   CMPA #'{'
- F490 2402                   BCC  TRANS2   ;if ASCII {|} not
- F492 84DF            DO_CNV ANDA #%11011111
- F494 1A01            TRANS2 ORCC #%00000001 ;SEC, set carry
- F496 39                     RTS
+ F47B 8119            CNVERT CMPA #$19     ;Ctrl-Y
+ F47D 271B                   BEQ  TRANS1   ;Toggle upper/lower case
+ F47F 7DEF8B                 TST  UL
+ F482 2713                   BEQ  TRANS2   ;Uppercase only?
+ F484 8161            LOWUP  CMPA #'a'     ;Yes
+ F486 250F                   BCS  TRANS2   ;lower than a
+ F488 817D                   CMPA #'}'     ;
+ F48A 240B                   BCC  TRANS2   ;higher than }
+ F48C 7DEF59                 TST  DEUTSC
+ F48F 2604                   BNE  DO_CNV   ;if german convert now
+ F491 817B                   CMPA #'{'
+ F493 2402                   BCC  TRANS2   ;if ASCII {|} not
+ F495 84DF            DO_CNV ANDA #%11011111
+ F497 1A01            TRANS2 ORCC #%00000001 ;SEC, set carry
+ F499 39                     RTS
                       ;
- F497 73EF8B          TRANS1 COM  UL       ;Toggle
- F49A 20F8                   BRA  TRANS2
+ F49A 73EF8B          TRANS1 COM  UL       ;Toggle
+ F49D 20F8                   BRA  TRANS2
                       ;
                       ;
                       ; Input 4 HEX-Character
                       ;
- F49C 3410            IN4HX0 PSHS X          ;for Motorola comp.
- F49E 5F                     CLRB
- F49F 8D10                   BSR  IN4HX      ;Get 4 HEX-Char.
- F4A1 250C                   BCS  NONHEX
- F4A3 1F10                   TFR  X,D
- F4A5 3510                   PULS X
- F4A7 ED84                   STD  ,X
- F4A9 C604                   LDB  #$04
- F4AB BDF3CD                 JSR  INCH
- F4AE 39                     RTS
+ F49F 3410            IN4HX0 PSHS X          ;for Motorola comp.
+ F4A1 5F                     CLRB
+ F4A2 8D10                   BSR  IN4HX      ;Get 4 HEX-Char.
+ F4A4 250C                   BCS  NONHEX
+ F4A6 1F10                   TFR  X,D
+ F4A8 3510                   PULS X
+ F4AA ED84                   STD  ,X
+ F4AC C604                   LDB  #$04
+ F4AE BDF3CD                 JSR  INCH
+ F4B1 39                     RTS
                       ;
- F4AF 3590            NONHEX PULS PC,X
+ F4B2 3590            NONHEX PULS PC,X
                       ;
- F4B1 8D11            IN4HX  BSR  BYTE       ;input upper byte
+ F4B4 8D11            IN4HX  BSR  BYTE       ;input upper byte
                       ;
- F4B3 250E            IN4HX1 BCS  RAUS       ;input error
- F4B5 3404                   PSHS B          ;push B on stack
- F4B7 1F89                   TFR  A,B        ;Move A to B
- F4B9 8D09                   BSR  BYTE       ;input lower byte
- F4BB 2504                   BCS  RAUS1      ;input error
- F4BD 1E89                   EXG  A,B        ;upper byte in A,
- F4BF 1F01                   TFR  D,X        ;lower byte in B => X
+ F4B6 250E            IN4HX1 BCS  RAUS       ;input error
+ F4B8 3404                   PSHS B          ;push B on stack
+ F4BA 1F89                   TFR  A,B        ;Move A to B
+ F4BC 8D09                   BSR  BYTE       ;input lower byte
+ F4BE 2504                   BCS  RAUS1      ;input error
+ F4C0 1E89                   EXG  A,B        ;upper byte in A,
+ F4C2 1F01                   TFR  D,X        ;lower byte in B => X
                       ;
- F4C1 3504            RAUS1  PULS B          ;Restore B
- F4C3 39              RAUS   RTS
+ F4C4 3504            RAUS1  PULS B          ;Restore B
+ F4C6 39              RAUS   RTS
                       ;
- F4C4 8D13            BYTE   BSR  INHEX      ;input hex digit
+ F4C7 8D13            BYTE   BSR  INHEX      ;input hex digit
                       ;
- F4C6 25FB            BYTE0  BCS  RAUS       ;input error
- F4C8 48              BYTE1  ASLA            ;shift hex digit to
- F4C9 48                     ASLA            ;upper nibble
- F4CA 48                     ASLA
- F4CB 48                     ASLA
- F4CC B7EF84                 STA  TEMPA      ;store into TEMPA
- F4CF 8D08                   BSR  INHEX      ;input second hex digit
- F4D1 25F0                   BCS  RAUS       ;input error
- F4D3 BBEF84                 ADDA TEMPA      ;join 1st and 2nd digit
- F4D6 1CFE                   ANDCC #%11111110 ;CLC
- F4D8 39                     RTS
+ F4C9 25FB            BYTE0  BCS  RAUS       ;input error
+ F4CB 48              BYTE1  ASLA            ;shift hex digit to
+ F4CC 48                     ASLA            ;upper nibble
+ F4CD 48                     ASLA
+ F4CE 48                     ASLA
+ F4CF B7EF84                 STA  TEMPA      ;store into TEMPA
+ F4D2 8D08                   BSR  INHEX      ;input second hex digit
+ F4D4 25F0                   BCS  RAUS       ;input error
+ F4D6 BBEF84                 ADDA TEMPA      ;join 1st and 2nd digit
+ F4D9 1CFE                   ANDCC #%11111110 ;CLC
+ F4DB 39                     RTS
                       ;
- F4D9 BDF3CD          INHEX  JSR  INCH        ;get character
+ F4DC BDF3CD          INHEX  JSR  INCH        ;get character
                       ;;
- F4DC 8130            INHEX1 CMPA #'0'        ;---
- F4DE 2BB4                   BMI  TRANS2      ;between 0 - 9 ?
- F4E0 8139                   CMPA #'9'        ;---
- F4E2 2F0C                   BLE  IN1HG
- F4E4 84DF                   ANDA #%11011111  ;lower -> upper case
- F4E6 8141                   CMPA #'A'        ;---
- F4E8 2BAA                   BMI  TRANS2      ;between A - F ?
- F4EA 8146                   CMPA #'F'        ;---
- F4EC 2EA6                   BGT  TRANS2
- F4EE 8007                   SUBA #$07
- F4F0 840F            IN1HG  ANDA #$0F
- F4F2 1CFE                   ANDCC #%11111110 ;CLC, no input error
- F4F4 39                     RTS
+ F4DF 8130            INHEX1 CMPA #'0'        ;---
+ F4E1 2BB4                   BMI  TRANS2      ;between 0 - 9 ?
+ F4E3 8139                   CMPA #'9'        ;---
+ F4E5 2F0C                   BLE  IN1HG
+ F4E7 84DF                   ANDA #%11011111  ;lower -> upper case
+ F4E9 8141                   CMPA #'A'        ;---
+ F4EB 2BAA                   BMI  TRANS2      ;between A - F ?
+ F4ED 8146                   CMPA #'F'        ;---
+ F4EF 2EA6                   BGT  TRANS2
+ F4F1 8007                   SUBA #$07
+ F4F3 840F            IN1HG  ANDA #$0F
+ F4F5 1CFE                   ANDCC #%11111110 ;CLC, no input error
+ F4F7 39                     RTS
                       ;
                       ; Entry point after a breakpoint
                       ; (or Single-Step-Interrupt)
                       ;
- F4F5 6D6B            SWIENT TST  11,S       ;Programm-Counter
- F4F7 2602                   BNE  SWIEN0     ;due to SWI
- F4F9 6A6A                   DEC  10,S       ;1 Byte
+ F4F8 6D6B            SWIENT TST  11,S       ;Programm-Counter
+ F4FA 2602                   BNE  SWIEN0     ;due to SWI
+ F4FC 6A6A                   DEC  10,S       ;1 Byte
                       ;
- F4FB 6A6B            SWIEN0 DEC  11,S       ;back again
- F4FD AE6A                   LDX  10,S       ;Breakpoint address
- F4FF 2003                   BRA  IRQEN0     ;yes, output register
+ F4FE 6A6B            SWIEN0 DEC  11,S       ;back again
+ F500 AE6A                   LDX  10,S       ;Breakpoint address
+ F502 2003                   BRA  IRQEN0     ;yes, output register
                       ;
- F501 8E0000          IRQENT LDX  #0
+ F504 8E0000          IRQENT LDX  #0
                       ;
- F504 863E            IRQEN0 LDA  #%00111110
- F506 B7FCF3                 STA  PIA1BC
- F509 B6FCF2                 LDA  PIA1BD
- F50C 86EF                   LDA  #DRCTPG
- F50E 1F8B                   TFR  A,DP
- F510 10DF7C                 STS  SAVUST-DIRPAG
- F513 10CEEF00               LDS  #STACK
- F517 8D03            IRQEN1 BSR  OUTREG
- F519 16FD09                 LBRA HKS
+ F507 863E            IRQEN0 LDA  #%00111110
+ F509 B7FCF3                 STA  PIA1BC
+ F50C B6FCF2                 LDA  PIA1BD
+ F50F 86EF                   LDA  #DRCTPG
+ F511 1F8B                   TFR  A,DP
+ F513 10DF7C                 STS  SAVUST-DIRPAG
+ F516 10CEEF00               LDS  #STACK
+ F51A 8D03            IRQEN1 BSR  OUTREG
+ F51C 16FD06                 LBRA HKS
                       ;
                       ; Function to output register values
                       ;
- F51C 8EF0B6          OUTREG LDX  #TREGIS    ;load text pointer
- F51F DE7C                   LDU  SAVUST-DIRPAG
- F521 8602                   LDA  #2         ;2 one byte registers
- F523 8D0C                   BSR  FOUREG
- F525 4F                     CLRA
- F526 8D09                   BSR  FOUREG
- F528 BDF3B7                 JSR  PDATA1
- F52B 8EEF7C                 LDX  #SAVUST
- F52E 16FE7C                 LBRA OUT4HX
+ F51F 8EF0B6          OUTREG LDX  #TREGIS    ;load text pointer
+ F522 DE7C                   LDU  SAVUST-DIRPAG
+ F524 8602                   LDA  #2         ;2 one byte registers
+ F526 8D0C                   BSR  FOUREG
+ F528 4F                     CLRA
+ F529 8D09                   BSR  FOUREG
+ F52B BDF3B7                 JSR  PDATA1
+ F52E 8EEF7C                 LDX  #SAVUST
+ F531 16FE79                 LBRA OUT4HX
                       ;
- F531 C604            FOUREG LDB  #$04
- F533 3406            FOURE0 PSHS B,A
- F535 C602                   LDB  #$02
- F537 8D06                   BSR PRIREG
- F539 3506                   PULS B,A
- F53B 5A                     DECB
- F53C 26F5                   BNE  FOURE0
- F53E 39                     RTS
+ F534 C604            FOUREG LDB  #$04
+ F536 3406            FOURE0 PSHS B,A
+ F538 C602                   LDB  #$02
+ F53A 8D06                   BSR PRIREG
+ F53C 3506                   PULS B,A
+ F53E 5A                     DECB
+ F53F 26F5                   BNE  FOURE0
+ F541 39                     RTS
                       ;
                       ; Function to output one register value
                       ;
- F53F 108EF3B5        PRIREG LDY  #PDATA     ;Pointer to "PDATA"
- F543 ADA5                   JSR  B,Y        ;to PDATA or PDATA1
- F545 1E13                   EXG  X,U        ;register pointer to X
- F547 108EF3AD               LDY  #OUT4HX    ;Pointer to "OUT4HX"
- F54B A662                   LDA  2,S        ;Jump offset in A
- F54D ADA6                   JSR  A,Y        ;to OUT4HX or OUT2HX
- F54F 1E13                   EXG  X,U        ;text pointer to X
- F551 39                     RTS
+ F542 108EF3B5        PRIREG LDY  #PDATA     ;Pointer to "PDATA"
+ F546 ADA5                   JSR  B,Y        ;to PDATA or PDATA1
+ F548 1E13                   EXG  X,U        ;register pointer to X
+ F54A 108EF3AD               LDY  #OUT4HX    ;Pointer to "OUT4HX"
+ F54E A662                   LDA  2,S        ;Jump offset in A
+ F550 ADA6                   JSR  A,Y        ;to OUT4HX or OUT2HX
+ F552 1E13                   EXG  X,U        ;text pointer to X
+ F554 39                     RTS
                       ;
                       ;
                       ; Interrupt entry points
                       ;
- F552 6E9FEF70        SWI3   JMP  [SW3VEC]
- F556 6E9FEF72        SWI2   JMP  [SW2VEC]
- F55A 6E9FEF74        FIRQ   JMP  [FIRQVC]
- F55E 6E9FEF76        IRQ    JMP  [IRQVEC]
- F562 6E9FEF78        SWI    JMP  [SWIVEC]
- F566 6E9FEF7A        NMI    JMP  [NMIVEC]
- 
- 
+ F555 6E9FEF70        SWI3   JMP  [SW3VEC]
+ F559 6E9FEF72        SWI2   JMP  [SW2VEC]
+ F55D 6E9FEF74        FIRQ   JMP  [FIRQVC]
+ F561 6E9FEF76        IRQ    JMP  [IRQVEC]
+ F565 6E9FEF78        SWI    JMP  [SWIVEC]
+ F569 6E9FEF7A        NMI    JMP  [NMIVEC]
+
+
                       ;**********************************
                       ; General Table Search            *
                       ;                                 *
@@ -1016,17 +1019,17 @@ fetched
                       ;            Routine for match    *
                       ;        A,B -  changed           *
                       ;**********************************
- 
- F56A E680            SEARCH LDB  ,X+         ;Get item length
- F56C 8D0A            SERCH1 BSR  COMPAR      ;Compare current item
- F56E 3A                     ABX              ;advance to next item
- F56F 2706                   BEQ  SERCHX      ;exit if match
- F571 3002                   LEAX $02,X       ;step over address
- F573 6D84                   TST  ,X          ;end of table?
- F575 2AF5                   BPL  SERCH1      ;no, again
- F577 39              SERCHX RTS
- 
- 
+
+ F56D E680            SEARCH LDB  ,X+         ;Get item length
+ F56F 8D0A            SERCH1 BSR  COMPAR      ;Compare current item
+ F571 3A                     ABX              ;advance to next item
+ F572 2706                   BEQ  SERCHX      ;exit if match
+ F574 3002                   LEAX $02,X       ;step over address
+ F576 6D84                   TST  ,X          ;end of table?
+ F578 2AF5                   BPL  SERCH1      ;no, again
+ F57A 39              SERCHX RTS
+
+
                       ;**********************************
                       ; General String Compare          *
                       ;                                 *
@@ -1038,38 +1041,38 @@ fetched
                       ;        B,X,Y - unchanged        *
                       ;        A - changed              *
                       ;**********************************
- 
- F578 3434            COMPAR PSHS Y,X,B       ;Save Registers
- F57A A680            COMP1  LDA  ,X+         ;get next character
- F57C A1A0                   CMPA ,Y+         ;compare it
- F57E 2603                   BNE  COMPX       ;exit if no match
- F580 5A                     DECB             ;decrement loop count
- F581 26F7                   BNE  COMP1
- F583 35B4            COMPX  PULS PC,Y,X,B    ;Restore registers and return
- 
- 
- F585 00              DEFTA1  FCB  0
- F586 0A                     FCB  10         ;Lines per character
- F587 01                     FCB  1          ;empty lines 1
- F588 02                     FCB  2          ;empty lines 2
- F589 03                     FCB  3          ;empty lines 3
- F58A 19                     FCB  25         ;lines of char. per line
- F58B 54                     FCB  84         ;Nr. of char. per line
- F58C 00FA                   FDB  250        ;Lines per screen used
- F58E 07                     FCB  7          ;lines per char. in char.set
- F58F 00                     FCB  0          ;Dummy
- F590 06                     FCB  6          ;Character dots horizontal
- F591 00                     FCB  0          ;Set Page to init
- F592 F7C0                   FDB  CTLTAB     ;Controlle table
- F594 FA57                   FDB  CHRTBL     ;Character table
- F596 0C0C                   FDB  SCRN1      ;RAM-Bank for screen
- F598 0808                   FDB  SCRN2      ;dto bei double res.
- F59A F800                   FDB  ESCVEC     ; Escape Vector
- F59C F810                   FDB  ESCTAB     ; Escape Table
- F59E FD7F                   FDB  $FD7F      ;Soft Scroll value ($027F)
- F5A0 00FE                   FDB  BOTOM1     ;Bottom pointer
- F5A2 C000                   FDB  -$4000     ;Bump Vector
- F5A4 00                     FCB  $00
+
+ F57B 3434            COMPAR PSHS Y,X,B       ;Save Registers
+ F57D A680            COMP1  LDA  ,X+         ;get next character
+ F57F A1A0                   CMPA ,Y+         ;compare it
+ F581 2603                   BNE  COMPX       ;exit if no match
+ F583 5A                     DECB             ;decrement loop count
+ F584 26F7                   BNE  COMP1
+ F586 35B4            COMPX  PULS PC,Y,X,B    ;Restore registers and return
+
+
+ F588 00              DEFTA1  FCB  0
+ F589 0A                     FCB  10         ;Lines per character
+ F58A 01                     FCB  1          ;empty lines 1
+ F58B 02                     FCB  2          ;empty lines 2
+ F58C 03                     FCB  3          ;empty lines 3
+ F58D 19                     FCB  25         ;lines of char. per line
+ F58E 54                     FCB  84         ;Nr. of char. per line
+ F58F 00FA                   FDB  250        ;Lines per screen used
+ F591 07                     FCB  7          ;lines per char. in char.set
+ F592 00                     FCB  0          ;Dummy
+ F593 06                     FCB  6          ;Character dots horizontal
+ F594 00                     FCB  0          ;Set Page to init
+ F595 F7C3                   FDB  CTLTAB     ;Controlle table
+ F597 FA57                   FDB  CHRTBL     ;Character table
+ F599 0C0C                   FDB  SCRN1      ;RAM-Bank for screen
+ F59B 0808                   FDB  SCRN2      ;dto bei double res.
+ F59D F803                   FDB  ESCVEC     ; Escape Vector
+ F59F F813                   FDB  ESCTAB     ; Escape Table
+ F5A1 FD7F                   FDB  $FD7F      ;Soft Scroll value ($027F)
+ F5A3 00FE                   FDB  BOTOM1     ;Bottom pointer
+ F5A5 C000                   FDB  -$4000     ;Bump Vector
+ F5A7 00                     FCB  $00
                       ;
                       ;
                       ; Switch Memory Management Unit
@@ -1083,25 +1086,25 @@ fetched
                       ; Output: X,Y,B changed
                       ;         U,A,CC unchanged
                       ;
- F5A5 3443            SWITCH PSHS U,A,CC
- F5A7 1A50                   ORCC #%01010000  ; SEI
- F5A9 86FF                   LDA  #$FF
- F5AB 3406                   PSHS B,A
- F5AD 3430                   PSHS Y,X
- F5AF FEEFDE                 LDU  SAVE
- F5B2 86EF                   LDA  #DRCTPG
- F5B4 1F01                   TFR  D,X
- F5B6 EC84                   LDD  ,X
- F5B8 10AE02                 LDY  2,X
- F5BB 3636                   PSHU Y,X,D
- F5BD FFEFDE                 STU  SAVE
- F5C0 3526                   PULS Y,D
- F5C2 ED84                   STD  ,X
- F5C4 10AF02                 STY  2,X
- F5C7 3510                   PULS X
- F5C9 ED84                   STD  ,X
- F5CB 10AF02                 STY  2,X
- F5CE 35C3                   PULS PC,U,A,CC
+ F5A8 3443            SWITCH PSHS U,A,CC
+ F5AA 1A50                   ORCC #%01010000  ; SEI
+ F5AC 86FF                   LDA  #$FF
+ F5AE 3406                   PSHS B,A
+ F5B0 3430                   PSHS Y,X
+ F5B2 FEEFDE                 LDU  SAVE
+ F5B5 86EF                   LDA  #DRCTPG
+ F5B7 1F01                   TFR  D,X
+ F5B9 EC84                   LDD  ,X
+ F5BB 10AE02                 LDY  2,X
+ F5BE 3636                   PSHU Y,X,D
+ F5C0 FFEFDE                 STU  SAVE
+ F5C3 3526                   PULS Y,D
+ F5C5 ED84                   STD  ,X
+ F5C7 10AF02                 STY  2,X
+ F5CA 3510                   PULS X
+ F5CC ED84                   STD  ,X
+ F5CE 10AF02                 STY  2,X
+ F5D1 35C3                   PULS PC,U,A,CC
                       ;
                       ; Switch back Memory Management Unit
                       ; This is a subroutine to switch back to
@@ -1111,64 +1114,64 @@ fetched
                       ; Input: No
                       ; Output: X,Y,B as the input of the subr. switch
                       ;
- F5D0 3443            SWTCHB PSHS U,A,CC
- F5D2 1A50                   ORCC #$50
- F5D4 FEEFDE                 LDU  SAVE
- F5D7 3736                   PULU Y,X,D
- F5D9 FFEFDE                 STU  SAVE
- F5DC ED84                   STD  ,X
- F5DE 10AF02                 STY  2,X
- F5E1 1E01                   EXG  D,X
- F5E3 86FF                   LDA  #$FF
- F5E5 1E01                   EXG  D,X
- F5E7 ED84                   STD  ,X
- F5E9 10AF02                 STY  2,X
- F5EC 1E01                   EXG  D,X
- F5EE 35C3                   PULS PC,U,A,CC
+ F5D3 3443            SWTCHB PSHS U,A,CC
+ F5D5 1A50                   ORCC #$50
+ F5D7 FEEFDE                 LDU  SAVE
+ F5DA 3736                   PULU Y,X,D
+ F5DC FFEFDE                 STU  SAVE
+ F5DF ED84                   STD  ,X
+ F5E1 10AF02                 STY  2,X
+ F5E4 1E01                   EXG  D,X
+ F5E6 86FF                   LDA  #$FF
+ F5E8 1E01                   EXG  D,X
+ F5EA ED84                   STD  ,X
+ F5EC 10AF02                 STY  2,X
+ F5EF 1E01                   EXG  D,X
+ F5F1 35C3                   PULS PC,U,A,CC
                       ;
                       ; INTSCR initializes the screen on single
                       ; resolution.
                       ; It clears the screen and sets up the
                       ; base registers.
                       ;
- F5F0 8EF585          INTSCR LDX  #DEFTA1
- F5F3 CEEF31          INTSC1  LDU  #NRLINS-1
- F5F6 108E0011               LDY  #LPCNT
- F5FA EC81            SETUP  LDD  ,X++
- F5FC EDC1                   STD  ,U++
- F5FE 313F                   LEAY -$01,Y
- F600 26F8                   BNE  SETUP
- F602 963D                   LDA  INTPAG-DIRPAG
- F604 5F                     CLRB             ;reset scrolling
- F605 FDFCF6                 STD  VIDPAG
- F608 48                     LSLA
- F609 48                     LSLA
- F60A 48                     LSLA
+ F5F3 8EF588          INTSCR LDX  #DEFTA1
+ F5F6 CEEF31          INTSC1  LDU  #NRLINS-1
+ F5F9 108E0011               LDY  #LPCNT
+ F5FD EC81            SETUP  LDD  ,X++
+ F5FF EDC1                   STD  ,U++
+ F601 313F                   LEAY -$01,Y
+ F603 26F8                   BNE  SETUP
+ F605 963D                   LDA  INTPAG-DIRPAG
+ F607 5F                     CLRB             ;reset scrolling
+ F608 FDFCF6                 STD  VIDPAG
  F60B 48                     LSLA
- F60C 8B40                   ADDA #$40
- F60E DD03                   STD  DBASE-DIRPAG
- F610 CC01F8                 LDD  #PIXLIN
- F613 DD09                   STD  EOLNX-DIRPAG
- F615 0F0E                   CLR  INVFLG-DIRPAG
- F617 0A0E                   DEC  INVFLG-DIRPAG   ;wir wollen keinen Cursor
- F619 0F5B                   CLR  CURSOR-DIRPAG    ; und haben auch noch 
+ F60C 48                     LSLA
+ F60D 48                     LSLA
+ F60E 48                     LSLA
+ F60F 8B40                   ADDA #$40
+ F611 DD03                   STD  DBASE-DIRPAG
+ F613 CC01F8                 LDD  #PIXLIN
+ F616 DD09                   STD  EOLNX-DIRPAG
+ F618 0F0E                   CLR  INVFLG-DIRPAG
+ F61A 0A0E                   DEC  INVFLG-DIRPAG   ;wir wollen keinen Cursor
+ F61C 0F5B                   CLR  CURSOR-DIRPAG    ; und haben auch noch 
 keinen
- F61B 0F0B                   CLR  SCROFS-DIRPAG
- F61D DC4C                   LDD  XBOTOM-DIRPAG
- 
- 
- F61F 9338                   SUBD SCRLIN-DIRPAG
- F621 F3EF31                 ADDD NRLINS-1
- F624 DD0C                   STD  BOTTOM-DIRPAG
- F626 DC4C                   LDD  XBOTOM-DIRPAG
- F628 DD07                   STD  YADDR-DIRPAG
- F62A 4F                     CLRA
- F62B 5F                     CLRB
- F62C DD05                   STD  XADDR-DIRPAG
- F62E DD01                   STD  INSRTF-DIRPAG
- F630 86FF                   LDA  #$FF
- F632 9718                   STA  COLTAB-DIRPAG
- F634 39                     RTS
+ F61E 0F0B                   CLR  SCROFS-DIRPAG
+ F620 DC4C                   LDD  XBOTOM-DIRPAG
+
+
+ F622 9338                   SUBD SCRLIN-DIRPAG
+ F624 F3EF31                 ADDD NRLINS-1
+ F627 DD0C                   STD  BOTTOM-DIRPAG
+ F629 DC4C                   LDD  XBOTOM-DIRPAG
+ F62B DD07                   STD  YADDR-DIRPAG
+ F62D 4F                     CLRA
+ F62E 5F                     CLRB
+ F62F DD05                   STD  XADDR-DIRPAG
+ F631 DD01                   STD  INSRTF-DIRPAG
+ F633 86FF                   LDA  #$FF
+ F635 9718                   STA  COLTAB-DIRPAG
+ F637 39                     RTS
                       ;
                       ;
                       ; DTEXT functions as an intelligent terminal
@@ -1182,368 +1185,368 @@ keinen
                       ; line is reached.
                       ; All registers are saved.
                       ;
- F635 347F            XDTEXT PSHS U,Y,X,DP,B,A,CC  ;Save Registers
- F637 1A50                   ORCC #%01010000 ;SEI
- F639 C6EF                   LDB  #DRCTPG
- F63B 1F9B                   TFR  B,DP
- F63D 0D10                   TST  NEWST2-DIRPAG    ; Already switched the 
+ F638 347F            XDTEXT PSHS U,Y,X,DP,B,A,CC  ;Save Registers
+ F63A 1A50                   ORCC #%01010000 ;SEI
+ F63C C6EF                   LDB  #DRCTPG
+ F63E 1F9B                   TFR  B,DP
+ F640 0D10                   TST  NEWST2-DIRPAG    ; Already switched the 
 stack
- F63F 260B                   BNE  DTEXT4     ; yes, so go on
- F641 10DF11                 STS  SAVEST-DIRPAG    ; save user stack
- F644 10CEEE40               LDS  #STACK2    ;get new internal stack
- F648 0C10                   INC  NEWST2-DIRPAG    ; set flag
- F64A 2002                   BRA  DTEXT5
- F64C 0C0F            DTEXT4 INC  NEWST1-DIRPAG    ; set flag
- F64E A7E4            DTEXT5 STA  ,S         ;save it
- F650 9E42                   LDX  SCREN1-DIRPAG
- F652 1F12                   TFR  X,Y
- F654 C6E0                   LDB  #$E0
- F656 BDF5A5                 JSR  SWITCH
- F659 9E44                   LDX  SCREN2-DIRPAG   ; select second screen
- F65B 1F12                   TFR  X,Y
- F65D C6E4                   LDB  #$E4
- F65F BDF5A5                 JSR  SWITCH
- F662 A6E4                   LDA  ,S
- F664 0D02                   TST  ESCFLG-DIRPAG    ; Escape sequence?
- F666 102600FE               LBNE ESCSEQ     ;yes, do sequence
- F66A 847F                   ANDA #$7F       ;only 7 bit
- F66C A7E4                   STA  ,S         ;store it
- F66E BDFEC5                 JSR  INVCUR     ;clear cursor
- F671 8120                   CMPA #$20       ;control code?
- F673 102500EA               LBCS DTEXTC     ; yes, to control codes
- F677 A6E4            ZF850  LDA  ,S         ;get value back
- F679 BDFDBA                 JSR  XDCHAR     ;draw character
- F67C DC05            COLOR2 LDD  XADDR-DIRPAG    ; update cursor adress
- F67E F3EF3B                 ADDD CHROFS-1
- F681 DD05                   STD  XADDR-DIRPAG
- F683 109309                 CMPD EOLNX-DIRPAG     ;End of line?
- F686 2507                   BCS  DTEXT8     ;yes, store it
- F688 4F                     CLRA            ;Reset X-coordinate
- F689 5F                     CLRB;
- F68A DD05                   STD  XADDR-DIRPAG
- F68C 1601C1                 LBRA LF
- F68F BDFEC5          DTEXT8 JSR  INVCUR     ;display cursor again
- F692 BDF5D0          DTEXT3 JSR  SWTCHB
- F695 BDF5D0                 JSR  SWTCHB
- F698 0D0F                   TST  NEWST1-DIRPAG
- F69A 2607                   BNE  DTEXT6     ;internal stack still using
- F69C 0F10                   CLR  NEWST2-DIRPAG    ;reset flag
- F69E 10DE11                 LDS  SAVEST-DIRPAG    ;user stack back
- F6A1 35FF            DTEXT7 PULS PC,U,Y,X,DP,B,A,CC  ;restore registers
+ F642 260B                   BNE  DTEXT4     ; yes, so go on
+ F644 10DF11                 STS  SAVEST-DIRPAG    ; save user stack
+ F647 10CEEE40               LDS  #STACK2    ;get new internal stack
+ F64B 0C10                   INC  NEWST2-DIRPAG    ; set flag
+ F64D 2002                   BRA  DTEXT5
+ F64F 0C0F            DTEXT4 INC  NEWST1-DIRPAG    ; set flag
+ F651 A7E4            DTEXT5 STA  ,S         ;save it
+ F653 9E42                   LDX  SCREN1-DIRPAG
+ F655 1F12                   TFR  X,Y
+ F657 C6E0                   LDB  #$E0
+ F659 BDF5A8                 JSR  SWITCH
+ F65C 9E44                   LDX  SCREN2-DIRPAG   ; select second screen
+ F65E 1F12                   TFR  X,Y
+ F660 C6E4                   LDB  #$E4
+ F662 BDF5A8                 JSR  SWITCH
+ F665 A6E4                   LDA  ,S
+ F667 0D02                   TST  ESCFLG-DIRPAG    ; Escape sequence?
+ F669 102600FE               LBNE ESCSEQ     ;yes, do sequence
+ F66D 847F                   ANDA #$7F       ;only 7 bit
+ F66F A7E4                   STA  ,S         ;store it
+ F671 BDFEC5                 JSR  INVCUR     ;clear cursor
+ F674 8120                   CMPA #$20       ;control code?
+ F676 102500EA               LBCS DTEXTC     ; yes, to control codes
+ F67A A6E4            ZF850  LDA  ,S         ;get value back
+ F67C BDFDBA                 JSR  XDCHAR     ;draw character
+ F67F DC05            COLOR2 LDD  XADDR-DIRPAG    ; update cursor adress
+ F681 F3EF3B                 ADDD CHROFS-1
+ F684 DD05                   STD  XADDR-DIRPAG
+ F686 109309                 CMPD EOLNX-DIRPAG     ;End of line?
+ F689 2507                   BCS  DTEXT8     ;yes, store it
+ F68B 4F                     CLRA            ;Reset X-coordinate
+ F68C 5F                     CLRB;
+ F68D DD05                   STD  XADDR-DIRPAG
+ F68F 1601C1                 LBRA LF
+ F692 BDFEC5          DTEXT8 JSR  INVCUR     ;display cursor again
+ F695 BDF5D3          DTEXT3 JSR  SWTCHB
+ F698 BDF5D3                 JSR  SWTCHB
+ F69B 0D0F                   TST  NEWST1-DIRPAG
+ F69D 2607                   BNE  DTEXT6     ;internal stack still using
+ F69F 0F10                   CLR  NEWST2-DIRPAG    ;reset flag
+ F6A1 10DE11                 LDS  SAVEST-DIRPAG    ;user stack back
+ F6A4 35FF            DTEXT7 PULS PC,U,Y,X,DP,B,A,CC  ;restore registers
                       ;
- F6A3 0F0F            DTEXT6 CLR  NEWST1-DIRPAG   ; reset flag
- F6A5 20FA                   BRA  DTEXT7      ;exit
- 
- F6A7 0F0E            CURSON CLR  INVFLG-DIRPAG
- F6A9 0D5B                   TST  CURSOR-DIRPAG
- F6AB 27E2                   BEQ  DTEXT8      ;Cursor is off
- F6AD 20E3                   BRA  DTEXT3
- F6AF 0D5B            CURSOF TST  CURSOR-DIRPAG
- F6B1 2705                   BEQ  ISOFF       ;Cursor is already off
- F6B3 0F0E                   CLR  INVFLG-DIRPAG
- F6B5 BDFEC5                 JSR  INVCUR      ;otherwise delete it
- F6B8 8601            ISOFF  LDA  #1
- F6BA 970E                   STA  INVFLG-DIRPAG
- F6BC 20D4                   BRA  DTEXT3
- 
- F6BE 86FF            INVON  LDA  #$FF
- F6C0 B7EF58          SETINV STA  HIGHLI
- F6C3 20CA                   BRA  DTEXT8
- F6C5 4F              INVOFF CLRA
- F6C6 20F8                   BRA  SETINV
- 
- F6C8 86FF            DEUON  LDA  #$FF
- F6CA B7EF59          DEU    STA  DEUTSC
- F6CD 20C0                   BRA  DTEXT8
- F6CF 4F              DEUOFF CLRA
- F6D0 20F8                   BRA  DEU
- 
- F6D2 8D24            SCRLUP BSR  SCROLL    ;scroll up
- F6D4 20B9                   BRA  DTEXT8
- 
- F6D6 9E03            SCRUD  LDX  DBASE-DIRPAG
- F6D8 308B                   LEAX D,X
- F6DA 960B                   LDA  SCROFS-DIRPAG
- F6DC 3402                   PSHS A
- F6DE C680                   LDB  #$80      ;compute row offset
- F6E0 3D                     MUL
- F6E1 308B                   LEAX D,X       ;address of row
- F6E3 33890080               LEAU $0080,X   ;end pointer (end of line)
- F6E7 4F                     CLRA
- F6E8 BDF8DA                 JSR  CLEARS    ;and clear
- F6EB 0D4A                   TST  SOFT-DIRPAG
- F6ED 2B07                   BMI  SCRUD2
- F6EF 9E4A                   LDX  SOFT-DIRPAG      ; SCROLL delay
- F6F1 3D              SCRUD1 MUL
- F6F2 301F                   LEAX -$01,X
- F6F4 26FB                   BNE  SCRUD1
- F6F6 3582            SCRUD2 PULS A,PC
+ F6A6 0F0F            DTEXT6 CLR  NEWST1-DIRPAG   ; reset flag
+ F6A8 20FA                   BRA  DTEXT7      ;exit
+
+ F6AA 0F0E            CURSON CLR  INVFLG-DIRPAG
+ F6AC 0D5B                   TST  CURSOR-DIRPAG
+ F6AE 27E2                   BEQ  DTEXT8      ;Cursor is off
+ F6B0 20E3                   BRA  DTEXT3
+ F6B2 0D5B            CURSOF TST  CURSOR-DIRPAG
+ F6B4 2705                   BEQ  ISOFF       ;Cursor is already off
+ F6B6 0F0E                   CLR  INVFLG-DIRPAG
+ F6B8 BDFEC5                 JSR  INVCUR      ;otherwise delete it
+ F6BB 8601            ISOFF  LDA  #1
+ F6BD 970E                   STA  INVFLG-DIRPAG
+ F6BF 20D4                   BRA  DTEXT3
+
+ F6C1 86FF            INVON  LDA  #$FF
+ F6C3 B7EF58          SETINV STA  HIGHLI
+ F6C6 20CA                   BRA  DTEXT8
+ F6C8 4F              INVOFF CLRA
+ F6C9 20F8                   BRA  SETINV
+
+ F6CB 86FF            DEUON  LDA  #$FF
+ F6CD B7EF59          DEU    STA  DEUTSC
+ F6D0 20C0                   BRA  DTEXT8
+ F6D2 4F              DEUOFF CLRA
+ F6D3 20F8                   BRA  DEU
+
+ F6D5 8D24            SCRLUP BSR  SCROLL    ;scroll up
+ F6D7 20B9                   BRA  DTEXT8
+
+ F6D9 9E03            SCRUD  LDX  DBASE-DIRPAG
+ F6DB 308B                   LEAX D,X
+ F6DD 960B                   LDA  SCROFS-DIRPAG
+ F6DF 3402                   PSHS A
+ F6E1 C680                   LDB  #$80      ;compute row offset
+ F6E3 3D                     MUL
+ F6E4 308B                   LEAX D,X       ;address of row
+ F6E6 33890080               LEAU $0080,X   ;end pointer (end of line)
+ F6EA 4F                     CLRA
+ F6EB BDF8DD                 JSR  CLEARS    ;and clear
+ F6EE 0D4A                   TST  SOFT-DIRPAG
+ F6F0 2B07                   BMI  SCRUD2
+ F6F2 9E4A                   LDX  SOFT-DIRPAG      ; SCROLL delay
+ F6F4 3D              SCRUD1 MUL
+ F6F5 301F                   LEAX -$01,X
+ F6F7 26FB                   BNE  SCRUD1
+ F6F9 3582            SCRUD2 PULS A,PC
                       ;
                       ; Scroll does the processing to scroll the
                       ; screen.
                       ;
- F6F8 10BEEF31        SCROLL LDY  NRLINS-1   ;Number of lines to scroll
- F6FC 3420            SCROL1 PSHS Y
- F6FE FCEF4E                 LDD  BUMPV      ;other side of the screen
- F701 8DD3                   BSR  SCRUD
- F703 3520                   PULS Y
- F705 4C                     INCA            ;increm offset
- F706 847F                   ANDA #$7F
- F708 970B                   STA  SCROFS-DIRPAG
- F70A 48              SCROL7 ASLA
- F70B B7FCF7          SCROL4 STA  BILANF    ;actual scroll
- F70E 313E                   LEAY -$02,Y     ;all lines done ?
- F710 26EA                   BNE  SCROL1     ;no
- F712 DC07                   LDD  YADDR-DIRPAG     ;else update variables
- F714 B3EF31                 SUBD NRLINS-1
- F717 2C02                   BGE  SCROL8
- F719 9638                   LDA  SCRLIN-DIRPAG
- F71B DD07            SCROL8 STD  YADDR-DIRPAG
- F71D DC0C                   LDD  BOTTOM-DIRPAG
- F71F B3EF31                 SUBD NRLINS-1
- F722 2C02                   BGE  SCROL9
- F724 9638                   LDA  SCRLIN-DIRPAG
- F726 DD0C            SCROL9 STD  BOTTOM-DIRPAG
- F728 39                     RTS
- 
- F729 10BEEF31        SCROLD LDY  NRLINS-1   ;Number of lines to scroll
- F72D 3420            LF882  PSHS Y
- F72F B6EF0B                 LDA  SCROFS
- F732 8004                   SUBA #4         ;erst mal 4 abziehen, um richtig 
+ F6FB 10BEEF31        SCROLL LDY  NRLINS-1   ;Number of lines to scroll
+ F6FF 3420            SCROL1 PSHS Y
+ F701 FCEF4E                 LDD  BUMPV      ;other side of the screen
+ F704 8DD3                   BSR  SCRUD
+ F706 3520                   PULS Y
+ F708 4C                     INCA            ;increm offset
+ F709 847F                   ANDA #$7F
+ F70B 970B                   STA  SCROFS-DIRPAG
+ F70D 48              SCROL7 ASLA
+ F70E B7FCF7          SCROL4 STA  BILANF    ;actual scroll
+ F711 313E                   LEAY -$02,Y     ;all lines done ?
+ F713 26EA                   BNE  SCROL1     ;no
+ F715 DC07                   LDD  YADDR-DIRPAG     ;else update variables
+ F717 B3EF31                 SUBD NRLINS-1
+ F71A 2C02                   BGE  SCROL8
+ F71C 9638                   LDA  SCRLIN-DIRPAG
+ F71E DD07            SCROL8 STD  YADDR-DIRPAG
+ F720 DC0C                   LDD  BOTTOM-DIRPAG
+ F722 B3EF31                 SUBD NRLINS-1
+ F725 2C02                   BGE  SCROL9
+ F727 9638                   LDA  SCRLIN-DIRPAG
+ F729 DD0C            SCROL9 STD  BOTTOM-DIRPAG
+ F72B 39                     RTS
+
+ F72C 10BEEF31        SCROLD LDY  NRLINS-1   ;Number of lines to scroll
+ F730 3420            LF882  PSHS Y
+ F732 B6EF0B                 LDA  SCROFS
+ F735 8004                   SUBA #4         ;erst mal 4 abziehen, um richtig 
 zu loeschen
- F734 847F                   ANDA #$7F
- F736 970B                   STA  SCROFS-DIRPAG
- F738 FCEF4E                 LDD  BUMPV      ;other side of the screen
- F73B 8D99                   BSR  SCRUD
- F73D 8B03                   ADDA #3         ;nun wieder 3 dazu, bleibt -1
- F73F B7EF0B                 STA  SCROFS
- F742 3520                   PULS Y
- F744 48              LF8B5  ASLA
- F745 B7FCF7          LF8B6  STA  BILANF     ;actual scroll
- F748 313E                   LEAY -$02,Y     ;all lines done ?
- F74A 26E1                   BNE  LF882      ;no
- F74C DC07                   LDD  YADDR-DIRPAG     ;else update variables
- F74E F3EF31                 ADDD NRLINS-1
- F751 4F                     CLRA
- F752 DD07            LF8C5  STD  YADDR-DIRPAG
- F754 DC0C                   LDD  BOTTOM-DIRPAG
- F756 F3EF31                 ADDD NRLINS-1
- F759 10B3EF38               CMPD SCRLIN
- F75D 4F                     CLRA
- F75E DD0C            LF8CF  STD  BOTTOM-DIRPAG
- F760 39                     RTS
- 
- F761 9E3E            DTEXTC LDX  CTLTA-DIRPAG
- F763 A6E4                   LDA  ,S
- F765 48                     ASLA
- F766 6E96                   JMP  [A,X]
- F768 0A02            ESCSEQ DEC  ESCFLG-DIRPAG
- F76A 260D                   BNE  ESCSE1
- F76C 9E48                   LDX  ESCTBL-DIRPAG
- F76E 31E4                   LEAY ,S
- F770 BDF56A                 JSR  SEARCH
- F773 1026FF18               LBNE DTEXT8
- F777 6E94                   JMP  [,X]
- F779 D602            ESCSE1 LDB  ESCFLG-DIRPAG
- F77B 5A                     DECB
- F77C 9E46                   LDX  ESCVC-DIRPAG
- F77E 6E95                   JMP  [B,X]
- 
- F780 F68F            CTABHO FDB  DTEXT8    ;0
- F782 F68F                   FDB  DTEXT8    ;1
- F784 F68F                   FDB  DTEXT8    ;2
- F786 F68F                   FDB  DTEXT8    ;3
- F788 F68F                   FDB  DTEXT8    ;4
- F78A F6AF                   FDB  CURSOF    ;5
- F78C F68F                   FDB  DTEXT8    ;6
- F78E F902                   FDB  BELL      ;Bell
- F790 F68F                   FDB  DTEXT8    ;8
- F792 F68F                   FDB  DTEXT8    ;9
- F794 F850                   FDB  LF        ;LF
- F796 F8B8                   FDB  DC2       ;CURSOR Down
- F798 F883                   FDB  FF        ;CLS
- F79A F86D                   FDB  CR        ;CR
- F79C F6D2                   FDB  SCRLUP    ;scroll up
- F79E F84B                   FDB  SCRDWN    ;scroll down
- 
- F7A0 F68F                   FDB  DTEXT8    ;^P
- F7A2 F8A2                   FDB  DC1       ;^Q
- F7A4 F8B8                   FDB  DC2       ;^R
- F7A6 F8C1                   FDB  DC3       ;^S
- F7A8 F8CF                   FDB  DC4       ;^T
- F7AA F6A7                   FDB  CURSON    ;^U
- F7AC F68F                   FDB  DTEXT8    ;^V
- F7AE F68F                   FDB  DTEXT8    ;^W
- F7B0 F8C1                   FDB  DC3       ;^X CURSOR RIGHT
- F7B2 F8CF                   FDB  DC4       ;^Y CURSOR LEFT
- F7B4 F8A2                   FDB  DC1       ;^Z CURSOR UP
- F7B6 FF58                   FDB  ESCAPE
- F7B8 F8FE                   FDB  SOFTSC    ; SOFT/HARD=(HOME DOWN)
- F7BA F868                   FDB  HOME      ;CURSOR HOME
- F7BC FF6E                   FDB  ERAEOL    ;1E
- F7BE FF93                   FDB  ERAEOS    ;1F
- 
- F7C0 F68F            CTLTAB FDB  DTEXT8    ;0
- F7C2 F68F                   FDB  DTEXT8    ;1
- F7C4 F68F                   FDB  DTEXT8    ;2
- F7C6 F68F                   FDB  DTEXT8    ;3
- F7C8 F68F                   FDB  DTEXT8    ;4
- F7CA F6AF                   FDB  CURSOF    ;5
- F7CC F68F                   FDB  DTEXT8    ;6
- F7CE F902                   FDB  BELL      ;Bell
- F7D0 F873                   FDB  BS        ;BS
- F7D2 F68F                   FDB  DTEXT8    ;9
- F7D4 F850                   FDB  LF        ;LF
- F7D6 F68F                   FDB  DTEXT8    ;B
- F7D8 F883                   FDB  FF        ;CLS
- F7DA F86D                   FDB  CR        ;CR
- F7DC F6D2                   FDB  SCRLUP    ;scroll up
- F7DE F84B                   FDB  SCRDWN    ;scroll down
- 
- F7E0 F68F                   FDB  DTEXT8    ;10
- F7E2 F8A2                   FDB  DC1
- F7E4 F8B8                   FDB  DC2
- F7E6 F8C1                   FDB  DC3
- F7E8 F8CF                   FDB  DC4
- F7EA F6A7                   FDB  CURSON    ;15
- F7EC F68F                   FDB  DTEXT8    ;16
- F7EE F68F                   FDB  DTEXT8    ;17
- F7F0 F68F                   FDB  DTEXT8    ;18
- F7F2 F68F                   FDB  DTEXT8    ;19
- F7F4 F68F                   FDB  DTEXT8    ;1A
- F7F6 FF58                   FDB  ESCAPE
- F7F8 F868                   FDB  HOME      ;CURSOR HOME
- F7FA F8FE                   FDB  SOFTSC
- F7FC F68F                   FDB  DTEXT8    ;1E
- F7FE F68F                   FDB  DTEXT8    ;1F
+ F737 847F                   ANDA #$7F
+ F739 970B                   STA  SCROFS-DIRPAG
+ F73B FCEF4E                 LDD  BUMPV      ;other side of the screen
+ F73E 8D99                   BSR  SCRUD
+ F740 8B03                   ADDA #3         ;nun wieder 3 dazu, bleibt -1
+ F742 B7EF0B                 STA  SCROFS
+ F745 3520                   PULS Y
+ F747 48              LF8B5  ASLA
+ F748 B7FCF7          LF8B6  STA  BILANF     ;actual scroll
+ F74B 313E                   LEAY -$02,Y     ;all lines done ?
+ F74D 26E1                   BNE  LF882      ;no
+ F74F DC07                   LDD  YADDR-DIRPAG     ;else update variables
+ F751 F3EF31                 ADDD NRLINS-1
+ F754 4F                     CLRA
+ F755 DD07            LF8C5  STD  YADDR-DIRPAG
+ F757 DC0C                   LDD  BOTTOM-DIRPAG
+ F759 F3EF31                 ADDD NRLINS-1
+ F75C 10B3EF38               CMPD SCRLIN
+ F760 4F                     CLRA
+ F761 DD0C            LF8CF  STD  BOTTOM-DIRPAG
+ F763 39                     RTS
+
+ F764 9E3E            DTEXTC LDX  CTLTA-DIRPAG
+ F766 A6E4                   LDA  ,S
+ F768 48                     ASLA
+ F769 6E96                   JMP  [A,X]
+ F76B 0A02            ESCSEQ DEC  ESCFLG-DIRPAG
+ F76D 260D                   BNE  ESCSE1
+ F76F 9E48                   LDX  ESCTBL-DIRPAG
+ F771 31E4                   LEAY ,S
+ F773 BDF56D                 JSR  SEARCH
+ F776 1026FF18               LBNE DTEXT8
+ F77A 6E94                   JMP  [,X]
+ F77C D602            ESCSE1 LDB  ESCFLG-DIRPAG
+ F77E 5A                     DECB
+ F77F 9E46                   LDX  ESCVC-DIRPAG
+ F781 6E95                   JMP  [B,X]
+
+ F783 F692            CTABHO FDB  DTEXT8    ;0
+ F785 F692                   FDB  DTEXT8    ;1
+ F787 F692                   FDB  DTEXT8    ;2
+ F789 F692                   FDB  DTEXT8    ;3
+ F78B F692                   FDB  DTEXT8    ;4
+ F78D F6B2                   FDB  CURSOF    ;5
+ F78F F692                   FDB  DTEXT8    ;6
+ F791 F905                   FDB  BELL      ;Bell
+ F793 F692                   FDB  DTEXT8    ;8
+ F795 F692                   FDB  DTEXT8    ;9
+ F797 F853                   FDB  LF        ;LF
+ F799 F8BB                   FDB  DC2       ;CURSOR Down
+ F79B F886                   FDB  FF        ;CLS
+ F79D F870                   FDB  CR        ;CR
+ F79F F6D5                   FDB  SCRLUP    ;scroll up
+ F7A1 F84E                   FDB  SCRDWN    ;scroll down
+
+ F7A3 F692                   FDB  DTEXT8    ;^P
+ F7A5 F8A5                   FDB  DC1       ;^Q
+ F7A7 F8BB                   FDB  DC2       ;^R
+ F7A9 F8C4                   FDB  DC3       ;^S
+ F7AB F8D2                   FDB  DC4       ;^T
+ F7AD F6AA                   FDB  CURSON    ;^U
+ F7AF F692                   FDB  DTEXT8    ;^V
+ F7B1 F692                   FDB  DTEXT8    ;^W
+ F7B3 F8C4                   FDB  DC3       ;^X CURSOR RIGHT
+ F7B5 F8D2                   FDB  DC4       ;^Y CURSOR LEFT
+ F7B7 F8A5                   FDB  DC1       ;^Z CURSOR UP
+ F7B9 FF58                   FDB  ESCAPE
+ F7BB F901                   FDB  SOFTSC    ; SOFT/HARD=(HOME DOWN)
+ F7BD F86B                   FDB  HOME      ;CURSOR HOME
+ F7BF FF6E                   FDB  ERAEOL    ;1E
+ F7C1 FF93                   FDB  ERAEOS    ;1F
+
+ F7C3 F692            CTLTAB FDB  DTEXT8    ;0
+ F7C5 F692                   FDB  DTEXT8    ;1
+ F7C7 F692                   FDB  DTEXT8    ;2
+ F7C9 F692                   FDB  DTEXT8    ;3
+ F7CB F692                   FDB  DTEXT8    ;4
+ F7CD F6B2                   FDB  CURSOF    ;5
+ F7CF F692                   FDB  DTEXT8    ;6
+ F7D1 F905                   FDB  BELL      ;Bell
+ F7D3 F876                   FDB  BS        ;BS
+ F7D5 F692                   FDB  DTEXT8    ;9
+ F7D7 F853                   FDB  LF        ;LF
+ F7D9 F692                   FDB  DTEXT8    ;B
+ F7DB F886                   FDB  FF        ;CLS
+ F7DD F870                   FDB  CR        ;CR
+ F7DF F6D5                   FDB  SCRLUP    ;scroll up
+ F7E1 F84E                   FDB  SCRDWN    ;scroll down
+
+ F7E3 F692                   FDB  DTEXT8    ;10
+ F7E5 F8A5                   FDB  DC1
+ F7E7 F8BB                   FDB  DC2
+ F7E9 F8C4                   FDB  DC3
+ F7EB F8D2                   FDB  DC4
+ F7ED F6AA                   FDB  CURSON    ;15
+ F7EF F692                   FDB  DTEXT8    ;16
+ F7F1 F692                   FDB  DTEXT8    ;17
+ F7F3 F692                   FDB  DTEXT8    ;18
+ F7F5 F692                   FDB  DTEXT8    ;19
+ F7F7 F692                   FDB  DTEXT8    ;1A
+ F7F9 FF58                   FDB  ESCAPE
+ F7FB F86B                   FDB  HOME      ;CURSOR HOME
+ F7FD F901                   FDB  SOFTSC
+ F7FF F692                   FDB  DTEXT8    ;1E
+ F801 F692                   FDB  DTEXT8    ;1F
                       ;
- F800 F934            ESCVEC FDB  LCURS1
- F802 F953                   FDB  LCURS2
- F804 F95E                   FDB  PDOTX1
- F806 F964                   FDB  PDOTX2
- F808 F96B                   FDB  PDOTY1
- F80A F971                   FDB  PDOTY2
- F80C F941                   FDB  SETCUX    ;alternative Cursor-Positioning
- F80E F93D                   FDB  SETCUY
+ F803 F937            ESCVEC FDB  LCURS1
+ F805 F956                   FDB  LCURS2
+ F807 F961                   FDB  PDOTX1
+ F809 F967                   FDB  PDOTX2
+ F80B F96E                   FDB  PDOTY1
+ F80D F974                   FDB  PDOTY2
+ F80F F944                   FDB  SETCUX    ;alternative Cursor-Positioning
+ F811 F940                   FDB  SETCUY
                       ;
                       ; Escape table
                       ;
- F810 01              ESCTAB FCB  1         ; Nr. of characters to check
- F811 41                     FCC  "A"       ; Plot dot even
- F812 F95A                   FDB  PEVEN
- F814 42                     FCC  "B"       ; delete line
- F815 F9CD                   FDB  DELLIN
- F817 43                     FCC  "C"       ; insert line 
- F818 F98D                   FDB  INSLIN
- F81A 44                     FCC  "D"
- F81B F6C8                   FDB  DEUON     ; german characterset
- F81D 45                     FCC  "E"
- F81E F982                   FDB  SPCURS    ; Cursorpositioning YX
- F820 46                     FCC  "F"
- F821 FF61                   FDB  INSCUR    ; Use an insert Cursor
- F823 47                     FCC  "G"
- F824 FF5E                   FDB  OVRCUR    ; Use an overwrite Cursor 
+ F813 01              ESCTAB FCB  1         ; Nr. of characters to check
+ F814 41                     FCC  "A"       ; Plot dot even
+ F815 F95D                   FDB  PEVEN
+ F817 42                     FCC  "B"       ; delete line
+ F818 F9D0                   FDB  DELLIN
+ F81A 43                     FCC  "C"       ; insert line 
+ F81B F990                   FDB  INSLIN
+ F81D 44                     FCC  "D"
+ F81E F6CB                   FDB  DEUON     ; german characterset
+ F820 45                     FCC  "E"
+ F821 F985                   FDB  SPCURS    ; Cursorpositioning YX
+ F823 46                     FCC  "F"
+ F824 FF61                   FDB  INSCUR    ; Use an insert Cursor
+ F826 47                     FCC  "G"
+ F827 FF5E                   FDB  OVRCUR    ; Use an overwrite Cursor 
 (default)
- F826 49                     FCC  "I"
- F827 F6CF                   FDB  DEUOFF    ; International characterset
- F829 3D                     FCC  "="
- F82A F989                   FDB  CURPS2    ; Cursorpositioning XY
- F82C 50                     FCC  "P"
- F82D F6BE                   FDB  INVON     ; INVerse ON
- F82F 51                     FCC  "Q"
- F830 F6C5                   FDB  INVOFF    ; INVerse OFF
- F832 4B                     FCC  "K"
- F833 FF6E                   FDB  ERAEOL    ; ERAse to End Of Line
- F835 5A                     FCC  "Z"
- F836 FF93                   FDB  ERAEOS    ; ERAse to End Of Screen
- F838 70                     FCC  "p"
- F839 F6BE                   FDB  INVON     ; INVerse ON
- F83B 71                     FCC  "q"
- F83C F6C5                   FDB  INVOFF    ; INVerse OFF
- F83E 4B                     FCC  "K"
- F83F FF6E                   FDB  ERAEOL    ; ERAse to End Of Line
- F841 4C                     FCC  "L"
- F842 FF6E                   FDB  ERAEOL
- F844 6B                     FCC  "k"
- F845 FF93                   FDB  ERAEOS    ; ERAse to End Of Screen
- F847 53                     FCC  "S"
- F848 FF93                   FDB  ERAEOS
- F84A FF                     FCB  $FF
- 
- F84B BDF729          SCRDWN JSR  SCROLD
- F84E 2015                   BRA  LF2       ;display Cursor usw.
- 
- F850 DC07            LF     LDD  YADDR-DIRPAG     ;update Y-coordinate
- F852 10930C                 CMPD BOTTOM-DIRPAG    ;bottom of screen?
- F855 2605                   BNE  LF3        ;No, store new Y-coordinate
- F857 BDF6F8                 JSR  SCROLL     ;else scroll the page
- F85A 2009                   BRA  LF2        ;and finish
- F85C B3EF31          LF3    SUBD NRLINS-1
- F85F 2C02                   BGE  LF1
- F861 9638                   LDA  SCRLIN-DIRPAG
- F863 DD07            LF1    STD  YADDR-DIRPAG     ;store Y-coordinate
- F865 16FE27          LF2    LBRA DTEXT8     ;main exit
- 
- F868 8620            HOME   LDA  #$20
- F86A BDF91B                 JSR  LCUR11     ;Y-Koordinate to 0
- 
- F86D 4F              CR     CLRA            ;reset X-coordinate
- F86E 5F                     CLRB
- F86F DD05                   STD  XADDR-DIRPAG
- F871 20F2                   BRA  LF2        ;and draw new cursor
- 
- F873 DC05            BS     LDD  XADDR-DIRPAG
- F875 27EE                   BEQ  LF2        ;skip if already zero
- F877 B3EF3B                 SUBD CHROFS-1   ;do backspace
- F87A DD05                   STD  XADDR-DIRPAG
- F87C 8620                   LDA  #$20       ;erase char. by a space
- F87E BDFDBA                 JSR  XDCHAR
- F881 20E2                   BRA  LF2
- 
- F883 DE03            FF     LDU  DBASE-DIRPAG     ;get display base
- F885 DC4E                   LDD  BUMPV-DIRPAG
- F887 30CB                   LEAX D,U        ;compute end address
- F889 4F                     CLRA            ;set nulls
- F88A 8D4E                   BSR  CLEARS     ;now clear screen
- F88C DD05                   STD  XADDR-DIRPAG     ;reset X-coordinate
- F88E F7FCF7                 STB  BILANF    ;clear offset latch
- F891 0F0B                   CLR  SCROFS-DIRPAG
- F893 DC4C                   LDD  XBOTOM-DIRPAG
- F895 9338                   SUBD SCRLIN-DIRPAG
- F897 F3EF31                 ADDD NRLINS-1
- F89A DD0C                   STD  BOTTOM-DIRPAG
- F89C DC4C                   LDD  XBOTOM-DIRPAG
- F89E DD07                   STD  YADDR-DIRPAG     ;and setup new Y-coorinate
- F8A0 20C3                   BRA  LF2        ;go invert and return
- 
- F8A2 DC0C            DC1    LDD  BOTTOM-DIRPAG    ;check for top of screen
- F8A4 D338                   ADDD SCRLIN-DIRPAG    ;B now contains top
- F8A6 9438                   ANDA SCRLIN-DIRPAG
- F8A8 3406                   PSHS D          ;save it
- F8AA DC07                   LDD  YADDR-DIRPAG     ;adjust Y-coordinate
- F8AC F3EF31                 ADDD NRLINS-1
- F8AF 9438                   ANDA SCRLIN-DIRPAG
- F8B1 10A3E1                 CMPD ,S++       ;compare to actual
- F8B4 27AF                   BEQ  LF2
- F8B6 20AB                   BRA  LF1
- 
- F8B8 DC07            DC2    LDD  YADDR-DIRPAG     ;adjust Y-coordinate
- F8BA 10930C                 CMPD BOTTOM-DIRPAG    ;Bottom reached?
- F8BD 27A6                   BEQ  LF2
- F8BF 209B                   BRA  LF3
- 
- F8C1 DC05            DC3    LDD  XADDR-DIRPAG     ;adjust X-coord.
- F8C3 F3EF3B                 ADDD CHROFS-1   ;position on new character
- F8C6 109309                 CMPD EOLNX-DIRPAG     ;end of line?
- F8C9 249A                   BCC  LF2        ;yes, do nothing
- F8CB DD05                   STD  XADDR-DIRPAG     ;else store it
- F8CD 2096                   BRA  LF2        ;and draw new cursor
- 
- F8CF DC05            DC4    LDD  XADDR-DIRPAG     ;adjust X-coordinate
- F8D1 2792                   BEQ  LF2        ;exit if already on the left
- F8D3 B3EF3B                 SUBD CHROFS-1
- F8D6 DD05                   STD  XADDR-DIRPAG
- F8D8 208B            LF21   BRA  LF2        ;and draw new position
+ F829 49                     FCC  "I"
+ F82A F6D2                   FDB  DEUOFF    ; International characterset
+ F82C 3D                     FCC  "="
+ F82D F98C                   FDB  CURPS2    ; Cursorpositioning XY
+ F82F 50                     FCC  "P"
+ F830 F6C1                   FDB  INVON     ; INVerse ON
+ F832 51                     FCC  "Q"
+ F833 F6C8                   FDB  INVOFF    ; INVerse OFF
+ F835 4B                     FCC  "K"
+ F836 FF6E                   FDB  ERAEOL    ; ERAse to End Of Line
+ F838 5A                     FCC  "Z"
+ F839 FF93                   FDB  ERAEOS    ; ERAse to End Of Screen
+ F83B 70                     FCC  "p"
+ F83C F6C1                   FDB  INVON     ; INVerse ON
+ F83E 71                     FCC  "q"
+ F83F F6C8                   FDB  INVOFF    ; INVerse OFF
+ F841 4B                     FCC  "K"
+ F842 FF6E                   FDB  ERAEOL    ; ERAse to End Of Line
+ F844 4C                     FCC  "L"
+ F845 FF6E                   FDB  ERAEOL
+ F847 6B                     FCC  "k"
+ F848 FF93                   FDB  ERAEOS    ; ERAse to End Of Screen
+ F84A 53                     FCC  "S"
+ F84B FF93                   FDB  ERAEOS
+ F84D FF                     FCB  $FF
+
+ F84E BDF72C          SCRDWN JSR  SCROLD
+ F851 2015                   BRA  LF2       ;display Cursor usw.
+
+ F853 DC07            LF     LDD  YADDR-DIRPAG     ;update Y-coordinate
+ F855 10930C                 CMPD BOTTOM-DIRPAG    ;bottom of screen?
+ F858 2605                   BNE  LF3        ;No, store new Y-coordinate
+ F85A BDF6FB                 JSR  SCROLL     ;else scroll the page
+ F85D 2009                   BRA  LF2        ;and finish
+ F85F B3EF31          LF3    SUBD NRLINS-1
+ F862 2C02                   BGE  LF1
+ F864 9638                   LDA  SCRLIN-DIRPAG
+ F866 DD07            LF1    STD  YADDR-DIRPAG     ;store Y-coordinate
+ F868 16FE27          LF2    LBRA DTEXT8     ;main exit
+
+ F86B 8620            HOME   LDA  #$20
+ F86D BDF91E                 JSR  LCUR11     ;Y-Koordinate to 0
+
+ F870 4F              CR     CLRA            ;reset X-coordinate
+ F871 5F                     CLRB
+ F872 DD05                   STD  XADDR-DIRPAG
+ F874 20F2                   BRA  LF2        ;and draw new cursor
+
+ F876 DC05            BS     LDD  XADDR-DIRPAG
+ F878 27EE                   BEQ  LF2        ;skip if already zero
+ F87A B3EF3B                 SUBD CHROFS-1   ;do backspace
+ F87D DD05                   STD  XADDR-DIRPAG
+ F87F 8620                   LDA  #$20       ;erase char. by a space
+ F881 BDFDBA                 JSR  XDCHAR
+ F884 20E2                   BRA  LF2
+
+ F886 DE03            FF     LDU  DBASE-DIRPAG     ;get display base
+ F888 DC4E                   LDD  BUMPV-DIRPAG
+ F88A 30CB                   LEAX D,U        ;compute end address
+ F88C 4F                     CLRA            ;set nulls
+ F88D 8D4E                   BSR  CLEARS     ;now clear screen
+ F88F DD05                   STD  XADDR-DIRPAG     ;reset X-coordinate
+ F891 F7FCF7                 STB  BILANF    ;clear offset latch
+ F894 0F0B                   CLR  SCROFS-DIRPAG
+ F896 DC4C                   LDD  XBOTOM-DIRPAG
+ F898 9338                   SUBD SCRLIN-DIRPAG
+ F89A F3EF31                 ADDD NRLINS-1
+ F89D DD0C                   STD  BOTTOM-DIRPAG
+ F89F DC4C                   LDD  XBOTOM-DIRPAG
+ F8A1 DD07                   STD  YADDR-DIRPAG     ;and setup new Y-coorinate
+ F8A3 20C3                   BRA  LF2        ;go invert and return
+
+ F8A5 DC0C            DC1    LDD  BOTTOM-DIRPAG    ;check for top of screen
+ F8A7 D338                   ADDD SCRLIN-DIRPAG    ;B now contains top
+ F8A9 9438                   ANDA SCRLIN-DIRPAG
+ F8AB 3406                   PSHS D          ;save it
+ F8AD DC07                   LDD  YADDR-DIRPAG     ;adjust Y-coordinate
+ F8AF F3EF31                 ADDD NRLINS-1
+ F8B2 9438                   ANDA SCRLIN-DIRPAG
+ F8B4 10A3E1                 CMPD ,S++       ;compare to actual
+ F8B7 27AF                   BEQ  LF2
+ F8B9 20AB                   BRA  LF1
+
+ F8BB DC07            DC2    LDD  YADDR-DIRPAG     ;adjust Y-coordinate
+ F8BD 10930C                 CMPD BOTTOM-DIRPAG    ;Bottom reached?
+ F8C0 27A6                   BEQ  LF2
+ F8C2 209B                   BRA  LF3
+
+ F8C4 DC05            DC3    LDD  XADDR-DIRPAG     ;adjust X-coord.
+ F8C6 F3EF3B                 ADDD CHROFS-1   ;position on new character
+ F8C9 109309                 CMPD EOLNX-DIRPAG     ;end of line?
+ F8CC 249A                   BCC  LF2        ;yes, do nothing
+ F8CE DD05                   STD  XADDR-DIRPAG     ;else store it
+ F8D0 2096                   BRA  LF2        ;and draw new cursor
+
+ F8D2 DC05            DC4    LDD  XADDR-DIRPAG     ;adjust X-coordinate
+ F8D4 2792                   BEQ  LF2        ;exit if already on the left
+ F8D6 B3EF3B                 SUBD CHROFS-1
+ F8D9 DD05                   STD  XADDR-DIRPAG
+ F8DB 208B            LF21   BRA  LF2        ;and draw new position
                       ;
                       ; Clear of fill subroutine modulo 16 byte
                       ; Input: A= fill character
@@ -1551,183 +1554,183 @@ zu loeschen
                       ;        U= High adress + 1
                       ; Output: B,Y,U changed
                       ;
- F8DA 3410            CLEARS PSHS X
- F8DC 1F89                   TFR  A,B
- F8DE 1F01                   TFR  D,X
- F8E0 1F02                   TFR  D,Y
- F8E2 3636            CLEA1  PSHU Y,X,B,A   ;---
- F8E4 3636                   PSHU Y,X,B,A   ;Clear 16 Byte
- F8E6 3616                   PSHU X,B,A     ;---
- F8E8 11A3E4                 CMPU ,S        ;Finish ?
- F8EB 26F5                   BNE  CLEA1     ;no, again
- F8ED 3590                   PULS PC,X
- 
+ F8DD 3410            CLEARS PSHS X
+ F8DF 1F89                   TFR  A,B
+ F8E1 1F01                   TFR  D,X
+ F8E3 1F02                   TFR  D,Y
+ F8E5 3636            CLEA1  PSHU Y,X,B,A   ;---
+ F8E7 3636                   PSHU Y,X,B,A   ;Clear 16 Byte
+ F8E9 3616                   PSHU X,B,A     ;---
+ F8EB 11A3E4                 CMPU ,S        ;Finish ?
+ F8EE 26F5                   BNE  CLEA1     ;no, again
+ F8F0 3590                   PULS PC,X
+
                       ; Copy one rasterline (64 Byte)
                       ; Input: X = Source-Addr
                       ;        U = Dest-Addr
                       ; Output: X,U changed
                       ;
- F8EF 3422            COPYL  PSHS A,Y
- F8F1 8620                   LDA  #32
- F8F3 10AE81          COPYL1 LDY  ,X++
- F8F6 10AFC1                 STY  ,U++
- F8F9 4A                     DECA
- F8FA 26F7                   BNE  COPYL1
- F8FC 35A2                   PULS A,Y,PC
+ F8F2 3422            COPYL  PSHS A,Y
+ F8F4 8620                   LDA  #32
+ F8F6 10AE81          COPYL1 LDY  ,X++
+ F8F9 10AFC1                 STY  ,U++
+ F8FC 4A                     DECA
+ F8FD 26F7                   BNE  COPYL1
+ F8FF 35A2                   PULS A,Y,PC
                               
- F8FE 034A            SOFTSC COM  SOFT-DIRPAG      ;compl. flag
- F900 2017                   BRA  BELL2      ;and back
- 
- F902 F6FCFA          BELL   LDB  PIA2BD   ;get data register
- F905 3404                   PSHS B         ;save value
- F907 CA40                   ORB  #%1000000 ;set Bell bit
- F909 F7FCFA                 STB  PIA2BD   ;Store it
- F90C 8E1770                 LDX  #6000     ;Preset Counter
- F90F 3D              BELL1  MUL            ;Delay
- F910 301F                   LEAX -1,X      ;Decrement
- F912 26FB                   BNE  BELL1
- F914 3504                   PULS B         ;Get old value
- F916 F7FCFA                 STB  PIA2BD   ;no bell now
- F919 20BD            BELL2  BRA  LF21
- 
- F91B 8020            LCUR11 SUBA #$20      ;calculate Y coordinate
- F91D 9136                   CMPA LINES-DIRPAG
- F91F 2412                   BCC  ZFA0F
- F921 D632                   LDB  NRLINS-DIRPAG
- F923 3D                     MUL
- F924 9338                   SUBD SCRLIN-DIRPAG
- F926 50                     NEGB
- F927 8900                   ADCA #$00
- F929 40                     NEGA
- F92A D30C                   ADDD BOTTOM-DIRPAG
- F92C B3EF31                 SUBD NRLINS-1
- F92F 9438                   ANDA SCRLIN-DIRPAG
- F931 DD07                   STD  YADDR-DIRPAG
- F933 39              ZFA0F  RTS
+ F901 034A            SOFTSC COM  SOFT-DIRPAG      ;compl. flag
+ F903 2017                   BRA  BELL2      ;and back
+
+ F905 F6FCFA          BELL   LDB  PIA2BD   ;get data register
+ F908 3404                   PSHS B         ;save value
+ F90A CA40                   ORB  #%1000000 ;set Bell bit
+ F90C F7FCFA                 STB  PIA2BD   ;Store it
+ F90F 8E1770                 LDX  #6000     ;Preset Counter
+ F912 3D              BELL1  MUL            ;Delay
+ F913 301F                   LEAX -1,X      ;Decrement
+ F915 26FB                   BNE  BELL1
+ F917 3504                   PULS B         ;Get old value
+ F919 F7FCFA                 STB  PIA2BD   ;no bell now
+ F91C 20BD            BELL2  BRA  LF21
+
+ F91E 8020            LCUR11 SUBA #$20      ;calculate Y coordinate
+ F920 9136                   CMPA LINES-DIRPAG
+ F922 2412                   BCC  ZFA0F
+ F924 D632                   LDB  NRLINS-DIRPAG
+ F926 3D                     MUL
+ F927 9338                   SUBD SCRLIN-DIRPAG
+ F929 50                     NEGB
+ F92A 8900                   ADCA #$00
+ F92C 40                     NEGA
+ F92D D30C                   ADDD BOTTOM-DIRPAG
+ F92F B3EF31                 SUBD NRLINS-1
+ F932 9438                   ANDA SCRLIN-DIRPAG
+ F934 DD07                   STD  YADDR-DIRPAG
+ F936 39              ZFA0F  RTS
                       ;
                       ; LCURS1 and LCURS2 process the escape
                       ; sequence to load the cursor at an
                       ; absolute line and character position
                       ;
- F934 8DE5            LCURS1 BSR  LCUR11
- F936 8604                   LDA  #$04
- F938 9702            MORCUP STA  ESCFLG-DIRPAG
- F93A 16FD55                 LBRA DTEXT3
- F93D 8DDC            SETCUY BSR  LCUR11
- F93F 2014                   BRA  ENDCUP    ;Cursorposition finished
- F941 8D04            SETCUX BSR  LCUR21
- F943 8610                   LDA  #16
- F945 20F1                   BRA  MORCUP    ;loop, sequence not yet finished
- 
- F947 8020            LCUR21 SUBA #$20      ;calculate X coordinate
- F949 9137                   CMPA NRCHR-DIRPAG
- F94B 2205                   BHI  ZFA21
- F94D D63C                   LDB  CHROFS-DIRPAG
- F94F 3D                     MUL
- F950 DD05                   STD  XADDR-DIRPAG
- F952 39              ZFA21  RTS
- 
- F953 8DF2            LCURS2 BSR  LCUR21
- F955 0F02            ENDCUP CLR  ESCFLG-DIRPAG
- F957 16FD35                 LBRA DTEXT8
- 
- F95A 8606            PEVEN  LDA  #6
- F95C 2026                   BRA  SPCUR1
+ F937 8DE5            LCURS1 BSR  LCUR11
+ F939 8604                   LDA  #$04
+ F93B 9702            MORCUP STA  ESCFLG-DIRPAG
+ F93D 16FD55                 LBRA DTEXT3
+ F940 8DDC            SETCUY BSR  LCUR11
+ F942 2014                   BRA  ENDCUP    ;Cursorposition finished
+ F944 8D04            SETCUX BSR  LCUR21
+ F946 8610                   LDA  #16
+ F948 20F1                   BRA  MORCUP    ;loop, sequence not yet finished
+
+ F94A 8020            LCUR21 SUBA #$20      ;calculate X coordinate
+ F94C 9137                   CMPA NRCHR-DIRPAG
+ F94E 2205                   BHI  ZFA21
+ F950 D63C                   LDB  CHROFS-DIRPAG
+ F952 3D                     MUL
+ F953 DD05                   STD  XADDR-DIRPAG
+ F955 39              ZFA21  RTS
+
+ F956 8DF2            LCURS2 BSR  LCUR21
+ F958 0F02            ENDCUP CLR  ESCFLG-DIRPAG
+ F95A 16FD35                 LBRA DTEXT8
+
+ F95D 8606            PEVEN  LDA  #6
+ F95F 2026                   BRA  SPCUR1
                       ;
- F95E 9715            PDOTX1 STA  GXADDR-DIRPAG
- F960 8608                   LDA  #8
- F962 2020                   BRA  SPCUR1
+ F961 9715            PDOTX1 STA  GXADDR-DIRPAG
+ F963 8608                   LDA  #8
+ F965 2020                   BRA  SPCUR1
                       ;
- F964 B7EF16          PDOTX2 STA  GXADDR+1
- F967 860A                   LDA  #10
- F969 2019                   BRA  SPCUR1
+ F967 B7EF16          PDOTX2 STA  GXADDR+1
+ F96A 860A                   LDA  #10
+ F96C 2019                   BRA  SPCUR1
                       ;
- F96B 9713            PDOTY1 STA  GYADDR-DIRPAG
- F96D 860C                   LDA  #12
- F96F 2013                   BRA  SPCUR1
+ F96E 9713            PDOTY1 STA  GYADDR-DIRPAG
+ F970 860C                   LDA  #12
+ F972 2013                   BRA  SPCUR1
                       ;
- F971 1E89            PDOTY2 EXG  A,B
- F973 9613                   LDA  GYADDR-DIRPAG
- F975 1F02                   TFR  D,Y
- F977 9E15                   LDX  GXADDR-DIRPAG    ;get X address
- F979 BDFF1B                 JSR  PIXADR
- F97C E884                   EORB ,X
- F97E E784                   STB  ,X
- F980 20D3                   BRA  ENDCUP
+ F974 1E89            PDOTY2 EXG  A,B
+ F976 9613                   LDA  GYADDR-DIRPAG
+ F978 1F02                   TFR  D,Y
+ F97A 9E15                   LDX  GXADDR-DIRPAG    ;get X address
+ F97C BDFF1B                 JSR  PIXADR
+ F97F E884                   EORB ,X
+ F981 E784                   STB  ,X
+ F983 20D3                   BRA  ENDCUP
                       ;
- F982 8602            SPCURS LDA  #2
- F984 9702            SPCUR1 STA  ESCFLG-DIRPAG
- F986 16FD09                 LBRA DTEXT3
- F989 860E            CURPS2 LDA  #14
- F98B 20F7                   BRA  SPCUR1
- 
- F98D DC07            INSLIN LDD  YADDR-DIRPAG
- F98F 10930C                 CMPD BOTTOM-DIRPAG
- F992 2736                   BEQ  LTD8      ; if already last line do nothing
- F994 9331                   SUBD NRLINS-1-DIRPAG ;the line is already deleted
- F996 4F                     CLRA
- F997 5C                     INCB           ;start one rasterline above
- F998 5C                     INCB
- F999 3406                   PSHS D
- F99B DC0C                   LDD BOTTOM-DIRPAG
- F99D 5C                     INCB
- F99E C001            REPTI  SUBB #1
- F9A0 3406                   PSHS D
- F9A2 8E0000                 LDX  #0
- F9A5 17058E                 LBSR OFFSET
- F9A8 1F13                   TFR X,U       ; Dest Pointer in U
- F9AA ECE4                   LDD  ,S
- F9AC 9331                   SUBD NRLINS-1-DIRPAG
- F9AE 8E0000                 LDX  #0
- F9B1 170582                 LBSR OFFSET   ; Source Pointer in X
- F9B4 17FF38                 LBSR COPYL    ; Copy one Rasterline
- F9B7 3506                   PULS D
- F9B9 10A3E4                 CMPD ,S
- F9BC 26E0                   BNE  REPTI
- F9BE 3506                   PULS D
- F9C0 D331                   ADDD NRLINS-1-DIRPAG
- F9C2 1F02                   TFR  D,Y
- F9C4 8E0000                 LDX  #0
- F9C7 1705B0                 LBSR ERASL     ;clear last line
- F9CA 1605A3          LTD8   LBRA TD8
- 
- F9CD DC07            DELLIN LDD  YADDR-DIRPAG
- F9CF 10930C                 CMPD BOTTOM-DIRPAG
- F9D2 27F6                   BEQ  LTD8      ; if already last line do nothing
- F9D4 9331                   SUBD NRLINS-1-DIRPAG ; Line is alread deleted
- F9D6 4F                     CLRA
- F9D7 5C                     INCB           ; Start one raster line above
- F9D8 5C                     INCB
- F9D9 C001            REPTD  SUBB #1
- F9DB 3406                   PSHS D
- F9DD 8E0000                 LDX  #0
- F9E0 170553                 LBSR OFFSET
- F9E3 1F13                   TFR X,U       ; Source Pointer in U
- F9E5 ECE4                   LDD  ,S
- F9E7 D331                   ADDD NRLINS-1-DIRPAG
- F9E9 8E0000                 LDX  #0
- F9EC 170547                 LBSR OFFSET   ; Dest Pointer in X
- F9EF 1E13                   EXG  X,U
- F9F1 17FEFB                 LBSR COPYL    ; Copy one Rasterline
- F9F4 3506                   PULS D
- F9F6 10930C                 CMPD BOTTOM-DIRPAG
- F9F9 26DE                   BNE  REPTD
- F9FB D331                   ADDD NRLINS-1-DIRPAG
- F9FD 1F02                   TFR  D,Y
- F9FF 8E0000                 LDX  #0
- FA02 170575                 LBSR ERASL     ;clear last line
- FA05 20C3                   BRA  LTD8
- 
- FA07 8EFA14          EMUEXIT LDX  #TEXIT
- FA0A A680            LPEXIT  LDA  ,X+
- FA0C B7FD3C                  STA  EMUCMD
- FA0F 26F9                    BNE  LPEXIT
- FA11 7EF225                  JMP  HKS
- FA14 45584954        TEXIT   FCC  "EXIT"
- FA18 00                      FCB  $00
- 
-                      ORIG   SET  *
- 
+ F985 8602            SPCURS LDA  #2
+ F987 9702            SPCUR1 STA  ESCFLG-DIRPAG
+ F989 16FD09                 LBRA DTEXT3
+ F98C 860E            CURPS2 LDA  #14
+ F98E 20F7                   BRA  SPCUR1
+
+ F990 DC07            INSLIN LDD  YADDR-DIRPAG
+ F992 10930C                 CMPD BOTTOM-DIRPAG
+ F995 2736                   BEQ  LTD8      ; if already last line do nothing
+ F997 9331                   SUBD NRLINS-1-DIRPAG ;the line is already deleted
+ F999 4F                     CLRA
+ F99A 5C                     INCB           ;start one rasterline above
+ F99B 5C                     INCB
+ F99C 3406                   PSHS D
+ F99E DC0C                   LDD BOTTOM-DIRPAG
+ F9A0 5C                     INCB
+ F9A1 C001            REPTI  SUBB #1
+ F9A3 3406                   PSHS D
+ F9A5 8E0000                 LDX  #0
+ F9A8 17058B                 LBSR OFFSET
+ F9AB 1F13                   TFR X,U       ; Dest Pointer in U
+ F9AD ECE4                   LDD  ,S
+ F9AF 9331                   SUBD NRLINS-1-DIRPAG
+ F9B1 8E0000                 LDX  #0
+ F9B4 17057F                 LBSR OFFSET   ; Source Pointer in X
+ F9B7 17FF38                 LBSR COPYL    ; Copy one Rasterline
+ F9BA 3506                   PULS D
+ F9BC 10A3E4                 CMPD ,S
+ F9BF 26E0                   BNE  REPTI
+ F9C1 3506                   PULS D
+ F9C3 D331                   ADDD NRLINS-1-DIRPAG
+ F9C5 1F02                   TFR  D,Y
+ F9C7 8E0000                 LDX  #0
+ F9CA 1705AD                 LBSR ERASL     ;clear last line
+ F9CD 1605A0          LTD8   LBRA TD8
+
+ F9D0 DC07            DELLIN LDD  YADDR-DIRPAG
+ F9D2 10930C                 CMPD BOTTOM-DIRPAG
+ F9D5 27F6                   BEQ  LTD8      ; if already last line do nothing
+ F9D7 9331                   SUBD NRLINS-1-DIRPAG ; Line is alread deleted
+ F9D9 4F                     CLRA
+ F9DA 5C                     INCB           ; Start one raster line above
+ F9DB 5C                     INCB
+ F9DC C001            REPTD  SUBB #1
+ F9DE 3406                   PSHS D
+ F9E0 8E0000                 LDX  #0
+ F9E3 170550                 LBSR OFFSET
+ F9E6 1F13                   TFR X,U       ; Source Pointer in U
+ F9E8 ECE4                   LDD  ,S
+ F9EA D331                   ADDD NRLINS-1-DIRPAG
+ F9EC 8E0000                 LDX  #0
+ F9EF 170544                 LBSR OFFSET   ; Dest Pointer in X
+ F9F2 1E13                   EXG  X,U
+ F9F4 17FEFB                 LBSR COPYL    ; Copy one Rasterline
+ F9F7 3506                   PULS D
+ F9F9 10930C                 CMPD BOTTOM-DIRPAG
+ F9FC 26DE                   BNE  REPTD
+ F9FE D331                   ADDD NRLINS-1-DIRPAG
+ FA00 1F02                   TFR  D,Y
+ FA02 8E0000                 LDX  #0
+ FA05 170572                 LBSR ERASL     ;clear last line
+ FA08 20C3                   BRA  LTD8
+
+ FA0A 8EFA17          EMUEXIT LDX  #TEXIT
+ FA0D A680            LPEXIT  LDA  ,X+
+ FA0F B7FD3C                  STA  EMUCMD
+ FA12 26F9                    BNE  LPEXIT
+ FA14 7EF225                  JMP  HKS
+ FA17 45584954        TEXIT   FCC  "EXIT"
+ FA1B 00                      FCB  $00
+
+ FA1C                 ORIG   SET  *
+
                              ORG  $FA1F
                       ;
                       ; CHRTBL contains a complete ASCII
@@ -1843,19 +1846,19 @@ zu loeschen
  FCDB 20202020202020         FCB    $20,$20,$20,$20,$20,$20,$20      ; |
  FCE2 60101008101060         FCB    $60,$10,$10,$08,$10,$10,$60      ; }
  FCE9 40A81000000000         FCB    $40,$A8,$10,$00,$00,$00,$00      ; ~
- 
+
                               ;OPT  NOL
-                      ORIG   SET  *
+ FCF0                 ORIG   SET  *
                              ;OPT  LIS
- 
+
                              ORG  ANFANG+$D00  ;$FD00-$FD0F patch with 0 if no 
 RTC present
- 
+
  FD00 00000000000000         FCB   $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$
 00,$00,$00,$00,$00
  FD07 00000000000000
  FD0E 0000
- 
+
                              ORG  ANFANG+$D40  ;$FCF0-$FD3F free for I/O
                       ;
                       ;
@@ -1895,7 +1898,7 @@ RTC present
  FD83 8D00            RET1   BSR  RTN1
  FD85 8D00            RTN1   BSR  RTN
  FD87 39              RTN    RTS
- 
+
                       ;BUMPX  MACRO
                       ;       LEAX $40,X
                       ;       CMPX DBASE-DIRPAG
@@ -1927,7 +1930,7 @@ RTC present
                       ;
  FDB2 01FFC07F        LOETBL FDB  %0000000111111111,%1100000001111111
  FDB6 F01FFC07               FDB  %1111000000011111,%1111110000000111
- 
+
                       ;
                       ;
                       ; DCHAR does the processing to draw one
@@ -1965,7 +1968,7 @@ RTC present
  FDF6 53                     COMB
  FDF7 C30001                 ADDD #1         ;subtract from U
  FDFA 2006                   BRA  DEU1
- 
+
  FDFC F6EF3A          NODEU  LDB  MULINS     ;Nr. of lines per char
  FDFF 8020                   SUBA #BLANK
  FE01 3D                     MUL             ;compute entry addr in table
@@ -2029,7 +2032,7 @@ RTC present
  FE7C 5A                     DECB
  FE7D 26E8                   BNE  CASE20
  FE7F 20D9                   BRA  HIGH1
- 
+
  FE81 F6EF3A          CASE1  LDB  MULINS
  FE84 A6C0            CASE10 LDA  ,U+
  FE86 44                     LSRA
@@ -2162,23 +2165,23 @@ RTC present
  FF53 40                     NEGA
  FF54 308B                   LEAX D,X        ;X now contains right Byte adr
  FF56 3586                   PULS D,PC       ;Restore Bit-Adress in Accu A
- 
+
  FF58 7CEF02          ESCAPE INC  ESCFLG     ;set escape flag
- FF5B 16F734                 LBRA DTEXT3     ;and back
- 
+ FF5B 16F737                 LBRA DTEXT3     ;and back
+
  FF5E 4F              OVRCUR CLRA            ;set an overwrite cursor
  FF5F 2002                   BRA  INSCU1
- 
+
  FF61 8601            INSCUR LDA  #1        ;set an insert cursor
  FF63 0D5B            INSCU1 TST  CURSOR-DIRPAG
  FF65 2703                   BEQ  INSCU2
  FF67 BDFEC5                 JSR  INVCUR    ; clear cursor
  FF6A 9701            INSCU2 STA  INSRTF-DIRPAG
  FF6C 2002                   BRA  TD8 ; draw cursor again
- 
+
  FF6E 8D03            ERAEOL BSR  ERALIN
- FF70 16F71C          TD8    LBRA DTEXT8
- 
+ FF70 16F71F          TD8    LBRA DTEXT8
+
  FF73 BEEF05          ERALIN LDX  XADDR     ;clear from cursor
  FF76 10BEEF07               LDY  YADDR
  FF7A 3121            ERASL  LEAY 1,Y
@@ -2192,7 +2195,7 @@ RTC present
  FF8E 1F01                   TFR  D,X
  FF90 20EA                   BRA  ERALU     ;clear next position
  FF92 39              ENDEL  RTS
- 
+
  FF93 8DDE            ERAEOS BSR  ERALIN
  FF95 FCEF07                 LDD  YADDR
  FF98 10B3EF0C               CMPD BOTTOM
@@ -2208,7 +2211,7 @@ RTC present
  FFAD 8D87                   BSR  OFFSET
  FFAF 338840                 LEAU 64,X
  FFB2 4F                     CLRA
- FFB3 17F924                 LBSR CLEARS    ;clear one raster line
+ FFB3 17F927                 LBSR CLEARS    ;clear one raster line
  FFB6 3546                   PULS D,U
  FFB8 10B3EF0C               CMPD BOTTOM
  FFBC 26E6                   BNE  REPT      ;do loop
@@ -2216,140 +2219,140 @@ RTC present
  FFC0 8E0000                 LDX  #0
  FFC3 8DB5                   BSR  ERASL     ;clear last line
  FFC5 20A9                   BRA  TD8
- 
- 
+
+
  FFC7 86FF            GERMAN LDA  #$FF
  FFC9 B7EF59          TOG    STA  DEUTSC
  FFCC 7EF225                 JMP  HKS
  FFCF 4F              ASCII  CLRA
  FFD0 20F7                   BRA  TOG
- 
+
  FFD2 8615            CURSAN LDA  #$15
- FFD4 7EF635          MAKE   JMP  XDTEXT
+ FFD4 7EF638          MAKE   JMP  XDTEXT
  FFD7 8605            CURAUS LDA  #5
  FFD9 20F9                   BRA  MAKE
- 
+
                       ;       OPT  NOL
-                      ORI    SET  *
+ FFDB                 ORI    SET  *
                       ;       OPT  LIS
- 
+
                              ORG  ANFANG+$FF0
- 
+
  FFF0 0000            ZFFF0  FDB  0
- 
- FFF2 F552                   FDB  SWI3
- FFF4 F556                   FDB  SWI2
- FFF6 F55A                   FDB  FIRQ
- FFF8 F55E                   FDB  IRQ
- FFFA F562                   FDB  SWI
- FFFC F566                   FDB  NMI
+
+ FFF2 F555                   FDB  SWI3
+ FFF4 F559                   FDB  SWI2
+ FFF6 F55D                   FDB  FIRQ
+ FFF8 F561                   FDB  IRQ
+ FFFA F565                   FDB  SWI
+ FFFC F569                   FDB  NMI
  FFFE F000                   FDB  ZRESTA
- 
+
                              END
 
 SYMBOL TABLE
     ACIACO 00 FCF4    ACIADA 00 FCF5    ANFANG 00 F000     ASCII 02 FFCF
-    ASDUMP 02 F2CF    BEGINN 02 F128      BELL 02 F902     BELL1 02 F90F
-     BELL2 02 F919    BILANF 00 FCF7     BLANK 00 0020      BOOT 02 FD40
+    ASDUMP 02 F2CF    BEGINN 02 F128      BELL 02 F905     BELL1 02 F912
+     BELL2 02 F91C    BILANF 00 FCF7     BLANK 00 0020      BOOT 02 FD40
      BOOT1 02 FD4E     BOOT2 02 FD70     BOOT3 02 FD5C    BOTOM1 00 00FE
-    BOTTOM 02 EF0C    BRPEND 02 EF6F        BS 02 F873    BUFPNT 00 CC14
+    BOTTOM 02 EF0C    BRPEND 02 EF6F        BS 02 F876    BUFPNT 00 CC14
       BUMP 02 FE9C     BUMP0 02 FE9F     BUMP1 02 FEA8     BUMPV 02 EF4E
-    BYTANZ 02 EF88      BYTE 02 F4C4     BYTE0 02 F4C6     BYTE1 02 F4C8
+    BYTANZ 02 EF88      BYTE 02 F4C7     BYTE0 02 F4C9     BYTE1 02 F4CB
      CASE1 02 FE81    CASE10 02 FE84     CASE2 02 FE64    CASE20 02 FE67
      CASE3 02 FE39    CASE30 02 FE3E     CASE4 02 FE34    CASE40 02 FE3C
      CFLEX 02 F373    CHATAB 02 EF40    CHECKS 02 EF89     CHEXL 02 F392
-     CHEXR 02 F396    CHROFS 02 EF3C    CHRTBL 02 FA57     CLEA1 02 F8E2
-    CLEARS 02 F8DA    CLRHKS 02 F3C9     CLRP1 02 F1BA    CLRPAG 02 F1C2
+     CHEXR 02 F396    CHROFS 02 EF3C    CHRTBL 02 FA57     CLEA1 02 F8E5
+    CLEARS 02 F8DD    CLRHKS 02 F3C9     CLRP1 02 F1BA    CLRPAG 02 F1C2
     CLRSC1 02 F142    CLRSCR 02 F1B8    CLRTAB 02 F20F       CLS 00 000C
-    CNVERT 02 F478    COLOOP 02 F1AD    COLOR2 02 F67C    COLTAB 02 EF18
-    COMMAN 02 EF5D     COMP1 02 F57A    COMPAR 02 F578     COMPX 02 F583
-     COPYL 02 F8EF    COPYL1 02 F8F3        CR 02 F86D    CTABHO 02 F780
-     CTLTA 02 EF3E    CTLTAB 02 F7C0    CURAUS 02 FFD7    CURPS2 02 F989
-    CURSAN 02 FFD2    CURSOF 02 F6AF    CURSON 02 F6A7    CURSOR 02 EF5B
-     DBASE 02 EF03       DC1 02 F8A2       DC2 02 F8B8       DC3 02 F8C1
-       DC4 02 F8CF    DCHAR0 02 FE20    DCHAR1 02 FE2E      DCHR 02 FE04
-    DEFCOM 02 F0D4    DEFTA1 02 F585    DELLIN 02 F9CD       DEU 02 F6CA
-      DEU1 02 FE02    DEUOFF 02 F6CF     DEUON 02 F6C8    DEUTSC 02 EF59
-    DIRPAG 00 EF00    DOCMND 00 CD4B    DOLOOP 02 F0F9    DO_CNV 02 F492
-    DRCTPG 00 00EF    DTEXT3 02 F692    DTEXT4 02 F64C    DTEXT5 02 F64E
-    DTEXT6 02 F6A3    DTEXT7 02 F6A1    DTEXT8 02 F68F    DTEXTC 02 F761
+    CNVERT 02 F47B    COLOOP 02 F1AD    COLOR2 02 F67F    COLTAB 02 EF18
+    COMMAN 02 EF5D     COMP1 02 F57D    COMPAR 02 F57B     COMPX 02 F586
+     COPYL 02 F8F2    COPYL1 02 F8F6        CR 02 F870    CTABHO 02 F783
+     CTLTA 02 EF3E    CTLTAB 02 F7C3    CURAUS 02 FFD7    CURPS2 02 F98C
+    CURSAN 02 FFD2    CURSOF 02 F6B2    CURSON 02 F6AA    CURSOR 02 EF5B
+     DBASE 02 EF03       DC1 02 F8A5       DC2 02 F8BB       DC3 02 F8C4
+       DC4 02 F8D2    DCHAR0 02 FE20    DCHAR1 02 FE2E      DCHR 02 FE04
+    DEFCOM 02 F0D4    DEFTA1 02 F588    DELLIN 02 F9D0       DEU 02 F6CD
+      DEU1 02 FE02    DEUOFF 02 F6D2     DEUON 02 F6CB    DEUTSC 02 EF59
+    DIRPAG 00 EF00    DOCMND 00 CD4B    DOLOOP 02 F0F9    DO_CNV 02 F495
+    DRCTPG 00 00EF    DTEXT3 02 F695    DTEXT4 02 F64F    DTEXT5 02 F651
+    DTEXT6 02 F6A6    DTEXT7 02 F6A4    DTEXT8 02 F692    DTEXTC 02 F764
      DUMMY 02 EF00    EMPTY1 02 EF33    EMPTY2 02 EF34    EMPTY3 02 EF35
-    EMUCMD 00 FD3C   EMUEXIT 02 FA07    ENDCUP 02 F955      ENDE 00 001A
+    EMUCMD 00 FD3C   EMUEXIT 02 FA0A    ENDCUP 02 F958      ENDE 00 001A
      ENDEL 02 FF92     ENDHT 02 F073     ENDT1 02 F2F4    END_TA 02 F2F1
      EOLNX 02 EF09    ERAEOL 02 FF6E    ERAEOS 02 FF93    ERALIN 02 FF73
      ERALU 02 FF7C     ERASL 02 FF7A    ERRHKS 02 F21B     ERRO3 02 F35F
      ERRO4 02 F38F     ERRO6 02 F26C     ERRO8 02 F391       ESC 00 001B
-    ESCAPE 02 FF58    ESCFLG 02 EF02    ESCOUT 02 F43E    ESCSE1 02 F779
-    ESCSEQ 02 F768    ESCTAB 02 F810    ESCTBL 02 EF48     ESCVC 02 EF46
-    ESCVEC 02 F800        FF 02 F883      FIRQ 02 F55A    FIRQVC 02 EF74
+    ESCAPE 02 FF58    ESCFLG 02 EF02    ESCOUT 02 F43E    ESCSE1 02 F77C
+    ESCSEQ 02 F76B    ESCTAB 02 F813    ESCTBL 02 EF48     ESCVC 02 EF46
+    ESCVEC 02 F803        FF 02 F886      FIRQ 02 F55D    FIRQVC 02 EF74
     FLCOMM 00 FD30    FLDATA 00 FD33    FLDRIV 00 FD38    FLSEKT 00 FD32
-    FOURE0 02 F533    FOUREG 02 F531    FROMTO 02 F379    GERMAN 02 FFC7
+    FOURE0 02 F536    FOUREG 02 F534    FROMTO 02 F379    GERMAN 02 FFC7
     GETTAS 02 F348    GETTS9 02 F359        GO 02 F35C       GO1 02 F36E
      GROSS 02 FDEE    GXADDR 02 EF15    GYADDR 02 EF13    HALTAN 02 F2FC
      HIGH1 02 FE5A    HIGHLI 02 EF58       HKS 02 F225      HKS1 02 F246
-    HKSTAB 02 F046    HKSTXT 02 F0B0      HOME 02 F868     IN1HG 02 F4F0
-     IN4HX 02 F4B1    IN4HX0 02 F49C    IN4HX1 02 F4B3    INCADR 02 F29A
-      INCH 02 F3CD     INCHA 02 F420     INHEX 02 F4D9    INHEX1 02 F4DC
-     INITI 02 F1E7    INITSP 02 F07C    INOCUR 02 F446    INPPAR 02 F472
-    INSCU1 02 FF63    INSCU2 02 FF6A    INSCUR 02 FF61    INSLIN 02 F98D
-    INSRTF 02 EF01    INTPAG 02 EF3D    INTSC1 02 F5F3    INTSCR 02 F5F0
+    HKSTAB 02 F046    HKSTXT 02 F0B0      HOME 02 F86B     IN1HG 02 F4F3
+     IN4HX 02 F4B4    IN4HX0 02 F49F    IN4HX1 02 F4B6    INCADR 02 F29A
+      INCH 02 F3CD     INCHA 02 F420     INHEX 02 F4DC    INHEX1 02 F4DF
+     INITI 02 F1E7    INITSP 02 F07C    INOCUR 02 F446    INPPAR 02 F475
+    INSCU1 02 FF63    INSCU2 02 FF6A    INSCUR 02 FF61    INSLIN 02 F990
+    INSRTF 02 EF01    INTPAG 02 EF3D    INTSC1 02 F5F6    INTSCR 02 F5F3
      INV11 02 FEFB     INV12 02 FF1A    INVCU1 02 FECD    INVCUR 02 FEC5
-    INVFLG 02 EF0E    INVOFF 02 F6C5     INVON 02 F6BE    INVTB2 02 FEA9
-    INVTBL 02 FEB1       IRQ 02 F55E    IRQEN0 02 F504    IRQEN1 02 F517
-    IRQENT 02 F501    IRQVEC 02 EF76      ISAS 02 F2EC    ISEMPT 02 F462
-     ISOFF 02 F6B8      JUMP 02 FE2C    LASTLI 02 FFBE    LCUR11 02 F91B
-    LCUR21 02 F947    LCURS1 02 F934    LCURS2 02 F953        LF 02 F850
-       LF1 02 F863       LF2 02 F865      LF21 02 F8D8       LF3 02 F85C
-     LF882 02 F72D     LF8B5 02 F744     LF8B6 02 F745     LF8C5 02 F752
-     LF8CF 02 F75E    LINBUF 00 C080     LINES 02 EF36    LINFE0 02 F281
-    LINFED 02 F27A     LOAD0 02 F40F    LOCCNT 02 EF87    LODFLG 02 EF85
-    LOESCH 02 FD88    LOETBL 02 FDB2     LOWUP 02 F481     LPCNT 00 0011
-    LPEXIT 02 FA0A      LTD8 02 F9CA       LVN 02 F08D      MAKE 02 FFD4
-    MEMADR 02 EF7E    MEMOR1 02 F253    MEMOR2 02 F258    MEMORY 02 F249
-    MEMTAB 02 F064    MESEUR 02 F07D       MMU 00 FFE0    MMURAM 02 EFE0
-    MORCUP 02 F938    MULINS 02 EF3A    NEWCHR 02 EF5A    NEWST1 02 EF0F
-    NEWST2 02 EF10     NEXTT 02 F2D6     NIXIS 02 FE62       NMI 02 F566
-      NMI1 02 F0DD    NMIVEC 02 EF7A     NODEL 02 FDD1     NODEU 02 FDFC
-    NOHALT 02 F30C    NONHEX 02 F4AF     NORM1 02 F116    NORMAL 02 F10D
-    NOSERI 02 F41D    NOTEMP 02 F464     NRCHR 02 EF37    NRLINS 02 EF32
-    OFFSET 02 FF36       ORI 03 FFDB      ORIG 03 FCF0      OUT1 02 F3C7
-     OUT2H 02 F3A1    OUT2HX 02 F3AF     OUT4H 02 F39F    OUT4HX 02 F3AD
-      OUTA 02 F3D5     OUTCH 02 F3EA    OUTCH0 02 F3E0    OUTCH1 02 F3E8
-    OUTCHS 02 F3F8    OUTCS1 02 F3FA    OUTREG 02 F51C    OVRCUR 02 FF5E
-     PCRLF 02 F3C1     PDATA 02 F3B5    PDATA1 02 F3B7    PDATA3 02 F39E
-    PDOTX1 02 F95E    PDOTX2 02 F964    PDOTY1 02 F96B    PDOTY2 02 F971
-     PEVEN 02 F95A    PGEFLG 02 EF17    PIA1AC 00 FCF1    PIA1AD 00 FCF0
-    PIA1BC 00 FCF3    PIA1BD 00 FCF2    PIA2BD 00 FCFA     PIXA1 02 FF30
-    PIXADR 02 FF1B    PIXLIN 00 01F8       PLF 02 F3C5     POINT 02 F28B
-    PRIREG 02 F53F    PSPACE 02 F3B1    PSTATU 02 F450     PUSHU 02 F1DE
-    PUSHU1 02 F1E0       PUT 02 F30E    PUTLUP 02 F32B      RAUS 02 F4C3
-     RAUS1 02 F4C1       RCL 02 FD96    REPINV 02 FEFF      REPT 02 FFA4
-     REPTD 02 F9D9     REPTI 02 F99E      RET1 02 FD83       RTN 02 FD87
-      RTN1 02 FD85      SAVE 02 EFDE    SAVEST 02 EF11    SAVUST 02 EF7C
-    SCRDWN 02 F84B    SCREN1 02 EF42    SCREN2 02 EF44    SCRLIN 02 EF38
-    SCRLUP 02 F6D2     SCRN1 00 0C0C     SCRN2 00 0808    SCROFS 02 EF0B
-    SCROL1 02 F6FC    SCROL4 02 F70B    SCROL7 02 F70A    SCROL8 02 F71B
-    SCROL9 02 F726    SCROLD 02 F729    SCROLL 02 F6F8     SCRUD 02 F6D6
-    SCRUD1 02 F6F1    SCRUD2 02 F6F6    SEARCH 02 F56A    SERCH1 02 F56C
-    SERCHX 02 F577    SERPAR 02 EF86    SERSTA 02 F406    SETCUX 02 F941
-    SETCUY 02 F93D    SETINV 02 F6C0     SETUP 02 F5FA     SLASH 02 F276
-      SOFT 02 EF4A    SOFTSC 02 F8FE    SPCUR1 02 F984    SPCURS 02 F982
-     STACK 00 EF00    STACK2 00 EE40    STATUS 02 F44B    SW2VEC 02 EF72
-    SW3VEC 02 EF70       SWI 02 F562      SWI2 02 F556      SWI3 02 F552
-    SWIEN0 02 F4FB    SWIENT 02 F4F5    SWITCH 02 F5A5    SWIVEC 02 EF78
-    SWTCHB 02 F5D0     TABLE 02 F2A1    TABLE0 02 F2AC    TABLE1 02 F2BC
-       TD8 02 FF70      TEMP 02 EF8A     TEMPA 02 EF84     TEMPX 02 EF80
-     TEMPY 02 EF82     TEXIT 02 FA14     TFROM 02 F09A    THALLO 02 F07D
-       TOG 02 FFC9    TOHKS0 02 F3D1    TO_HKS 02 F02D    TRANS1 02 F497
-    TRANS2 02 F494    TREGIS 02 F0B6     TSTIN 02 F466    TSTINP 02 F46B
-    TSTINS 02 F413       TTO 02 F0A1        UL 02 EF8B    UNUBI2 00 FC0F
-    UNUSED 02 EF5C    UPAROW 02 F28F    USERST 00 EDE0      VERS 00 0004
+    INVFLG 02 EF0E    INVOFF 02 F6C8     INVON 02 F6C1    INVTB2 02 FEA9
+    INVTBL 02 FEB1       IRQ 02 F561    IRQEN0 02 F507    IRQEN1 02 F51A
+    IRQENT 02 F504    IRQVEC 02 EF76      ISAS 02 F2EC    ISEMPT 02 F465
+    ISNEWC 02 EF5C     ISOFF 02 F6BB      JUMP 02 FE2C    LASTLI 02 FFBE
+    LCUR11 02 F91E    LCUR21 02 F94A    LCURS1 02 F937    LCURS2 02 F956
+        LF 02 F853       LF1 02 F866       LF2 02 F868      LF21 02 F8DB
+       LF3 02 F85F     LF882 02 F730     LF8B5 02 F747     LF8B6 02 F748
+     LF8C5 02 F755     LF8CF 02 F761    LINBUF 00 C080     LINES 02 EF36
+    LINFE0 02 F281    LINFED 02 F27A     LOAD0 02 F40F    LOCCNT 02 EF87
+    LODFLG 02 EF85    LOESCH 02 FD88    LOETBL 02 FDB2     LOWUP 02 F484
+     LPCNT 00 0011    LPEXIT 02 FA0D      LTD8 02 F9CD       LVN 02 F08D
+      MAKE 02 FFD4    MEMADR 02 EF7E    MEMOR1 02 F253    MEMOR2 02 F258
+    MEMORY 02 F249    MEMTAB 02 F064    MESEUR 02 F07D       MMU 00 FFE0
+    MMURAM 02 EFE0    MORCUP 02 F93B    MULINS 02 EF3A    NEWCHR 02 EF5A
+    NEWST1 02 EF0F    NEWST2 02 EF10     NEXTT 02 F2D6     NIXIS 02 FE62
+       NMI 02 F569      NMI1 02 F0DD    NMIVEC 02 EF7A     NODEL 02 FDD1
+     NODEU 02 FDFC    NOHALT 02 F30C    NONHEX 02 F4B2     NORM1 02 F116
+    NORMAL 02 F10D    NOSERI 02 F41D    NOTEMP 02 F467     NRCHR 02 EF37
+    NRLINS 02 EF32    OFFSET 02 FF36       ORI 03 FFDB      ORIG 03 FCF0
+      OUT1 02 F3C7     OUT2H 02 F3A1    OUT2HX 02 F3AF     OUT4H 02 F39F
+    OUT4HX 02 F3AD      OUTA 02 F3D5     OUTCH 02 F3EA    OUTCH0 02 F3E0
+    OUTCH1 02 F3E8    OUTCHS 02 F3F8    OUTCS1 02 F3FA    OUTREG 02 F51F
+    OVRCUR 02 FF5E     PCRLF 02 F3C1     PDATA 02 F3B5    PDATA1 02 F3B7
+    PDATA3 02 F39E    PDOTX1 02 F961    PDOTX2 02 F967    PDOTY1 02 F96E
+    PDOTY2 02 F974     PEVEN 02 F95D    PGEFLG 02 EF17    PIA1AC 00 FCF1
+    PIA1AD 00 FCF0    PIA1BC 00 FCF3    PIA1BD 00 FCF2    PIA2BD 00 FCFA
+     PIXA1 02 FF30    PIXADR 02 FF1B    PIXLIN 00 01F8       PLF 02 F3C5
+     POINT 02 F28B    PRIREG 02 F542    PSPACE 02 F3B1    PSTATU 02 F450
+     PUSHU 02 F1DE    PUSHU1 02 F1E0       PUT 02 F30E    PUTLUP 02 F32B
+      RAUS 02 F4C6     RAUS1 02 F4C4       RCL 02 FD96    REPINV 02 FEFF
+      REPT 02 FFA4     REPTD 02 F9DC     REPTI 02 F9A1      RET1 02 FD83
+       RTN 02 FD87      RTN1 02 FD85      SAVE 02 EFDE    SAVEST 02 EF11
+    SAVUST 02 EF7C    SCRDWN 02 F84E    SCREN1 02 EF42    SCREN2 02 EF44
+    SCRLIN 02 EF38    SCRLUP 02 F6D5     SCRN1 00 0C0C     SCRN2 00 0808
+    SCROFS 02 EF0B    SCROL1 02 F6FF    SCROL4 02 F70E    SCROL7 02 F70D
+    SCROL8 02 F71E    SCROL9 02 F729    SCROLD 02 F72C    SCROLL 02 F6FB
+     SCRUD 02 F6D9    SCRUD1 02 F6F4    SCRUD2 02 F6F9    SEARCH 02 F56D
+    SERCH1 02 F56F    SERCHX 02 F57A    SERPAR 02 EF86    SERSTA 02 F406
+    SETCUX 02 F944    SETCUY 02 F940    SETINV 02 F6C3     SETUP 02 F5FD
+     SLASH 02 F276      SOFT 02 EF4A    SOFTSC 02 F901    SPCUR1 02 F987
+    SPCURS 02 F985     STACK 00 EF00    STACK2 00 EE40    STATUS 02 F44B
+    SW2VEC 02 EF72    SW3VEC 02 EF70       SWI 02 F565      SWI2 02 F559
+      SWI3 02 F555    SWIEN0 02 F4FE    SWIENT 02 F4F8    SWITCH 02 F5A8
+    SWIVEC 02 EF78    SWTCHB 02 F5D3     TABLE 02 F2A1    TABLE0 02 F2AC
+    TABLE1 02 F2BC       TD8 02 FF70      TEMP 02 EF8A     TEMPA 02 EF84
+     TEMPX 02 EF80     TEMPY 02 EF82     TEXIT 02 FA17     TFROM 02 F09A
+    THALLO 02 F07D       TOG 02 FFC9    TOHKS0 02 F3D1    TO_HKS 02 F02D
+    TRANS1 02 F49A    TRANS2 02 F497    TREGIS 02 F0B6     TSTIN 02 F469
+    TSTINP 02 F46E    TSTINS 02 F413       TTO 02 F0A1        UL 02 EF8B
+    UNUBI2 00 FC0F    UPAROW 02 F28F    USERST 00 EDE0      VERS 00 0004
      VIDEO 02 F339    VIDEO0 02 F336    VIDPAG 00 FCF6     WARMS 00 CD03
     WERTMS 02 F0A7     XADDR 02 EF05    XBOTOM 02 EF4C    XDCHAR 02 FDBA
-    XDTEXT 02 F635      XINV 02 FEB9     XINV0 02 FEE5     XINV1 02 FEEF
+    XDTEXT 02 F638      XINV 02 FEB9     XINV0 02 FEE5     XINV1 02 FEEF
      YADDR 02 EF07    ZCASEU 00 00C0    ZCHEXL 02 F009    ZCHEXR 02 F00C
-    ZCONVT 02 F03A     ZF0A5 02 F0B2     ZF850 02 F677     ZFA0F 02 F933
-     ZFA21 02 F952     ZFFF0 02 FFF0    ZFROMT 02 F003    ZIN4HX 02 F00F
+    ZCONVT 02 F03A     ZF0A5 02 F0B2     ZF850 02 F67A     ZFA0F 02 F936
+     ZFA21 02 F955     ZFFF0 02 FFF0    ZFROMT 02 F003    ZIN4HX 02 F00F
     ZINCHA 02 F015    ZLOAD0 02 F030    ZOUT2H 02 F01B    ZOUT4H 02 F01E
     ZOUTC2 02 F018    ZPCRLF 02 F021    ZPDAT1 02 F027    ZPDATA 02 F024
     ZRECD0 02 F033    ZRESTA 02 F000    ZSPACE 02 F02A    ZSWBAK 02 F038
