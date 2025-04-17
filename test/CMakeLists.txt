@@ -31,6 +31,9 @@ if(UNIX)
         -Wswitch-enum
         -Wfloat-conversion
         -Wundef
+        -Wconversion
+        -Wsign-conversion
+        -Wfloat-conversion
     )
 endif()
 
