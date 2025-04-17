@@ -3,21 +3,26 @@
 # Download and install NSIS EnVar plugin.
 #
 # syntax:
-#    download_and_instll_envar_plugin.sh
+#    download_and_install_envar.sh [-d <target_directory>][-s]
+#    download_and_install_envar.sh -h
 #
 # parameters:
-#   -d <target_dir>
+#   -d <target_dir> Defines the directory where to install the plugin.
 #   -s              Suppress progress bar when downloading files.
+#   -h              Print this help and exit.
 #
-function usage() {
+function usage()
+{
     echo "Download and install NSIS EnVar plugin"
     echo ""
     echo "Syntax:"
-    echo "   download_and_install_envar.sh -d <target_directory> [-s]"
+    echo "   download_and_install_envar.sh -d <target_directory>[-s]"
+    echo "   download_and_install_envar.sh -h"
     echo ""
     echo "Options:"
     echo "   -d <target_dir>:  Defines the directory where to install the plugin."
     echo "   -s                Suppress progress bar when downloading files."
+    echo "   -h                Print this help and exit."
 }
 
 target_dir=""
@@ -69,7 +74,9 @@ do
     file=$(basename "$url")
     if [ ! -r $file ]; then
         echo downloading $file...
-        curl $curl_progress -# -L $url > "$file"
+        curl $curl_progress -# -L $url --remove-on-error \
+            --max-time 10 --retry 5 --retry-delay 0 \
+            --retry-max-time 40 > "$file"
     fi
     if [ ! -r $file ]; then
         echo "*** Error: Downloading $file failed, aborted."
