@@ -73,7 +73,7 @@
          <item>
           <widget class="QGroupBox" name="g_emulatedHardware">
            <property name="title">
-            <string>Emulated Hardware</string>
+            <string>Mainboard</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_7">
             <property name="spacing">
@@ -444,7 +444,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="l_diskMonitorDir">
            <property name="text">
-            <string>Disk/Monitor directory</string>
+            <string>Disk/Boot ROM directory</string>
            </property>
            <property name="buddy">
             <cstring>e_diskMonitorDir</cstring>
@@ -525,7 +525,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="l_monitorPgm">
            <property name="text">
-            <string>Monitor program</string>
+            <string>Boot ROM file</string>
            </property>
            <property name="buddy">
             <cstring>e_monitorPgm</cstring>
