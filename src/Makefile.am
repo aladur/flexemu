@@ -27,8 +27,10 @@ EXTRA_DIST = \
 	$(pkgdata_DATA) \
 	$(sysconf_DATA) \
 	confignt.h \
+	dsktool.rc \
 	dsktool.vcxproj \
 	engine.cpi \
+	flex2hex.rc \
 	flex2hex.vcxproj \
 	flexdisk.rc \
 	flexemu.astyle \
@@ -37,6 +39,7 @@ EXTRA_DIST = \
 	flexplorer.vcxproj \
 	JoystickTable.gnumeric \
 	mc6809ex.cpi \
+	mdcrtool.rc \
 	mdcrtool.vcxproj \
 	msvcQtPath.props.in \
 	pch.h \

@@ -53,6 +53,9 @@
     <ClInclude Include="wmain.h" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="dsktool.rc" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="libflex.vcxproj">
       <Project>{87bf512f-3f2d-4ffd-a848-3b967ba54eda}</Project>
     </ProjectReference>

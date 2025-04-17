@@ -232,6 +232,9 @@ typedefs.h
 wmain.h
 )
 add_executable(flex2hex ${flex2hex_SOURCES} ${flex2hex_HEADER})
+if(WIN32)
+    target_sources(flex2hex PRIVATE flex2hex.rc)
+endif()
 
 target_include_directories(flex2hex SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
 target_include_directories(flex2hex PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
@@ -278,6 +281,9 @@ set(mdcrtool_HEADER
     wmain.h
 )
 add_executable(mdcrtool ${mdcrtool_SOURCES} ${mdcrtool_HEADER})
+if(WIN32)
+    target_sources(mdcrtool PRIVATE mdcrtool.rc)
+endif()
 
 target_include_directories(mdcrtool SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
 target_include_directories(mdcrtool PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
@@ -337,6 +343,9 @@ typedefs.h
 wmain.h
 )
 add_executable(dsktool ${dsktool_SOURCES} ${dsktool_HEADER})
+if(WIN32)
+    target_sources(dsktool PRIVATE dsktool.rc)
+endif()
 
 target_include_directories(dsktool SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
 target_include_directories(dsktool PRIVATE ${CMAKE_CURRENT_BINARY_DIR})

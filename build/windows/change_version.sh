@@ -83,4 +83,6 @@ sed -i "s/$old_version/$new_version/" ../../configure.ac
 sed -i "s/$old_version/$new_version/" ../../src/confignt.h
 sed -i "s/$old_cversion/$new_cversion/" ../../src/flexdisk.rc
 sed -i "s/$old_cversion/$new_cversion/" ../../src/flexemu.rc
-
+sed -i "s/$old_cversion/$new_cversion/" ../../src/dsktool.rc
+sed -i "s/$old_cversion/$new_cversion/" ../../src/mdcrtool.rc
+sed -i "s/$old_cversion/$new_cversion/" ../../src/flex2hex.rc
