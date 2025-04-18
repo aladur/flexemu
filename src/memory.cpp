@@ -27,6 +27,7 @@
 #include "soptions.h"
 #include <cstring>
 #include <cassert>
+#include <algorithm>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
@@ -232,6 +233,13 @@ bool Memory::add_io_device(
         return false;
     }
 
+    struct ioDeviceProperties properties{
+            device.getName(),
+            base_address,
+            size.value()};
+    devicesProperties.emplace_back(properties);
+    devicesPropertiesSorted = false;
+
     if (base_address < genio_base)
     {
         // Increase deviceAccess vector for lower addresses down to
@@ -271,6 +279,7 @@ void Memory::reset_io()
     {
         deviceRef.get().resetIo();
     }
+    sort_devices_properties();
 }
 
 // Write Byte into RAM or ROM independent of MMU.
@@ -385,4 +394,23 @@ unsigned Memory::get_ram_extension_boards() const
 unsigned Memory::get_ram_extension_size() const
 {
     return video_ram_size / 1024U;
+}
+
+DevicesProperties_t Memory::get_devices_properties() const
+{
+    return devicesProperties;
+}
+
+void Memory::sort_devices_properties()
+{
+    if (!devicesPropertiesSorted)
+    {
+        std::sort(devicesProperties.begin(), devicesProperties.end(), [](
+                    const ioDeviceProperties &lhs,
+                    const ioDeviceProperties &rhs)
+                {
+                    return lhs.baseAddress < rhs.baseAddress;
+                });
+        devicesPropertiesSorted = true;
+    }
 }

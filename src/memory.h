@@ -54,6 +54,15 @@ struct ioDeviceAccess
     Word addressOffset{0};
 };
 
+struct ioDeviceProperties
+{
+    std::string name;
+    Word baseAddress;
+    Word byteSize;
+};
+
+using DevicesProperties_t = std::vector<struct ioDeviceProperties>;
+
 class Memory : public MemoryTarget<DWord>, public BObserver
 {
 public:
@@ -77,6 +86,8 @@ private:
     // I/O device access
     std::vector<std::reference_wrapper<IoDevice> > ioDevices;
     std::vector<ioDeviceAccess> deviceAccess;
+    DevicesProperties_t devicesProperties;
+    bool devicesPropertiesSorted{false};
     static const Byte NO_DEVICE = 0xFF;
 
     // interface to video display
@@ -88,6 +99,7 @@ private:
 private:
     void init_memory();
     void init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr);
+    void sort_devices_properties();
 
     // Initialisation functions
 
@@ -107,6 +119,7 @@ public:
     unsigned get_ram_extension_boards() const;
     // Return RAM extension size in KByte per board.
     unsigned get_ram_extension_size() const;
+    DevicesProperties_t get_devices_properties() const;
 
     // BObserver interface
 public:
