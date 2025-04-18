@@ -26,7 +26,6 @@
 #include "fcnffile.h"
 #include "soptions.h"
 #include <cstring>
-#include <iostream>
 #include <cassert>
 #include "warnoff.h"
 #include <fmt/format.h>
@@ -43,6 +42,8 @@ Memory::Memory(const struct sOptions &options) :
     deviceAccess(0x10000U - genio_base, ioDeviceAccess{NO_DEVICE, 0U})
 
 {
+    // Eurocom II/V5 has 48 KByte memory on mainboard. Never the less
+    // allocate 64 KByte to map the Boot ROM into F000 - FFFF.
     memory.resize(memory_size);
     if (isRamExtension)
     {
@@ -155,6 +156,8 @@ void Memory::init_memory()
 
     if (isEurocom2V5)
     {
+        // Eurocom II V5 only has 48 KByte on mainboard.
+        // Accessing memory range C000 - EFFF is a mirror of 8000 - AFFF.
         for (i = 12; i < 15; i++)
         {
             ppage[i] = &memory[VIDEORAM_SIZE * ((i - 4U) >> 2U)];
@@ -369,3 +372,17 @@ void Memory::CopyFrom(const Byte *source, DWord address, DWord size)
     std::memcpy(memory.data() + address, source, secureSize);
 }
 
+unsigned Memory::get_ram_size() const
+{
+    return isEurocom2V5 ? 48U : memory_size / 1024U;
+}
+
+unsigned Memory::get_ram_extension_boards() const
+{
+    return isRamExtension ? 2U : 0U;
+}
+
+unsigned Memory::get_ram_extension_size() const
+{
+    return video_ram_size / 1024U;
+}

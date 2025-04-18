@@ -101,6 +101,12 @@ public:
     void reset_io();
     void switch_mmu(Word offset, Byte val);
     void init_blocks_to_update();
+    // Return RAM size in KByte on mainboard.
+    unsigned get_ram_size() const;
+    // Return number of RAM extension boards.
+    unsigned get_ram_extension_boards() const;
+    // Return RAM extension size in KByte per board.
+    unsigned get_ram_extension_size() const;
 
     // BObserver interface
 public:
