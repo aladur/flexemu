@@ -89,8 +89,10 @@ private:
         FlexDiskFile,
         CassetteFile,
         HexBinaryFile,
+        FlexDiskDirectory,
     };
 
+    void InitializeUi();
     void ConnectSignalsWithSlots();
     static void AddFrequencyValidator(QLineEdit &lineEdit);
     void InitializeHardwareHyperlink(const fs::path &doc_dir);
@@ -101,6 +103,7 @@ private:
             const std::vector<FlexemuOptionId> &readOnlyOptions);
 
     void OnSelectFile(QLineEdit &lineEdit, FileType type);
+    void OnSelectDirectory(QLineEdit &lineEdit, FileType type);
 
     static QUrl CreateDocumentationUrl(const fs::path &doc_dir,
                                        const fs::path &html_file);

@@ -27,15 +27,18 @@
 #include "filecnts.h"
 #include "termimpf.h"
 #include "colors.h"
+#include "flexerr.h"
 #include <string>
 #include <memory>
 #include <stdexcept>
 #include "warnoff.h"
 #include <QtGlobal>
+#include <QAbstractButton>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFontMetrics>
 #include <QDir>
+#include <QIcon>
 #include "warnon.h"
 #include <cassert>
 #include <array>
@@ -65,6 +68,16 @@ void FlexemuOptionsUi::ConnectSignalsWithSlots()
             [&](){ OnSelectFile(*e_drive2, FileType::FlexDiskFile); });
     connect(b_drive3, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_drive3, FileType::FlexDiskFile); });
+
+    static const auto dType = FileType::FlexDiskDirectory;
+    connect(b_drive0Dir, &QAbstractButton::clicked,
+            [&](){ OnSelectDirectory(*e_drive0, dType); });
+    connect(b_drive1Dir, &QAbstractButton::clicked,
+            [&](){ OnSelectDirectory(*e_drive1, dType); });
+    connect(b_drive2Dir, &QAbstractButton::clicked,
+            [&](){ OnSelectDirectory(*e_drive2, dType); });
+    connect(b_drive3Dir, &QAbstractButton::clicked,
+            [&](){ OnSelectDirectory(*e_drive3, dType); });
 
     connect(b_mdcrDrive0, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_mdcrDrive0, FileType::CassetteFile); });
@@ -337,21 +350,25 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::Drive0:
                 e_drive0->setEnabled(false);
                 b_drive0->setEnabled(false);
+                b_drive0Dir->setEnabled(false);
                 break;
 
             case FlexemuOptionId::Drive1:
                 e_drive1->setEnabled(false);
                 b_drive1->setEnabled(false);
+                b_drive1Dir->setEnabled(false);
                 break;
 
             case FlexemuOptionId::Drive2:
                 e_drive2->setEnabled(false);
                 b_drive2->setEnabled(false);
+                b_drive2Dir->setEnabled(false);
                 break;
 
             case FlexemuOptionId::Drive3:
                 e_drive3->setEnabled(false);
                 b_drive3->setEnabled(false);
+                b_drive3Dir->setEnabled(false);
                 break;
 
             case FlexemuOptionId::CanFormatDrive0:
@@ -601,6 +618,7 @@ void FlexemuOptionsUi::setupUi(QDialog *p_dialog)
     dialog = p_dialog;
 
     Ui_FlexemuSetup::setupUi(p_dialog);
+    InitializeUi();
     AddFrequencyValidator(*e_frequency);
     ConnectSignalsWithSlots();
     // This dialog width calculation tries to make all available tabs
@@ -918,7 +936,7 @@ void FlexemuOptionsUi::OnSelectFile(QLineEdit &lineEdit, FileType type)
     auto path = diskDir;
     auto fileInfo = QFileInfo(lineEdit.text());
 
-    if (fileInfo.isAbsolute() && QFile::exists(lineEdit.text()))
+    if (fileInfo.isAbsolute() && fileInfo.isFile())
     {
         path = lineEdit.text();
     }
@@ -953,6 +971,42 @@ void FlexemuOptionsUi::OnSelectFile(QLineEdit &lineEdit, FileType type)
                     "All files (*.*)"),
                 &filter);
             break;
+
+        case FileType::FlexDiskDirectory:
+            throw FlexException(FERR_WRONG_PARAMETER);
+    }
+
+    path = QDir::toNativeSeparators(path);
+    path = GetRelativePath(diskDir, path);
+
+    if (!path.isEmpty())
+    {
+        lineEdit.setText(path);
+    }
+}
+
+void FlexemuOptionsUi::OnSelectDirectory(QLineEdit &lineEdit, FileType type)
+{
+    auto diskDir = e_diskMonitorDir->text();
+    auto path = diskDir;
+    auto fileInfo = QFileInfo(lineEdit.text());
+
+    if (fileInfo.isAbsolute() && fileInfo.isDir())
+    {
+        path = lineEdit.text();
+    }
+
+    switch (type)
+    {
+        case FileType::FlexDiskDirectory:
+            path = QFileDialog::getExistingDirectory(dialog,
+                tr("Select a FLEX directory disk"), path);
+            break;
+
+        case FileType::FlexDiskFile:
+        case FileType::CassetteFile:
+        case FileType::HexBinaryFile:
+            throw FlexException(FERR_WRONG_PARAMETER);
     }
 
     path = QDir::toNativeSeparators(path);
@@ -990,6 +1044,10 @@ void FlexemuOptionsUi::UpdateHardwareDependencies()
     b_drive1->setEnabled(r_eurocom2v7->isChecked());
     b_drive2->setEnabled(r_eurocom2v7->isChecked());
     b_drive3->setEnabled(r_eurocom2v7->isChecked());
+    b_drive0Dir->setEnabled(r_eurocom2v7->isChecked());
+    b_drive1Dir->setEnabled(r_eurocom2v7->isChecked());
+    b_drive2Dir->setEnabled(r_eurocom2v7->isChecked());
+    b_drive3Dir->setEnabled(r_eurocom2v7->isChecked());
 
     e_mdcrDrive0->setEnabled(!r_eurocom2v7->isChecked());
     e_mdcrDrive1->setEnabled(!r_eurocom2v7->isChecked());
@@ -1224,3 +1282,30 @@ void FlexemuOptionsUi::OnTerminalTypeChanged(TerminalType type)
     }
 }
 
+void FlexemuOptionsUi::InitializeUi()
+{
+    const auto openIcon = QIcon(":/resource/open_con.png");
+    const auto openDirIcon = QIcon(":/resource/open_dir.png");
+    const auto disk = QString("Select Disk Image");
+    const auto diskDir = QString("Select Directory Disk");
+
+    b_drive0->setIcon(openIcon);
+    b_drive1->setIcon(openIcon);
+    b_drive2->setIcon(openIcon);
+    b_drive3->setIcon(openIcon);
+
+    b_drive0->setToolTip(disk);
+    b_drive1->setToolTip(disk);
+    b_drive2->setToolTip(disk);
+    b_drive3->setToolTip(disk);
+
+    b_drive0Dir->setIcon(openDirIcon);
+    b_drive1Dir->setIcon(openDirIcon);
+    b_drive2Dir->setIcon(openDirIcon);
+    b_drive3Dir->setIcon(openDirIcon);
+
+    b_drive0Dir->setToolTip(diskDir);
+    b_drive1Dir->setToolTip(diskDir);
+    b_drive2Dir->setToolTip(diskDir);
+    b_drive3Dir->setToolTip(diskDir);
+}

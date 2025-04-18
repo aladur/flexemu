@@ -38,5 +38,7 @@
         <file alias="print-clear.png">bitmaps/32x32/flexemu-print-clear.png</file>
         <file alias="detect-page-break.png">bitmaps/32x32/flexemu-detect-page-break.png</file>
         <file alias="window-close.png">bitmaps/32x32/flexemu-window-close.png</file>
+        <file alias="open_con.png">bitmaps/32x32/flexemu-flexplorer-open.png</file>
+        <file alias="open_dir.png">bitmaps/32x32/flexemu-flexplorer-opendir.png</file>
     </qresource>
 </RCC>
