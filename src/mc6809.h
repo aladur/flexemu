@@ -905,6 +905,18 @@ public:
     {
         return use_undocumented;
     };
+    // Implementation may change in future.
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    std::string get_vendor()
+    {
+        return "Motorola";
+    }
+    // Implementation may change in future.
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    std::string get_name()
+    {
+        return "Mc6809";
+    }
 
     // Scheduler Interface implemenation
 public:

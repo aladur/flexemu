@@ -185,7 +185,10 @@ QtGui::QtGui(
 
     // Initialize the non-modal CPU Dialog but don't open it.
     cpuUi.setupUi(cpuDialog);
-    cpuDialog->setWindowTitle("Mc6809");
+    const QString title = QString("%1 %2")
+        .arg(QString::fromStdString(p_cpu.get_vendor()))
+        .arg(QString::fromStdString(p_cpu.get_name()));
+    cpuDialog->setWindowTitle(title);
     cpuDialog->setModal(false);
     cpuDialog->setSizeGripEnabled(true);
     cpuUi.b_run->setCheckable(true);
