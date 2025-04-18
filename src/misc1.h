@@ -254,20 +254,6 @@ inline Word EXTEND8(Byte value)
     return static_cast<Word>(static_cast<SWord>(static_cast<SByte>(value)));
 }
 
-#if __GNUC__ >= 5 || __clang__ >= 4 || (__clang__ == 3 && __clang_minor__ >= 6)
-#if __cplusplus > 201402L && __has_cpp_attribute(fallthrough)
-#define FALLTHROUGH [[fallthrough]]
-#elif __cplusplus && __has_cpp_attribute(clang::fallthrough)
-#define FALLTHROUGH [[clang::fallthrough]]
-#elif __cplusplus && __has_cpp_attribute(gnu::fallthrough)
-#define FALLTHROUGH [[gnu::fallthrough]]
-#else
-#define FALLTHROUGH
-#endif
-#else
-#define FALLTHROUGH
-#endif
-
 #ifdef _WIN32
     extern int getopt(int argc, char *const argv[], const char *optstr);
     extern int optind;

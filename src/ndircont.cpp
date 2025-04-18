@@ -1714,7 +1714,7 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                     ofs.close();
                 }
             }
-            FALLTHROUGH;
+            [[fallthrough]];
 
         case SectorType::NewFile:
         case SectorType::File:

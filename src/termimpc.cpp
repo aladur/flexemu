@@ -382,7 +382,7 @@ void NCursesTerminalImpl::process_ctrl_character(Byte value)
 
         case FF: // CTRL-L: Form feed
             wclear(win);
-            FALLTHROUGH;
+            [[fallthrough]];
         case '\x1C': // CTRL-\ cursor home
             wmove(win, 0, 0);
             wrefresh(win);

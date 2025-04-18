@@ -170,7 +170,7 @@ void TerminalIO::exec_signal(int sig_no)
             break;
 
         case SIGQUIT:
-            FALLTHROUGH;
+            [[fallthrough]];
 #endif
         case SIGTERM:
             scheduler.request_new_state(CpuState::Exit);

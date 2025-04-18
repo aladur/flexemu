@@ -1405,7 +1405,7 @@ int flx::main(int argc, char *argv[])
 
             case 'L':
                 dsk_files.push_back(dsk_file);
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 'l':
                 return ListDirectoryOfDskFiles(dsk_files, regexs,
@@ -1420,7 +1420,7 @@ int flx::main(int argc, char *argv[])
 
             case 'x':
                 dsk_files.push_back(dsk_file);
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 'X':
                 return ExtractDskFiles(target_dir, verbose, convert_text,

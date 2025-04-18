@@ -1791,7 +1791,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             {
                 throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
             }
-            FALLTHROUGH;
+            [[fallthrough]];
 
         case 4:
             temp = header[3]; // first sector ID
@@ -1799,7 +1799,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             {
                 throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
             }
-            FALLTHROUGH;
+            [[fallthrough]];
 
         case 3:
             temp = header[2]; // sector size count
@@ -1807,7 +1807,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             {
                 throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
             }
-            FALLTHROUGH;
+            [[fallthrough]];
 
         case 2:
             temp = header[1]; // side count
@@ -1815,7 +1815,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             {
                 throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
             }
-            FALLTHROUGH;
+            [[fallthrough]];
 
         case 1:
             temp = header[0]; // sectors per track

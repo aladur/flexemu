@@ -220,7 +220,7 @@ void Wd1793::command(Byte command)
 
             case CMD_STEP_TU:
                 do_seek(tr + stepOffset);
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case CMD_STEP:
                 str = 0;

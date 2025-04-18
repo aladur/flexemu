@@ -211,7 +211,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x11 : // [,R++]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x01 : // ,R++
                 p_code = PrintCode(bytes);
@@ -227,7 +227,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x13 : // [,R--]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x03 : // ,--R
                 p_code = PrintCode(bytes);
@@ -238,7 +238,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x14 : // [,R--]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x04 : // ,R
                 p_code = PrintCode(bytes);
@@ -249,7 +249,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x15 : // [B,R]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x05 : // B,R
                 p_code = PrintCode(bytes);
@@ -260,7 +260,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x16 : // [A,R]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x06 : // A,R
                 p_code = PrintCode(bytes);
@@ -271,7 +271,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x18 : // [,R + 8 Bit Offset]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x08 : // ,R + 8 Bit Offset
                 offset = *(memory + 2);
@@ -290,7 +290,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x19 : // [,R + 16 Bit Offset]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x09 : // ,R + 16 Bit Offset
                 extrabytes = 2;
@@ -308,7 +308,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x1b : // [D,R]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x0b : // D,R
                 p_code = PrintCode(bytes);
@@ -319,7 +319,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x1c : // [,PC + 8 Bit Offset]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x0c : // ,PC + 8 Bit Offset
                 offset = (EXTEND8(*(memory + 2)) + pc + 3U) & 0xFFFFU;
@@ -332,7 +332,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x1d : // [,PC + 16 Bit Offset]
                 br1 = "[";
                 br2 = "]";
-                FALLTHROUGH;
+                [[fallthrough]];
 
             case 0x0d :  // ,PC + 16 Bit Offset
                 offset = (flx::getValueBigEndian<Word>(&memory[2]) + pc + 4U)
@@ -355,7 +355,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                     p_operands = fmt::format("{}${:04X}{}", br1, offset, br2);
                     break;
                 }
-                FALLTHROUGH;
+                [[fallthrough]];
 
             default:
                 p_code = PrintCode(bytes);
