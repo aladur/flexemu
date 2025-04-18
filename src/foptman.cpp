@@ -99,7 +99,7 @@ void FlexemuOptions::PrintHelp(std::ostream &os)
           "  -3 <diskimage/directory drive 3>\n"
           "  -p (directory for FLEX disks)\n"
           "  -j <factor for screen size>\n"
-          "  -m (use 2 x 288 KByte RAM extension)\n"
+          "  -m (use 2 x 384 KByte RAM extension)\n"
           "  -u (support undocumented MC6809 processor instructions)\n"
           "  -F <frequency> (set CPU frequency in MHz)\n"
           "     0.0 sets maximum frequency, -1.0 sets original frequency.\n"
@@ -249,7 +249,7 @@ void FlexemuOptions::GetCommandlineOptions(
 
             case 'm':
                 options.isHiMem = true;
-                setReadOnly(FlexemuOptionId::IsRamExt2x288);
+                setReadOnly(FlexemuOptionId::IsRamExt2x384);
                 break;
 
             case 'u':
@@ -482,7 +482,7 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXRAMEXTENSION, options.isRamExtension ? 1 : 0);
             break;
 
-        case FlexemuOptionId::IsRamExt2x288:
+        case FlexemuOptionId::IsRamExt2x384:
             reg.SetValue(FLEXHIMEM, options.isHiMem ? 1 : 0);
             break;
 
@@ -686,7 +686,7 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isRamExtension = previousOptions.isRamExtension;
             break;
 
-        case FlexemuOptionId::IsRamExt2x288:
+        case FlexemuOptionId::IsRamExt2x384:
             optionsToWrite.isHiMem = previousOptions.isHiMem;
             break;
 

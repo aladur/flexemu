@@ -90,7 +90,7 @@ void FlexemuOptionsUi::ConnectSignalsWithSlots()
             this, &FlexemuOptionsUi::UpdateRamDependencies);
     connect(r_ramExt2x96, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::UpdateRamDependencies);
-    connect(r_ramExt2x288, &QAbstractButton::toggled,
+    connect(r_ramExt2x384, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::UpdateRamDependencies);
 
     connect(r_eurocom2v5, &QAbstractButton::toggled,
@@ -265,7 +265,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     {
         if (options.isHiMem)
         {
-            r_ramExt2x288->setChecked(true);
+            r_ramExt2x384->setChecked(true);
         }
         else
         {
@@ -438,10 +438,10 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 break;
 
             case FlexemuOptionId::IsRamExt2x96:
-            case FlexemuOptionId::IsRamExt2x288:
+            case FlexemuOptionId::IsRamExt2x384:
                 r_ramExtNone->setEnabled(false);
                 r_ramExt2x96->setEnabled(false);
-                r_ramExt2x288->setEnabled(false);
+                r_ramExt2x384->setEnabled(false);
                 break;
 
             case FlexemuOptionId::IsFlexibleMmu:
@@ -526,12 +526,12 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
             switch (readOnlyOptionId)
             {
                 case FlexemuOptionId::IsRamExt2x96:
-                    addDependent(FlexemuOptionId::IsRamExt2x288);
+                    addDependent(FlexemuOptionId::IsRamExt2x384);
                     addDependent(FlexemuOptionId::IsFlexibleMmu);
                     addDependent(FlexemuOptionId::IsEurocom2V5);
                     break;
 
-                case FlexemuOptionId::IsRamExt2x288:
+                case FlexemuOptionId::IsRamExt2x384:
                     addDependent(FlexemuOptionId::IsRamExt2x96);
                     addDependent(FlexemuOptionId::IsFlexibleMmu);
                     addDependent(FlexemuOptionId::IsEurocom2V5);
@@ -539,7 +539,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
 
                 case FlexemuOptionId::IsFlexibleMmu:
                     addDependent(FlexemuOptionId::IsRamExt2x96);
-                    addDependent(FlexemuOptionId::IsRamExt2x288);
+                    addDependent(FlexemuOptionId::IsRamExt2x384);
                     addDependent(FlexemuOptionId::IsEurocom2V5);
                     break;
 
@@ -562,13 +562,13 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::Color:
                     addDependent(FlexemuOptionId::NColors);
                     addDependent(FlexemuOptionId::IsRamExt2x96);
-                    addDependent(FlexemuOptionId::IsRamExt2x288);
+                    addDependent(FlexemuOptionId::IsRamExt2x384);
                     break;
 
                 case FlexemuOptionId::NColors:
                     addDependent(FlexemuOptionId::Color);
                     addDependent(FlexemuOptionId::IsRamExt2x96);
-                    addDependent(FlexemuOptionId::IsRamExt2x288);
+                    addDependent(FlexemuOptionId::IsRamExt2x384);
                     break;
 
                 case FlexemuOptionId::TerminalType:
@@ -813,11 +813,11 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
     }
 
     if (!IsReadOnly(FlexemuOptionId::IsRamExt2x96) &&
-        !IsReadOnly(FlexemuOptionId::IsRamExt2x288) &&
+        !IsReadOnly(FlexemuOptionId::IsRamExt2x384) &&
         !IsReadOnly(FlexemuOptionId::IsFlexibleMmu))
     {
         auto ramExt = r_ramExt2x96->isChecked();
-        auto hiMem = r_ramExt2x288->isChecked();
+        auto hiMem = r_ramExt2x384->isChecked();
         options.isRamExtension = ramExt || hiMem;
         options.isHiMem = hiMem;
 
@@ -1071,9 +1071,9 @@ void FlexemuOptionsUi::UpdateRamDependencies()
 {
     r_ramExtNone->setEnabled(r_eurocom2v7->isChecked());
     r_ramExt2x96->setEnabled(r_eurocom2v7->isChecked());
-    r_ramExt2x288->setEnabled(r_eurocom2v7->isChecked());
-    c_flexibleMmu->setEnabled(r_ramExt2x288->isEnabled() &&
-                              r_ramExt2x288->isChecked());
+    r_ramExt2x384->setEnabled(r_eurocom2v7->isChecked());
+    c_flexibleMmu->setEnabled(r_ramExt2x384->isEnabled() &&
+                              r_ramExt2x384->isChecked());
 
     UpdateColorDependencies();
 }
@@ -1082,7 +1082,7 @@ void FlexemuOptionsUi::UpdateColorDependencies()
 {
     bool canEnableNColors =
         (r_ramExt2x96->isEnabled() && r_ramExt2x96->isChecked()) ||
-        (r_ramExt2x288->isEnabled() && r_ramExt2x288->isChecked());
+        (r_ramExt2x384->isEnabled() && r_ramExt2x384->isChecked());
 
     cb_nColors->setEnabled(canEnableNColors);
 

@@ -407,7 +407,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::HexFile:
                 case FlexemuOptionId::DiskDirectory:
                 case FlexemuOptionId::IsRamExt2x96:
-                case FlexemuOptionId::IsRamExt2x288:
+                case FlexemuOptionId::IsRamExt2x384:
                 case FlexemuOptionId::IsFlexibleMmu:
                 case FlexemuOptionId::IsEurocom2V5:
                 case FlexemuOptionId::IsUseRtc:

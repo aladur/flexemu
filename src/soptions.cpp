@@ -40,7 +40,7 @@ const FlexemuOptionIds_t &GetAllFlexemuOptionIds()
         FlexemuOptionId::HexFile,
         FlexemuOptionId::DiskDirectory,
         FlexemuOptionId::IsRamExt2x96,
-        FlexemuOptionId::IsRamExt2x288,
+        FlexemuOptionId::IsRamExt2x384,
         FlexemuOptionId::IsFlexibleMmu,
         FlexemuOptionId::IsEurocom2V5,
         FlexemuOptionId::IsUseUndocumented,

@@ -94,7 +94,7 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
 
     if (opt1.isHiMem != opt2.isHiMem)
     {
-        notEquals.push_back(FlexemuOptionId::IsRamExt2x288);
+        notEquals.push_back(FlexemuOptionId::IsRamExt2x384);
     }
 
     if (opt1.isFlexibleMmu != opt2.isFlexibleMmu)
@@ -252,7 +252,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
         FlexemuOptionId::HexFile,
         FlexemuOptionId::DiskDirectory,
         FlexemuOptionId::IsRamExt2x96,
-        FlexemuOptionId::IsRamExt2x288,
+        FlexemuOptionId::IsRamExt2x384,
         FlexemuOptionId::IsFlexibleMmu,
         FlexemuOptionId::IsEurocom2V5,
         FlexemuOptionId::IsUseRtc,

@@ -372,9 +372,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="r_ramExt2x288">
+             <widget class="QRadioButton" name="r_ramExt2x384">
               <property name="text">
-               <string>2 x 288 KByte</string>
+               <string>2 x 384 KByte</string>
               </property>
              </widget>
             </item>
@@ -1171,7 +1171,7 @@
   <tabstop>c_isConfirmExit</tabstop>
   <tabstop>r_ramExtNone</tabstop>
   <tabstop>r_ramExt2x96</tabstop>
-  <tabstop>r_ramExt2x288</tabstop>
+  <tabstop>r_ramExt2x384</tabstop>
   <tabstop>e_diskMonitorDir</tabstop>
   <tabstop>b_diskMonitorDir</tabstop>
   <tabstop>e_monitorPgm</tabstop>

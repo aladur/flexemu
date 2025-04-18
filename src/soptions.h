@@ -52,7 +52,7 @@ enum class FlexemuOptionId : uint8_t
     HexFile,
     DiskDirectory,
     IsRamExt2x96,
-    IsRamExt2x288,
+    IsRamExt2x384,
     IsFlexibleMmu,
     IsEurocom2V5,
     IsUseUndocumented,
@@ -100,7 +100,7 @@ struct sOptions
     fs::path disk_dir;
     std::string startup_command;
     bool isRamExtension{}; // Use RAM extension cards/No RAM extension
-    bool isHiMem{}; // Use 2 x 288K RAM extension/2 x 96 K RAM ext.
+    bool isHiMem{}; // Use 2 x 384 KByte RAM extension/2 x 96 KByte RAM ext.
     bool isFlexibleMmu{}; // Use flexible MMU/Normal MMU
     bool isEurocom2V5{}; // Emulate an Eurocom II/V5 (instead of Eurocom II/V7)
     bool use_undocumented{};
