@@ -1,0 +1,23 @@
+# makefile to assemble coltab boot ROM.
+#
+# Syntax:
+#     make -f makefile_coltab clean
+#     make -f makefile_coltab
+#
+# The MC6809 assembler a09 has to be in the path.
+# It can be downloaded from:
+#     https://github.com/Arakula/A09
+
+ASEMB=a09
+RM=rm
+SOURCE=coltab.asm
+TARGET=$(patsubst %.asm,%.hex,$(SOURCE))
+LIST=$(patsubst %.asm,%.lst,$(SOURCE))
+
+all: $(TARGET)
+
+$(TARGET): $(SOURCE)
+	$(ASEMB) -X$(TARGET) -L$(LIST) $<
+
+clean:
+	$(RM) -f $(TARGET) $(LIST)

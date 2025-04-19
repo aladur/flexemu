@@ -9,6 +9,7 @@
 ; 04.12.2020 W. Schwotzer Reduced all over cycle time
 ; 04.12.2020 W. Schwotzer Added two more color tables
 ; 04.12.2020 W. Schwotzer Leave emulator with ESC key
+; 19.04.2025 W. Schwotzer Add boot ROM identifier string
 
 ESC	EQU	$1B	; ESC Character to exit emulator
 MMU	EQU	$FFE0   ; I/O base address of memory management unit (MMU)
@@ -202,6 +203,9 @@ CT20	LSR	<COUNT
 COLTAB2 STA	<COUNT
 	BRA	CT20
 *
+ROMID	FCC	"EUROCOM COLOR TABLE V1.0"
+	FCB	$04
+
 SWI	RTI
 IRQ     LBRA	EMUEXIT
 *

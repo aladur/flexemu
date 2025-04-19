@@ -9,37 +9,38 @@
                       ; 04.12.2020 W. Schwotzer Reduced all over cycle time
                       ; 04.12.2020 W. Schwotzer Added two more color tables
                       ; 04.12.2020 W. Schwotzer Leave emulator with ESC key
- 
-                      ESC     EQU     $1B     ; ESC Character to exit emulator
-                      MMU     EQU     $FFE0   ; I/O base address of memory 
+                      ; 19.04.2025 W. Schwotzer Add identifier string
+
+ 001B                 ESC     EQU     $1B     ; ESC Character to exit emulator
+ FFE0                 MMU     EQU     $FFE0   ; I/O base address of memory 
 management unit (MMU)
-                      EMUCMD  EQU     $FD3C   ; flexemu emulator command 
+ FD3C                 EMUCMD  EQU     $FD3C   ; flexemu emulator command 
 register
-                      PIA1AD  EQU     $FCF0   ; Pia A data- and
-                      PIA1AC  EQU     $FCF1   ; control register
-                      DIRPAG  EQU     $EF00   ; Direct page base address
-                      SCRNBAS EQU     $0000   ; Screen base address
-                      SIZEX   EQU     64      ; Screen raster line size in 
+ FCF0                 PIA1AD  EQU     $FCF0   ; Pia A data- and
+ FCF1                 PIA1AC  EQU     $FCF1   ; control register
+ EF00                 DIRPAG  EQU     $EF00   ; Direct page base address
+ 0000                 SCRNBAS EQU     $0000   ; Screen base address
+ 0040                 SIZEX   EQU     64      ; Screen raster line size in 
 byte
-                      SIZEY   EQU     256     ; Number of raster lines on 
+ 0100                 SIZEY   EQU     256     ; Number of raster lines on 
 screen
-                      SCRNSIZ EQU     SIZEX*SIZEY ; Screen memory size in byte
-                      BLOCKH  EQU     SIZEY/8 ; Height of one block (COLTAB2)
-                      STACK   EQU     $F000   ; Base addr of stack / program 
+ 4000                 SCRNSIZ EQU     SIZEX*SIZEY ; Screen memory size in byte
+ 0020                 BLOCKH  EQU     SIZEY/8 ; Height of one block (COLTAB2)
+ F000                 STACK   EQU     $F000   ; Base addr of stack / program 
 start address
- 
+
                               ORG     DIRPAG
-                      COUNT   RMB     1       ; Base counter to change color 
+ EF00                 COUNT   RMB     1       ; Base counter to change color 
 bit
-                      COUNT1  RMB     1       ; Counter to change color bit
-                      LCOUNT  RMB     1       ; Inner loop counter (COLTAB2)
-                      BCOUNT  RMB     1       ; Color bar/block counter, 0..63
- 
+ EF01                 COUNT1  RMB     1       ; Counter to change color bit
+ EF02                 LCOUNT  RMB     1       ; Inner loop counter (COLTAB2)
+ EF03                 BCOUNT  RMB     1       ; Color bar/block counter, 0..63
+
                               ORG     STACK
- 
+
  F000 2037            START   BRA     START1
                       *
-                      VERS    EQU     4 ; Version number
+ 0004                 VERS    EQU     4 ; Version number
                       *
                       ; Color plane codes to switch MMU
  F002 0C              PLANES1 FCB     $0C ; Green low
@@ -57,7 +58,7 @@ bit
  F00D 0E                      FCB     $0E ; Red low
  F00E 06                      FCB     $06 ; Red high
  F00F 00                      FCB     $00 ; End marker
- 
+
                       ; Initialize PIA1 for keyboard input
  F010 3402            INITPIA PSHS    A
  F012 7FFCF1                  CLR     PIA1AC
@@ -82,12 +83,12 @@ bit
  F034 45584954        TEXIT   FCC     "EXIT"
  F038 00                      FCB     $00
                       *
-                      RESET   EQU     *
+ F039                 RESET   EQU     *
  F039 10CEF000        START1  LDS     #STACK
  F03D 86EF                    LDA     #DIRPAG/$100
  F03F 1F8B                    TFR     A,DP
  F041 8DCD                    BSR     INITPIA
- 
+
                       ; Top quater of screen: Horizontal color bar
  F043 8E0000                  LDX     #SCRNBAS
  F046 CEF002                  LDU     #PLANES1
@@ -110,7 +111,7 @@ changed color planes
  F064 811B                    CMPA    #ESC
  F066 26FA                    BNE     END8
  F068 8DBE                    BSR     EMUEXIT
- 
+
                       *****************************************
                       * Color table 1 algorithm               *
                       *****************************************
@@ -149,7 +150,7 @@ changed color planes
  F0B4 1F12            COLTAB1 TFR     X,Y
  F0B6 9700                    STA     <COUNT
  F0B8 20EC                    BRA     CT10
- 
+
                       ; Switch MMU
  F0BA 3404            SWTCH   PSHS    B
  F0BC 1F98                    TFR     B,A
@@ -164,7 +165,7 @@ changed color planes
  F0CC FDFFE0                  STD     MMU
  F0CF FDFFE2                  STD     MMU+2
  F0D2 3584                    PULS    B, PC
- 
+
                       *****************************************
                       * Color table 2 algorithm               *
                       *****************************************
@@ -210,38 +211,44 @@ changed color planes
  F12C 9700            COLTAB2 STA     <COUNT
  F12E 20F4                    BRA     CT20
                       *
- F130 3B              SWI     RTI
- F131 16FEF4          IRQ     LBRA    EMUEXIT
+ F130 4555524F434F4D  ROMID   FCC     "EUROCOM COLOR TABLE V1.0"
+ F137 20434F4C4F5220
+ F13E 5441424C452056
+ F145 312E30
+ F148 04                      FCB     $04
+
+ F149 3B              SWI     RTI
+ F14A 16FEDB          IRQ     LBRA    EMUEXIT
                       *
-                      ORIG   SET  *
- 
+ F14D                 ORIG   SET  *
+
                       ; Interrupt vectors
                               ORG     $FFF0
- 
+
  FFF0 0000                    FDB     0   ; reserved
- FFF2 F130                    FDB     SWI ; SWI3
- FFF4 F130                    FDB     SWI ; SWI2
- FFF6 F131                    FDB     IRQ ; FIRQ
- FFF8 F131                    FDB     IRQ ; IRQ
- FFFA F130                    FDB     SWI ; SWI
- FFFC F131                    FDB     IRQ ; NMI
+ FFF2 F149                    FDB     SWI ; SWI3
+ FFF4 F149                    FDB     SWI ; SWI2
+ FFF6 F14A                    FDB     IRQ ; FIRQ
+ FFF8 F14A                    FDB     IRQ ; IRQ
+ FFFA F149                    FDB     SWI ; SWI
+ FFFC F14A                    FDB     IRQ ; NMI
  FFFE F039                    FDB     RESET ; RESET
- 
-                              END START
+
+ F000                         END START
 
 SYMBOL TABLE
     BCOUNT 02 EF03    BLOCKH 00 0020   COLTAB1 02 F0B4   COLTAB2 02 F12C
      COUNT 02 EF00    COUNT1 02 EF01      CT10 02 F0A6      CT20 02 F124
     DIRPAG 00 EF00    EMUCMD 00 FD3C   EMUEXIT 02 F028      END8 02 F062
-       ESC 00 001B      INCH 02 F01F   INITPIA 02 F010       IRQ 02 F131
+       ESC 00 001B      INCH 02 F01F   INITPIA 02 F010       IRQ 02 F14A
     LCOUNT 02 EF02     LOOP1 02 F06D     LOOP2 02 F071     LOOP3 02 F06A
      LOOP4 02 F073     LOOP5 02 F0DE     LOOP6 02 F0E8     LOOP7 02 F0D4
      LOOP8 02 F0E2     LPEX9 02 F032    LPEXIT 02 F02B       MMU 00 FFE0
-    NOXKOR 02 F11A      ORIG 03 F134    PIA1AC 00 FCF1    PIA1AD 00 FCF0
-   PLANES1 02 F002   PLANES2 02 F009     RESET 02 F039   SCRNBAS 00 0000
-   SCRNSIZ 00 4000     SIZEX 00 0040     SIZEY 00 0100     STACK 00 F000
-     START 02 F000    START1 02 F039       SWI 02 F130     SWTCH 02 F0BA
-    SWTCHB 02 F0C6     TEXIT 02 F034      VERS 00 0004
-47 SYMBOLS
+    NOXKOR 02 F11A      ORIG 03 F14D    PIA1AC 00 FCF1    PIA1AD 00 FCF0
+   PLANES1 02 F002   PLANES2 02 F009     RESET 02 F039     ROMID 02 F130
+   SCRNBAS 00 0000   SCRNSIZ 00 4000     SIZEX 00 0040     SIZEY 00 0100
+     STACK 00 F000     START 02 F000    START1 02 F039       SWI 02 F149
+     SWTCH 02 F0BA    SWTCHB 02 F0C6     TEXIT 02 F034      VERS 00 0004
+48 SYMBOLS
 
 0 error(s), 0 warning(s)
