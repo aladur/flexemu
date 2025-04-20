@@ -97,6 +97,7 @@ set(flex_SOURCES
     fileread.cpp
     filfschk.cpp
     flexerr.cpp
+    free.cpp
     idircnt.cpp
     iffilcnt.cpp
     ifilecnt.cpp
@@ -140,6 +141,7 @@ set(flex_HEADER
     filfschk.h
     flexemu.h
     flexerr.h
+    free.h
     fversion.h
     idircnt.h
     iffilcnt.h

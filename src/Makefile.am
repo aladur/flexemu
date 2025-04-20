@@ -540,6 +540,7 @@ libflex_a_SOURCES = \
 	fileread.cpp \
 	filfschk.cpp \
 	flexerr.cpp \
+	free.cpp \
 	idircnt.cpp \
 	iffilcnt.cpp \
 	ifilecnt.cpp \
@@ -581,6 +582,7 @@ libflex_a_SOURCES = \
 	filfschk.h \
 	flexemu.h \
 	flexerr.h \
+	free.h \
 	fversion.h \
 	idircnt.h \
 	iffilcnt.h \

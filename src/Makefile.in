@@ -140,11 +140,11 @@ am_libflex_a_OBJECTS = libflex_a-bdate.$(OBJEXT) \
 	libflex_a-fdirent.$(OBJEXT) libflex_a-ffilebuf.$(OBJEXT) \
 	libflex_a-ffilecnt.$(OBJEXT) libflex_a-filecnts.$(OBJEXT) \
 	libflex_a-fileread.$(OBJEXT) libflex_a-filfschk.$(OBJEXT) \
-	libflex_a-flexerr.$(OBJEXT) libflex_a-idircnt.$(OBJEXT) \
-	libflex_a-iffilcnt.$(OBJEXT) libflex_a-ifilecnt.$(OBJEXT) \
-	libflex_a-mdcrtape.$(OBJEXT) libflex_a-memory.$(OBJEXT) \
-	libflex_a-misc1.$(OBJEXT) libflex_a-rfilecnt.$(OBJEXT) \
-	libflex_a-rndcheck.$(OBJEXT)
+	libflex_a-flexerr.$(OBJEXT) libflex_a-free.$(OBJEXT) \
+	libflex_a-idircnt.$(OBJEXT) libflex_a-iffilcnt.$(OBJEXT) \
+	libflex_a-ifilecnt.$(OBJEXT) libflex_a-mdcrtape.$(OBJEXT) \
+	libflex_a-memory.$(OBJEXT) libflex_a-misc1.$(OBJEXT) \
+	libflex_a-rfilecnt.$(OBJEXT) libflex_a-rndcheck.$(OBJEXT)
 libflex_a_OBJECTS = $(am_libflex_a_OBJECTS)
 libfmt_a_AR = $(AR) $(ARFLAGS)
 libfmt_a_LIBADD =
@@ -373,7 +373,7 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/libflex_a-filecnts.Po \
 	./$(DEPDIR)/libflex_a-fileread.Po \
 	./$(DEPDIR)/libflex_a-filfschk.Po \
-	./$(DEPDIR)/libflex_a-flexerr.Po \
+	./$(DEPDIR)/libflex_a-flexerr.Po ./$(DEPDIR)/libflex_a-free.Po \
 	./$(DEPDIR)/libflex_a-idircnt.Po \
 	./$(DEPDIR)/libflex_a-iffilcnt.Po \
 	./$(DEPDIR)/libflex_a-ifilecnt.Po \
@@ -1222,6 +1222,7 @@ libflex_a_SOURCES = \
 	fileread.cpp \
 	filfschk.cpp \
 	flexerr.cpp \
+	free.cpp \
 	idircnt.cpp \
 	iffilcnt.cpp \
 	ifilecnt.cpp \
@@ -1263,6 +1264,7 @@ libflex_a_SOURCES = \
 	filfschk.h \
 	flexemu.h \
 	flexerr.h \
+	free.h \
 	fversion.h \
 	idircnt.h \
 	iffilcnt.h \
@@ -1609,6 +1611,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fileread.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-filfschk.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-flexerr.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-free.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-idircnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-iffilcnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-ifilecnt.Po@am__quote@ # am--include-marker
@@ -1989,6 +1992,20 @@ libflex_a-flexerr.obj: flexerr.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexerr.cpp' object='libflex_a-flexerr.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-flexerr.obj `if test -f 'flexerr.cpp'; then $(CYGPATH_W) 'flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/flexerr.cpp'; fi`
+
+libflex_a-free.o: free.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-free.o -MD -MP -MF $(DEPDIR)/libflex_a-free.Tpo -c -o libflex_a-free.o `test -f 'free.cpp' || echo '$(srcdir)/'`free.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-free.Tpo $(DEPDIR)/libflex_a-free.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='free.cpp' object='libflex_a-free.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-free.o `test -f 'free.cpp' || echo '$(srcdir)/'`free.cpp
+
+libflex_a-free.obj: free.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-free.obj -MD -MP -MF $(DEPDIR)/libflex_a-free.Tpo -c -o libflex_a-free.obj `if test -f 'free.cpp'; then $(CYGPATH_W) 'free.cpp'; else $(CYGPATH_W) '$(srcdir)/free.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-free.Tpo $(DEPDIR)/libflex_a-free.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='free.cpp' object='libflex_a-free.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-free.obj `if test -f 'free.cpp'; then $(CYGPATH_W) 'free.cpp'; else $(CYGPATH_W) '$(srcdir)/free.cpp'; fi`
 
 libflex_a-idircnt.o: idircnt.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-idircnt.o -MD -MP -MF $(DEPDIR)/libflex_a-idircnt.Tpo -c -o libflex_a-idircnt.o `test -f 'idircnt.cpp' || echo '$(srcdir)/'`idircnt.cpp
@@ -4078,6 +4095,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-fileread.Po
 	-rm -f ./$(DEPDIR)/libflex_a-filfschk.Po
 	-rm -f ./$(DEPDIR)/libflex_a-flexerr.Po
+	-rm -f ./$(DEPDIR)/libflex_a-free.Po
 	-rm -f ./$(DEPDIR)/libflex_a-idircnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-iffilcnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-ifilecnt.Po
@@ -4266,6 +4284,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-fileread.Po
 	-rm -f ./$(DEPDIR)/libflex_a-filfschk.Po
 	-rm -f ./$(DEPDIR)/libflex_a-flexerr.Po
+	-rm -f ./$(DEPDIR)/libflex_a-free.Po
 	-rm -f ./$(DEPDIR)/libflex_a-idircnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-iffilcnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-ifilecnt.Po
