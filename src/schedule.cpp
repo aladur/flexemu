@@ -271,7 +271,7 @@ void Scheduler::run()
     statemachine(CpuState::Run);
 }
 
-void Scheduler::sync_exec(BCommandPtr new_command)
+void Scheduler::sync_exec(BCommandSPtr new_command)
 {
     std::lock_guard<std::mutex> guard(command_mutex);
 

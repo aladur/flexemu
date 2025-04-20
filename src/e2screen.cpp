@@ -159,7 +159,7 @@ void E2Screen::keyPressEvent(QKeyEvent *event)
         keyboardIO.put_char_parallel(bKey, do_notify);
         if (do_notify)
         {
-            auto command = BCommandPtr(
+            auto command = BCommandSPtr(
                 new CActiveTransition(pia1, Mc6821::ControlLine::CA1));
             scheduler.sync_exec(std::move(command));
         }

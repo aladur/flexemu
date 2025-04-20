@@ -38,6 +38,6 @@ protected:
     BCommand() = default;
 };
 
-using BCommandPtr = std::unique_ptr<BCommand>;
+using BCommandSPtr = std::shared_ptr<BCommand>;
 
 #endif

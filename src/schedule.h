@@ -63,7 +63,7 @@ public:
 
     // Thread support
 public:
-    void sync_exec(BCommandPtr new_command);
+    void sync_exec(BCommandSPtr new_command);
     void run();
 
 protected:
@@ -75,7 +75,7 @@ protected:
     std::mutex command_mutex;
     std::mutex status_mutex;
     std::mutex irq_status_mutex;
-    std::vector<BCommandPtr> commands;
+    std::vector<BCommandSPtr> commands;
 
     // Timer interface:
 public:

@@ -55,7 +55,7 @@ void Pia1::requestInputA()
     keyboardIO.has_key_parallel(do_notify);
     if (do_notify)
     {
-        auto command = BCommandPtr(
+        auto command = BCommandSPtr(
                 new CActiveTransition(*this, Mc6821::ControlLine::CA1));
 
         scheduler.sync_exec(std::move(command));
@@ -72,7 +72,7 @@ Byte Pia1::readInputA()
         ora = keyboardIO.read_char_parallel(do_notify2);
         if (do_notify2)
         {
-            auto command = BCommandPtr(
+            auto command = BCommandSPtr(
                     new CActiveTransition(*this, Mc6821::ControlLine::CA1));
 
             scheduler.sync_exec(std::move(command));
@@ -81,7 +81,7 @@ Byte Pia1::readInputA()
 
     if (do_notify1)
     {
-        auto command = BCommandPtr(
+        auto command = BCommandSPtr(
                 new CActiveTransition(*this, Mc6821::ControlLine::CA1));
 
         scheduler.sync_exec(std::move(command));

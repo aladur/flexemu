@@ -348,7 +348,7 @@ void QtGui::OnPreferences()
                 {
                     auto f = options.frequency;
                     auto command =
-                        BCommandPtr(new CSetFrequency(scheduler, f));
+                        BCommandSPtr(new CSetFrequency(scheduler, f));
                     scheduler.sync_exec(std::move(command));
                     UpdateCpuFrequencyCheck();
                     isWriteOptions = true;
@@ -610,7 +610,7 @@ void QtGui::OnCpuLogging()
     if (result == QDialog::Accepted)
     {
         cpuLoggerConfig = ui.GetData();
-        scheduler.sync_exec(BCommandPtr(new CmdSetMc6809LoggerConfig(
+        scheduler.sync_exec(BCommandSPtr(new CmdSetMc6809LoggerConfig(
                         cpu, cpuLoggerConfig)));
     }
 }
@@ -1514,7 +1514,7 @@ void QtGui::SetCpuFrequency(float frequency)
 {
     options.frequency = frequency;
     oldOptions.frequency = frequency;
-    scheduler.sync_exec(BCommandPtr(new CSetFrequency(scheduler, frequency)));
+    scheduler.sync_exec(BCommandSPtr(new CSetFrequency(scheduler, frequency)));
     UpdateCpuFrequencyCheck();
     WriteOneOption(options, FlexemuOptionId::Frequency);
 }
