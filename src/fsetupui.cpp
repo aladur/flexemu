@@ -651,7 +651,7 @@ bool FlexemuOptionsUi::Validate()
         c_tabWidget->setCurrentIndex(3);
         e_monitorPgm->setFocus(Qt::OtherFocusReason);
         QMessageBox::critical(dialog, tr("FSetup Error"),
-                              QString("Without a monitor program flexemu "
+                              QString("Without a boot ROM file flexemu "
                                       "will not work.\nHint: ") + monitor +
                                       " is a good choice.");
         return false;
@@ -965,8 +965,8 @@ void FlexemuOptionsUi::OnSelectFile(QLineEdit &lineEdit, FileType type)
         case FileType::HexBinaryFile:
             filter = "*.hex";
             path = QFileDialog::getOpenFileName(
-                dialog, tr("Select a monitor program"), path,
-                tr("All monitor files (*.hex *.s19 *.srec *.mot *.cmd *.bin);;"
+                dialog, tr("Select a boot ROM file"), path,
+                tr("All boot ROM files (*.hex *.s19 *.srec *.mot *.cmd *.bin);;"
                     "Intel HEX files (*.hex);;"
                     "Motorola S-Record files (*.s19 *.srec *.mot);;"
                     "FLEX binary files (*.cmd *.bin);;"
@@ -1024,7 +1024,7 @@ void FlexemuOptionsUi::OnSelectDiskMonitorDir()
 {
     auto new_disk_dir =
              QFileDialog::getExistingDirectory(dialog,
-                 tr("Select folder with DSK or monitor files"),
+                 tr("Select folder with disk image or boot ROM files"),
                  e_diskMonitorDir->text(),
                  QFileDialog::ShowDirsOnly);
 
