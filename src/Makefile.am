@@ -206,6 +206,7 @@ flexemu_SOURCES = \
 	bui.cpp \
 	bytereg.cpp \
 	cacttrns.cpp \
+	ccopymem.cpp \
 	clogfile.cpp \
 	colors.cpp \
 	command.cpp \
@@ -285,6 +286,7 @@ flexemu_SOURCES = \
 	bui.h \
 	bytereg.h \
 	cacttrns.h \
+	ccopymem.h \
 	cistring.h \
 	clogfile.h \
 	colors.h \

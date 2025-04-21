@@ -29,6 +29,7 @@
 #include "vico2.h"
 #include "schedule.h"
 #include "csetfreq.h"
+#include "ccopymem.h"
 #include "clogfile.h"
 #include "mc6809.h"
 #include "mc6809st.h"
@@ -49,6 +50,8 @@
 #include "colors.h"
 #include "poutwin.h"
 #include "fversion.h"
+#include "free.h"
+#include "bintervl.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
 #include "ui_about.h"
@@ -102,6 +105,7 @@
 #include "warnon.h"
 #include <cmath>
 #include <array>
+#include <regex>
 
 int QtGui::preferencesTabIndex = 0;
 
@@ -488,6 +492,7 @@ void QtGui::OnCpuNext()
 
 void QtGui::OnCpuReset()
 {
+    osName.clear();
     scheduler.request_new_state(CpuState::Reset);
     isRunning = false;
     UpdateCpuRunStopCheck();
@@ -495,6 +500,7 @@ void QtGui::OnCpuReset()
 
 void QtGui::OnCpuResetRun()
 {
+    osName.clear();
     scheduler.request_new_state(CpuState::ResetRun);
     isRunning = true;
     UpdateCpuRunStopCheck();
@@ -696,14 +702,23 @@ void QtGui::OnTimer()
 {
     scheduler.timer_elapsed();
 
+    // check every 1 second for
+    // - Parse name of Boot ROM
+    // - Parse name of loaded operating system.
+    if (++timerTicks % (1000000 / TIME_BASE) == 0)
+    {
+        timerTicks = 0;
+        ParseRomName();
+        ParseOsName();
+    }
+
     // check every 100 ms for
     // - CPU view update
     // - Disk status update
     // - interrupt info update
     // - CPU frequency update (if newFrequency has value)
-    if (++timerTicks % (100000 / TIME_BASE) == 0)
+    if (timerTicks % (100000 / TIME_BASE) == 0)
     {
-        timerTicks = 0;
         Word t;
         // Check for disk status update every 200 ms
         static tInterruptStatus irqStat;
@@ -2112,6 +2127,7 @@ void QtGui::keyPressEvent(QKeyEvent *event)
             switch (event->key())
             {
                 case Qt::Key_Pause:
+                    osName.clear();
                     scheduler.request_new_state(CpuState::ResetRun);
                     event->accept();
                     return;
@@ -2262,3 +2278,59 @@ void QtGui::UpdateFrom(NotifyId id, void *param)
 #endif
 }
 
+void QtGui::ParseRomName()
+{
+    static const auto flags =
+        std::regex_constants::extended | std::regex_constants::icase;
+    static const BInterval<DWord> romAddrRange(0xF000U, 0xFFFFU);
+
+    if (!flx::is_range_in_ranges(romAddrRange, memory.GetAddressRanges()) ||
+        !isParseRomName || !romName.empty())
+    {
+        return;
+    }
+
+    if (!copyRomCommand)
+    {
+        copyRomCommand = std::make_shared<CCopyMemory>(memory, romAddrRange);
+        scheduler.sync_exec(
+            std::dynamic_pointer_cast<BCommand>(copyRomCommand));
+    }
+    else
+    {
+        static const std::regex rom_name_regex(".*(eurocom.*)", flags);
+        romName = flx::find_regex_string(rom_name_regex, '\x04',
+            copyRomCommand->GetData());
+        isParseRomName = false; // Parse ROM name only once.
+    }
+}
+
+void QtGui::ParseOsName()
+{
+    static const auto flags =
+        std::regex_constants::extended | std::regex_constants::icase;
+    static const BInterval<DWord> flexAddrRange(0xC700, 0xDFFF);
+
+    if (!flx::is_range_in_ranges(flexAddrRange, memory.GetAddressRanges()) ||
+        !osName.empty())
+    {
+        return;
+    }
+
+    if (!copyOsCommand)
+    {
+        copyOsCommand = std::make_shared<CCopyMemory>(memory, flexAddrRange);
+        scheduler.sync_exec(std::dynamic_pointer_cast<BCommand>(copyOsCommand));
+    }
+    else
+    {
+        static const std::regex os_name_regex(".*(flex.*)", flags);
+        osName = flx::find_regex_string(os_name_regex, '\x04',
+            copyOsCommand->GetData());
+        if (osName.empty())
+        {
+            scheduler.sync_exec(
+                std::dynamic_pointer_cast<BCommand>(copyOsCommand));
+        }
+    }
+}

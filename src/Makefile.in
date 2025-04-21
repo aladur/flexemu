@@ -179,33 +179,33 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-apprun.$(OBJEXT) flexemu-bjoystck.$(OBJEXT) \
 	flexemu-blinxsys.$(OBJEXT) flexemu-brkptui.$(OBJEXT) \
 	flexemu-bui.$(OBJEXT) flexemu-bytereg.$(OBJEXT) \
-	flexemu-cacttrns.$(OBJEXT) flexemu-clogfile.$(OBJEXT) \
-	flexemu-colors.$(OBJEXT) flexemu-command.$(OBJEXT) \
-	flexemu-csetfreq.$(OBJEXT) flexemu-da6809.$(OBJEXT) \
-	flexemu-drawnwid.$(OBJEXT) flexemu-drisel.$(OBJEXT) \
-	flexemu-e2floppy.$(OBJEXT) flexemu-e2screen.$(OBJEXT) \
-	flexemu-efslctle.$(OBJEXT) flexemu-fdoptman.$(OBJEXT) \
-	flexemu-flblfile.$(OBJEXT) flexemu-foptman.$(OBJEXT) \
-	flexemu-fsetupui.$(OBJEXT) flexemu-fversion.$(OBJEXT) \
-	flexemu-inout.$(OBJEXT) flexemu-iodevdbg.$(OBJEXT) \
-	flexemu-joystick.$(OBJEXT) flexemu-keyboard.$(OBJEXT) \
-	flexemu-logfilui.$(OBJEXT) flexemu-main.$(OBJEXT) \
-	flexemu-mc146818.$(OBJEXT) flexemu-mc6809.$(OBJEXT) \
-	flexemu-mc6809in.$(OBJEXT) flexemu-mc6809lg.$(OBJEXT) \
-	flexemu-mc6809st.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
-	flexemu-mc6850.$(OBJEXT) flexemu-mmu.$(OBJEXT) \
-	flexemu-ndircont.$(OBJEXT) flexemu-pagedet.$(OBJEXT) \
-	flexemu-pagedetd.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
-	flexemu-pia2.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
-	flexemu-poutwin.$(OBJEXT) flexemu-poverhlp.$(OBJEXT) \
-	flexemu-qtfree.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
-	flexemu-schedule.$(OBJEXT) flexemu-sodiff.$(OBJEXT) \
-	flexemu-soptions.$(OBJEXT) flexemu-termimpc.$(OBJEXT) \
-	flexemu-termimpd.$(OBJEXT) flexemu-termimpf.$(OBJEXT) \
-	flexemu-termimps.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
-	flexemu-tstdev.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
-	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
-	flexemu-winmain.$(OBJEXT)
+	flexemu-cacttrns.$(OBJEXT) flexemu-ccopymem.$(OBJEXT) \
+	flexemu-clogfile.$(OBJEXT) flexemu-colors.$(OBJEXT) \
+	flexemu-command.$(OBJEXT) flexemu-csetfreq.$(OBJEXT) \
+	flexemu-da6809.$(OBJEXT) flexemu-drawnwid.$(OBJEXT) \
+	flexemu-drisel.$(OBJEXT) flexemu-e2floppy.$(OBJEXT) \
+	flexemu-e2screen.$(OBJEXT) flexemu-efslctle.$(OBJEXT) \
+	flexemu-fdoptman.$(OBJEXT) flexemu-flblfile.$(OBJEXT) \
+	flexemu-foptman.$(OBJEXT) flexemu-fsetupui.$(OBJEXT) \
+	flexemu-fversion.$(OBJEXT) flexemu-inout.$(OBJEXT) \
+	flexemu-iodevdbg.$(OBJEXT) flexemu-joystick.$(OBJEXT) \
+	flexemu-keyboard.$(OBJEXT) flexemu-logfilui.$(OBJEXT) \
+	flexemu-main.$(OBJEXT) flexemu-mc146818.$(OBJEXT) \
+	flexemu-mc6809.$(OBJEXT) flexemu-mc6809in.$(OBJEXT) \
+	flexemu-mc6809lg.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
+	flexemu-mc6821.$(OBJEXT) flexemu-mc6850.$(OBJEXT) \
+	flexemu-mmu.$(OBJEXT) flexemu-ndircont.$(OBJEXT) \
+	flexemu-pagedet.$(OBJEXT) flexemu-pagedetd.$(OBJEXT) \
+	flexemu-pia1.$(OBJEXT) flexemu-pia2.$(OBJEXT) \
+	flexemu-pia2v5.$(OBJEXT) flexemu-poutwin.$(OBJEXT) \
+	flexemu-poverhlp.$(OBJEXT) flexemu-qtfree.$(OBJEXT) \
+	flexemu-qtgui.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
+	flexemu-sodiff.$(OBJEXT) flexemu-soptions.$(OBJEXT) \
+	flexemu-termimpc.$(OBJEXT) flexemu-termimpd.$(OBJEXT) \
+	flexemu-termimpf.$(OBJEXT) flexemu-termimps.$(OBJEXT) \
+	flexemu-terminal.$(OBJEXT) flexemu-tstdev.$(OBJEXT) \
+	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
+	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
 am__objects_1 =
 am__objects_2 = $(am__objects_1)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
@@ -288,6 +288,7 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/flexemu-blinxsys.Po ./$(DEPDIR)/flexemu-brkptui.Po \
 	./$(DEPDIR)/flexemu-brkptui_moc.Po ./$(DEPDIR)/flexemu-bui.Po \
 	./$(DEPDIR)/flexemu-bytereg.Po ./$(DEPDIR)/flexemu-cacttrns.Po \
+	./$(DEPDIR)/flexemu-ccopymem.Po \
 	./$(DEPDIR)/flexemu-clogfile.Po ./$(DEPDIR)/flexemu-colors.Po \
 	./$(DEPDIR)/flexemu-command.Po ./$(DEPDIR)/flexemu-csetfreq.Po \
 	./$(DEPDIR)/flexemu-da6809.Po ./$(DEPDIR)/flexemu-drawnwid.Po \
@@ -888,6 +889,7 @@ flexemu_SOURCES = \
 	bui.cpp \
 	bytereg.cpp \
 	cacttrns.cpp \
+	ccopymem.cpp \
 	clogfile.cpp \
 	colors.cpp \
 	command.cpp \
@@ -967,6 +969,7 @@ flexemu_SOURCES = \
 	bui.h \
 	bytereg.h \
 	cacttrns.h \
+	ccopymem.h \
 	cistring.h \
 	clogfile.h \
 	colors.h \
@@ -1505,6 +1508,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bytereg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-cacttrns.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ccopymem.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-clogfile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-colors.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-command.Po@am__quote@ # am--include-marker
@@ -2398,6 +2402,20 @@ flexemu-cacttrns.obj: cacttrns.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cacttrns.cpp' object='flexemu-cacttrns.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-cacttrns.obj `if test -f 'cacttrns.cpp'; then $(CYGPATH_W) 'cacttrns.cpp'; else $(CYGPATH_W) '$(srcdir)/cacttrns.cpp'; fi`
+
+flexemu-ccopymem.o: ccopymem.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-ccopymem.o -MD -MP -MF $(DEPDIR)/flexemu-ccopymem.Tpo -c -o flexemu-ccopymem.o `test -f 'ccopymem.cpp' || echo '$(srcdir)/'`ccopymem.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-ccopymem.Tpo $(DEPDIR)/flexemu-ccopymem.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ccopymem.cpp' object='flexemu-ccopymem.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-ccopymem.o `test -f 'ccopymem.cpp' || echo '$(srcdir)/'`ccopymem.cpp
+
+flexemu-ccopymem.obj: ccopymem.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-ccopymem.obj -MD -MP -MF $(DEPDIR)/flexemu-ccopymem.Tpo -c -o flexemu-ccopymem.obj `if test -f 'ccopymem.cpp'; then $(CYGPATH_W) 'ccopymem.cpp'; else $(CYGPATH_W) '$(srcdir)/ccopymem.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-ccopymem.Tpo $(DEPDIR)/flexemu-ccopymem.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ccopymem.cpp' object='flexemu-ccopymem.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-ccopymem.obj `if test -f 'ccopymem.cpp'; then $(CYGPATH_W) 'ccopymem.cpp'; else $(CYGPATH_W) '$(srcdir)/ccopymem.cpp'; fi`
 
 flexemu-clogfile.o: clogfile.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-clogfile.o -MD -MP -MF $(DEPDIR)/flexemu-clogfile.Tpo -c -o flexemu-clogfile.o `test -f 'clogfile.cpp' || echo '$(srcdir)/'`clogfile.cpp
@@ -3989,6 +4007,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-bui.Po
 	-rm -f ./$(DEPDIR)/flexemu-bytereg.Po
 	-rm -f ./$(DEPDIR)/flexemu-cacttrns.Po
+	-rm -f ./$(DEPDIR)/flexemu-ccopymem.Po
 	-rm -f ./$(DEPDIR)/flexemu-clogfile.Po
 	-rm -f ./$(DEPDIR)/flexemu-colors.Po
 	-rm -f ./$(DEPDIR)/flexemu-command.Po
@@ -4178,6 +4197,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-bui.Po
 	-rm -f ./$(DEPDIR)/flexemu-bytereg.Po
 	-rm -f ./$(DEPDIR)/flexemu-cacttrns.Po
+	-rm -f ./$(DEPDIR)/flexemu-ccopymem.Po
 	-rm -f ./$(DEPDIR)/flexemu-clogfile.Po
 	-rm -f ./$(DEPDIR)/flexemu-colors.Po
 	-rm -f ./$(DEPDIR)/flexemu-command.Po

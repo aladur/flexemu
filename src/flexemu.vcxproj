@@ -215,6 +215,7 @@
     <ClCompile Include="bui.cpp" />
     <ClCompile Include="bytereg.cpp" />
     <ClCompile Include="cacttrns.cpp" />
+    <ClCompile Include="ccopymem.cpp" />
     <ClCompile Include="clogfile.cpp" />
     <ClCompile Include="colors.cpp" />
     <ClCompile Include="command.cpp" />
@@ -423,6 +424,7 @@
     <ClInclude Include="bui.h" />
     <ClInclude Include="bytereg.h" />
     <ClInclude Include="cacttrns.h" />
+    <ClInclude Include="ccopymem.h" />
     <ClInclude Include="cistring.h" />
     <ClInclude Include="clogfile.h" />
     <ClInclude Include="colors.h" />

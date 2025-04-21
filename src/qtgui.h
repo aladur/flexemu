@@ -31,6 +31,7 @@
 #include "soptions.h"
 #include "e2.h"
 #include "bobserv.h"
+#include "ccopymem.h"
 #include <vector>
 #include <string>
 #include <memory>
@@ -224,6 +225,8 @@ private:
     void WriteOneOption(sOptions options, FlexemuOptionId optionId) const;
     void SetCpuFrequency(float frequency);
     std::string GetKeyString(Byte key);
+    void ParseRomName();
+    void ParseOsName();
 
     // QWidget Overrides
     bool event(QEvent *event) override;
@@ -297,6 +300,11 @@ private:
     std::vector<Byte> newKeys;
     std::mutex newKeysMutex;
     Mc6809LoggerConfig cpuLoggerConfig;
+    bool isParseRomName{true};
+    std::string romName;
+    std::string osName;
+    CCopyMemorySPtr copyRomCommand;
+    CCopyMemorySPtr copyOsCommand;
 
     Scheduler &scheduler;
     VideoControl1 &vico1;

@@ -36,6 +36,9 @@
     <ClCompile Include="cacttrns.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ccopymem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="clogfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -280,6 +283,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cacttrns.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ccopymem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cistring.h">
