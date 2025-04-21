@@ -32,6 +32,7 @@
 #include <memory>
 #include <vector>
 #include "iodevice.h"
+#include "memsrc.h"
 #include "memtgt.h"
 #include "e2.h"
 #include "bobserv.h"
@@ -63,7 +64,8 @@ struct ioDeviceProperties
 
 using DevicesProperties_t = std::vector<struct ioDeviceProperties>;
 
-class Memory : public MemoryTarget<DWord>, public BObserver
+class Memory : public MemorySource<DWord>, public MemoryTarget<DWord>,
+               public BObserver
 {
 public:
     explicit Memory(const struct sOptions &options);
@@ -82,6 +84,7 @@ private:
     Byte ramBank{0};
     std::vector<Byte> memory;
     std::vector<Byte> video_ram;
+    MemorySource<DWord>::AddressRanges addressRanges;
 
     // I/O device access
     std::vector<std::reference_wrapper<IoDevice> > ioDevices;
@@ -124,6 +127,11 @@ public:
     // BObserver interface
 public:
     void UpdateFrom(NotifyId id, void *param = nullptr) override;
+
+    // memory source interface
+public:
+    const MemorySource<DWord>::AddressRanges& GetAddressRanges() const override;
+    void CopyTo(Byte *target, DWord address, DWord size) const override;
 
     // memory target interface
 public:

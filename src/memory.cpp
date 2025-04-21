@@ -23,8 +23,10 @@
 
 #include <sstream>
 #include "memory.h"
+#include "bintervl.h"
 #include "fcnffile.h"
 #include "soptions.h"
+#include "free.h"
 #include <cstring>
 #include <cassert>
 #include <algorithm>
@@ -55,6 +57,18 @@ Memory::Memory(const struct sOptions &options) :
 
     init_memory();
     init_blocks_to_update();
+
+    if (isEurocom2V5)
+    {
+        // 48 KByte mainboard memory + 4KByte BOOT rom.
+        addressRanges.emplace_back(0x0000U, 0xBFFFU);
+        addressRanges.emplace_back(0xF000U, 0xFFFFU);
+    }
+    else
+    {
+        // 60 KByte mainboard memory + 4KByte BOOT rom.
+        addressRanges.emplace_back(0x0000U, 0xFFFFU);
+    }
 }
 
 Memory::~Memory()
@@ -379,6 +393,23 @@ void Memory::CopyFrom(const Byte *source, DWord address, DWord size)
     }
 
     std::memcpy(memory.data() + address, source, secureSize);
+}
+
+void Memory::CopyTo(Byte *target, DWord address, DWord size) const
+{
+    BInterval<DWord> copyRange(address, address + size - 1U);
+
+    if (!flx::is_range_in_ranges(copyRange, addressRanges))
+    {
+        throw std::out_of_range("address is out of valid range");
+    }
+
+    std::memcpy(target, memory.data() + address, size);
+}
+
+const MemorySource<DWord>::AddressRanges& Memory::GetAddressRanges() const
+{
+    return addressRanges;
 }
 
 unsigned Memory::get_ram_size() const

@@ -61,3 +61,12 @@ std::string flx::find_regex_string(const std::regex &regex,
 
     return {};
 }
+
+bool flx::is_range_in_ranges(const BInterval<DWord> &range,
+        const MemorySource<DWord>::AddressRanges &ranges)
+{
+    return (std::any_of(ranges.cbegin(), ranges.cend(),
+        [&](const auto &addressRange) {
+            return subset(range, addressRange);
+        }));
+}

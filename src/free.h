@@ -22,6 +22,8 @@
 
 
 #include "typedefs.h"
+#include "bintervl.h"
+#include "memsrc.h"
 #include <string>
 #include <regex>
 
@@ -30,4 +32,7 @@ namespace flx
 {
     extern std::string find_regex_string(const std::regex &regex,
             Byte eos, const std::vector<Byte> &data);
+    extern bool is_range_in_ranges(
+            const BInterval<DWord> &range,
+            const MemorySource<DWord>::AddressRanges &ranges);
 }

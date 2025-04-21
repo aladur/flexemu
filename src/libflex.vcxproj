@@ -233,6 +233,7 @@
     <ClCompile Include="fileread.cpp" />
     <ClCompile Include="filfschk.cpp" />
     <ClCompile Include="flexerr.cpp" />
+    <ClCompile Include="free.cpp" />
     <ClCompile Include="idircnt.cpp" />
     <ClCompile Include="iffilcnt.cpp" />
     <ClCompile Include="ifilecnt.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="filfschk.h" />
     <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />
+    <ClInclude Include="free.h" />
     <ClInclude Include="fversion.h" />
     <ClInclude Include="idircnt.h" />
     <ClInclude Include="iffilcnt.h" />
