@@ -34,11 +34,16 @@
 #include "typedefs.h"
 #include "e2.h"
 #include <string>
+#include <vector>
+#include <utility>
 #include <algorithm>
 
 class QAction;
 class QMenu;
 class FlexDiskAttributes;
+
+using ItemPairList_t = std::vector<std::pair<
+          std::string, std::vector<std::string> > >;
 
 extern QFont GetFont(const QString &fontName);
 extern QString GetWindowGeometry(const QWidget &w);
@@ -50,6 +55,7 @@ extern void OpenDiskStatusDialog(QWidget *parent,
         std::optional<Word> driveNumber = std::nullopt);
 extern QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
 extern int IconSizeToIndex(const QSize &iconSize);
+extern QString ConvertItemPairListToHtml(const ItemPairList_t &pairs);
 
 class UpdateWindowGeometryFtor
 {

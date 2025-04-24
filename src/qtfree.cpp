@@ -308,3 +308,38 @@ int IconSizeToIndex(const QSize &iconSize)
    return (iconSize.width() >= 32 || iconSize.height() >= 32) ? 2 : index;
 }
 
+QString ConvertItemPairListToHtml(const ItemPairList_t &pairs)
+{
+    std::stringstream stream;
+
+    stream << "<table>";
+    for (const auto &pair : pairs)
+    {
+        if (pair.second.size() == 1U)
+        {
+            stream << "<tr><td>&#x2022;</td><td>" << pair.first <<
+                "</td><td>" << pair.second[0] + "</td></tr>\n";
+        }
+        else
+        {
+            stream << "<tr><td>&#x2022;</td><td colspan=\"2\">" <<
+                pair.first << "</td></tr>";
+            stream << "<tr><td></td><td></td><td><table>";
+            for (const auto &value : pair.second)
+            {
+                const auto items = flx::split(value, ' ', true);
+
+                stream << "<tr>";
+                for (const auto &item : items)
+                {
+                    stream << "<td>" << item << "</td>";
+                }
+                stream << "</tr>";
+            }
+            stream << "</table></td></tr>";
+        }
+    }
+    stream << "</table>";
+
+    return QString::fromStdString(stream.str());
+}

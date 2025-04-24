@@ -32,6 +32,7 @@
 #include "e2.h"
 #include "bobserv.h"
 #include "ccopymem.h"
+#include "qtfree.h"
 #include <vector>
 #include <string>
 #include <memory>
@@ -86,6 +87,7 @@ class QToolBar;
 class QStatusBar;
 class QStackedWidget;
 class QComboBox;
+class QTextBrowser;
 struct sOptions;
 
 using ColorTable = QVector<QRgb>;
@@ -227,6 +229,12 @@ private:
     std::string GetKeyString(Byte key);
     void ParseRomName();
     void ParseOsName();
+    ItemPairList_t GetConfiguration() const;
+    std::string GetMainboardName() const;
+    void AboutTabChanged(QTextBrowser *browser) const;
+    QString GetAboutHtmlText() const;
+    QString GetVersionsHtmlText() const;
+    QString GetConfigurationHtmlText() const;
 
     // QWidget Overrides
     bool event(QEvent *event) override;

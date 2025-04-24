@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>560</width>
-    <height>370</height>
+    <height>480</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>560</width>
-    <height>370</height>
+    <height>480</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -84,7 +84,7 @@
      <item>
       <widget class="QTabWidget" name="c_tabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="w_about">
         <property name="sizePolicy">
@@ -135,6 +135,16 @@
             <bool>true</bool>
            </property>
           </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="w_configuration">
+        <attribute name="title">
+         <string>Configuration</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QTextBrowser" name="e_configuration"/>
          </item>
         </layout>
        </widget>

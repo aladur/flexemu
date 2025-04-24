@@ -46,7 +46,6 @@
 #include "sodiff.h"
 #include "foptman.h"
 #include "fsetupui.h"
-#include "qtfree.h"
 #include "colors.h"
 #include "poutwin.h"
 #include "fversion.h"
@@ -105,6 +104,7 @@
 #include "warnon.h"
 #include <cmath>
 #include <array>
+#include <vector>
 #include <regex>
 
 int QtGui::preferencesTabIndex = 0;
@@ -658,44 +658,98 @@ void QtGui::OnAbout()
     scene->setSceneRect(0, 0, 32, 32);
     ui.w_icon->setScene(scene);
     scene->addPixmap(QPixmap(":/resource/flexemu.png"))->setPos(0, 0);
-
-    auto aboutText = tr("<b>%1 V%2</b><p>"
-           "%1 is an MC6809 emulator running "
-           "<a href=\"https://en.wikipedia.org/wiki/FLEX_(operating_system)\">"
-           "FLEX operating system</a>.<p>"
-           "%1 comes with "
-           "ABSOLUTELY NO WARRANTY. This is free software, and You "
-           "are welcome to redistribute it under certain conditions.<p>"
-           "Please notice that this project was developed under the "
-           "terms of the "
-           "<a href=\"http://flexemu.neocities.org/copying.txt\">"
-           "GNU GENERAL PUBLIC LICENCE V2</a>.<p><p>"
-           "Have Fun!<p><p>"
-           "Copyright (C) 1997-2025 "
-           "<a href=\"mailto:wolfgang.schwotzer@gmx.net\">"
-           "Wolfgang Schwotzer</a><p>"
-           "<a href=\"http://flexemu.neocities.org\">"
-           "http://flexemu.neocities.org</a>")
-        .arg(PROGRAMNAME).arg(VERSION);
+    connect(ui.c_tabWidget, &QTabWidget::currentChanged, this,
+            [&](int index){
+                const std::vector<QTextBrowser *>browsers{
+                    ui.e_about,
+                    ui.e_versions,
+                    ui.e_configuration,
+                };
+                if (index >= 0 && index < static_cast<int>(browsers.size()))
+                {
+                    AboutTabChanged(browsers[index]);
+                }
+            });
+    ui.c_tabWidget->setCurrentIndex(0);
     ui.e_about->setOpenExternalLinks(true);
-    ui.e_about->setHtml(aboutText);
-
-    auto versionsText = tr("<b>%1 V%2</b><p>compiled for " OSTYPE ", uses:")
-        .arg(PROGRAMNAME).arg(VERSION);
-    versionsText.append("<table>");
-    for (const auto &version : FlexemuVersions::GetVersions())
-    {
-        std::stringstream stream;
-
-        stream << "<tr><td>&#x2022;</td><td>" << version.first <<
-            "</td><td>" << version.second + "</td></tr>";
-        versionsText.append(QString::fromStdString(stream.str()));
-    }
-    versionsText.append("</table>");
     ui.e_versions->setOpenExternalLinks(true);
-    ui.e_versions->insertHtml(versionsText);
+    ui.e_configuration->setOpenExternalLinks(true);
 
     dialog.exec();
+}
+
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+void QtGui::AboutTabChanged(QTextBrowser *browser) const
+{
+    assert(browser != nullptr);
+
+    if (browser->objectName() == "e_about")
+    {
+        browser->setHtml(GetAboutHtmlText());
+    }
+    else if (browser->objectName() == "e_versions")
+    {
+        browser->setHtml(GetVersionsHtmlText());
+    }
+    else if (browser->objectName() == "e_configuration")
+    {
+        browser->setHtml(GetConfigurationHtmlText());
+    }
+}
+
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+QString QtGui::GetAboutHtmlText() const
+{
+    return tr("<b>%1 V%2</b><p>"
+       "%1 is an MC6809 emulator running "
+       "<a href=\"https://en.wikipedia.org/wiki/FLEX_(operating_system)\">"
+       "FLEX operating system</a>.<p>"
+       "%1 comes with "
+       "ABSOLUTELY NO WARRANTY. This is free software, and You "
+       "are welcome to redistribute it under certain conditions.<p>"
+       "Please notice that this project was developed under the "
+       "terms of the "
+       "<a href=\"http://flexemu.neocities.org/copying.txt\">"
+       "GNU GENERAL PUBLIC LICENCE V2</a>.<p><p>"
+       "Have Fun!<p><p>"
+       "Copyright (C) 1997-2025 "
+       "<a href=\"mailto:wolfgang.schwotzer@gmx.net\">"
+       "Wolfgang Schwotzer</a><p>"
+       "<a href=\"http://flexemu.neocities.org\">"
+       "http://flexemu.neocities.org</a>")
+    .arg(PROGRAMNAME).arg(VERSION);
+}
+
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+QString QtGui::GetVersionsHtmlText() const
+{
+    auto result = tr("<b>%1 V%2</b><p>compiled for " OSTYPE ", uses:")
+        .arg(PROGRAMNAME).arg(VERSION);
+    std::stringstream stream;
+
+    stream << "<table>";
+    for (const auto &version : FlexemuVersions::GetVersions())
+    {
+        stream << "<tr><td>&#x2022;</td><td>" << version.first <<
+            "</td><td>" << version.second + "</td></tr>";
+    }
+    stream << "</table>";
+    result.append(QString::fromStdString(stream.str()));
+
+    return result;
+}
+
+QString QtGui::GetConfigurationHtmlText() const
+{
+    auto result = tr("<b>%1 V%2</b><p>Guest Configuration:\n")
+        .arg(PROGRAMNAME).arg(VERSION);
+
+    result.append(ConvertItemPairListToHtml(GetConfiguration()));
+
+    return result;
 }
 
 void QtGui::OnTimer()
@@ -2333,4 +2387,60 @@ void QtGui::ParseOsName()
                 std::dynamic_pointer_cast<BCommand>(copyOsCommand));
         }
     }
+}
+
+ItemPairList_t QtGui::GetConfiguration() const
+{
+    ItemPairList_t result;
+    std::vector<std::string> values;
+
+    values = { GetMainboardName() };
+    result.emplace_back("Mainboard", values);
+    values = { cpu.get_vendor() + " " + cpu.get_name() };
+    result.emplace_back("CPU", values);
+    values = { std::to_string(memory.get_ram_size()) + " KByte" };
+    result.emplace_back("RAM", values);
+    values = { "none" };
+    if (memory.get_ram_extension_size() > 0U)
+    {
+        values = { std::to_string(memory.get_ram_extension_boards()) + " x " +
+            std::to_string(memory.get_ram_extension_size()) + " KByte" };
+    }
+    result.emplace_back("RAM extension", values);
+    values = { romName };
+    result.emplace_back("Boot ROM", values);
+    if (!osName.empty())
+    {
+        values = { osName };
+        result.emplace_back("Operating system", values);
+    }
+    const auto size = e2screen->baseSize();
+    values = { std::to_string(size.width()) + " x " +
+        std::to_string(size.height()) + " pixels, " +
+        std::to_string(options.nColors) + " colors" };
+    result.emplace_back("Graphics", values);
+    values.clear();
+    for (const auto &device_props : memory.get_devices_properties())
+    {
+        std::stringstream strdevice;
+        const auto end_address =
+            device_props.baseAddress + device_props.byteSize - 1U;
+
+        strdevice << std::uppercase <<
+            std::setw(4) << std::hex << device_props.baseAddress;
+        if (device_props.baseAddress != end_address)
+        {
+            strdevice << "-" << std::setw(4) << std::hex << end_address;
+        }
+        strdevice << " " << device_props.name;
+        values.emplace_back(strdevice.str());
+    }
+    result.emplace_back("Devices", values);
+
+    return result;
+}
+
+std::string QtGui::GetMainboardName() const
+{
+    return options.isEurocom2V5 ? "Eurocom II/V5" : "Eurocom II/V7";
 }
