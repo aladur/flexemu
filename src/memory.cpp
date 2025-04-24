@@ -424,7 +424,12 @@ unsigned Memory::get_ram_extension_boards() const
 
 unsigned Memory::get_ram_extension_size() const
 {
-    return video_ram_size / 1024U;
+    if (isRamExtension)
+    {
+        return video_ram_size / 1024U / get_ram_extension_boards();
+    }
+
+    return 0U;
 }
 
 DevicesProperties_t Memory::get_devices_properties() const
