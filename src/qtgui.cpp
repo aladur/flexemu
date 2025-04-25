@@ -103,6 +103,7 @@
 #include <fmt/format.h>
 #include "warnon.h"
 #include <cmath>
+#include <cassert>
 #include <array>
 #include <vector>
 #include <regex>
