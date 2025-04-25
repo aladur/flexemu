@@ -104,15 +104,13 @@ private:
     void init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr);
     void sort_devices_properties();
 
-    // Initialisation functions
 
 public:
-
+    // Initialisation functions
     bool add_io_device(IoDevice &device, Word base_address,
             std::optional<Word> size = std::nullopt);
 
     // memory interface
-public:
     void reset_io();
     void switch_mmu(Word offset, Byte val);
     void init_blocks_to_update();
@@ -125,19 +123,15 @@ public:
     DevicesProperties_t get_devices_properties() const;
 
     // BObserver interface
-public:
     void UpdateFrom(NotifyId id, void *param = nullptr) override;
 
     // memory source interface
-public:
     const MemorySource<DWord>::AddressRanges& GetAddressRanges() const override;
     void CopyTo(Byte *target, DWord address, DWord size) const override;
 
     // memory target interface
-public:
     void CopyFrom(const Byte *source, DWord address, DWord size) override;
 
-public:
     void write_ram_rom(Word address, Byte value);
     Byte read_ram_rom(Word address);
     void dump_ram_rom(std::ostream &os, Word min, Word max);
