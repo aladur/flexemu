@@ -2374,8 +2374,7 @@ ItemPairList_t QtGui::GetConfiguration() const
     ItemPairList_t result;
     std::vector<std::string> values;
 
-    values = { GetMainboardName() };
-    result.emplace_back("Mainboard", values);
+    result.emplace_back("Mainboard", std::vector(1U, GetMainboardName()));
     values = { cpu.get_vendor() + " " + cpu.get_name() };
     result.emplace_back("CPU", values);
     values = { std::to_string(memory.get_ram_size()) + " KByte" };
@@ -2387,12 +2386,10 @@ ItemPairList_t QtGui::GetConfiguration() const
             std::to_string(memory.get_ram_extension_size()) + " KByte" };
     }
     result.emplace_back("RAM extension", values);
-    values = { romName };
-    result.emplace_back("Boot ROM", values);
+    result.emplace_back("Boot ROM", std::vector(1U, romName));
     if (!osName.empty())
     {
-        values = { osName };
-        result.emplace_back("Operating system", values);
+        result.emplace_back("Operating system", std::vector(1U, osName));
     }
     const auto size = e2screen->baseSize();
     values = { std::to_string(size.width()) + " x " +
