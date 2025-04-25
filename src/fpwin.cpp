@@ -602,21 +602,10 @@ void FLEXplorer::OnAbout()
     ui.e_about->setOpenExternalLinks(true);
     ui.e_about->setHtml(aboutText);
 
-    auto versionsText = tr("<b>FLEXplorer V%2</b><p>compiled for " OSTYPE
-            ", uses:")
-        .arg(VERSION);
-    versionsText.append("<table>");
-    for (const auto &version : FlexemuVersions::GetVersions())
-    {
-        std::stringstream stream;
-
-        stream << "<tr><td>&#x2022;</td><td>" << version.first <<
-            "</td><td>" << version.second + "</td></tr>";
-        versionsText.append(QString::fromStdString(stream.str()));
-    }
-    versionsText.append("</table>");
+    auto versionsText = GetVersionsHtmlText("FLEXplorer");
     ui.e_versions->setOpenExternalLinks(true);
     ui.e_versions->setHtml(versionsText);
+    ui.c_tabWidget->setCurrentIndex(0);
 
     dialog.exec();
 }

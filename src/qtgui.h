@@ -233,7 +233,6 @@ private:
     std::string GetMainboardName() const;
     void AboutTabChanged(QTextBrowser *browser) const;
     QString GetAboutHtmlText() const;
-    QString GetVersionsHtmlText() const;
     QString GetConfigurationHtmlText() const;
 
     // QWidget Overrides

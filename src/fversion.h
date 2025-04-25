@@ -24,18 +24,15 @@
 #ifndef FLEXEMUVERSIONS_INCLUDED
 #define FLEXEMUVERSIONS_INCLUDED
 
-#include <string>
-#include <map>
+#include "free.h"
 
-
-using Versions_t = std::map<std::string, std::string>;
 
 class FlexemuVersions
 {
 public:
-    static Versions_t GetVersions();
+    static ItemPairList_t GetVersions();
 
 private:
-    static Versions_t CreateVersions();
+    static ItemPairList_t CreateVersions();
 };
 #endif

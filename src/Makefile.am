@@ -322,6 +322,7 @@ flexemu_SOURCES = \
 	flexerr.h \
 	foptman.h \
 	fsetupui.h \
+	free.h \
 	fversion.h \
 	iffilcnt.h \
 	ifilcnti.h \
@@ -430,6 +431,7 @@ flexplorer_SOURCES = \
 	fpoptman.h \
 	fpoptui.h \
 	fpwin.h \
+	free.h \
 	fversion.h \
 	idircnt.h \
 	iffilcnt.h \
@@ -458,6 +460,7 @@ mdcrtool_SOURCES = \
 	config.h \
 	fileread.h \
 	flexerr.h \
+	free.h \
 	fversion.h \
 	mdcrfs.h \
 	mdcrtape.h \
@@ -477,6 +480,7 @@ flex2hex_SOURCES = \
 	cvtwchar.h \
 	fileread.h \
 	flexerr.h \
+	free.h \
 	fversion.h \
 	memsrc.h \
 	memtgt.h \
@@ -507,6 +511,7 @@ dsktool_SOURCES = \
 	filfschk.h \
 	flexemu.h \
 	flexerr.h \
+	free.h \
 	fversion.h \
 	idircnt.h \
 	iffilcnt.h \
@@ -611,6 +616,7 @@ updatemd_SOURCES = \
 	updatemd.cpp \
 	benv.h \
 	bprocess.h \
+	free.h \
 	fversion.h \
 	misc1.h
 

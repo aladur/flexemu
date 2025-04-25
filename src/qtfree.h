@@ -32,6 +32,7 @@
 #include <optional>
 #include "warnon.h"
 #include "typedefs.h"
+#include "free.h"
 #include "e2.h"
 #include <string>
 #include <vector>
@@ -41,9 +42,6 @@
 class QAction;
 class QMenu;
 class FlexDiskAttributes;
-
-using ItemPairList_t = std::vector<std::pair<
-          std::string, std::vector<std::string> > >;
 
 extern QFont GetFont(const QString &fontName);
 extern QString GetWindowGeometry(const QWidget &w);
@@ -56,6 +54,7 @@ extern void OpenDiskStatusDialog(QWidget *parent,
 extern QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
 extern int IconSizeToIndex(const QSize &iconSize);
 extern QString ConvertItemPairListToHtml(const ItemPairList_t &pairs);
+extern QString GetVersionsHtmlText(const QString &programName);
 
 class UpdateWindowGeometryFtor
 {

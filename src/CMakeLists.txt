@@ -184,6 +184,7 @@ updatemd.cpp
 set(updatemd_HEADER
 benv.h
 bprocess.h
+free.h
 fversion.h
 misc1.h
 )
@@ -226,6 +227,7 @@ config.h
 cvtwchar.h
 fileread.h
 flexerr.h
+free.h
 fversion.h
 memsrc.h
 memtgt.h
@@ -273,6 +275,7 @@ set(mdcrtool_HEADER
     config.h
     fileread.h
     flexerr.h
+    free.h
     fversion.h
     mdcrfs.h
     mdcrtape.h
@@ -334,6 +337,7 @@ filecont.h
 filfschk.h
 flexemu.h
 flexerr.h
+free.h
 fversion.h
 idircnt.h
 iffilcnt.h
@@ -529,6 +533,7 @@ set(flexemu_HEADER
     flexemu.h
     flexerr.h
     foptman.h
+    free.h
     fsetupui.h
     fversion.h
     iffilcnt.h
@@ -734,6 +739,7 @@ set(flexplorer_HEADER
     fpoptman.h
     fpoptui.h
     fpwin.h
+    free.h
     fversion.h
     idircnt.h
     iffilcnt.h

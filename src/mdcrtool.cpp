@@ -21,7 +21,7 @@
 */
 
 
-#include "misc1.h"
+#include "free.h"
 #include "mdcrtape.h"
 #include "mdcrfs.h"
 #include "bmembuf.h"

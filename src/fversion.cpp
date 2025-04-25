@@ -42,9 +42,9 @@
 #endif
 
 
-Versions_t FlexemuVersions::CreateVersions()
+ItemPairList_t FlexemuVersions::CreateVersions()
 {
-    Versions_t versions;
+    ItemPairList_t versions;
     std::string version;
     std::string compiler;
 
@@ -53,52 +53,53 @@ Versions_t FlexemuVersions::CreateVersions()
     compiler = "clang";
     version = fmt::format("{}.{}.{}",
             __clang_major__, __clang_minor__, __clang_patchlevel__);
-    versions.emplace(compiler, version);
+    versions.emplace_back(compiler, std::vector(1U, version));
 #else
     compiler = "gcc";
     version = fmt::format("{}.{}.{}",
             __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
-    versions.emplace(compiler, version);
+    versions.emplace_back(compiler, std::vector(1U, version));
 #endif
 #else
 #if defined(_MSC_VER)
     compiler = "MSVC";
     version = fmt::format("{}.{}.{}",
             _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000);
-    versions.emplace(compiler, version);
+    versions.emplace_back(compiler, std::vector(1U, version));
 #endif
 #endif
 
 #ifdef QT_CORE_LIB
     version = fmt::format("{}.{}.{}",
             QT_VERSION_MAJOR, QT_VERSION_MINOR, QT_VERSION_PATCH);
-    versions.emplace("Qt", version);
+    versions.emplace_back("Qt", std::vector(1U, version));
 #endif
 
     version = fmt::format("{}.{}.{}",
             FMT_VERSION / 10000, (FMT_VERSION / 100) % 100, FMT_VERSION % 100);
-    versions.emplace("fmtlib", version);
+    versions.emplace_back("fmtlib", std::vector(1U, version));
 
 #if defined(UNIX) && defined(ADD_JSONCPP_VERSION)
-    versions.emplace("jsoncpp", JSONCPP_VERSION_STRING);
+    versions.emplace_back("jsoncpp",
+            std::vector(1U, std::string(JSONCPP_VERSION_STRING)));
 #endif
 
 #if defined(UNIX) && defined(HAVE_NCURSES_H) && defined(ADD_NCURSES_VERSION)
     version = fmt::format("{}.{}", NCURSES_VERSION, NCURSES_VERSION_PATCH);
-    versions.emplace("ncurses", version);
+    versions.emplace_back("ncurses", std::vector(1U, version));
 #endif
 
 #ifdef USE_CMAKE
     version = CMAKE_VERSION;
-    versions.emplace("cmake", version);
+    versions.emplace_back("cmake", std::vector(1U, version));
 #endif
 
     return versions;
 }
 
-Versions_t FlexemuVersions::GetVersions()
+ItemPairList_t FlexemuVersions::GetVersions()
 {
-    static Versions_t versions;
+    static ItemPairList_t versions;
 
     if (versions.empty())
     {

@@ -690,7 +690,7 @@ void QtGui::AboutTabChanged(QTextBrowser *browser) const
     }
     else if (browser->objectName() == "e_versions")
     {
-        browser->setHtml(GetVersionsHtmlText());
+        browser->setHtml(GetVersionsHtmlText(PROGRAMNAME));
     }
     else if (browser->objectName() == "e_configuration")
     {
@@ -720,26 +720,6 @@ QString QtGui::GetAboutHtmlText() const
        "<a href=\"http://flexemu.neocities.org\">"
        "http://flexemu.neocities.org</a>")
     .arg(PROGRAMNAME).arg(VERSION);
-}
-
-// Implementation may change in future.
-// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-QString QtGui::GetVersionsHtmlText() const
-{
-    auto result = tr("<b>%1 V%2</b><p>compiled for " OSTYPE ", uses:")
-        .arg(PROGRAMNAME).arg(VERSION);
-    std::stringstream stream;
-
-    stream << "<table>";
-    for (const auto &version : FlexemuVersions::GetVersions())
-    {
-        stream << "<tr><td>&#x2022;</td><td>" << version.first <<
-            "</td><td>" << version.second + "</td></tr>";
-    }
-    stream << "</table>";
-    result.append(QString::fromStdString(stream.str()));
-
-    return result;
 }
 
 QString QtGui::GetConfigurationHtmlText() const

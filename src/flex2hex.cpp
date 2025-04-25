@@ -22,6 +22,7 @@
 */
 
 
+#include "free.h"
 #include "misc1.h"
 #include "bmembuf.h"
 #include "fileread.h"

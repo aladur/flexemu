@@ -25,6 +25,7 @@
 #include <string>
 #include <new>
 
+#include "free.h"
 #include "e2.h"
 #include "flexemu.h"
 #include "soptions.h"

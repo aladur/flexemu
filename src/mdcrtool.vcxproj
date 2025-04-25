@@ -32,6 +32,7 @@
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="fileread.h" />
     <ClInclude Include="flexerr.h" />
+    <ClInclude Include="free.h" />
     <ClInclude Include="fversion.h" />
     <ClInclude Include="mdcrfs.h" />
     <ClInclude Include="mdcrtape.h" />

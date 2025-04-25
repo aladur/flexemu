@@ -23,6 +23,7 @@
 #include <json/reader.h>
 #include <json/writer.h>
 #include <json/value.h>
+#include "free.h"
 #include "misc1.h"
 #include "bprocess.h"
 #include "benv.h"

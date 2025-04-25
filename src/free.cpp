@@ -21,9 +21,11 @@
 */
 
 
+#include "misc1.h"
 #include "typedefs.h"
 #include "asciictl.h"
 #include "free.h"
+#include "fversion.h"
 #include <cstring>
 #include <regex>
 
@@ -69,4 +71,34 @@ bool flx::is_range_in_ranges(const BInterval<DWord> &range,
         [&](const auto &addressRange) {
             return subset(range, addressRange);
         }));
+}
+
+void flx::print_versions(std::ostream &os, const std::string &program_name)
+{
+    os <<
+        program_name << " " << VERSION << "\n" <<
+        "compiled for " << OSTYPE << ", using:\n";
+    for (const auto &pair : FlexemuVersions::GetVersions())
+    {
+        os << "- " << pair.first << " ";
+        if (pair.second.size() == 1)
+        {
+            os << pair.second[0] + "\n";
+        }
+        else
+        {
+            bool isWithComma = false;
+            for (const auto &item : pair.second)
+            {
+                if (isWithComma)
+                {
+                    os << ", ";
+                }
+                os << item;
+                isWithComma = true;
+            }
+            os << "\n";
+        }
+    }
+    os << program_name << " " << COPYRIGHT_MESSAGE;
 }

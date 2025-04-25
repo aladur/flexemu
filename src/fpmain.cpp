@@ -21,7 +21,7 @@
 */
 
 
-#include "misc1.h"
+#include "free.h"
 #include "fpwin.h"
 #include "warnoff.h"
 #include <QApplication>

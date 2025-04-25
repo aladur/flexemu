@@ -303,6 +303,7 @@
     <ClInclude Include="flexerr.h" />
     <ClInclude Include="fpattrui.h" />
     <ClInclude Include="fpdnd.h" />
+    <ClInclude Include="free.h" />
     <ClInclude Include="fversion.h" />
     <ClInclude Include="ifilcnti.h" />
     <ClInclude Include="memsrc.h" />

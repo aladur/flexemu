@@ -667,18 +667,6 @@ void flx::hex_dump(std::ostream &os, const char *buffer, unsigned count)
     }
 }
 
-void flx::print_versions(std::ostream &os, const std::string &program_name)
-{
-    os <<
-        program_name << " " << VERSION << "\n" <<
-        "compiled for " << OSTYPE << ", using:\n";
-    for (const auto &version : FlexemuVersions::GetVersions())
-    {
-        os << "- " << version.first << " " << version.second + "\n";
-    }
-    std::cout << program_name << " " << COPYRIGHT_MESSAGE;
-}
-
 bool flx::askForInput(const std::string &question, const std::string &answers,
                       char default_answer)
 {

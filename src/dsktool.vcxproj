@@ -42,6 +42,7 @@
     <ClInclude Include="filfschk.h" />
     <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />
+    <ClInclude Include="free.h" />
     <ClInclude Include="fversion.h" />
     <ClInclude Include="idircnt.h" />
     <ClInclude Include="iffilcnt.h" />

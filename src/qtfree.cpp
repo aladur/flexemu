@@ -21,6 +21,7 @@
 */
 
 
+#include "misc1.h"
 #include "warnoff.h"
 #include <QObject>
 #include <QLatin1Char>
@@ -38,9 +39,11 @@
 #include <optional>
 #include "warnon.h"
 #include "typedefs.h"
+#include "free.h"
 #include "qtfree.h"
 #include "propsui.h"
 #include "fcinfo.h"
+#include "fversion.h"
 #include "e2.h"
 #include <cmath>
 
@@ -342,4 +345,14 @@ QString ConvertItemPairListToHtml(const ItemPairList_t &pairs)
     stream << "</table>";
 
     return QString::fromStdString(stream.str());
+}
+
+QString GetVersionsHtmlText(const QString &programName)
+{
+    auto result = QObject::tr("<b>%1 V%2</b><p>compiled for " OSTYPE ", uses:")
+        .arg(programName).arg(VERSION);
+
+    result.append(ConvertItemPairListToHtml(FlexemuVersions::GetVersions()));
+
+    return result;
 }

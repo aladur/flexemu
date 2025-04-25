@@ -456,6 +456,7 @@
     <ClInclude Include="flblfile.h" />
     <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />
+    <ClInclude Include="free.h" />
     <ClInclude Include="fversion.h" />
     <ClInclude Include="foptman.h" />
     <ClInclude Include="idircnt.h" />

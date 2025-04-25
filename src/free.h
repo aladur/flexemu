@@ -21,12 +21,20 @@
 */
 
 
+#ifndef FREE_INCLUDED
+#define FREE_INCLUDED
+
 #include "typedefs.h"
 #include "bintervl.h"
 #include "memsrc.h"
 #include <string>
+#include <vector>
+#include <utility>
 #include <regex>
 
+
+using ItemPairList_t = std::vector<std::pair<
+    std::string, std::vector<std::string> > >;
 
 namespace flx
 {
@@ -35,4 +43,7 @@ namespace flx
     extern bool is_range_in_ranges(
             const BInterval<DWord> &range,
             const MemorySource<DWord>::AddressRanges &ranges);
+    extern void print_versions(std::ostream &os,
+            const std::string &program_name);
 }
+#endif
