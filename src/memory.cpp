@@ -249,8 +249,10 @@ bool Memory::add_io_device(
 
     struct ioDeviceProperties properties{
             device.getName(),
-            base_address,
-            size.value()};
+            {
+                base_address,
+                static_cast<Word>(base_address + size.value() - 1U)
+            }};
     devicesProperties.emplace_back(properties);
     devicesPropertiesSorted = false;
 
@@ -445,7 +447,7 @@ void Memory::sort_devices_properties()
                     const ioDeviceProperties &lhs,
                     const ioDeviceProperties &rhs)
                 {
-                    return lhs.baseAddress < rhs.baseAddress;
+                    return cmp_lower(lhs.addressRange, rhs.addressRange);
                 });
         devicesPropertiesSorted = true;
     }

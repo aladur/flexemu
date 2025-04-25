@@ -36,6 +36,7 @@
 #include "memtgt.h"
 #include "e2.h"
 #include "bobserv.h"
+#include "bintervl.h"
 #include <array>
 #include <iostream>
 #include <optional>
@@ -58,8 +59,7 @@ struct ioDeviceAccess
 struct ioDeviceProperties
 {
     std::string name;
-    Word baseAddress;
-    Word byteSize;
+    BInterval<Word> addressRange;
 };
 
 using DevicesProperties_t = std::vector<struct ioDeviceProperties>;

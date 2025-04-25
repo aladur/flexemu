@@ -2423,14 +2423,13 @@ ItemPairList_t QtGui::GetConfiguration() const
     for (const auto &device_props : memory.get_devices_properties())
     {
         std::stringstream strdevice;
-        const auto end_address =
-            device_props.baseAddress + device_props.byteSize - 1U;
 
         strdevice << std::uppercase <<
-            std::setw(4) << std::hex << device_props.baseAddress;
-        if (device_props.baseAddress != end_address)
+            std::setw(4) << std::hex << device_props.addressRange.lower();
+        if (!singleton(device_props.addressRange))
         {
-            strdevice << "-" << std::setw(4) << std::hex << end_address;
+            strdevice << "-" << std::setw(4) << std::hex <<
+                device_props.addressRange.upper();
         }
         strdevice << " " << device_props.name;
         values.emplace_back(strdevice.str());
