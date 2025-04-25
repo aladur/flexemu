@@ -226,8 +226,9 @@ void Memory::init_blocks_to_update()
 // Add an I/O device to the address space
 // device       The device to be added
 // base_address The base address of the device
-// size         The I/O address size. Default value: -1.
-//              If -1 the size of the I/O device is used (method sizeOfIo() )
+// size         The I/O address size. Default value: nullopt.
+//              If nullopt the size of the I/O device is used
+//              (method sizeOfIo() )
 //
 // return false if not successful
 bool Memory::add_io_device(

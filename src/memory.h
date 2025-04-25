@@ -106,7 +106,7 @@ private:
 
 
 public:
-    // Initialisation functions
+    // Initialization functions
     bool add_io_device(IoDevice &device, Word base_address,
             std::optional<Word> size = std::nullopt);
 
