@@ -178,15 +178,15 @@ target_compile_definitions(flex PRIVATE
 
 if(UNIX)
 set(updatemd_SOURCES
-fversion.cpp
-updatemd.cpp
+    fversion.cpp
+    updatemd.cpp
 )
 set(updatemd_HEADER
-benv.h
-bprocess.h
-free.h
-fversion.h
-misc1.h
+    benv.h
+    bprocess.h
+    free.h
+    fversion.h
+    misc1.h
 )
 add_executable(updatemd ${updatemd_SOURCES} ${updatemd_HEADER})
 
@@ -216,24 +216,24 @@ endif()
 #################################
 
 set(flex2hex_SOURCES
-flex2hex.cpp
-fversion.cpp
-wmain.cpp
+    flex2hex.cpp
+    fversion.cpp
+    wmain.cpp
 )
 set(flex2hex_HEADER
-bintervl.h
-bmembuf.h
-config.h
-cvtwchar.h
-fileread.h
-flexerr.h
-free.h
-fversion.h
-memsrc.h
-memtgt.h
-misc1.h
-typedefs.h
-wmain.h
+    bintervl.h
+    bmembuf.h
+    config.h
+    cvtwchar.h
+    fileread.h
+    flexerr.h
+    free.h
+    fversion.h
+    memsrc.h
+    memtgt.h
+    misc1.h
+    typedefs.h
+    wmain.h
 )
 add_executable(flex2hex ${flex2hex_SOURCES} ${flex2hex_HEADER})
 if(WIN32)
@@ -313,40 +313,40 @@ target_link_libraries(mdcrtool PRIVATE
 #################################
 
 set(dsktool_SOURCES
-dsktool.cpp
-fversion.cpp
-wmain.cpp
+    dsktool.cpp
+    fversion.cpp
+    wmain.cpp
 )
 set(dsktool_HEADER
-bdate.h
-bdir.h
-btime.h
-cistring.h
-config.h
-cvtwchar.h
-dircont.h
-efiletim.h
-fcinfo.h
-fcopyman.h
-fdirent.h
-ffilebuf.h
-ffilecnt.h
-filecntb.h
-filecnts.h
-filecont.h
-filfschk.h
-flexemu.h
-flexerr.h
-free.h
-fversion.h
-idircnt.h
-iffilcnt.h
-ifilcnti.h
-ifilecnt.h
-misc1.h
-rfilecnt.h
-typedefs.h
-wmain.h
+    bdate.h
+    bdir.h
+    btime.h
+    cistring.h
+    config.h
+    cvtwchar.h
+    dircont.h
+    efiletim.h
+    fcinfo.h
+    fcopyman.h
+    fdirent.h
+    ffilebuf.h
+    ffilecnt.h
+    filecntb.h
+    filecnts.h
+    filecont.h
+    filfschk.h
+    flexemu.h
+    flexerr.h
+    free.h
+    fversion.h
+    idircnt.h
+    iffilcnt.h
+    ifilcnti.h
+    ifilecnt.h
+    misc1.h
+    rfilecnt.h
+    typedefs.h
+    wmain.h
 )
 add_executable(dsktool ${dsktool_SOURCES} ${dsktool_HEADER})
 if(WIN32)
