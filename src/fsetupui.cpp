@@ -816,8 +816,10 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
         !IsReadOnly(FlexemuOptionId::IsRamExt2x384) &&
         !IsReadOnly(FlexemuOptionId::IsFlexibleMmu))
     {
-        auto ramExt = r_ramExt2x96->isChecked();
-        auto hiMem = r_ramExt2x384->isChecked();
+        auto ramExt =
+            r_ramExt2x96->isEnabled() && r_ramExt2x96->isChecked();
+        auto hiMem =
+            r_ramExt2x384->isEnabled() && r_ramExt2x384->isChecked();
         options.isRamExtension = ramExt || hiMem;
         options.isHiMem = hiMem;
 
