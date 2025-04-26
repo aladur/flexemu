@@ -333,12 +333,7 @@ void QtGui::OnPreferences()
 
         if (isRestartNeeded)
         {
-            e2screen->Detach(*this);
-            if (close())
-            {
-                // Force restart flexemu
-                QApplication::exit(EXIT_RESTART);
-            }
+            ForceRestart();
             return;
         }
 
@@ -871,27 +866,7 @@ void QtGui::OnTimer()
             if (previousState != CpuState::Invalid &&
                 status->state == CpuState::Invalid)
             {
-                // CPU got an invalid instruction.
-                auto pc = QString("%1")
-                    .arg(status->pc, 4, 16, QChar('0')).toUpper();
-                QStringList hexBytes;
-                for (Byte byte : status->instruction)
-                {
-                    auto hexString = QString("%1").arg(byte, 2, 16, QChar('0'));
-                    hexBytes.append(hexString.toUpper());
-                }
-                auto message = tr(
-                    "CPU got an invalid instruction.\n"
-                    "PC=%1 opcode=%2\n"
-                    "CPU has stopped.\n"
-                    "Pressing OK will execute a Reset.")
-                        .arg(pc).arg(hexBytes.join(QChar(' ')));
-
-                QTimer::singleShot(0, this, [&, message]()
-                {
-                    QMessageBox::critical(this, "flexemu error", message);
-                    OnCpuResetRun();
-                });
+                GotIllegalInstruction(*status);
             }
             previousState = status->state;
         }
@@ -2420,4 +2395,38 @@ ItemPairList_t QtGui::GetConfiguration() const
 std::string QtGui::GetMainboardName() const
 {
     return options.isEurocom2V5 ? "Eurocom II/V5" : "Eurocom II/V7";
+}
+
+void QtGui::ForceRestart()
+{
+    e2screen->Detach(*this);
+
+    if (close())
+    {
+        // Force restart flexemu
+        QApplication::exit(EXIT_RESTART);
+    }
+}
+
+void QtGui::GotIllegalInstruction(const Mc6809CpuStatus &status)
+{
+    auto pc = QString("%1").arg(status.pc, 4, 16, QChar('0')).toUpper();
+    QStringList hexBytes;
+    for (Byte byte : status.instruction)
+    {
+        auto hexString = QString("%1").arg(byte, 2, 16, QChar('0'));
+        hexBytes.append(hexString.toUpper());
+    }
+    auto message = tr(
+        "CPU got an invalid instruction.\n"
+        "PC=%1 opcode=%2\n"
+        "CPU has stopped.\n"
+        "Pressing OK will execute a Reset.")
+            .arg(pc).arg(hexBytes.join(QChar(' ')));
+
+    QTimer::singleShot(0, this, [&, message]()
+    {
+        QMessageBox::critical(this, "flexemu error", message);
+        OnCpuResetRun();
+    });
 }

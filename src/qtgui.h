@@ -234,6 +234,8 @@ private:
     void AboutTabChanged(QTextBrowser *browser) const;
     QString GetAboutHtmlText() const;
     QString GetConfigurationHtmlText() const;
+    void GotIllegalInstruction(const Mc6809CpuStatus &status);
+    void ForceRestart();
 
     // QWidget Overrides
     bool event(QEvent *event) override;
