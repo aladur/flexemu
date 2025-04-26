@@ -162,13 +162,11 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.isTerminalIgnoreNUL = true;
 #ifdef _WIN32
     options.terminalType = 0;
-    options.doc_dir = flx::getExecutablePath() / u8"Documentation";
-    options.disk_dir = flx::getExecutablePath() / u8"Data";
 #else
     options.terminalType = 1;
-    options.doc_dir = F_DATADIR;
-    options.disk_dir = F_DATADIR;
 #endif
+    options.doc_dir = GetDocumentationDir();
+    options.disk_dir = GetDiskDir();
     options.pixelSize = 2;
     options.iconSize = 16;
     options.readOnlyOptionIds.clear();
@@ -1321,3 +1319,20 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 #endif
 }
 
+fs::path FlexemuOptions::GetDocumentationDir()
+{
+#ifdef _WIN32
+    return flx::getExecutablePath() / u8"Documentation";
+#else
+    return F_DATADIR;
+#endif
+}
+
+fs::path FlexemuOptions::GetDiskDir()
+{
+#ifdef _WIN32
+    return flx::getExecutablePath() / u8"Data";
+#else
+    return F_DATADIR;
+#endif
+}
