@@ -2417,16 +2417,63 @@ void QtGui::GotIllegalInstruction(const Mc6809CpuStatus &status)
         auto hexString = QString("%1").arg(byte, 2, 16, QChar('0'));
         hexBytes.append(hexString.toUpper());
     }
+    auto buttons = QMessageBox::Close | QMessageBox::Reset;
     auto message = tr(
-        "CPU got an invalid instruction.\n"
-        "PC=%1 opcode=%2\n"
-        "CPU has stopped.\n"
-        "Pressing OK will execute a Reset.")
+        "CPU got an invalid instruction and has stopped.<br>"
+        "PC=%1 opcode=%2.<br>"
+        "<br>&#x2022; <b>Close</b> will close flexemu."
+        "<br>&#x2022; <b>Reset</b> will execute a reset and reboot.")
             .arg(pc).arg(hexBytes.join(QChar(' ')));
 
-    QTimer::singleShot(0, this, [&, message]()
+    if (!FlexemuOptions::AreAllBootOptionsReadOnly(options))
     {
-        QMessageBox::critical(this, "flexemu error", message);
-        OnCpuResetRun();
+        message += tr("<br>&#x2022; <b>Restore Defaults</b> will restore "
+                      "boot ROM file and/or boot disk to default values and "
+                      "restart flexemu.");
+        buttons |= QMessageBox::RestoreDefaults;
+    }
+
+    if (isVisible())
+    {
+        message += tr("<br>&#x2022; <b>Ok</b> will close this dialog.");
+        buttons |= QMessageBox::Ok;
+    }
+
+
+    QTimer::singleShot(0, this, [&, message, buttons]()
+    {
+        const auto answer =
+            QMessageBox::critical(this, "flexemu error", message, buttons,
+                QMessageBox::Close);
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+        switch (answer)
+        {
+            case QMessageBox::RestoreDefaults:
+                FlexemuOptions::InitBootOptions(options);
+                FlexemuOptions::WriteOptions(options, false, true);
+                isConfirmClose = false;
+                ForceRestart();
+                break;
+
+            case QMessageBox::Reset:
+                OnCpuResetRun();
+                break;
+
+            case QMessageBox::Close:
+                isConfirmClose = false;
+                close();
+                break;
+
+            case QMessageBox::Ok:
+                break;
+        };
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
     });
 }
