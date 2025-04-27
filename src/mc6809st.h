@@ -53,6 +53,7 @@ struct Mc6809CpuStatus : public CpuStatus
     Word y{0};
     Word insn_size{0};
     Byte instruction[8]{};
+    bool hasMnemonic{};
     char mnemonic[8]{};
     char operands[20]{};
     Byte memory[CPU_STACK_LINES * CPU_STACK_BYTES]{};

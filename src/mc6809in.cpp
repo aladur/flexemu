@@ -153,6 +153,7 @@ void Mc6809::get_status(CpuStatus *cpu_status)
     }
 
     auto byte_size = Disassemble(stat->pc, flags, code, mnemonic, operands);
+    stat->hasMnemonic = (disassembler != nullptr);
     if (byte_size == 0)
     {
         stat->mnemonic[0] = '\0';

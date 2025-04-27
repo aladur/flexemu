@@ -95,7 +95,7 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
     static const std::string spaces(24, ' ');
     text(6, 1, spaces); // Clear previous mnemonic.
 
-    if (status.mnemonic[0] != '\0')
+    if (status.hasMnemonic)
     {
         auto mnemonic_str = fmt::format("{:<5} {}", status.mnemonic,
                                         status.operands);
