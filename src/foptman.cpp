@@ -1336,3 +1336,58 @@ fs::path FlexemuOptions::GetDiskDir()
     return F_DATADIR;
 #endif
 }
+
+bool FlexemuOptions::IsReadOnlyOption(struct sOptions &options,
+        FlexemuOptionId id)
+{
+    return (std::find(options.readOnlyOptionIds.cbegin(),
+        options.readOnlyOptionIds.cbegin(), id) !=
+        options.readOnlyOptionIds.cend());
+}
+
+bool FlexemuOptions::AreAllBootOptionsReadOnly(struct sOptions &options)
+{
+    // Options needed for a successful boot are the boot ROM (hex-file)
+    // and the disk in drive 0.
+    if (!IsReadOnlyOption(options, FlexemuOptionId::HexFile))
+    {
+        return false;
+    }
+
+    if (options.isEurocom2V5)
+    {
+        return IsReadOnlyOption(options, FlexemuOptionId::MdcrDrive0);
+    }
+
+    return IsReadOnlyOption(options, FlexemuOptionId::Drive0);
+}
+
+void FlexemuOptions::InitBootOptions(struct sOptions &options)
+{
+    // Options needed to boot the system are the boot ROM (hex-file)
+    // and the disk in drive 0.
+    // Set these options to default values to guarantee a successful boot.
+    if (!IsReadOnlyOption(options, FlexemuOptionId::HexFile))
+    {
+        if (options.isEurocom2V5)
+        {
+            options.hex_file = GetDiskDir() / u8"mon24.s19";
+        }
+        else
+        {
+            options.hex_file = GetDiskDir() / u8"neumon54.hex";
+        }
+    }
+
+    if (options.isEurocom2V5 &&
+        !IsReadOnlyOption(options, FlexemuOptionId::MdcrDrive0))
+    {
+        options.mdcrDrives[0] = GetDiskDir() / u8"system.mdcr";
+    }
+
+    if (!options.isEurocom2V5 &&
+        !IsReadOnlyOption(options, FlexemuOptionId::Drive0))
+    {
+        options.drives[0] = GetDiskDir() / u8"system.dsk";
+    }
+}
