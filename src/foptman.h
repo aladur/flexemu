@@ -44,11 +44,18 @@ class FlexemuOptions
 public:
     static void PrintHelp(std::ostream &os);
     static void InitOptions(struct sOptions &options);
-    static void InitBootOptions(struct sOptions &options);
+    static void InitBootOptions(struct sOptions &options,
+            bool isBootRomOnly = false);
     static fs::path GetDocumentationDir();
     static fs::path GetDiskDir();
+#ifdef _WIN32
+    static std::string GetFlexemuRegistryConfigPath();
+#else
+    static fs::path GetRcFilePath();
+#endif
     static bool IsReadOnlyOption(struct sOptions &options, FlexemuOptionId id);
-    static bool AreAllBootOptionsReadOnly(struct sOptions &options);
+    static bool AreAllBootOptionsReadOnly(struct sOptions &options,
+        bool isBootRomOnly = false);
     static void GetOptions(struct sOptions &options);
     static void GetCommandlineOptions(
         struct sOptions &options,

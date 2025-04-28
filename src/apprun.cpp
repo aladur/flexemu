@@ -47,6 +47,10 @@
 #include "scpulog.h"
 #include "cvtwchar.h"
 #include "termimpi.h"
+#include "warnoff.h"
+#include <QObject>
+#include <QMessageBox>
+#include "warnon.h"
 #include <optional>
 
 
@@ -222,7 +226,7 @@ void ApplicationRunner::AddIoDevicesToMemory()
 
 }
 
-bool ApplicationRunner::LoadMonitorFileIntoRom()
+int ApplicationRunner::LoadBootRomFile()
 {
     auto hexFilePath = options.hex_file;
     DWord startAddress = 0;
@@ -236,32 +240,71 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
 
             error = load_hexfile(hexFilePath, memory, startAddress);
         }
-
-        if (error < 0)
-        {
-            std::stringstream pmsg;
-
-            pmsg << "*** Error in \"" << hexFilePath << "\":\n    ";
-            print_hexfile_error(pmsg, error);
-            pmsg << '\n';
-#ifdef _WIN32
-            MessageBox(
-                nullptr,
-                ConvertToUtf16String(pmsg.str()).c_str(),
-                ConvertToUtf16String(PROGRAMNAME " error").c_str(),
-                MB_OK | MB_ICONERROR);
-#endif
-#ifdef UNIX
-            std::cerr << pmsg.str();
-#endif
-            return false;
-        }
     }
-    return true;
+
+    if (error == 0)
+    {
+        return 0;
+    }
+
+    QMessageBox::StandardButtons buttons = QMessageBox::Close;
+    auto message =
+        QObject::tr("Boot ROM file \"%1\"<br>"
+        "can not be read or has wrong format.<br>"
+        "<br>&#x2022; <b>Close</b> will close flexemu.")
+            .arg(QString::fromStdString(hexFilePath.u8string()));
+
+    if (!FlexemuOptions::AreAllBootOptionsReadOnly(options, true))
+    {
+        message +=
+            QObject::tr("<br>&#x2022; <b>Restore Defaults</b> will restore "
+                    "boot ROM file to default value and restart flexemu.");
+        buttons |= QMessageBox::RestoreDefaults;
+    }
+
+#ifdef _WIN32
+    const auto registryPath =
+        FlexemuOptions::GetFlexemuRegistryConfigPath();
+    message += QObject::tr(
+            "<br><br><b>Hint:</b> flexemu settings can be changed by "
+            "editing the Windows Registry at"
+            "<br>%1").arg(QString::fromStdString(registryPath));
+#else
+    const auto rcFilePath = FlexemuOptions::GetRcFilePath().u8string();
+    message += QObject::tr(
+            "<br><br><b>Hint:</b> flexemu settings can be changed by "
+            "editing file<br>%1").arg(QString::fromStdString(rcFilePath));
+#endif
+
+    const auto answer =
+        QMessageBox::critical(nullptr, "flexemu error", message, buttons,
+                QMessageBox::Close);
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+#pragma GCC diagnostic ignored "-Wswitch"
+#endif
+    switch (answer)
+    {
+        case QMessageBox::RestoreDefaults:
+            FlexemuOptions::InitBootOptions(options, true);
+            FlexemuOptions::WriteOptions(options, false, true);
+            return EXIT_RESTART;
+
+        case QMessageBox::Close:
+        default:
+            return 1;
+    }
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 }
 
 int ApplicationRunner::startup(QApplication &app)
 {
+    int exitCode = 0;
+
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
 
@@ -303,9 +346,10 @@ int ApplicationRunner::startup(QApplication &app)
 
     AddIoDevicesToMemory();
 
-    if (!LoadMonitorFileIntoRom())
+    exitCode = LoadBootRomFile();
+    if (exitCode != 0)
     {
-        return 1;
+        return exitCode;
     }
 
     memory.reset_io();
@@ -328,7 +372,7 @@ int ApplicationRunner::startup(QApplication &app)
     QObject::connect(&gui, &QtGui::CloseApplication, &app,
                      &QCoreApplication::quit, Qt::QueuedConnection);
 
-    return 0;
+    return exitCode;
 }
 
 void ApplicationRunner::cleanup()

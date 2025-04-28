@@ -1341,17 +1341,23 @@ bool FlexemuOptions::IsReadOnlyOption(struct sOptions &options,
         FlexemuOptionId id)
 {
     return (std::find(options.readOnlyOptionIds.cbegin(),
-        options.readOnlyOptionIds.cbegin(), id) !=
+        options.readOnlyOptionIds.cend(), id) !=
         options.readOnlyOptionIds.cend());
 }
 
-bool FlexemuOptions::AreAllBootOptionsReadOnly(struct sOptions &options)
+bool FlexemuOptions::AreAllBootOptionsReadOnly(struct sOptions &options,
+        bool isBootRomOnly)
 {
     // Options needed for a successful boot are the boot ROM (hex-file)
     // and the disk in drive 0.
     if (!IsReadOnlyOption(options, FlexemuOptionId::HexFile))
     {
         return false;
+    }
+
+    if (isBootRomOnly)
+    {
+        return true;
     }
 
     if (options.isEurocom2V5)
@@ -1362,7 +1368,8 @@ bool FlexemuOptions::AreAllBootOptionsReadOnly(struct sOptions &options)
     return IsReadOnlyOption(options, FlexemuOptionId::Drive0);
 }
 
-void FlexemuOptions::InitBootOptions(struct sOptions &options)
+void FlexemuOptions::InitBootOptions(struct sOptions &options,
+        bool isBootRomOnly)
 {
     // Options needed to boot the system are the boot ROM (hex-file)
     // and the disk in drive 0.
@@ -1379,6 +1386,11 @@ void FlexemuOptions::InitBootOptions(struct sOptions &options)
         }
     }
 
+    if (isBootRomOnly)
+    {
+        return;
+    }
+
     if (options.isEurocom2V5 &&
         !IsReadOnlyOption(options, FlexemuOptionId::MdcrDrive0))
     {
@@ -1391,3 +1403,15 @@ void FlexemuOptions::InitBootOptions(struct sOptions &options)
         options.drives[0] = GetDiskDir() / u8"system.dsk";
     }
 }
+
+#ifdef _WIN32
+std::string FlexemuOptions::GetFlexemuRegistryConfigPath()
+{
+    return std::string("HKEY_CURRENT_USER\\") + FLEXEMUREG;
+}
+#else
+fs::path FlexemuOptions::GetRcFilePath()
+{
+    return flx::getFlexemuUserConfigPath() / FLEXEMURC;
+}
+#endif

@@ -68,7 +68,7 @@ public:
 
 private:
     void AddIoDevicesToMemory();
-    bool LoadMonitorFileIntoRom();
+    int LoadBootRomFile();
 
     struct sOptions &options;
     Memory memory;
