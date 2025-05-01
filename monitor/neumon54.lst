@@ -2078,7 +2078,7 @@ RTC present
  FEAE FE003F800FE003  INVTB2 FDB  $FE00,$3F80,$0FE0,$03F8
  FEB5 F8
                       ;
-                      ; Curosr right, small
+                      ; Cursor right, small
                       ;
  FEB6 7E001F8007E001  INVTBL FDB  $7E00,$1F80,$07E0,$01F8
  FEBD F8

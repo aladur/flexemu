@@ -2056,7 +2056,7 @@ BUMP1  RTS
 ;
 INVTB2 FDB  $FE00,$3F80,$0FE0,$03F8
 ;
-; Curosr right, small
+; Cursor right, small
 ;
 INVTBL FDB  $7E00,$1F80,$07E0,$01F8
 ;
