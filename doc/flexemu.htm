@@ -650,10 +650,14 @@ The following preferences can be modified.
 </table>
 <p>
 [1] When this option is enabled a floppy disk can be formatted from within the
-emulator. Only disk image files (not virtual disk images) support formatting a
-disk. When this option is on, the corresponding disk image file can be an empty
-or non existent file. NEWDISK.CMD distributed on system.dsk for example can be
-used to format a disk.
+emulator. Only *.FLX disk image files (not *.DSK or virtual disk images)
+support formatting a disk. When this option is on, the corresponding disk
+image file can be an empty file. NEWDISK.CMD distributed on system.dsk for
+example can be used to format a disk. When trying to read or write such
+an empty, unformatted disk the floppy disk controller responds with error
+bit "record not found". After successfully formatting it with NEWDISK.CMD
+it is detected as FLEX formatted disk, read or write is possible. In general
+as disk can be formatted with other disk formats like CP/M or MS/DOS.
 <p>
 All flexemu settings are stored in a file on Unix like OS or in the Windows
 Registry. The detailed location is

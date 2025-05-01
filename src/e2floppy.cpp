@@ -122,8 +122,12 @@ bool E2floppy::mount_drive(const fs::path &path,
         IFlexDiskBySectorPtr pfloppy;
 
         const auto status = fs::status(containerPath);
-        bool pathExists = fs::exists(status);
-        if (pathExists && fs::is_directory(status))
+        if (!fs::exists(status))
+        {
+            return false;
+        }
+
+        if (is_directory(status))
         {
             if (options.isDirectoryDiskActive)
             {
@@ -142,17 +146,17 @@ bool E2floppy::mount_drive(const fs::path &path,
                 }
             }
         }
-        else
+        else if (is_regular_file(status))
         {
-            auto fileSize = pathExists ? fs::file_size(containerPath) : 0U;
+            const auto fileSize = fs::file_size(containerPath);
 
             // Empty files are only mounted if option canFormatDrive is set.
             // They are identified as unformatted.
-            if (!options.canFormatDrives[drive_nr] && pathExists &&
-                fs::is_regular_file(status) && fileSize == 0U)
+            if (!options.canFormatDrives[drive_nr] && fileSize == 0U)
             {
                 return false;
             }
+
             // A file which has a non-zero file size is identified as
             // formatted.
             const bool is_formatted = (fileSize > 0U);
