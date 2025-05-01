@@ -24,6 +24,10 @@
 ;                               asm6809 V2.11 (http://www.6809.org.uk/asm6809/)
 ; 17.09.2018 W. Schwotzer       Fully translated to english
 ; 16.04.2025 W. Schwotzer       Support input of NUL key (hex 00)
+; 01.05.2025 W. Schwotzer       Read FLEX boot sector:
+;                               Abort on any of these errors:
+;                               not ready, record not found, crc error,
+;                               lost data
 
 ; SYM 6
 ; OPT -G,P,M,E,-C,
@@ -148,6 +152,7 @@ BILANF EQU  $FCF7      ;scrollregister
 ;
 ; floppycontroler registers
 ;
+FLCPAG EQU  $FD00      ;direct page for fdc
 FLCOMM EQU  $FD30      ;commandregister
 FLSEKT EQU  $FD32      ;sectorregister
 FLDATA EQU  $FD33      ;dataregister
@@ -1848,33 +1853,45 @@ ORIG   SET  *
 ; then it starts the routine
 ;
 BOOT   JSR  CURSAN     ;Cursor on
+       LDA  #FLCPAG / 256
+       TFR  A,DP
        LDD  #$C10D     ;Drive 0, Restore 12 ms
-       STA  FLDRIV    ;and start timer
-       STB  FLCOMM    ;restore
+       STA  FLDRIV-FLCPAG ;and start timer
+       STB  FLCOMM-FLCPAG ;Cmd: restore 12 ms
        BSR  RET1       ;Delay
-BOOT1  LDB  FLCOMM    ;check for ready
-       BPL  BOOT3      ;ready
-       CLR  FLDRIV    ;stop timer
+BOOT1  LDB  FLCOMM-FLCPAG ;check for ready
+       BPL  BOOT3      ;jump if disk ready
+BOOT9  CLR  FLDRIV-FLCPAG ;stop timer
        JSR  CURAUS     ;Cursor off
-       JMP  HKS
+       JMP  HKS        ;boot failed, jump HKS
 ;
 BOOT3  BITB #$01
-       BNE  BOOT1      ;still busy
+       BNE  BOOT1      ;jump if still busy
+;
+; Read boot sector
        LDD  #$0180     ;Sektor 1, 256 Bytes
-       STA  FLSEKT
+       STA  FLSEKT-FLCPAG
        LDX  #$C100+$80 ;Store Boots. at $C100
        LDA  #$84
        BSR  RET1
-       STA  FLCOMM    ;read one Sektor
-BOOT2  LDA  FLDRIV    ;Data request
-       BPL  BOOT2      ;no
-       LDA  FLDATA    ;get byte
+       STA  FLCOMM-FLCPAG ;Cmd: read one Sektor
+BOOT2  LDA  FLCOMM-FLCPAG ;read status
+       BITA #$02
+       BNE  BOOT4     ;jump if data request
+       BITA #$01      ;still busy?
+       BNE  BOOT2     ;if busy jump back
+; Check for errors: not ready, record not found,
+; crc error, lost data
+       BITA #$9C      ;are errors?
+       BNE  BOOT9     ;yes, jmp to HKS
+;
+BOOT4  LDA  FLDATA-FLCPAG ;get byte
        STA  B,X        ;save it
        INCB
-       BVC  BOOT2      ;next byte
+       BVC  BOOT2      ;jump to read next byte
        CLRA            ;set Direct Page to 0
        TFR  A,DP
-       JMP  $C100      ;read rest of Flex
+       JMP  $C100      ;jump into boot sec. read
 ;
 RET1   BSR  RTN1
 RTN1   BSR  RTN
@@ -1891,7 +1908,7 @@ RTN    RTS
 ; a character has to be drawn.
 ;
 LOESCH PSHS D,X
-       LDY  #LOETBL
+       LEAY <LOETBL,PC
        LDY  A,Y
        LDA  NRLINS
        PSHS A,Y

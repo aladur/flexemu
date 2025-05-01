@@ -34,6 +34,12 @@ cursor with CTRL-F
 english
                       ; 16.04.2025 W. Schwotzer       Support input of NUL key 
 (hex 00)
+                      ; 01.05.2025 W. Schwotzer       Read FLEX boot sector:
+                      ;                               Abort on any of these 
+errors:
+                      ;                               not ready, record not 
+found, crc error,
+                      ;                               lost data
 
                       ; SYM 6
                       ; OPT -G,P,M,E,-C,
@@ -156,6 +162,7 @@ neumon54.hex neumon54.asm
                       ;
                       ; floppycontroler registers
                       ;
+ FD00                 FLCPAG EQU  $FD00      ;direct page for fdc
  FD30                 FLCOMM EQU  $FD30      ;commandregister
  FD32                 FLSEKT EQU  $FD32      ;sectorregister
  FD33                 FLDATA EQU  $FD33      ;dataregister
@@ -218,8 +225,8 @@ neumon54.hex neumon54.asm
  F03A F47B            ZCONVT FDB  CNVERT    ;Convert upper/lower case
  F03C F56D            ZUSRCH FDB  SEARCH    ;Table search
  F03E F57B            ZUCOMP FDB  COMPAR    ;String compare
- F040 FDBA            ZXDCHR FDB  XDCHAR    ;Draw character
- F042 FEC5            ZUXINV FDB  INVCUR    ;Invert cursor
+ F040 FDBF            ZXDCHR FDB  XDCHAR    ;Draw character
+ F042 FECA            ZUXINV FDB  INVCUR    ;Invert cursor
  F044 F44B            ZUSTAT FDB  STATUS    ;Keyboard Status (FLEX compatible)
                       ;
                       ;
@@ -227,9 +234,9 @@ neumon54.hex neumon54.asm
                       ;
  F046                 HKSTAB EQU  *
  F046 44                     FCC  "D"        ;German char.set
- F047 FFC7                   FDB  GERMAN
+ F047 FFCC                   FDB  GERMAN
  F049 49                     FCC  "I"        ;ASCII char.set
- F04A FFCF                   FDB  ASCII
+ F04A FFD4                   FDB  ASCII
  F04C 47                     FCC  "G"        ;Start Userpgm
  F04D F35C                   FDB  GO
  F04F 4B                     FCC  "K"        ;Book Diskette
@@ -1211,11 +1218,11 @@ stack
  F669 102600FE               LBNE ESCSEQ     ;yes, do sequence
  F66D 847F                   ANDA #$7F       ;only 7 bit
  F66F A7E4                   STA  ,S         ;store it
- F671 BDFEC5                 JSR  INVCUR     ;clear cursor
+ F671 BDFECA                 JSR  INVCUR     ;clear cursor
  F674 8120                   CMPA #$20       ;control code?
  F676 102500EA               LBCS DTEXTC     ; yes, to control codes
  F67A A6E4            ZF850  LDA  ,S         ;get value back
- F67C BDFDBA                 JSR  XDCHAR     ;draw character
+ F67C BDFDBF                 JSR  XDCHAR     ;draw character
  F67F DC05            COLOR2 LDD  XADDR-DIRPAG    ; update cursor adress
  F681 F3EF3B                 ADDD CHROFS-1
  F684 DD05                   STD  XADDR-DIRPAG
@@ -1225,7 +1232,7 @@ stack
  F68C 5F                     CLRB;
  F68D DD05                   STD  XADDR-DIRPAG
  F68F 1601C1                 LBRA LF
- F692 BDFEC5          DTEXT8 JSR  INVCUR     ;display cursor again
+ F692 BDFECA          DTEXT8 JSR  INVCUR     ;display cursor again
  F695 BDF5D3          DTEXT3 JSR  SWTCHB
  F698 BDF5D3                 JSR  SWTCHB
  F69B 0D0F                   TST  NEWST1-DIRPAG
@@ -1244,7 +1251,7 @@ stack
  F6B2 0D5B            CURSOF TST  CURSOR-DIRPAG
  F6B4 2705                   BEQ  ISOFF       ;Cursor is already off
  F6B6 0F0E                   CLR  INVFLG-DIRPAG
- F6B8 BDFEC5                 JSR  INVCUR      ;otherwise delete it
+ F6B8 BDFECA                 JSR  INVCUR      ;otherwise delete it
  F6BB 8601            ISOFF  LDA  #1
  F6BD 970E                   STA  INVFLG-DIRPAG
  F6BF 20D4                   BRA  DTEXT3
@@ -1380,11 +1387,11 @@ zu loeschen
  F7B3 F8C4                   FDB  DC3       ;^X CURSOR RIGHT
  F7B5 F8D2                   FDB  DC4       ;^Y CURSOR LEFT
  F7B7 F8A5                   FDB  DC1       ;^Z CURSOR UP
- F7B9 FF58                   FDB  ESCAPE
+ F7B9 FF5D                   FDB  ESCAPE
  F7BB F901                   FDB  SOFTSC    ; SOFT/HARD=(HOME DOWN)
  F7BD F86B                   FDB  HOME      ;CURSOR HOME
- F7BF FF6E                   FDB  ERAEOL    ;1E
- F7C1 FF93                   FDB  ERAEOS    ;1F
+ F7BF FF73                   FDB  ERAEOL    ;1E
+ F7C1 FF98                   FDB  ERAEOS    ;1F
 
  F7C3 F692            CTLTAB FDB  DTEXT8    ;0
  F7C5 F692                   FDB  DTEXT8    ;1
@@ -1414,7 +1421,7 @@ zu loeschen
  F7F3 F692                   FDB  DTEXT8    ;18
  F7F5 F692                   FDB  DTEXT8    ;19
  F7F7 F692                   FDB  DTEXT8    ;1A
- F7F9 FF58                   FDB  ESCAPE
+ F7F9 FF5D                   FDB  ESCAPE
  F7FB F86B                   FDB  HOME      ;CURSOR HOME
  F7FD F901                   FDB  SOFTSC
  F7FF F692                   FDB  DTEXT8    ;1E
@@ -1443,9 +1450,9 @@ zu loeschen
  F820 45                     FCC  "E"
  F821 F985                   FDB  SPCURS    ; Cursorpositioning YX
  F823 46                     FCC  "F"
- F824 FF61                   FDB  INSCUR    ; Use an insert Cursor
+ F824 FF66                   FDB  INSCUR    ; Use an insert Cursor
  F826 47                     FCC  "G"
- F827 FF5E                   FDB  OVRCUR    ; Use an overwrite Cursor 
+ F827 FF63                   FDB  OVRCUR    ; Use an overwrite Cursor 
 (default)
  F829 49                     FCC  "I"
  F82A F6D2                   FDB  DEUOFF    ; International characterset
@@ -1456,21 +1463,21 @@ zu loeschen
  F832 51                     FCC  "Q"
  F833 F6C8                   FDB  INVOFF    ; INVerse OFF
  F835 4B                     FCC  "K"
- F836 FF6E                   FDB  ERAEOL    ; ERAse to End Of Line
+ F836 FF73                   FDB  ERAEOL    ; ERAse to End Of Line
  F838 5A                     FCC  "Z"
- F839 FF93                   FDB  ERAEOS    ; ERAse to End Of Screen
+ F839 FF98                   FDB  ERAEOS    ; ERAse to End Of Screen
  F83B 70                     FCC  "p"
  F83C F6C1                   FDB  INVON     ; INVerse ON
  F83E 71                     FCC  "q"
  F83F F6C8                   FDB  INVOFF    ; INVerse OFF
  F841 4B                     FCC  "K"
- F842 FF6E                   FDB  ERAEOL    ; ERAse to End Of Line
+ F842 FF73                   FDB  ERAEOL    ; ERAse to End Of Line
  F844 4C                     FCC  "L"
- F845 FF6E                   FDB  ERAEOL
+ F845 FF73                   FDB  ERAEOL
  F847 6B                     FCC  "k"
- F848 FF93                   FDB  ERAEOS    ; ERAse to End Of Screen
+ F848 FF98                   FDB  ERAEOS    ; ERAse to End Of Screen
  F84A 53                     FCC  "S"
- F84B FF93                   FDB  ERAEOS
+ F84B FF98                   FDB  ERAEOS
  F84D FF                     FCB  $FF
 
  F84E BDF72C          SCRDWN JSR  SCROLD
@@ -1500,7 +1507,7 @@ zu loeschen
  F87A B3EF3B                 SUBD CHROFS-1   ;do backspace
  F87D DD05                   STD  XADDR-DIRPAG
  F87F 8620                   LDA  #$20       ;erase char. by a space
- F881 BDFDBA                 JSR  XDCHAR
+ F881 BDFDBF                 JSR  XDCHAR
  F884 20E2                   BRA  LF2
 
  F886 DE03            FF     LDU  DBASE-DIRPAG     ;get display base
@@ -1653,7 +1660,7 @@ zu loeschen
  F976 9613                   LDA  GYADDR-DIRPAG
  F978 1F02                   TFR  D,Y
  F97A 9E15                   LDX  GXADDR-DIRPAG    ;get X address
- F97C BDFF1B                 JSR  PIXADR
+ F97C BDFF20                 JSR  PIXADR
  F97F E884                   EORB ,X
  F981 E784                   STB  ,X
  F983 20D3                   BRA  ENDCUP
@@ -1677,12 +1684,12 @@ zu loeschen
  F9A1 C001            REPTI  SUBB #1
  F9A3 3406                   PSHS D
  F9A5 8E0000                 LDX  #0
- F9A8 17058B                 LBSR OFFSET
+ F9A8 170590                 LBSR OFFSET
  F9AB 1F13                   TFR X,U       ; Dest Pointer in U
  F9AD ECE4                   LDD  ,S
  F9AF 9331                   SUBD NRLINS-1-DIRPAG
  F9B1 8E0000                 LDX  #0
- F9B4 17057F                 LBSR OFFSET   ; Source Pointer in X
+ F9B4 170584                 LBSR OFFSET   ; Source Pointer in X
  F9B7 17FF38                 LBSR COPYL    ; Copy one Rasterline
  F9BA 3506                   PULS D
  F9BC 10A3E4                 CMPD ,S
@@ -1691,8 +1698,8 @@ zu loeschen
  F9C3 D331                   ADDD NRLINS-1-DIRPAG
  F9C5 1F02                   TFR  D,Y
  F9C7 8E0000                 LDX  #0
- F9CA 1705AD                 LBSR ERASL     ;clear last line
- F9CD 1605A0          LTD8   LBRA TD8
+ F9CA 1705B2                 LBSR ERASL     ;clear last line
+ F9CD 1605A5          LTD8   LBRA TD8
 
  F9D0 DC07            DELLIN LDD  YADDR-DIRPAG
  F9D2 10930C                 CMPD BOTTOM-DIRPAG
@@ -1704,12 +1711,12 @@ zu loeschen
  F9DC C001            REPTD  SUBB #1
  F9DE 3406                   PSHS D
  F9E0 8E0000                 LDX  #0
- F9E3 170550                 LBSR OFFSET
+ F9E3 170555                 LBSR OFFSET
  F9E6 1F13                   TFR X,U       ; Source Pointer in U
  F9E8 ECE4                   LDD  ,S
  F9EA D331                   ADDD NRLINS-1-DIRPAG
  F9EC 8E0000                 LDX  #0
- F9EF 170544                 LBSR OFFSET   ; Dest Pointer in X
+ F9EF 170549                 LBSR OFFSET   ; Dest Pointer in X
  F9F2 1E13                   EXG  X,U
  F9F4 17FEFB                 LBSR COPYL    ; Copy one Rasterline
  F9F7 3506                   PULS D
@@ -1718,7 +1725,7 @@ zu loeschen
  F9FE D331                   ADDD NRLINS-1-DIRPAG
  FA00 1F02                   TFR  D,Y
  FA02 8E0000                 LDX  #0
- FA05 170572                 LBSR ERASL     ;clear last line
+ FA05 170577                 LBSR ERASL     ;clear last line
  FA08 20C3                   BRA  LTD8
 
  FA0A 8EFA17          EMUEXIT LDX  #TEXIT
@@ -1866,38 +1873,50 @@ RTC present
                       ; It loads the Bootblock at address $C100
                       ; then it starts the routine
                       ;
- FD40 BDFFD2          BOOT   JSR  CURSAN     ;Cursor on
- FD43 CCC10D                 LDD  #$C10D     ;Drive 0, Restore 12 ms
- FD46 B7FD38                 STA  FLDRIV    ;and start timer
- FD49 F7FD30                 STB  FLCOMM    ;restore
- FD4C 8D35                   BSR  RET1       ;Delay
- FD4E F6FD30          BOOT1  LDB  FLCOMM    ;check for ready
- FD51 2A09                   BPL  BOOT3      ;ready
- FD53 7FFD38                 CLR  FLDRIV    ;stop timer
- FD56 BDFFD7                 JSR  CURAUS     ;Cursor off
- FD59 7EF225                 JMP  HKS
+ FD40 BDFFD7          BOOT   JSR  CURSAN     ;Cursor on
+ FD43 86FD                   LDA  #FLCPAG / 256
+ FD45 1F8B                   TFR  A,DP
+ FD47 CCC10D                 LDD  #$C10D     ;Drive 0, Restore 12 ms
+ FD4A 9738                   STA  FLDRIV-FLCPAG ;and start timer
+ FD4C D730                   STB  FLCOMM-FLCPAG ;Cmd: restore 12 ms
+ FD4E 8D39                   BSR  RET1       ;Delay
+ FD50 D630            BOOT1  LDB  FLCOMM-FLCPAG ;check for ready
+ FD52 2A08                   BPL  BOOT3      ;jump if disk ready
+ FD54 0F38            BOOT9  CLR  FLDRIV-FLCPAG ;stop timer
+ FD56 BDFFDC                 JSR  CURAUS     ;Cursor off
+ FD59 7EF225                 JMP  HKS        ;boot failed, jump HKS
                       ;
  FD5C C501            BOOT3  BITB #$01
- FD5E 26EE                   BNE  BOOT1      ;still busy
- FD60 CC0180                 LDD  #$0180     ;Sektor 1, 256 Bytes
- FD63 B7FD32                 STA  FLSEKT
- FD66 8EC180                 LDX  #$C100+$80 ;Store Boots. at $C100
- FD69 8684                   LDA  #$84
- FD6B 8D16                   BSR  RET1
- FD6D B7FD30                 STA  FLCOMM    ;read one Sektor
- FD70 B6FD38          BOOT2  LDA  FLDRIV    ;Data request
- FD73 2AFB                   BPL  BOOT2      ;no
- FD75 B6FD33                 LDA  FLDATA    ;get byte
- FD78 A785                   STA  B,X        ;save it
- FD7A 5C                     INCB
- FD7B 28F3                   BVC  BOOT2      ;next byte
- FD7D 4F                     CLRA            ;set Direct Page to 0
- FD7E 1F8B                   TFR  A,DP
- FD80 7EC100                 JMP  $C100      ;read rest of Flex
+ FD5E 26F0                   BNE  BOOT1      ;jump if still busy
                       ;
- FD83 8D00            RET1   BSR  RTN1
- FD85 8D00            RTN1   BSR  RTN
- FD87 39              RTN    RTS
+                      ; Read boot sector
+ FD60 CC0180                 LDD  #$0180     ;Sektor 1, 256 Bytes
+ FD63 9732                   STA  FLSEKT-FLCPAG
+ FD65 8EC180                 LDX  #$C100+$80 ;Store Boots. at $C100
+ FD68 8684                   LDA  #$84
+ FD6A 8D1D                   BSR  RET1
+ FD6C 9730                   STA  FLCOMM-FLCPAG ;Cmd: read one Sektor
+ FD6E 9630            BOOT2  LDA  FLCOMM-FLCPAG ;read status
+ FD70 8502                   BITA #$02
+ FD72 2608                   BNE  BOOT4     ;jump if data request
+ FD74 8501                   BITA #$01      ;still busy?
+ FD76 26F6                   BNE  BOOT2     ;if busy jump back
+                      ; Check for errors: not ready, record not found,
+                      ; crc error, lost data
+ FD78 859C                   BITA #$9C      ;are errors?
+ FD7A 26D8                   BNE  BOOT9     ;yes, jmp to HKS
+                      ;
+ FD7C 9633            BOOT4  LDA  FLDATA-FLCPAG ;get byte
+ FD7E A785                   STA  B,X        ;save it
+ FD80 5C                     INCB
+ FD81 28EB                   BVC  BOOT2      ;jump to read next byte
+ FD83 4F                     CLRA            ;set Direct Page to 0
+ FD84 1F8B                   TFR  A,DP
+ FD86 7EC100                 JMP  $C100      ;jump into boot sec. read
+                      ;
+ FD89 8D00            RET1   BSR  RTN1
+ FD8B 8D00            RTN1   BSR  RTN
+ FD8D 39              RTN    RTS
 
                       ;BUMPX  MACRO
                       ;       LEAX $40,X
@@ -1909,235 +1928,235 @@ RTC present
                       ; subroutine to delete the background on which
                       ; a character has to be drawn.
                       ;
- FD88 3416            LOESCH PSHS D,X
- FD8A 108EFDB2               LDY  #LOETBL
- FD8E 10AEA6                 LDY  A,Y
- FD91 B6EF32                 LDA  NRLINS
- FD94 3422                   PSHS A,Y
+ FD8E 3416            LOESCH PSHS D,X
+ FD90 318C24                 LEAY <LOETBL,PC
+ FD93 10AEA6                 LDY  A,Y
+ FD96 B6EF32                 LDA  NRLINS
+ FD99 3422                   PSHS A,Y
                       ;
- FD96 EC61            RCL    LDD  1,S
- FD98 A484                   ANDA ,X
- FD9A E401                   ANDB 1,X
- FD9C ED84                   STD  ,X
- FD9E 308840                 LEAX $40,X
- FDA1 BCEF03                 CMPX DBASE
- FDA4 2504                   BLO  *+6
- FDA6 3089C000               LEAX -$4000,X
- FDAA 6AE4                   DEC  ,S
- FDAC 26E8                   BNE  RCL
- FDAE 3263                   LEAS 3,S
- FDB0 3596                   PULS D,X,PC
+ FD9B EC61            RCL    LDD  1,S
+ FD9D A484                   ANDA ,X
+ FD9F E401                   ANDB 1,X
+ FDA1 ED84                   STD  ,X
+ FDA3 308840                 LEAX $40,X
+ FDA6 BCEF03                 CMPX DBASE
+ FDA9 2504                   BLO  *+6
+ FDAB 3089C000               LEAX -$4000,X
+ FDAF 6AE4                   DEC  ,S
+ FDB1 26E8                   BNE  RCL
+ FDB3 3263                   LEAS 3,S
+ FDB5 3596                   PULS D,X,PC
                       ;
- FDB2 01FFC07F        LOETBL FDB  %0000000111111111,%1100000001111111
- FDB6 F01FFC07               FDB  %1111000000011111,%1111110000000111
+ FDB7 01FFC07F        LOETBL FDB  %0000000111111111,%1100000001111111
+ FDBB F01FFC07               FDB  %1111000000011111,%1111110000000111
 
                       ;
                       ;
                       ; DCHAR does the processing to draw one
                       ; character on the current cursor position.
                       ;
- FDBA 3476            XDCHAR PSHS U,Y,X,D    ;save all registers
- FDBC 8120                   CMPA #BLANK     ;skip control chars
- FDBE 102500A0               LBLO NIXIS
- FDC2 FEEF40                 LDU  CHATAB     ;Point to Char.tab.
- FDC5 817F                   CMPA #$7F       ;Is ist DEL?
- FDC7 2608                   BNE  NODEL
- FDC9 B6EF3A                 LDA  MULINS
- FDCC 40                     NEGA            ;Subtract length of
- FDCD 33C6                   LEAU A,U        ;one character
- FDCF 2033                   BRA  DCHR
- FDD1 7DEF59          NODEL  TST  DEUTSC
- FDD4 2726                   BEQ  NODEU
- FDD6 815E                   CMPA #'^'       ;PFEIL
- FDD8 2722                   BEQ  NODEU
- FDDA 815F                   CMPA #$5F       ;ULIN
- FDDC 271E                   BEQ  NODEU
- FDDE 3402                   PSHS A
- FDE0 84DF                   ANDA #%11011111 ;to upper case
- FDE2 815A                   CMPA #'Z'
- FDE4 3502                   PULS A
- FDE6 2314                   BLS  NODEU      ;no german umlaut
- FDE8 8520                   BITA #%00100000
- FDEA 2702                   BEQ  GROSS      ;jump to upper case
- FDEC 801D                   SUBA #($7B-$5E) ;$7B -> $5E, ...
- FDEE 8063            GROSS  SUBA #($5B+8)   ;$5B -> -8, ...
- FDF0 40                     NEGA            ;-8 -> 8, ...
- FDF1 F6EF3A                 LDB  MULINS
- FDF4 3D                     MUL
- FDF5 43                     COMA
- FDF6 53                     COMB
- FDF7 C30001                 ADDD #1         ;subtract from U
- FDFA 2006                   BRA  DEU1
+ FDBF 3476            XDCHAR PSHS U,Y,X,D    ;save all registers
+ FDC1 8120                   CMPA #BLANK     ;skip control chars
+ FDC3 102500A0               LBLO NIXIS
+ FDC7 FEEF40                 LDU  CHATAB     ;Point to Char.tab.
+ FDCA 817F                   CMPA #$7F       ;Is ist DEL?
+ FDCC 2608                   BNE  NODEL
+ FDCE B6EF3A                 LDA  MULINS
+ FDD1 40                     NEGA            ;Subtract length of
+ FDD2 33C6                   LEAU A,U        ;one character
+ FDD4 2033                   BRA  DCHR
+ FDD6 7DEF59          NODEL  TST  DEUTSC
+ FDD9 2726                   BEQ  NODEU
+ FDDB 815E                   CMPA #'^'       ;PFEIL
+ FDDD 2722                   BEQ  NODEU
+ FDDF 815F                   CMPA #$5F       ;ULIN
+ FDE1 271E                   BEQ  NODEU
+ FDE3 3402                   PSHS A
+ FDE5 84DF                   ANDA #%11011111 ;to upper case
+ FDE7 815A                   CMPA #'Z'
+ FDE9 3502                   PULS A
+ FDEB 2314                   BLS  NODEU      ;no german umlaut
+ FDED 8520                   BITA #%00100000
+ FDEF 2702                   BEQ  GROSS      ;jump to upper case
+ FDF1 801D                   SUBA #($7B-$5E) ;$7B -> $5E, ...
+ FDF3 8063            GROSS  SUBA #($5B+8)   ;$5B -> -8, ...
+ FDF5 40                     NEGA            ;-8 -> 8, ...
+ FDF6 F6EF3A                 LDB  MULINS
+ FDF9 3D                     MUL
+ FDFA 43                     COMA
+ FDFB 53                     COMB
+ FDFC C30001                 ADDD #1         ;subtract from U
+ FDFF 2006                   BRA  DEU1
 
- FDFC F6EF3A          NODEU  LDB  MULINS     ;Nr. of lines per char
- FDFF 8020                   SUBA #BLANK
- FE01 3D                     MUL             ;compute entry addr in table
- FE02 33CB            DEU1   LEAU D,U        ;Point to this address
+ FE01 F6EF3A          NODEU  LDB  MULINS     ;Nr. of lines per char
+ FE04 8020                   SUBA #BLANK
+ FE06 3D                     MUL             ;compute entry addr in table
+ FE07 33CB            DEU1   LEAU D,U        ;Point to this address
                       ;
                       ; Drawing the character
                       ;
- FE04 BEEF05          DCHR   LDX  XADDR      ;X-coordinate
- FE07 10BEEF07               LDY  YADDR      ;and Y-coordinate
- FE0B 3121                   LEAY 1,Y        ;start one line higher
- FE0D 170126                 LBSR OFFSET     ;compute pixel address
- FE10 17FF75                 LBSR LOESCH
- FE13 108EFE2E               LDY  #DCHAR1    ;computed goto
- FE17 E6C4                   LDB  ,U         ;check if shifted char
- FE19 56                     RORB
- FE1A 2404                   BCC  DCHAR0     ;no, do unshifted jump
- FE1C 30890080               LEAX $80,X
- FE20 308840          DCHAR0 LEAX $40,X
- FE23 BCEF03                 CMPX DBASE
- FE26 2504                   BLO  JUMP
- FE28 3089C000               LEAX -$4000,X
- FE2C 6EA6            JUMP   JMP  A,Y
+ FE09 BEEF05          DCHR   LDX  XADDR      ;X-coordinate
+ FE0C 10BEEF07               LDY  YADDR      ;and Y-coordinate
+ FE10 3121                   LEAY 1,Y        ;start one line higher
+ FE12 170126                 LBSR OFFSET     ;compute pixel address
+ FE15 17FF76                 LBSR LOESCH
+ FE18 108EFE33               LDY  #DCHAR1    ;computed goto
+ FE1C E6C4                   LDB  ,U         ;check if shifted char
+ FE1E 56                     RORB
+ FE1F 2404                   BCC  DCHAR0     ;no, do unshifted jump
+ FE21 30890080               LEAX $80,X
+ FE25 308840          DCHAR0 LEAX $40,X
+ FE28 BCEF03                 CMPX DBASE
+ FE2B 2504                   BLO  JUMP
+ FE2D 3089C000               LEAX -$4000,X
+ FE31 6EA6            JUMP   JMP  A,Y
                       ;
- FE2E 2051            DCHAR1 BRA  CASE1
- FE30 2032                   BRA  CASE2
- FE32 2005                   BRA  CASE3
- FE34 CC0704          CASE4  LDD  #$0704
- FE37 2003                   BRA  CASE40
+ FE33 2051            DCHAR1 BRA  CASE1
+ FE35 2032                   BRA  CASE2
+ FE37 2005                   BRA  CASE3
+ FE39 CC0704          CASE4  LDD  #$0704
+ FE3C 2003                   BRA  CASE40
                       ;
- FE39 CC0710          CASE3  LDD  #$0710
- FE3C 3406            CASE40 PSHS D
- FE3E A6C0            CASE30 LDA  ,U+
- FE40 44                     LSRA
- FE41 E661                   LDB  1,S
- FE43 3D                     MUL
- FE44 E384                   ADDD ,X
- FE46 ED84                   STD  ,X
- FE48 308840                 LEAX $40,X
- FE4B BCEF03                 CMPX DBASE
- FE4E 2504                   BLO  *+6
- FE50 3089C000               LEAX -$4000,X
- FE54 6AE4                   DEC  ,S
- FE56 26E6                   BNE  CASE30
- FE58 3262                   LEAS 2,S
- FE5A 7DEF58          HIGH1  TST  HIGHLI
- FE5D 2703                   BEQ  NIXIS
- FE5F 170057                 LBSR XINV       ; inverse display character 
- FE62 35F6            NIXIS  PULS D,X,Y,U,PC
+ FE3E CC0710          CASE3  LDD  #$0710
+ FE41 3406            CASE40 PSHS D
+ FE43 A6C0            CASE30 LDA  ,U+
+ FE45 44                     LSRA
+ FE46 E661                   LDB  1,S
+ FE48 3D                     MUL
+ FE49 E384                   ADDD ,X
+ FE4B ED84                   STD  ,X
+ FE4D 308840                 LEAX $40,X
+ FE50 BCEF03                 CMPX DBASE
+ FE53 2504                   BLO  *+6
+ FE55 3089C000               LEAX -$4000,X
+ FE59 6AE4                   DEC  ,S
+ FE5B 26E6                   BNE  CASE30
+ FE5D 3262                   LEAS 2,S
+ FE5F 7DEF58          HIGH1  TST  HIGHLI
+ FE62 2703                   BEQ  NIXIS
+ FE64 170057                 LBSR XINV       ; inverse display character 
+ FE67 35F6            NIXIS  PULS D,X,Y,U,PC
                       ;
- FE64 F6EF3A          CASE2  LDB  MULINS
- FE67 A6C0            CASE20 LDA  ,U+
- FE69 44                     LSRA
- FE6A 44                     LSRA
- FE6B 44                     LSRA
- FE6C AB84                   ADDA ,X
- FE6E A784                   STA  ,X
- FE70 308840                 LEAX $40,X
- FE73 BCEF03                 CMPX DBASE
- FE76 2504                   BLO  *+6
- FE78 3089C000               LEAX -$4000,X
- FE7C 5A                     DECB
- FE7D 26E8                   BNE  CASE20
- FE7F 20D9                   BRA  HIGH1
+ FE69 F6EF3A          CASE2  LDB  MULINS
+ FE6C A6C0            CASE20 LDA  ,U+
+ FE6E 44                     LSRA
+ FE6F 44                     LSRA
+ FE70 44                     LSRA
+ FE71 AB84                   ADDA ,X
+ FE73 A784                   STA  ,X
+ FE75 308840                 LEAX $40,X
+ FE78 BCEF03                 CMPX DBASE
+ FE7B 2504                   BLO  *+6
+ FE7D 3089C000               LEAX -$4000,X
+ FE81 5A                     DECB
+ FE82 26E8                   BNE  CASE20
+ FE84 20D9                   BRA  HIGH1
 
- FE81 F6EF3A          CASE1  LDB  MULINS
- FE84 A6C0            CASE10 LDA  ,U+
- FE86 44                     LSRA
- FE87 AB84                   ADDA ,X
- FE89 A784                   STA  ,X
- FE8B 308840                 LEAX $40,X
- FE8E BCEF03                 CMPX DBASE
- FE91 2504                   BLO  *+6
- FE93 3089C000               LEAX -$4000,X
- FE97 5A                     DECB
- FE98 26EA                   BNE  CASE10
- FE9A 20BE                   BRA  HIGH1
+ FE86 F6EF3A          CASE1  LDB  MULINS
+ FE89 A6C0            CASE10 LDA  ,U+
+ FE8B 44                     LSRA
+ FE8C AB84                   ADDA ,X
+ FE8E A784                   STA  ,X
+ FE90 308840                 LEAX $40,X
+ FE93 BCEF03                 CMPX DBASE
+ FE96 2504                   BLO  *+6
+ FE98 3089C000               LEAX -$4000,X
+ FE9C 5A                     DECB
+ FE9D 26EA                   BNE  CASE10
+ FE9F 20BE                   BRA  HIGH1
                       ;
                       ; Subr. to bump the display pointer
                       ;
- FE9C 308840          BUMP   LEAX 64,X
- FE9F BCEF03          BUMP0  CMPX DBASE
- FEA2 2504                   BLO  BUMP1
- FEA4 3089C000               LEAX -$4000,X
- FEA8 39              BUMP1  RTS
+ FEA1 308840          BUMP   LEAX 64,X
+ FEA4 BCEF03          BUMP0  CMPX DBASE
+ FEA7 2504                   BLO  BUMP1
+ FEA9 3089C000               LEAX -$4000,X
+ FEAD 39              BUMP1  RTS
                       ;
                       ; Cursor left, near the left character
                       ;
- FEA9 FE003F800FE003  INVTB2 FDB  $FE00,$3F80,$0FE0,$03F8
- FEB0 F8
+ FEAE FE003F800FE003  INVTB2 FDB  $FE00,$3F80,$0FE0,$03F8
+ FEB5 F8
                       ;
                       ; Curosr right, small
                       ;
- FEB1 7E001F8007E001  INVTBL FDB  $7E00,$1F80,$07E0,$01F8
- FEB8 F8
+ FEB6 7E001F8007E001  INVTBL FDB  $7E00,$1F80,$07E0,$01F8
+ FEBD F8
                       ;
                       ; XINV does the processing to invert
                       ; the cursor
                       ; ATTENTION: DP register must be set before
                       ;
- FEB9 3402            XINV   PSHS A
- FEBB 9601                   LDA  INSRTF-DIRPAG
- FEBD 0F01                   CLR  INSRTF-DIRPAG
- FEBF 8D0C                   BSR  INVCU1
- FEC1 9701                   STA  INSRTF-DIRPAG
- FEC3 3582                   PULS A,PC
+ FEBE 3402            XINV   PSHS A
+ FEC0 9601                   LDA  INSRTF-DIRPAG
+ FEC2 0F01                   CLR  INSRTF-DIRPAG
+ FEC4 8D0C                   BSR  INVCU1
+ FEC6 9701                   STA  INSRTF-DIRPAG
+ FEC8 3582                   PULS A,PC
                       ;
                       ; INVCUR does the processing to invert one
                       ; character on the current cursor position
                       ;
- FEC5 7DEF0E          INVCUR TST  INVFLG
- FEC8 2650                   BNE  INV12
- FECA 73EF5B                 COM  CURSOR   ;Cursor complement
- FECD 3436            INVCU1 PSHS D,X,Y
- FECF C6EF                   LDB  #DRCTPG  ;set direct page
- FED1 1F9B                   TFR  B,DP
- FED3 9E05                   LDX  XADDR-DIRPAG
- FED5 109E07                 LDY  YADDR-DIRPAG
- FED8 3121                   LEAY 1,Y
- FEDA 0D01                   TST  INSRTF-DIRPAG
- FEDC 2707                   BEQ  XINV0
- FEDE D632                   LDB  NRLINS-DIRPAG
- FEE0 C002                   SUBB #2
- FEE2 50                     NEGB
- FEE3 31A5                   LEAY B,Y
- FEE5 8D4F            XINV0  BSR  OFFSET
- FEE7 D632                   LDB  NRLINS-DIRPAG
- FEE9 0D01                   TST  INSRTF-DIRPAG
- FEEB 2702                   BEQ  XINV1
- FEED C602                   LDB  #2
- FEEF 108EFEB1        XINV1  LDY  #INVTBL
- FEF3 0D58                   TST  HIGHLI-DIRPAG
- FEF5 2704                   BEQ  INV11
- FEF7 108EFEA9               LDY  #INVTB2
- FEFB 31A6            INV11  LEAY A,Y
- FEFD 3404                   PSHS B
- FEFF ECA4            REPINV LDD  ,Y
- FF01 A884                   EORA ,X
- FF03 E801                   EORB 1,X
- FF05 ED84                   STD  ,X
- FF07 308840                 LEAX $40,X
- FF0A 9C03                   CMPX DBASE-DIRPAG
- FF0C 2504                   BLO  *+6
- FF0E 3089C000               LEAX -$4000,X
- FF12 6AE4                   DEC  ,S
- FF14 26E9                   BNE  REPINV
- FF16 3261                   LEAS 1,S
- FF18 35B6                   PULS D,X,Y,PC
- FF1A 39              INV12  RTS
+ FECA 7DEF0E          INVCUR TST  INVFLG
+ FECD 2650                   BNE  INV12
+ FECF 73EF5B                 COM  CURSOR   ;Cursor complement
+ FED2 3436            INVCU1 PSHS D,X,Y
+ FED4 C6EF                   LDB  #DRCTPG  ;set direct page
+ FED6 1F9B                   TFR  B,DP
+ FED8 9E05                   LDX  XADDR-DIRPAG
+ FEDA 109E07                 LDY  YADDR-DIRPAG
+ FEDD 3121                   LEAY 1,Y
+ FEDF 0D01                   TST  INSRTF-DIRPAG
+ FEE1 2707                   BEQ  XINV0
+ FEE3 D632                   LDB  NRLINS-DIRPAG
+ FEE5 C002                   SUBB #2
+ FEE7 50                     NEGB
+ FEE8 31A5                   LEAY B,Y
+ FEEA 8D4F            XINV0  BSR  OFFSET
+ FEEC D632                   LDB  NRLINS-DIRPAG
+ FEEE 0D01                   TST  INSRTF-DIRPAG
+ FEF0 2702                   BEQ  XINV1
+ FEF2 C602                   LDB  #2
+ FEF4 108EFEB6        XINV1  LDY  #INVTBL
+ FEF8 0D58                   TST  HIGHLI-DIRPAG
+ FEFA 2704                   BEQ  INV11
+ FEFC 108EFEAE               LDY  #INVTB2
+ FF00 31A6            INV11  LEAY A,Y
+ FF02 3404                   PSHS B
+ FF04 ECA4            REPINV LDD  ,Y
+ FF06 A884                   EORA ,X
+ FF08 E801                   EORB 1,X
+ FF0A ED84                   STD  ,X
+ FF0C 308840                 LEAX $40,X
+ FF0F 9C03                   CMPX DBASE-DIRPAG
+ FF11 2504                   BLO  *+6
+ FF13 3089C000               LEAX -$4000,X
+ FF17 6AE4                   DEC  ,S
+ FF19 26E9                   BNE  REPINV
+ FF1B 3261                   LEAS 1,S
+ FF1D 35B6                   PULS D,X,Y,PC
+ FF1F 39              INV12  RTS
                       ;
                       ; PIXADR computes the byte offset from display
                       ; X and Y Registers contain the coordinates
                       ; on exit X contains the memory address,
                       ; A the Bit-Offset
                       ;
- FF1B 8D19            PIXADR BSR  OFFSET     ;compute offset
- FF1D 3402                   PSHS A          ;save accu
- FF1F B6EF0B                 LDA  SCROFS     ;get screen offset
- FF22 C680                   LDB  #128       ;compute offset
- FF24 3D                     MUL
- FF25 308B                   LEAX D,X        ;adjust pointer
- FF27 17FF75                 LBSR  BUMP0     ;check for end of display
- FF2A A6E4                   LDA  ,S         ;restore accu
- FF2C 5F                     CLRB            ;reset accu
- FF2D 4C                     INCA  
- FF2E 1A01                   ORCC #%00000001 ; SEC, Prepare carry for shift
- FF30 56              PIXA1  RORB
- FF31 4A                     DECA
- FF32 26FC                   BNE  PIXA1      ;get the bit position
- FF34 3582                   PULS A,PC
+ FF20 8D19            PIXADR BSR  OFFSET     ;compute offset
+ FF22 3402                   PSHS A          ;save accu
+ FF24 B6EF0B                 LDA  SCROFS     ;get screen offset
+ FF27 C680                   LDB  #128       ;compute offset
+ FF29 3D                     MUL
+ FF2A 308B                   LEAX D,X        ;adjust pointer
+ FF2C 17FF75                 LBSR  BUMP0     ;check for end of display
+ FF2F A6E4                   LDA  ,S         ;restore accu
+ FF31 5F                     CLRB            ;reset accu
+ FF32 4C                     INCA  
+ FF33 1A01                   ORCC #%00000001 ; SEC, Prepare carry for shift
+ FF35 56              PIXA1  RORB
+ FF36 4A                     DECA
+ FF37 26FC                   BNE  PIXA1      ;get the bit position
+ FF39 3582                   PULS A,PC
                       ;
                       ; OFFSET computes byte offset from display
                       ; base address.
@@ -2145,95 +2164,95 @@ RTC present
                       ; On entry X-register and Y-register contain
                       ; X and Y coordinates.
                       ;
- FF36 1F10            OFFSET TFR  X,D        ;column pointer in X
- FF38 BEEF03                 LDX  DBASE      ;get display base address
- FF3B 3406                   PSHS D          ;save complete address
- FF3D C406                   ANDB #%00000110 ;mask byte-address
- FF3F E7E4                   STB  ,S         ;save bit-address
- FF41 E661                   LDB  1,S        ;get byte-address
- FF43 44                     LSRA            ;divide by 8
- FF44 56                     RORB
- FF45 54                     LSRB
- FF46 54                     LSRB
- FF47 C040                   SUBB #$40       ;other end of the line
- FF49 3085                   LEAX B,X        ;get byte pointer
- FF4B 1F20                   TFR  Y,D        ;get row pointer in B
- FF4D 8640                   LDA  #$40
- FF4F 3D                     MUL
- FF50 50                     NEGB
- FF51 8900                   ADCA #0
- FF53 40                     NEGA
- FF54 308B                   LEAX D,X        ;X now contains right Byte adr
- FF56 3586                   PULS D,PC       ;Restore Bit-Adress in Accu A
+ FF3B 1F10            OFFSET TFR  X,D        ;column pointer in X
+ FF3D BEEF03                 LDX  DBASE      ;get display base address
+ FF40 3406                   PSHS D          ;save complete address
+ FF42 C406                   ANDB #%00000110 ;mask byte-address
+ FF44 E7E4                   STB  ,S         ;save bit-address
+ FF46 E661                   LDB  1,S        ;get byte-address
+ FF48 44                     LSRA            ;divide by 8
+ FF49 56                     RORB
+ FF4A 54                     LSRB
+ FF4B 54                     LSRB
+ FF4C C040                   SUBB #$40       ;other end of the line
+ FF4E 3085                   LEAX B,X        ;get byte pointer
+ FF50 1F20                   TFR  Y,D        ;get row pointer in B
+ FF52 8640                   LDA  #$40
+ FF54 3D                     MUL
+ FF55 50                     NEGB
+ FF56 8900                   ADCA #0
+ FF58 40                     NEGA
+ FF59 308B                   LEAX D,X        ;X now contains right Byte adr
+ FF5B 3586                   PULS D,PC       ;Restore Bit-Adress in Accu A
 
- FF58 7CEF02          ESCAPE INC  ESCFLG     ;set escape flag
- FF5B 16F737                 LBRA DTEXT3     ;and back
+ FF5D 7CEF02          ESCAPE INC  ESCFLG     ;set escape flag
+ FF60 16F732                 LBRA DTEXT3     ;and back
 
- FF5E 4F              OVRCUR CLRA            ;set an overwrite cursor
- FF5F 2002                   BRA  INSCU1
+ FF63 4F              OVRCUR CLRA            ;set an overwrite cursor
+ FF64 2002                   BRA  INSCU1
 
- FF61 8601            INSCUR LDA  #1        ;set an insert cursor
- FF63 0D5B            INSCU1 TST  CURSOR-DIRPAG
- FF65 2703                   BEQ  INSCU2
- FF67 BDFEC5                 JSR  INVCUR    ; clear cursor
- FF6A 9701            INSCU2 STA  INSRTF-DIRPAG
- FF6C 2002                   BRA  TD8 ; draw cursor again
+ FF66 8601            INSCUR LDA  #1        ;set an insert cursor
+ FF68 0D5B            INSCU1 TST  CURSOR-DIRPAG
+ FF6A 2703                   BEQ  INSCU2
+ FF6C BDFECA                 JSR  INVCUR    ; clear cursor
+ FF6F 9701            INSCU2 STA  INSRTF-DIRPAG
+ FF71 2002                   BRA  TD8 ; draw cursor again
 
- FF6E 8D03            ERAEOL BSR  ERALIN
- FF70 16F71F          TD8    LBRA DTEXT8
+ FF73 8D03            ERAEOL BSR  ERALIN
+ FF75 16F71A          TD8    LBRA DTEXT8
 
- FF73 BEEF05          ERALIN LDX  XADDR     ;clear from cursor
- FF76 10BEEF07               LDY  YADDR
- FF7A 3121            ERASL  LEAY 1,Y
- FF7C 3430            ERALU  PSHS X,Y       ;Y -> X
- FF7E 8DB6                   BSR  OFFSET
- FF80 17FE05                 LBSR LOESCH    ;clear char. on cursorpos.
- FF83 3526                   PULS D,Y       ;X -> D, Y -> Y
- FF85 F3EF3B                 ADDD CHROFS-1
- FF88 10B3EF09               CMPD EOLNX
- FF8C 2404                   BCC  ENDEL     ;at end, show cursor
- FF8E 1F01                   TFR  D,X
- FF90 20EA                   BRA  ERALU     ;clear next position
- FF92 39              ENDEL  RTS
+ FF78 BEEF05          ERALIN LDX  XADDR     ;clear from cursor
+ FF7B 10BEEF07               LDY  YADDR
+ FF7F 3121            ERASL  LEAY 1,Y
+ FF81 3430            ERALU  PSHS X,Y       ;Y -> X
+ FF83 8DB6                   BSR  OFFSET
+ FF85 17FE06                 LBSR LOESCH    ;clear char. on cursorpos.
+ FF88 3526                   PULS D,Y       ;X -> D, Y -> Y
+ FF8A F3EF3B                 ADDD CHROFS-1
+ FF8D 10B3EF09               CMPD EOLNX
+ FF91 2404                   BCC  ENDEL     ;at end, show cursor
+ FF93 1F01                   TFR  D,X
+ FF95 20EA                   BRA  ERALU     ;clear next position
+ FF97 39              ENDEL  RTS
 
- FF93 8DDE            ERAEOS BSR  ERALIN
- FF95 FCEF07                 LDD  YADDR
- FF98 10B3EF0C               CMPD BOTTOM
- FF9C 27D2                   BEQ  TD8       ;maybe it was the last one
- FF9E B3EF31                 SUBD NRLINS-1  ;the line already has been deleted
- FFA1 4F                     CLRA
- FFA2 5C                     INCB           ;start one raster line above
- FFA3 5C                     INCB
- FFA4 C001            REPT   SUBB #1
- FFA6 3446                   PSHS D,U
- FFA8 1F02                   TFR  D,Y
- FFAA 8E0000                 LDX  #0
- FFAD 8D87                   BSR  OFFSET
- FFAF 338840                 LEAU 64,X
- FFB2 4F                     CLRA
- FFB3 17F927                 LBSR CLEARS    ;clear one raster line
- FFB6 3546                   PULS D,U
- FFB8 10B3EF0C               CMPD BOTTOM
- FFBC 26E6                   BNE  REPT      ;do loop
- FFBE 1F02            LASTLI TFR  D,Y
- FFC0 8E0000                 LDX  #0
- FFC3 8DB5                   BSR  ERASL     ;clear last line
- FFC5 20A9                   BRA  TD8
+ FF98 8DDE            ERAEOS BSR  ERALIN
+ FF9A FCEF07                 LDD  YADDR
+ FF9D 10B3EF0C               CMPD BOTTOM
+ FFA1 27D2                   BEQ  TD8       ;maybe it was the last one
+ FFA3 B3EF31                 SUBD NRLINS-1  ;the line already has been deleted
+ FFA6 4F                     CLRA
+ FFA7 5C                     INCB           ;start one raster line above
+ FFA8 5C                     INCB
+ FFA9 C001            REPT   SUBB #1
+ FFAB 3446                   PSHS D,U
+ FFAD 1F02                   TFR  D,Y
+ FFAF 8E0000                 LDX  #0
+ FFB2 8D87                   BSR  OFFSET
+ FFB4 338840                 LEAU 64,X
+ FFB7 4F                     CLRA
+ FFB8 17F922                 LBSR CLEARS    ;clear one raster line
+ FFBB 3546                   PULS D,U
+ FFBD 10B3EF0C               CMPD BOTTOM
+ FFC1 26E6                   BNE  REPT      ;do loop
+ FFC3 1F02            LASTLI TFR  D,Y
+ FFC5 8E0000                 LDX  #0
+ FFC8 8DB5                   BSR  ERASL     ;clear last line
+ FFCA 20A9                   BRA  TD8
 
 
- FFC7 86FF            GERMAN LDA  #$FF
- FFC9 B7EF59          TOG    STA  DEUTSC
- FFCC 7EF225                 JMP  HKS
- FFCF 4F              ASCII  CLRA
- FFD0 20F7                   BRA  TOG
+ FFCC 86FF            GERMAN LDA  #$FF
+ FFCE B7EF59          TOG    STA  DEUTSC
+ FFD1 7EF225                 JMP  HKS
+ FFD4 4F              ASCII  CLRA
+ FFD5 20F7                   BRA  TOG
 
- FFD2 8615            CURSAN LDA  #$15
- FFD4 7EF638          MAKE   JMP  XDTEXT
- FFD7 8605            CURAUS LDA  #5
- FFD9 20F9                   BRA  MAKE
+ FFD7 8615            CURSAN LDA  #$15
+ FFD9 7EF638          MAKE   JMP  XDTEXT
+ FFDC 8605            CURAUS LDA  #5
+ FFDE 20F9                   BRA  MAKE
 
                       ;       OPT  NOL
- FFDB                 ORI    SET  *
+ FFE0                 ORI    SET  *
                       ;       OPT  LIS
 
                              ORG  ANFANG+$FF0
@@ -2251,113 +2270,114 @@ RTC present
                              END
 
 SYMBOL TABLE
-    ACIACO 00 FCF4    ACIADA 00 FCF5    ANFANG 00 F000     ASCII 02 FFCF
+    ACIACO 00 FCF4    ACIADA 00 FCF5    ANFANG 00 F000     ASCII 02 FFD4
     ASDUMP 02 F2CF    BEGINN 02 F128      BELL 02 F905     BELL1 02 F912
      BELL2 02 F91C    BILANF 00 FCF7     BLANK 00 0020      BOOT 02 FD40
-     BOOT1 02 FD4E     BOOT2 02 FD70     BOOT3 02 FD5C    BOTOM1 00 00FE
-    BOTTOM 02 EF0C    BRPEND 02 EF6F        BS 02 F876    BUFPNT 00 CC14
-      BUMP 02 FE9C     BUMP0 02 FE9F     BUMP1 02 FEA8     BUMPV 02 EF4E
-    BYTANZ 02 EF88      BYTE 02 F4C7     BYTE0 02 F4C9     BYTE1 02 F4CB
-     CASE1 02 FE81    CASE10 02 FE84     CASE2 02 FE64    CASE20 02 FE67
-     CASE3 02 FE39    CASE30 02 FE3E     CASE4 02 FE34    CASE40 02 FE3C
-     CFLEX 02 F373    CHATAB 02 EF40    CHECKS 02 EF89     CHEXL 02 F392
-     CHEXR 02 F396    CHROFS 02 EF3C    CHRTBL 02 FA57     CLEA1 02 F8E5
-    CLEARS 02 F8DD    CLRHKS 02 F3C9     CLRP1 02 F1BA    CLRPAG 02 F1C2
-    CLRSC1 02 F142    CLRSCR 02 F1B8    CLRTAB 02 F20F       CLS 00 000C
-    CNVERT 02 F47B    COLOOP 02 F1AD    COLOR2 02 F67F    COLTAB 02 EF18
-    COMMAN 02 EF5D     COMP1 02 F57D    COMPAR 02 F57B     COMPX 02 F586
-     COPYL 02 F8F2    COPYL1 02 F8F6        CR 02 F870    CTABHO 02 F783
-     CTLTA 02 EF3E    CTLTAB 02 F7C3    CURAUS 02 FFD7    CURPS2 02 F98C
-    CURSAN 02 FFD2    CURSOF 02 F6B2    CURSON 02 F6AA    CURSOR 02 EF5B
-     DBASE 02 EF03       DC1 02 F8A5       DC2 02 F8BB       DC3 02 F8C4
-       DC4 02 F8D2    DCHAR0 02 FE20    DCHAR1 02 FE2E      DCHR 02 FE04
-    DEFCOM 02 F0D4    DEFTA1 02 F588    DELLIN 02 F9D0       DEU 02 F6CD
-      DEU1 02 FE02    DEUOFF 02 F6D2     DEUON 02 F6CB    DEUTSC 02 EF59
-    DIRPAG 00 EF00    DOCMND 00 CD4B    DOLOOP 02 F0F9    DO_CNV 02 F495
-    DRCTPG 00 00EF    DTEXT3 02 F695    DTEXT4 02 F64F    DTEXT5 02 F651
-    DTEXT6 02 F6A6    DTEXT7 02 F6A4    DTEXT8 02 F692    DTEXTC 02 F764
-     DUMMY 02 EF00    EMPTY1 02 EF33    EMPTY2 02 EF34    EMPTY3 02 EF35
-    EMUCMD 00 FD3C   EMUEXIT 02 FA0A    ENDCUP 02 F958      ENDE 00 001A
-     ENDEL 02 FF92     ENDHT 02 F073     ENDT1 02 F2F4    END_TA 02 F2F1
-     EOLNX 02 EF09    ERAEOL 02 FF6E    ERAEOS 02 FF93    ERALIN 02 FF73
-     ERALU 02 FF7C     ERASL 02 FF7A    ERRHKS 02 F21B     ERRO3 02 F35F
-     ERRO4 02 F38F     ERRO6 02 F26C     ERRO8 02 F391       ESC 00 001B
-    ESCAPE 02 FF58    ESCFLG 02 EF02    ESCOUT 02 F43E    ESCSE1 02 F77C
-    ESCSEQ 02 F76B    ESCTAB 02 F813    ESCTBL 02 EF48     ESCVC 02 EF46
-    ESCVEC 02 F803        FF 02 F886      FIRQ 02 F55D    FIRQVC 02 EF74
-    FLCOMM 00 FD30    FLDATA 00 FD33    FLDRIV 00 FD38    FLSEKT 00 FD32
-    FOURE0 02 F536    FOUREG 02 F534    FROMTO 02 F379    GERMAN 02 FFC7
-    GETTAS 02 F348    GETTS9 02 F359        GO 02 F35C       GO1 02 F36E
-     GROSS 02 FDEE    GXADDR 02 EF15    GYADDR 02 EF13    HALTAN 02 F2FC
-     HIGH1 02 FE5A    HIGHLI 02 EF58       HKS 02 F225      HKS1 02 F246
-    HKSTAB 02 F046    HKSTXT 02 F0B0      HOME 02 F86B     IN1HG 02 F4F3
-     IN4HX 02 F4B4    IN4HX0 02 F49F    IN4HX1 02 F4B6    INCADR 02 F29A
-      INCH 02 F3CD     INCHA 02 F420     INHEX 02 F4DC    INHEX1 02 F4DF
-     INITI 02 F1E7    INITSP 02 F07C    INOCUR 02 F446    INPPAR 02 F475
-    INSCU1 02 FF63    INSCU2 02 FF6A    INSCUR 02 FF61    INSLIN 02 F990
-    INSRTF 02 EF01    INTPAG 02 EF3D    INTSC1 02 F5F6    INTSCR 02 F5F3
-     INV11 02 FEFB     INV12 02 FF1A    INVCU1 02 FECD    INVCUR 02 FEC5
-    INVFLG 02 EF0E    INVOFF 02 F6C8     INVON 02 F6C1    INVTB2 02 FEA9
-    INVTBL 02 FEB1       IRQ 02 F561    IRQEN0 02 F507    IRQEN1 02 F51A
-    IRQENT 02 F504    IRQVEC 02 EF76      ISAS 02 F2EC    ISEMPT 02 F465
-    ISNEWC 02 EF5C     ISOFF 02 F6BB      JUMP 02 FE2C    LASTLI 02 FFBE
-    LCUR11 02 F91E    LCUR21 02 F94A    LCURS1 02 F937    LCURS2 02 F956
-        LF 02 F853       LF1 02 F866       LF2 02 F868      LF21 02 F8DB
-       LF3 02 F85F     LF882 02 F730     LF8B5 02 F747     LF8B6 02 F748
-     LF8C5 02 F755     LF8CF 02 F761    LINBUF 00 C080     LINES 02 EF36
-    LINFE0 02 F281    LINFED 02 F27A     LOAD0 02 F40F    LOCCNT 02 EF87
-    LODFLG 02 EF85    LOESCH 02 FD88    LOETBL 02 FDB2     LOWUP 02 F484
-     LPCNT 00 0011    LPEXIT 02 FA0D      LTD8 02 F9CD       LVN 02 F08D
-      MAKE 02 FFD4    MEMADR 02 EF7E    MEMOR1 02 F253    MEMOR2 02 F258
-    MEMORY 02 F249    MEMTAB 02 F064    MESEUR 02 F07D       MMU 00 FFE0
-    MMURAM 02 EFE0    MORCUP 02 F93B    MULINS 02 EF3A    NEWCHR 02 EF5A
-    NEWST1 02 EF0F    NEWST2 02 EF10     NEXTT 02 F2D6     NIXIS 02 FE62
-       NMI 02 F569      NMI1 02 F0DD    NMIVEC 02 EF7A     NODEL 02 FDD1
-     NODEU 02 FDFC    NOHALT 02 F30C    NONHEX 02 F4B2     NORM1 02 F116
-    NORMAL 02 F10D    NOSERI 02 F41D    NOTEMP 02 F467     NRCHR 02 EF37
-    NRLINS 02 EF32    OFFSET 02 FF36       ORI 03 FFDB      ORIG 03 FCF0
-      OUT1 02 F3C7     OUT2H 02 F3A1    OUT2HX 02 F3AF     OUT4H 02 F39F
-    OUT4HX 02 F3AD      OUTA 02 F3D5     OUTCH 02 F3EA    OUTCH0 02 F3E0
-    OUTCH1 02 F3E8    OUTCHS 02 F3F8    OUTCS1 02 F3FA    OUTREG 02 F51F
-    OVRCUR 02 FF5E     PCRLF 02 F3C1     PDATA 02 F3B5    PDATA1 02 F3B7
-    PDATA3 02 F39E    PDOTX1 02 F961    PDOTX2 02 F967    PDOTY1 02 F96E
-    PDOTY2 02 F974     PEVEN 02 F95D    PGEFLG 02 EF17    PIA1AC 00 FCF1
-    PIA1AD 00 FCF0    PIA1BC 00 FCF3    PIA1BD 00 FCF2    PIA2BD 00 FCFA
-     PIXA1 02 FF30    PIXADR 02 FF1B    PIXLIN 00 01F8       PLF 02 F3C5
-     POINT 02 F28B    PRIREG 02 F542    PSPACE 02 F3B1    PSTATU 02 F450
-     PUSHU 02 F1DE    PUSHU1 02 F1E0       PUT 02 F30E    PUTLUP 02 F32B
-      RAUS 02 F4C6     RAUS1 02 F4C4       RCL 02 FD96    REPINV 02 FEFF
-      REPT 02 FFA4     REPTD 02 F9DC     REPTI 02 F9A1      RET1 02 FD83
-       RTN 02 FD87      RTN1 02 FD85      SAVE 02 EFDE    SAVEST 02 EF11
-    SAVUST 02 EF7C    SCRDWN 02 F84E    SCREN1 02 EF42    SCREN2 02 EF44
-    SCRLIN 02 EF38    SCRLUP 02 F6D5     SCRN1 00 0C0C     SCRN2 00 0808
-    SCROFS 02 EF0B    SCROL1 02 F6FF    SCROL4 02 F70E    SCROL7 02 F70D
-    SCROL8 02 F71E    SCROL9 02 F729    SCROLD 02 F72C    SCROLL 02 F6FB
-     SCRUD 02 F6D9    SCRUD1 02 F6F4    SCRUD2 02 F6F9    SEARCH 02 F56D
-    SERCH1 02 F56F    SERCHX 02 F57A    SERPAR 02 EF86    SERSTA 02 F406
-    SETCUX 02 F944    SETCUY 02 F940    SETINV 02 F6C3     SETUP 02 F5FD
-     SLASH 02 F276      SOFT 02 EF4A    SOFTSC 02 F901    SPCUR1 02 F987
-    SPCURS 02 F985     STACK 00 EF00    STACK2 00 EE40    STATUS 02 F44B
-    SW2VEC 02 EF72    SW3VEC 02 EF70       SWI 02 F565      SWI2 02 F559
-      SWI3 02 F555    SWIEN0 02 F4FE    SWIENT 02 F4F8    SWITCH 02 F5A8
-    SWIVEC 02 EF78    SWTCHB 02 F5D3     TABLE 02 F2A1    TABLE0 02 F2AC
-    TABLE1 02 F2BC       TD8 02 FF70      TEMP 02 EF8A     TEMPA 02 EF84
-     TEMPX 02 EF80     TEMPY 02 EF82     TEXIT 02 FA17     TFROM 02 F09A
-    THALLO 02 F07D       TOG 02 FFC9    TOHKS0 02 F3D1    TO_HKS 02 F02D
-    TRANS1 02 F49A    TRANS2 02 F497    TREGIS 02 F0B6     TSTIN 02 F469
-    TSTINP 02 F46E    TSTINS 02 F413       TTO 02 F0A1        UL 02 EF8B
-    UNUBI2 00 FC0F    UPAROW 02 F28F    USERST 00 EDE0      VERS 00 0004
-     VIDEO 02 F339    VIDEO0 02 F336    VIDPAG 00 FCF6     WARMS 00 CD03
-    WERTMS 02 F0A7     XADDR 02 EF05    XBOTOM 02 EF4C    XDCHAR 02 FDBA
-    XDTEXT 02 F638      XINV 02 FEB9     XINV0 02 FEE5     XINV1 02 FEEF
-     YADDR 02 EF07    ZCASEU 00 00C0    ZCHEXL 02 F009    ZCHEXR 02 F00C
-    ZCONVT 02 F03A     ZF0A5 02 F0B2     ZF850 02 F67A     ZFA0F 02 F936
-     ZFA21 02 F955     ZFFF0 02 FFF0    ZFROMT 02 F003    ZIN4HX 02 F00F
-    ZINCHA 02 F015    ZLOAD0 02 F030    ZOUT2H 02 F01B    ZOUT4H 02 F01E
-    ZOUTC2 02 F018    ZPCRLF 02 F021    ZPDAT1 02 F027    ZPDATA 02 F024
-    ZRECD0 02 F033    ZRESTA 02 F000    ZSPACE 02 F02A    ZSWBAK 02 F038
-    ZSWTCH 02 F036    ZUCOMP 02 F03E    ZUINCH 02 F012    ZUNUBI 00 F03F
-    ZUSRCH 02 F03C    ZUSTAT 02 F044    ZUXINV 02 F042    ZXDCHR 02 F040
-428 SYMBOLS
+     BOOT1 02 FD50     BOOT2 02 FD6E     BOOT3 02 FD5C     BOOT4 02 FD7C
+     BOOT9 02 FD54    BOTOM1 00 00FE    BOTTOM 02 EF0C    BRPEND 02 EF6F
+        BS 02 F876    BUFPNT 00 CC14      BUMP 02 FEA1     BUMP0 02 FEA4
+     BUMP1 02 FEAD     BUMPV 02 EF4E    BYTANZ 02 EF88      BYTE 02 F4C7
+     BYTE0 02 F4C9     BYTE1 02 F4CB     CASE1 02 FE86    CASE10 02 FE89
+     CASE2 02 FE69    CASE20 02 FE6C     CASE3 02 FE3E    CASE30 02 FE43
+     CASE4 02 FE39    CASE40 02 FE41     CFLEX 02 F373    CHATAB 02 EF40
+    CHECKS 02 EF89     CHEXL 02 F392     CHEXR 02 F396    CHROFS 02 EF3C
+    CHRTBL 02 FA57     CLEA1 02 F8E5    CLEARS 02 F8DD    CLRHKS 02 F3C9
+     CLRP1 02 F1BA    CLRPAG 02 F1C2    CLRSC1 02 F142    CLRSCR 02 F1B8
+    CLRTAB 02 F20F       CLS 00 000C    CNVERT 02 F47B    COLOOP 02 F1AD
+    COLOR2 02 F67F    COLTAB 02 EF18    COMMAN 02 EF5D     COMP1 02 F57D
+    COMPAR 02 F57B     COMPX 02 F586     COPYL 02 F8F2    COPYL1 02 F8F6
+        CR 02 F870    CTABHO 02 F783     CTLTA 02 EF3E    CTLTAB 02 F7C3
+    CURAUS 02 FFDC    CURPS2 02 F98C    CURSAN 02 FFD7    CURSOF 02 F6B2
+    CURSON 02 F6AA    CURSOR 02 EF5B     DBASE 02 EF03       DC1 02 F8A5
+       DC2 02 F8BB       DC3 02 F8C4       DC4 02 F8D2    DCHAR0 02 FE25
+    DCHAR1 02 FE33      DCHR 02 FE09    DEFCOM 02 F0D4    DEFTA1 02 F588
+    DELLIN 02 F9D0       DEU 02 F6CD      DEU1 02 FE07    DEUOFF 02 F6D2
+     DEUON 02 F6CB    DEUTSC 02 EF59    DIRPAG 00 EF00    DOCMND 00 CD4B
+    DOLOOP 02 F0F9    DO_CNV 02 F495    DRCTPG 00 00EF    DTEXT3 02 F695
+    DTEXT4 02 F64F    DTEXT5 02 F651    DTEXT6 02 F6A6    DTEXT7 02 F6A4
+    DTEXT8 02 F692    DTEXTC 02 F764     DUMMY 02 EF00    EMPTY1 02 EF33
+    EMPTY2 02 EF34    EMPTY3 02 EF35    EMUCMD 00 FD3C   EMUEXIT 02 FA0A
+    ENDCUP 02 F958      ENDE 00 001A     ENDEL 02 FF97     ENDHT 02 F073
+     ENDT1 02 F2F4    END_TA 02 F2F1     EOLNX 02 EF09    ERAEOL 02 FF73
+    ERAEOS 02 FF98    ERALIN 02 FF78     ERALU 02 FF81     ERASL 02 FF7F
+    ERRHKS 02 F21B     ERRO3 02 F35F     ERRO4 02 F38F     ERRO6 02 F26C
+     ERRO8 02 F391       ESC 00 001B    ESCAPE 02 FF5D    ESCFLG 02 EF02
+    ESCOUT 02 F43E    ESCSE1 02 F77C    ESCSEQ 02 F76B    ESCTAB 02 F813
+    ESCTBL 02 EF48     ESCVC 02 EF46    ESCVEC 02 F803        FF 02 F886
+      FIRQ 02 F55D    FIRQVC 02 EF74    FLCOMM 00 FD30    FLCPAG 00 FD00
+    FLDATA 00 FD33    FLDRIV 00 FD38    FLSEKT 00 FD32    FOURE0 02 F536
+    FOUREG 02 F534    FROMTO 02 F379    GERMAN 02 FFCC    GETTAS 02 F348
+    GETTS9 02 F359        GO 02 F35C       GO1 02 F36E     GROSS 02 FDF3
+    GXADDR 02 EF15    GYADDR 02 EF13    HALTAN 02 F2FC     HIGH1 02 FE5F
+    HIGHLI 02 EF58       HKS 02 F225      HKS1 02 F246    HKSTAB 02 F046
+    HKSTXT 02 F0B0      HOME 02 F86B     IN1HG 02 F4F3     IN4HX 02 F4B4
+    IN4HX0 02 F49F    IN4HX1 02 F4B6    INCADR 02 F29A      INCH 02 F3CD
+     INCHA 02 F420     INHEX 02 F4DC    INHEX1 02 F4DF     INITI 02 F1E7
+    INITSP 02 F07C    INOCUR 02 F446    INPPAR 02 F475    INSCU1 02 FF68
+    INSCU2 02 FF6F    INSCUR 02 FF66    INSLIN 02 F990    INSRTF 02 EF01
+    INTPAG 02 EF3D    INTSC1 02 F5F6    INTSCR 02 F5F3     INV11 02 FF00
+     INV12 02 FF1F    INVCU1 02 FED2    INVCUR 02 FECA    INVFLG 02 EF0E
+    INVOFF 02 F6C8     INVON 02 F6C1    INVTB2 02 FEAE    INVTBL 02 FEB6
+       IRQ 02 F561    IRQEN0 02 F507    IRQEN1 02 F51A    IRQENT 02 F504
+    IRQVEC 02 EF76      ISAS 02 F2EC    ISEMPT 02 F465    ISNEWC 02 EF5C
+     ISOFF 02 F6BB      JUMP 02 FE31    LASTLI 02 FFC3    LCUR11 02 F91E
+    LCUR21 02 F94A    LCURS1 02 F937    LCURS2 02 F956        LF 02 F853
+       LF1 02 F866       LF2 02 F868      LF21 02 F8DB       LF3 02 F85F
+     LF882 02 F730     LF8B5 02 F747     LF8B6 02 F748     LF8C5 02 F755
+     LF8CF 02 F761    LINBUF 00 C080     LINES 02 EF36    LINFE0 02 F281
+    LINFED 02 F27A     LOAD0 02 F40F    LOCCNT 02 EF87    LODFLG 02 EF85
+    LOESCH 02 FD8E    LOETBL 02 FDB7     LOWUP 02 F484     LPCNT 00 0011
+    LPEXIT 02 FA0D      LTD8 02 F9CD       LVN 02 F08D      MAKE 02 FFD9
+    MEMADR 02 EF7E    MEMOR1 02 F253    MEMOR2 02 F258    MEMORY 02 F249
+    MEMTAB 02 F064    MESEUR 02 F07D       MMU 00 FFE0    MMURAM 02 EFE0
+    MORCUP 02 F93B    MULINS 02 EF3A    NEWCHR 02 EF5A    NEWST1 02 EF0F
+    NEWST2 02 EF10     NEXTT 02 F2D6     NIXIS 02 FE67       NMI 02 F569
+      NMI1 02 F0DD    NMIVEC 02 EF7A     NODEL 02 FDD6     NODEU 02 FE01
+    NOHALT 02 F30C    NONHEX 02 F4B2     NORM1 02 F116    NORMAL 02 F10D
+    NOSERI 02 F41D    NOTEMP 02 F467     NRCHR 02 EF37    NRLINS 02 EF32
+    OFFSET 02 FF3B       ORI 03 FFE0      ORIG 03 FCF0      OUT1 02 F3C7
+     OUT2H 02 F3A1    OUT2HX 02 F3AF     OUT4H 02 F39F    OUT4HX 02 F3AD
+      OUTA 02 F3D5     OUTCH 02 F3EA    OUTCH0 02 F3E0    OUTCH1 02 F3E8
+    OUTCHS 02 F3F8    OUTCS1 02 F3FA    OUTREG 02 F51F    OVRCUR 02 FF63
+     PCRLF 02 F3C1     PDATA 02 F3B5    PDATA1 02 F3B7    PDATA3 02 F39E
+    PDOTX1 02 F961    PDOTX2 02 F967    PDOTY1 02 F96E    PDOTY2 02 F974
+     PEVEN 02 F95D    PGEFLG 02 EF17    PIA1AC 00 FCF1    PIA1AD 00 FCF0
+    PIA1BC 00 FCF3    PIA1BD 00 FCF2    PIA2BD 00 FCFA     PIXA1 02 FF35
+    PIXADR 02 FF20    PIXLIN 00 01F8       PLF 02 F3C5     POINT 02 F28B
+    PRIREG 02 F542    PSPACE 02 F3B1    PSTATU 02 F450     PUSHU 02 F1DE
+    PUSHU1 02 F1E0       PUT 02 F30E    PUTLUP 02 F32B      RAUS 02 F4C6
+     RAUS1 02 F4C4       RCL 02 FD9B    REPINV 02 FF04      REPT 02 FFA9
+     REPTD 02 F9DC     REPTI 02 F9A1      RET1 02 FD89       RTN 02 FD8D
+      RTN1 02 FD8B      SAVE 02 EFDE    SAVEST 02 EF11    SAVUST 02 EF7C
+    SCRDWN 02 F84E    SCREN1 02 EF42    SCREN2 02 EF44    SCRLIN 02 EF38
+    SCRLUP 02 F6D5     SCRN1 00 0C0C     SCRN2 00 0808    SCROFS 02 EF0B
+    SCROL1 02 F6FF    SCROL4 02 F70E    SCROL7 02 F70D    SCROL8 02 F71E
+    SCROL9 02 F729    SCROLD 02 F72C    SCROLL 02 F6FB     SCRUD 02 F6D9
+    SCRUD1 02 F6F4    SCRUD2 02 F6F9    SEARCH 02 F56D    SERCH1 02 F56F
+    SERCHX 02 F57A    SERPAR 02 EF86    SERSTA 02 F406    SETCUX 02 F944
+    SETCUY 02 F940    SETINV 02 F6C3     SETUP 02 F5FD     SLASH 02 F276
+      SOFT 02 EF4A    SOFTSC 02 F901    SPCUR1 02 F987    SPCURS 02 F985
+     STACK 00 EF00    STACK2 00 EE40    STATUS 02 F44B    SW2VEC 02 EF72
+    SW3VEC 02 EF70       SWI 02 F565      SWI2 02 F559      SWI3 02 F555
+    SWIEN0 02 F4FE    SWIENT 02 F4F8    SWITCH 02 F5A8    SWIVEC 02 EF78
+    SWTCHB 02 F5D3     TABLE 02 F2A1    TABLE0 02 F2AC    TABLE1 02 F2BC
+       TD8 02 FF75      TEMP 02 EF8A     TEMPA 02 EF84     TEMPX 02 EF80
+     TEMPY 02 EF82     TEXIT 02 FA17     TFROM 02 F09A    THALLO 02 F07D
+       TOG 02 FFCE    TOHKS0 02 F3D1    TO_HKS 02 F02D    TRANS1 02 F49A
+    TRANS2 02 F497    TREGIS 02 F0B6     TSTIN 02 F469    TSTINP 02 F46E
+    TSTINS 02 F413       TTO 02 F0A1        UL 02 EF8B    UNUBI2 00 FC0F
+    UPAROW 02 F28F    USERST 00 EDE0      VERS 00 0004     VIDEO 02 F339
+    VIDEO0 02 F336    VIDPAG 00 FCF6     WARMS 00 CD03    WERTMS 02 F0A7
+     XADDR 02 EF05    XBOTOM 02 EF4C    XDCHAR 02 FDBF    XDTEXT 02 F638
+      XINV 02 FEBE     XINV0 02 FEEA     XINV1 02 FEF4     YADDR 02 EF07
+    ZCASEU 00 00C0    ZCHEXL 02 F009    ZCHEXR 02 F00C    ZCONVT 02 F03A
+     ZF0A5 02 F0B2     ZF850 02 F67A     ZFA0F 02 F936     ZFA21 02 F955
+     ZFFF0 02 FFF0    ZFROMT 02 F003    ZIN4HX 02 F00F    ZINCHA 02 F015
+    ZLOAD0 02 F030    ZOUT2H 02 F01B    ZOUT4H 02 F01E    ZOUTC2 02 F018
+    ZPCRLF 02 F021    ZPDAT1 02 F027    ZPDATA 02 F024    ZRECD0 02 F033
+    ZRESTA 02 F000    ZSPACE 02 F02A    ZSWBAK 02 F038    ZSWTCH 02 F036
+    ZUCOMP 02 F03E    ZUINCH 02 F012    ZUNUBI 00 F03F    ZUSRCH 02 F03C
+    ZUSTAT 02 F044    ZUXINV 02 F042    ZXDCHR 02 F040
+431 SYMBOLS
 
 0 error(s), 0 warning(s)
