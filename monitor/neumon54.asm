@@ -28,6 +28,7 @@
 ;                               Abort on any of these errors:
 ;                               not ready, record not found, crc error,
 ;                               lost data
+; 01.05.2025 W. Schwotzer       Optimizations to reduce binary code size.
 
 ; SYM 6
 ; OPT -G,P,M,E,-C,
@@ -569,7 +570,7 @@ ASDUMP PULS X          ;Restore address
        LDB  #17        ;16+1
        JSR  PSPACE     ;output space
 NEXTT  CMPX TEMPY      ;Reached end address?
-       LBEQ HKS        ;yes, jump back to hks
+       BEQ  TOHKS1     ;yes, jump back to hks
        BSR  HALTAN     ;maybe break output
        DECB            ;all values printed?
        BEQ  TABLE0     ;yes, next line
@@ -593,13 +594,13 @@ HALTAN PSHS A,B,X,Y,U,DP,CC
        BCC  NOHALT     ;no, jump back
        JSR  INCHA      ;Wait for input character
        CMPA #$0D       ;Is it a carrige return?
-       LBEQ HKS        ;yes abort, go back to hks
+       BEQ  TOHKS1     ;yes abort, go back to hks
 NOHALT PULS D,X,Y,U,DP,CC,PC
 ;
 ; PUT: Fill memory range with value
 ;
 PUT    JSR  FROMTO     ;Get address range
-       LBCS ERRHKS
+       BCS  TOEHKS
        STD  TEMPX      ;store start address
        LEAX 1,X        ;increment end address
        STX  TEMPY      ;store it
@@ -609,7 +610,7 @@ PUT    JSR  FROMTO     ;Get address range
        LDX  TEMPX      ;get start address in X
        STA  ,X         ;store value into address
 PUTLUP CMPX TEMPY      ;reaced end address?
-       LBEQ HKS        ;yes, go back to hks
+       BEQ  TOHKS1     ;yes, go back to hks
        STA  ,X+        ;increment address
        BRA  PUTLUP     ;loop to store value to next addr.
 ;
@@ -643,13 +644,16 @@ GETTAS ANDA #$7F     ;convert to 7-bit ASCII
        ORCC #%00000001 ;go back with carry set
        RTS
 ;
+TOHKS1 JMP  HKS
+TOEHKS JMP  ERRHKS
+;
 GETTS9 ANDCC #%11111110 ;go back with carry cleared
        RTS
 ;
 ; GO: Continue at specified address
 ;
 GO     JSR  IN4HX    ;Get jump address, ok?
-ERRO3  LBCS ERRHKS   ;no, jump to hks
+ERRO3  BCS  TOEHKS   ;no, jump to hks
        TFR  X,Y      ;Store address in Y
        JSR  PCRLF    ;new line
        LDS  #USERST-12 ;Stack > User-Bereich
@@ -739,11 +743,11 @@ PLF    LDA  #$0A
 OUT1   BRA  OUTCH    ;output LF
 ;
 CLRHKS CLR  LODFLG-DIRPAG
-       BRA  TOHKS0
+       BRA  TOHKS1
 
 INCH   BSR  INCHA    ;Input character with echo
        CMPA #$18     ;Has Ctrl-Y been input?
-TOHKS0 LBEQ HKS      ;yes, abort to hks
+       BEQ  TOHKS1   ;yes, abort to hks
 ;
 ;
 ; Output character to video console.
@@ -1979,7 +1983,7 @@ DCHR   LDX  XADDR      ;X-coordinate
        LEAY 1,Y        ;start one line higher
        LBSR OFFSET     ;compute pixel address
        LBSR LOESCH
-       LDY  #DCHAR1    ;computed goto
+       LEAY <DCHAR1,PC ;computed goto
        LDB  ,U         ;check if shifted char
        RORB
        BCC  DCHAR0     ;no, do unshifted jump
@@ -2094,10 +2098,10 @@ XINV0  BSR  OFFSET
        TST  INSRTF-DIRPAG
        BEQ  XINV1
        LDB  #2
-XINV1  LDY  #INVTBL
+XINV1  LEAY <INVTBL,PC
        TST  HIGHLI-DIRPAG
        BEQ  INV11
-       LDY  #INVTB2
+       LEAY <INVTB2,PC
 INV11  LEAY A,Y
        PSHS B
 REPINV LDD  ,Y
