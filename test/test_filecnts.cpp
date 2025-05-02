@@ -304,6 +304,69 @@ TEST_F(test_IFlexDiskBySector, fct_FormatSector)
     fs::remove(path);
 }
 
+TEST_F(test_IFlexDiskBySector, unformatted_flex_disk)
+{
+    const auto ft_access = FileTimeAccess::Get | FileTimeAccess::Set;
+    const std::ios::openmode mode = std::ios::out | std::ios::trunc |
+        std::ios::binary;
+    const auto path = temp_dir / "unformatted.flx";
+    std::ofstream fs(path, mode);
+    ASSERT_TRUE(fs.is_open()) << "path=" << path.u8string();
+    fs.close();
+    auto disk = static_cast<IFlexDiskBySectorPtr>(
+            new FlexDisk(path, mode, ft_access));
+
+    EXPECT_EQ(disk->GetBytesPerSector(), 0U) <<
+        "path=" << disk->GetPath().u8string();
+    EXPECT_FALSE(disk->IsFlexFormat()) <<
+        "path=" << disk->GetPath().u8string();
+
+    for (int track = 0; track < 256; ++track)
+    {
+        EXPECT_TRUE(disk->IsTrackValid(track)) <<
+            "path=" << disk->GetPath().u8string() <<
+            " track=" << track;
+
+        for (int sector = 1; sector < 256; ++sector)
+        {
+            std::array<Byte, SECTOR_SIZE> buffer{};
+            EXPECT_FALSE(disk->IsSectorValid(track, sector)) <<
+                "path=" << disk->GetPath().u8string() <<
+                " track=" << track << " sector=" << sector;
+            EXPECT_FALSE(disk->ReadSector(buffer.data(), track, sector)) <<
+                "path=" << disk->GetPath().u8string() <<
+                " track=" << track << " sector=" << sector;
+            EXPECT_FALSE(disk->WriteSector(buffer.data(), track, sector)) <<
+                "path=" << disk->GetPath().u8string() <<
+                " track=" << track << " sector=" << sector;
+        }
+    }
+
+    // Test corner cases.
+    EXPECT_FALSE(disk->IsTrackValid(-1));
+    EXPECT_FALSE(disk->IsTrackValid(256));
+    EXPECT_FALSE(disk->IsSectorValid(0, 0));
+    EXPECT_FALSE(disk->IsSectorValid(0, -1));
+    EXPECT_FALSE(disk->IsSectorValid(0, 256));
+    EXPECT_FALSE(disk->IsSectorValid(-1, 1));
+    EXPECT_FALSE(disk->IsSectorValid(256, 1));
+
+    std::array<Byte, SECTOR_SIZE> buffer{};
+    EXPECT_FALSE(disk->ReadSector(buffer.data(), 0, 0));
+    EXPECT_FALSE(disk->ReadSector(buffer.data(), 0, -1));
+    EXPECT_FALSE(disk->ReadSector(buffer.data(), 0, 256));
+    EXPECT_FALSE(disk->ReadSector(buffer.data(), -1, 1));
+    EXPECT_FALSE(disk->ReadSector(buffer.data(), 256, 1));
+    EXPECT_FALSE(disk->WriteSector(buffer.data(), 0, 0));
+    EXPECT_FALSE(disk->WriteSector(buffer.data(), 0, -1));
+    EXPECT_FALSE(disk->WriteSector(buffer.data(), 0, 256));
+    EXPECT_FALSE(disk->WriteSector(buffer.data(), -1, 1));
+    EXPECT_FALSE(disk->WriteSector(buffer.data(), 256, 1));
+
+    disk.reset();
+    fs::remove(path);
+}
+
 TEST_F(test_IFlexDiskBySector, FormatSector_format_flex_disk)
 {
     std::array<Byte, SECTOR_SIZE> buffer{};
