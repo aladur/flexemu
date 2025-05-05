@@ -647,26 +647,6 @@ void flx::dumpSector(std::ostream &os, uint32_t indent_count,
     }
 }
 
-void flx::hex_dump(std::ostream &os, const char *buffer, unsigned count)
-{
-    const char *p = &buffer[0];
-    unsigned i = 0;
-
-    for (; i < count; ++i)
-    {
-        char ch = *(p++);
-        os << fmt::format("{:02X} ", ch);
-        if ((i & 0x0FU) == 0x0FU)
-        {
-            os << "\n";
-        }
-    }
-    if ((i & 0x0FU) != 0U)
-    {
-        os << "\n";
-    }
-}
-
 bool flx::askForInput(const std::string &question, const std::string &answers,
                       char default_answer)
 {

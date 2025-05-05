@@ -45,5 +45,6 @@ namespace flx
             const MemorySource<DWord>::AddressRanges &ranges);
     extern void print_versions(std::ostream &os,
             const std::string &program_name);
+    extern void hex_dump(std::ostream &os, const char *buffer, unsigned count);
 }
 #endif

@@ -28,6 +28,7 @@
 #include "fversion.h"
 #include <cstring>
 #include <regex>
+#include <fmt/format.h>
 
 
 std::string flx::find_regex_string(const std::regex &regex,
@@ -101,4 +102,25 @@ void flx::print_versions(std::ostream &os, const std::string &program_name)
         }
     }
     os << program_name << " " << COPYRIGHT_MESSAGE;
+}
+
+
+void flx::hex_dump(std::ostream &os, const char *buffer, unsigned count)
+{
+    const char *p = &buffer[0];
+    unsigned i = 0;
+
+    for (; i < count; ++i)
+    {
+        char ch = *(p++);
+        os << fmt::format("{:02X} ", ch);
+        if ((i & 0x0FU) == 0x0FU)
+        {
+            os << "\n";
+        }
+    }
+    if ((i & 0x0FU) != 0U)
+    {
+        os << "\n";
+    }
 }
