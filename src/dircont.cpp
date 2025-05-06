@@ -60,13 +60,14 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
     , ft_access(fileTimeAccess)
 {
     static Word number = 0;
-    auto new_path(path.u8string());
-    if (new_path.size() > 1 && flx::endsWithPathSeparator(new_path))
+    if (!path.empty() && (--path.end())->empty())
     {
-        new_path.resize(new_path.size() - 1);
+        directory = fs::absolute(path.parent_path());
     }
-
-    directory = fs::absolute(fs::u8path(new_path));
+    else
+    {
+        directory = fs::absolute(path);
+    }
 
     const auto status = fs::status(directory);
     if (!fs::exists(status) || !fs::is_directory(status))

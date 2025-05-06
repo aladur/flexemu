@@ -102,18 +102,16 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
 
-    auto sPath = directory.u8string();
-    if (sPath.size() > 1 && flx::endsWithPathSeparator(sPath))
+    if (!directory.empty() && (--directory.end())->empty())
     {
         // Remove trailing PATHSEPARATOR character.
-        sPath.resize(sPath.size() - 1);
-        directory = fs::u8path(sPath);
+        directory = directory.parent_path();
     }
 
 #ifdef _WIN32
     if ((_waccess(directory.wstring().c_str(), W_OK) != 0) ||
 #else
-    if ((access(sPath.c_str(), W_OK) != 0) ||
+    if ((access(directory.u8string().c_str(), W_OK) != 0) ||
 #endif
 
             randomFileCheck.IsWriteProtected())

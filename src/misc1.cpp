@@ -467,13 +467,6 @@ std::string flx::getHostName()
     return dnsHostName;
 }
 
-bool flx::endsWithPathSeparator(const std::string &path)
-{
-    auto pos = path.find_last_of(pathSeparators);
-
-    return (pos != std::string::npos && (pos == (path.size() - 1)));
-}
-
 fs::path flx::getFlexemuUserConfigPath()
 {
     std::string configPath;

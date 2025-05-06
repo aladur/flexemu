@@ -356,21 +356,6 @@ TEST(test_misc1, fct_isAbsolutePath)
 #endif
 }
 
-TEST(test_misc1, fct_endsWithPathSeparator)
-{
-#ifdef _WIN32
-    auto result = flx::endsWithPathSeparator("C:\\abc\\");
-    EXPECT_TRUE(result);
-    result = flx::endsWithPathSeparator("C:\\abc");
-    EXPECT_FALSE(result);
-#else
-    auto result = flx::endsWithPathSeparator("/abc/");
-    EXPECT_TRUE(result);
-    result = flx::endsWithPathSeparator("/abc");
-    EXPECT_FALSE(result);
-#endif
-}
-
 TEST(test_misc1, fct_isPathsEqual)
 {
 #ifdef _WIN32
