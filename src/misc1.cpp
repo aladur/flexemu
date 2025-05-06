@@ -417,25 +417,6 @@ bool flx::isAbsolutePath(const std::string &path)
 #endif
 }
 
-bool flx::isPathsEqual(const std::string &path1, const std::string &path2)
-{
-    if (path1.size() != path2.size())
-    {
-        return false;
-    }
-
-#ifdef _WIN32
-    // TODO: utf-8 case insensitive compare
-    // std::string with different type traits can not be copy-constructed.
-    // A conversion to const char * is needed. False-positive to be ignored.
-    // NOLINTNEXTLINE(readability-redundant-string-cstr)
-    ci_string ci_path1(path1.c_str());
-    return ci_path1.compare(path2.c_str()) == 0;
-#else
-    return path1.compare(path2) == 0;
-#endif
-}
-
 std::string flx::getHostName()
 {
     std::string dnsHostName;

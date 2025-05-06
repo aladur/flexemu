@@ -303,7 +303,6 @@ extern std::string getHostName();
 extern std::string updateFilename(std::string path,
         const std::string &defaultFilestem, const std::string &fileExtension);
 extern bool isAbsolutePath(const std::string &path);
-extern bool isPathsEqual(const std::string &path1, const std::string &path2);
 extern bool isFlexFilename(const std::string &filename);
 
 extern const char * const white_space;

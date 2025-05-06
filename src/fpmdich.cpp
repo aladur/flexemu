@@ -867,7 +867,7 @@ int FlexplorerMdiChild::PasteFrom(const QMimeData &mimeData)
     files.ReadDataFrom(reinterpret_cast<Byte *>(itemData.data()));
 
     if (flx::getHostName() == files.GetDnsHostName() &&
-            flx::isPathsEqual(GetPath().toStdString(), files.GetPath()))
+        fs::u8path(GetPath().toStdString()) == fs::u8path(files.GetPath()))
     {
         return count;
     }

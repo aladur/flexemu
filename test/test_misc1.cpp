@@ -356,21 +356,6 @@ TEST(test_misc1, fct_isAbsolutePath)
 #endif
 }
 
-TEST(test_misc1, fct_isPathsEqual)
-{
-#ifdef _WIN32
-    auto result = flx::isPathsEqual("C:\\Temp\\test.txt", "C:\\Temp\\Test.txt");
-    EXPECT_TRUE(result);
-    result = flx::isPathsEqual("C:\\Temp\\test.txt", "C:\\Temp\\Test1.txt");
-    EXPECT_FALSE(result);
-#else
-    auto result = flx::isPathsEqual("/usr/lib/libtest.so", "/usr/lib/libtest.so");
-    EXPECT_TRUE(result);
-    result = flx::isPathsEqual("/usr/lib/libtest.so", "/usr/lib/libTest.so");
-    EXPECT_FALSE(result);
-#endif
-}
-
 TEST(test_misc1, fct_split)
 {
     const auto strings1 = flx::split("abc;xyz;klm", ';', false);
