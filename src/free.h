@@ -31,6 +31,8 @@
 #include <vector>
 #include <utility>
 #include <regex>
+#include <optional>
+#include <iostream>
 
 
 using ItemPairList_t = std::vector<std::pair<
@@ -45,6 +47,8 @@ namespace flx
             const MemorySource<DWord>::AddressRanges &ranges);
     extern void print_versions(std::ostream &os,
             const std::string &program_name);
-    extern void hex_dump(std::ostream &os, const char *buffer, unsigned count);
+    extern void hex_dump(std::ostream &os, const Byte *data, DWord size,
+            DWord bytesPerLine, bool withAscii = true,
+            std::optional<DWord> startAddress = std::nullopt);
 }
 #endif

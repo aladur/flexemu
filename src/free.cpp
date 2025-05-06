@@ -26,8 +26,11 @@
 #include "asciictl.h"
 #include "free.h"
 #include "fversion.h"
+#include "flexerr.h"
 #include <cstring>
 #include <regex>
+#include <optional>
+#include <iostream>
 #include <fmt/format.h>
 
 
@@ -104,23 +107,99 @@ void flx::print_versions(std::ostream &os, const std::string &program_name)
     os << program_name << " " << COPYRIGHT_MESSAGE;
 }
 
-
-void flx::hex_dump(std::ostream &os, const char *buffer, unsigned count)
+// hex dump of a byte array.
+// parameters:
+//    os:           Output stream
+//    data:         The pointer to the data to dump
+//    size:         Byte size of data
+//    bytesPerLine: Number of bytes output on one line.
+//    withAscii:    If true dump 7-bit ASCII equivalent on the right side
+//    startAddress: Optional, dump the address.
+// Address at the beginning on the line is always a multiple of bytesPerLine.
+void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
+        DWord bytesPerLine, bool withAscii, std::optional<DWord> startAddress)
 {
-    const char *p = &buffer[0];
-    unsigned i = 0;
+    const bool withAddress = startAddress.has_value();
+    DWord idx = 0U;
+    DWord address = 0U;
+    DWord offset = 0U;
+    std::string asciiString;
+    auto asciiIter = std::back_inserter(asciiString);
 
-    for (; i < count; ++i)
+    if (bytesPerLine == 0U)
     {
-        char ch = *(p++);
-        os << fmt::format("{:02X} ", ch);
-        if ((i & 0x0FU) == 0x0FU)
-        {
-            os << "\n";
-        }
+        throw FlexException(FERR_WRONG_PARAMETER);
     }
-    if ((i & 0x0FU) != 0U)
+
+    if (data == nullptr || size == 0U)
     {
-        os << "\n";
+        return;
+    }
+
+    if (startAddress.has_value())
+    {
+        offset = startAddress.value() % bytesPerLine;
+        address = startAddress.value() - offset;
+    }
+
+    if (withAddress)
+    {
+        os << fmt::format("{:04X}  ", address);
+    }
+
+    // Fill up with spaces to align to base address.
+    os << std::string(3U * offset, ' ');
+    if (withAscii)
+    {
+        for (DWord j = 0U; j < offset; ++j)
+        {
+            *(asciiIter++) = ' ';
+        }
+        address += offset;
+    }
+
+    const auto *spacer = "";
+    for (idx = 0U; idx < size; ++idx)
+    {
+        const auto ch = static_cast<char>(*(data++));
+
+        if (address % bytesPerLine == 0U)
+        {
+            if (withAddress && idx > 0U)
+            {
+                os << fmt::format("{:04X}  ", address);
+            }
+
+            if (withAscii)
+            {
+                asciiString.clear();
+                asciiIter = std::back_inserter(asciiString);
+            }
+        }
+
+        os << spacer << fmt::format("{:02X}", ch);
+        spacer = " ";
+
+        if (withAscii)
+        {
+            *(asciiIter++) = (ch >= ' ' && ch <= '~') ? ch : '_';
+        }
+        if ((address % bytesPerLine + 1U) == bytesPerLine)
+        {
+            if (withAscii)
+            {
+                os << "  " << asciiString;
+            }
+            os << "\n";
+            spacer = "";
+        }
+
+        ++address;
+    }
+
+    if (withAscii && (address % bytesPerLine) != 0U)
+    {
+        offset = bytesPerLine - (address % bytesPerLine);
+        os << std::string(3U * offset, ' ') << "  " << asciiString << "\n";
     }
 }
