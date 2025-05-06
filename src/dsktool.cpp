@@ -1078,7 +1078,7 @@ static int checkTrack0Access()
         else
         {
             std::cerr << "*** Error: " << key << " has unspecified"
-                         " value \"" << track0Access << "\"\n\n";
+                         " value " << std::quoted(track0Access) << ".\n\n";
             usage();
             return 1;
         }
@@ -1128,8 +1128,8 @@ static bool addToRegexList(const std::vector<std::string> &regexLines,
         catch(const std::regex_error &ex)
         {
             std::cerr <<
-                "    *** Error in regex \"" << regex << "\": " << ex.what() <<
-                '\n';
+                "    *** Error in regex " << std::quoted(regex) << ": " <<
+                ex.what() << ".\n";
             result = false;
         }
     }

@@ -46,7 +46,7 @@ int BRcFile::SetValue(const char *key, const std::string &value)
         return 1;
     }
 
-    fs << key << "\t\t" << "\"" << value << "\"\n";
+    fs << key << "\t\t" << std::quoted(value) << "\n";
 
     if (fs.fail())
     {
