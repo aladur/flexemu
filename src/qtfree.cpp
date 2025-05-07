@@ -356,3 +356,35 @@ QString GetVersionsHtmlText(const QString &programName)
 
     return result;
 }
+
+QFont GetMonospaceFont(int pointSize)
+{
+    auto isFixedPitch = [](const QFont &font) -> bool {
+        const QFontInfo fontInfo(font);
+
+        return fontInfo.fixedPitch();
+    };
+
+    QFont font = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    font.setPointSize(pointSize);
+    if (isFixedPitch(font))
+    {
+       return font;
+    }
+
+    font.setStyleHint(QFont::Monospace);
+    if (isFixedPitch(font))
+    {
+       return font;
+    }
+
+    font.setStyleHint(QFont::TypeWriter);
+    if (isFixedPitch(font))
+    {
+       return font;
+    }
+
+    font.setFamily("courier");
+
+    return font;
+}

@@ -217,7 +217,6 @@ private:
     void CopyToBMPArray(Word height, QByteArray& dest,
                         Byte const *videoRam, const ColorTable& colorTable);
     int TranslateToAscii(QKeyEvent *event);
-    static QFont GetMonospaceFont(int pointSize = -1);
     void SetCpuDialogMonospaceFont(int pointSize);
     void ConnectScreenSizeComboBoxSignalSlots() const;
     static QString GetScreenSizeStatusTip(int index);

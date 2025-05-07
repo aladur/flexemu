@@ -55,6 +55,7 @@ extern QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
 extern int IconSizeToIndex(const QSize &iconSize);
 extern QString ConvertItemPairListToHtml(const ItemPairList_t &pairs);
 extern QString GetVersionsHtmlText(const QString &programName);
+extern QFont GetMonospaceFont(int pointSize);
 
 class UpdateWindowGeometryFtor
 {
