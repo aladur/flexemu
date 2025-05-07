@@ -327,35 +327,6 @@ TEST(test_misc1, macro_EXTEND8)
     EXPECT_EQ(sizeof(tgt2), 2U);
 }
 
-TEST(test_misc1, fct_isAbsolutePath)
-{
-#ifdef _WIN32
-    auto result = flx::isAbsolutePath("");
-    EXPECT_FALSE(result);
-    result = flx::isAbsolutePath("C:\\Temp");
-    EXPECT_TRUE(result);
-    result = flx::isAbsolutePath("//SERVER/SHARE/rootdir");
-    EXPECT_TRUE(result);
-    result = flx::isAbsolutePath("dir1\\dir2");
-    EXPECT_FALSE(result);
-    result = flx::isAbsolutePath("\\dir1\\dir2");
-    EXPECT_FALSE(result);
-    result = flx::isAbsolutePath(".");
-    EXPECT_FALSE(result);
-#else
-    auto result = flx::isAbsolutePath("");
-    EXPECT_FALSE(result);
-    result = flx::isAbsolutePath("/usr");
-    EXPECT_TRUE(result);
-    result = flx::isAbsolutePath("//SERVER/SHARE/rootdir");
-    EXPECT_TRUE(result);
-    result = flx::isAbsolutePath("dir1/dir2");
-    EXPECT_FALSE(result);
-    result = flx::isAbsolutePath(".");
-    EXPECT_FALSE(result);
-#endif
-}
-
 TEST(test_misc1, fct_split)
 {
     const auto strings1 = flx::split("abc;xyz;klm", ';', false);

@@ -405,18 +405,6 @@ fs::path flx::getHomeDirectory()
 }
 #endif
 
-bool flx::isAbsolutePath(const std::string &path)
-{
-#ifdef _WIN32
-    return path.size() >= 2 &&
-        ((isalpha(path[0]) && path[1] == ':') ||
-         (path[0] == '\\' && path[1] == '\\') ||
-         (path[0] == '/' && path[1] == '/'));
-#else
-    return !path.empty() && path[0] == '/';
-#endif
-}
-
 std::string flx::getHostName()
 {
     std::string dnsHostName;

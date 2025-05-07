@@ -298,11 +298,9 @@ extern void dumpSector(std::ostream &os, uint32_t indent_count,
 extern fs::path getFlexemuUserConfigPath();
 extern fs::path getFlexemuConfigFile();
 extern fs::path getFlexLabelFile();
-extern fs::path getCurrentPath();
 extern std::string getHostName();
 extern std::string updateFilename(std::string path,
         const std::string &defaultFilestem, const std::string &fileExtension);
-extern bool isAbsolutePath(const std::string &path);
 extern bool isFlexFilename(const std::string &filename);
 
 extern const char * const white_space;
