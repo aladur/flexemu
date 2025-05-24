@@ -105,14 +105,14 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
         std::stringstream key;
 
         key << FLEXPLORERRECENTDISKPATH << i;
-        reg.SetValue(key.str(), options.recentDiskPaths[i].u8string());
+        reg.SetValue(key.str(), options.recentDiskPaths[i]);
     }
     for (auto i = 0U; i < options.recentDirectoryPaths.size(); ++i)
     {
         std::stringstream key;
 
         key << FLEXPLORERRECENTDIRECTORY << i;
-        reg.SetValue(key.str(), options.recentDirectoryPaths[i].u8string());
+        reg.SetValue(key.str(), options.recentDirectoryPaths[i]);
     }
 #else
     auto rcFilePath = flx::getFlexemuUserConfigPath() / FLEXPLORERRC;
@@ -168,6 +168,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
 {
     int int_result;
     std::string string_result;
+    fs::path path_result;
 
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
@@ -230,9 +231,9 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
         std::stringstream key;
 
         key << FLEXPLORERRECENTDISKPATH << i;
-        if (!reg.GetValue(key.str(), string_result))
+        if (ERROR_SUCCESS == reg.GetValue(key.str(), path_result))
         {
-            options.recentDiskPaths.push_back(fs::u8path(string_result));
+            options.recentDiskPaths.push_back(path_result);
         }
     }
     for (auto i = 0; i < options.maxRecentDirectories; ++i)
@@ -240,9 +241,9 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
         std::stringstream key;
 
         key << FLEXPLORERRECENTDIRECTORY << i;
-        if (!reg.GetValue(key.str(), string_result))
+        if (ERROR_SUCCESS == reg.GetValue(key.str(), path_result))
         {
-            options.recentDirectoryPaths.push_back(fs::u8path(string_result));
+            options.recentDirectoryPaths.push_back(path_result);
         }
     }
 #else
@@ -311,9 +312,9 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
         std::stringstream key;
 
         key << FLEXPLORERRECENTDISKPATH << i;
-        if (!rcFile.GetValue(key.str().c_str(), string_result))
+        if (BRC_NO_ERROR == rcFile.GetValue(key.str().c_str(), path_result))
         {
-            options.recentDiskPaths.emplace_back(string_result);
+            options.recentDiskPaths.emplace_back(path_result);
         }
     }
     for (auto i = 0; i < sFPOptions::maxRecentDirectories; ++i)
@@ -321,9 +322,9 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
         std::stringstream key;
 
         key << FLEXPLORERRECENTDIRECTORY << i;
-        if (!rcFile.GetValue(key.str().c_str(), string_result))
+        if (BRC_NO_ERROR == rcFile.GetValue(key.str().c_str(), path_result))
         {
-            options.recentDirectoryPaths.emplace_back(string_result);
+            options.recentDirectoryPaths.emplace_back(path_result);
         }
     }
 #endif
