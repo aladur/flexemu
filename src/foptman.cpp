@@ -941,22 +941,14 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
 
     reg.GetValue(FLEXVERSION, options.version);
-    reg.GetValue(FLEXDISKDIR, string_result);
-    options.disk_dir = fs::u8path(string_result);
-    reg.GetValue(FLEXDISK0, string_result);
-    options.drives[0] = fs::u8path(string_result);
-    reg.GetValue(FLEXDISK1, string_result);
-    options.drives[1] = fs::u8path(string_result);
-    reg.GetValue(FLEXDISK2, string_result);
-    options.drives[2] = fs::u8path(string_result);
-    reg.GetValue(FLEXDISK3, string_result);
-    options.drives[3] = fs::u8path(string_result);
-    reg.GetValue(FLEXMDCRDRIVE0, string_result);
-    options.mdcrDrives[0] = fs::u8path(string_result);
-    reg.GetValue(FLEXMDCRDRIVE1, string_result);
-    options.mdcrDrives[1] = fs::u8path(string_result);
-    reg.GetValue(FLEXMONITOR, string_result);
-    options.hex_file = fs::u8path(string_result);
+    reg.GetValue(FLEXDISKDIR, options.disk_dir);
+    reg.GetValue(FLEXDISK0, options.drives[0]);
+    reg.GetValue(FLEXDISK1, options.drives[1]);
+    reg.GetValue(FLEXDISK2, options.drives[2]);
+    reg.GetValue(FLEXDISK3, options.drives[3]);
+    reg.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
+    reg.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
+    reg.GetValue(FLEXMONITOR, options.hex_file);
     reg.GetValue(FLEXCOLOR, options.color);
 
     if (!reg.GetValue(FLEXNCOLORS, int_result))
@@ -1132,22 +1124,14 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     BRcFile rcFile(rcFilePath);
     rcFile.GetValue(FLEXVERSION, options.version);
-    rcFile.GetValue(FLEXDISKDIR, string_result);
-    options.disk_dir = string_result;
-    rcFile.GetValue(FLEXDISK0, string_result);
-    options.drives[0] = string_result;
-    rcFile.GetValue(FLEXDISK1, string_result);
-    options.drives[1] = string_result;
-    rcFile.GetValue(FLEXDISK2, string_result);
-    options.drives[2] = string_result;
-    rcFile.GetValue(FLEXDISK3, string_result);
-    options.drives[3] = string_result;
-    rcFile.GetValue(FLEXMDCRDRIVE0, string_result);
-    options.mdcrDrives[0] = string_result;
-    rcFile.GetValue(FLEXMDCRDRIVE1, string_result);
-    options.mdcrDrives[1] = string_result;
-    rcFile.GetValue(FLEXMONITOR, string_result);
-    options.hex_file = string_result;
+    rcFile.GetValue(FLEXDISKDIR, options.disk_dir);
+    rcFile.GetValue(FLEXDISK0, options.drives[0]);
+    rcFile.GetValue(FLEXDISK1, options.drives[1]);
+    rcFile.GetValue(FLEXDISK2, options.drives[2]);
+    rcFile.GetValue(FLEXDISK3, options.drives[3]);
+    rcFile.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
+    rcFile.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
+    rcFile.GetValue(FLEXMONITOR, options.hex_file);
     rcFile.GetValue(FLEXCOLOR, options.color);
 
     if (!rcFile.GetValue(FLEXNCOLORS, int_result))
