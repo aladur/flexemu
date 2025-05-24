@@ -48,7 +48,7 @@ TEST(test_brcfile, fct_Initialize)
     ofs << "Generate some file content\n";
     ofs.close();
 
-    BRcFile rcf(path.u8string());
+    BRcFile rcf(path);
     // Check the Initialize truncates the existing file.
     EXPECT_EQ(rcf.Initialize(), BRC_NO_ERROR);
 
@@ -84,7 +84,7 @@ TEST(test_brcfile, fct_GetValue)
     ofs << "KeyForPosIntValue" << "      " << 577901267 << "\n";
     ofs.close();
 
-    BRcFile rcf(path.u8string());
+    BRcFile rcf(path);
     EXPECT_EQ(rcf.GetValue("Key", svalue), BRC_NO_ERROR);
     EXPECT_EQ(svalue, "Value1");
     EXPECT_EQ(rcf.GetValue("Key.postfix", svalue), BRC_NO_ERROR);
@@ -143,7 +143,7 @@ TEST(test_brcfile, fct_GetValues)
     ofs.close();
 
     std::map<std::string, std::string> result_map;
-    BRcFile rcf(path.u8string());
+    BRcFile rcf(path);
     EXPECT_EQ(rcf.GetValues("KeyPrefix", result_map), BRC_NO_ERROR);
     EXPECT_EQ(result_map.size(), 5U);
     EXPECT_EQ(result_map.at("IndividualKey1"), "Value1");
@@ -162,7 +162,7 @@ TEST(test_brcfile, fct_GetValues)
 TEST(test_brcfile, fct_SetValue)
 {
     auto path = fs::temp_directory_path() / u8"test4.rc";
-    BRcFile rcf(path.u8string());
+    BRcFile rcf(path);
 
     EXPECT_EQ(rcf.SetValue("Key", std::string("Value1")), BRC_NO_ERROR);
     int result = rcf.SetValue("Key.postfix", std::string("Value2"));
