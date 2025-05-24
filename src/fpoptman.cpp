@@ -82,7 +82,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
 {
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
-    reg.SetValue(FLEXPLORERVERSION, VERSION);
+    reg.SetValue(FLEXPLORERVERSION, std::string(VERSION));
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile.u8string());
     reg.SetValue(FLEXPLORERFILETIMEACCESS,
                  static_cast<int>(options.ft_access));
@@ -120,7 +120,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
 
     BRcFile rcFile(rcFilePath);
     rcFile.Initialize(); // truncate file
-    rcFile.SetValue(FLEXPLORERVERSION, VERSION);
+    rcFile.SetValue(FLEXPLORERVERSION, std::string(VERSION));
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
     rcFile.SetValue(FLEXPLORERFILETIMEACCESS,
                     static_cast<int>(options.ft_access));

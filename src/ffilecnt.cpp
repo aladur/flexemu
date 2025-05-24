@@ -1762,7 +1762,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
 
     if (headerSize > MAX_JVC_HEADERSIZE)
     {
-        throw FlexException(FERR_IS_NO_FILECONTAINER, GetPath());
+        throw FlexException(FERR_IS_NO_FILECONTAINER, path);
     }
 
     if (!headerSize)
@@ -1773,14 +1773,14 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
     fstream.seekg(0);
     if (fstream.fail())
     {
-        throw FlexException(FERR_READING_FROM, GetPath());
+        throw FlexException(FERR_READING_FROM, path);
     }
 
     header.resize(headerSize);
     fstream.read(reinterpret_cast<char *>(header.data()), headerSize);
     if (fstream.fail())
     {
-        throw FlexException(FERR_READING_FROM, GetPath());
+        throw FlexException(FERR_READING_FROM, path);
     }
 
     switch(headerSize)
@@ -1789,7 +1789,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[4]; // sector attribute flag
             if (temp != 0U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
+                throw FlexException(FERR_INVALID_JVC_HEADER, path);
             }
             [[fallthrough]];
 
@@ -1797,7 +1797,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[3]; // first sector ID
             if (temp != 1U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
+                throw FlexException(FERR_INVALID_JVC_HEADER, path);
             }
             [[fallthrough]];
 
@@ -1805,7 +1805,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[2]; // sector size count
             if (temp != 1U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
+                throw FlexException(FERR_INVALID_JVC_HEADER, path);
             }
             [[fallthrough]];
 
@@ -1813,7 +1813,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[1]; // side count
             if (temp < 1U || temp > 2U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
+                throw FlexException(FERR_INVALID_JVC_HEADER, path);
             }
             [[fallthrough]];
 
@@ -1821,7 +1821,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
             temp = header[0]; // sectors per track
             if (temp < 5U)
             {
-                throw FlexException(FERR_INVALID_JVC_HEADER, GetPath());
+                throw FlexException(FERR_INVALID_JVC_HEADER, path);
             }
     }
 

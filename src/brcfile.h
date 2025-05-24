@@ -48,8 +48,10 @@ public:
     ~BRcFile() = default;
 
     int SetValue(const char *key, const std::string &value);
+    int SetValue(const char *key, const fs::path &value);
     int SetValue(const char *key, int value);
     int GetValue(const char *key, std::string &value);
+    int GetValue(const char *key, fs::path &value);
     int GetValue(const char *key, int &value);
     int GetValues(const char *keyPrefix,
             std::map<std::string, std::string> &values);

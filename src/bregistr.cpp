@@ -26,6 +26,9 @@
 #include "bregistr.h"
 #include "cvtwchar.h"
 #include <memory>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 BRegistry BRegistry::classesRoot = HKEY_CLASSES_ROOT;
@@ -81,6 +84,17 @@ LONG BRegistry::SetValue(const std::string &name, const std::string &value)
     return lastError;
 }
 
+LONG BRegistry::SetValue(const std::string &name, const fs::path &value)
+{
+    const auto wideCharValue(ConvertToUtf16String(value.u8string()));
+
+    lastError = RegSetValueEx(hKey, ConvertToUtf16String(name).c_str(), 0,
+        REG_SZ, reinterpret_cast<CONST BYTE *>(wideCharValue.c_str()),
+        static_cast<DWORD>(((wideCharValue.size() + 1) * sizeof(wchar_t))));
+
+    return lastError;
+}
+
 LONG BRegistry::SetValue(const std::string &name, const int value)
 {
     lastError = RegSetValueEx(hKey, ConvertToUtf16String(name).c_str(), 0,
@@ -119,6 +133,19 @@ LONG BRegistry::GetValue(const std::string &name, std::string &value)
     }
 
     return lastError;
+}
+
+LONG BRegistry::GetValue(const std::string &name, fs::path &value)
+{
+    std::string stringValue;
+
+    auto result = GetValue(name, stringValue);
+    if (result == ERROR_SUCCESS)
+    {
+        value = fs::u8path(stringValue);
+    }
+
+    return result;
 }
 
 LONG BRegistry::GetValue(const std::string &name, int &value)

@@ -862,7 +862,7 @@ void FlexemuOptions::WriteOptionsToFile(
     BRcFile rcFile(path);
     bool ok;
     rcFile.Initialize(); // truncate file
-    rcFile.SetValue(FLEXVERSION, VERSION);
+    rcFile.SetValue(FLEXVERSION, std::string(VERSION));
     rcFile.SetValue(FLEXINVERSE, optionsToWrite.isInverse ? 1 : 0);
     rcFile.SetValue(FLEXDISPLAYSMOOTH, optionsToWrite.isSmooth ? 1 : 0);
     rcFile.SetValue(FLEXISCONFIRMEXIT, optionsToWrite.isConfirmExit ? 1 : 0);

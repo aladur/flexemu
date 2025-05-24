@@ -63,8 +63,10 @@ TEST(test_brcfile, fct_Initialize)
 TEST(test_brcfile, fct_GetValue)
 {
     std::string svalue;
+    fs::path pvalue;
     int ivalue;
     auto path = fs::temp_directory_path() / u8"test2.rc";
+    std::string tempdir = fs::temp_directory_path().u8string();
     std::ofstream ofs(path);
 
     ASSERT_TRUE(ofs.is_open());
@@ -74,6 +76,7 @@ TEST(test_brcfile, fct_GetValue)
     ofs << "KeyWithIndex01" << "\t \t" << "\"Value4\"\n";
     ofs << "key-with-dash" << " " << "\"Value5\"\n";
     ofs << "KeyWithEmptyValue" << " " << "\"\"\n";
+    ofs << "KeyForPath" << "      " << std::quoted(tempdir) << "\n";
     ofs << "KeyForNegIntValue" << "      " << -22 << "\n";
     ofs << "KeyForPosIntValue" << "      " << 577901267 << "\n";
     ofs.close();
@@ -91,10 +94,13 @@ TEST(test_brcfile, fct_GetValue)
     EXPECT_EQ(svalue, "Value5");
     EXPECT_EQ(rcf.GetValue("KeyWithEmptyValue", svalue), BRC_NO_ERROR);
     EXPECT_EQ(svalue, "");
+    EXPECT_EQ(rcf.GetValue("KeyForPath", pvalue), BRC_NO_ERROR);
+    EXPECT_EQ(pvalue, fs::temp_directory_path());
     EXPECT_EQ(rcf.GetValue("KeyForNegIntValue", ivalue), BRC_NO_ERROR);
     EXPECT_EQ(ivalue, -22);
     EXPECT_EQ(rcf.GetValue("KeyForPosIntValue", ivalue), BRC_NO_ERROR);
     EXPECT_EQ(ivalue, 577901267);
+    EXPECT_EQ(rcf.GetValue("Key", ivalue), BRC_NO_INTEGER);
     EXPECT_EQ(rcf.GetValue("Key", ivalue), BRC_NO_INTEGER);
     fs::remove(path);
 }
@@ -129,14 +135,21 @@ TEST(test_brcfile, fct_SetValue)
     auto path = fs::temp_directory_path() / u8"test4.rc";
     BRcFile rcf(path.u8string());
 
-    EXPECT_EQ(rcf.SetValue("Key", "Value1"), BRC_NO_ERROR);
-    EXPECT_EQ(rcf.SetValue("Key.postfix", "Value2"), BRC_NO_ERROR);
-    EXPECT_EQ(rcf.SetValue("Key_has_underscore", "Value3"), BRC_NO_ERROR);
-    EXPECT_EQ(rcf.SetValue("KeyWithIndex01", "Value4"), BRC_NO_ERROR);
-    EXPECT_EQ(rcf.SetValue("key-with-dash", "Value5"), BRC_NO_ERROR);
-    EXPECT_EQ(rcf.SetValue("KeyWithEmptyValue", ""), BRC_NO_ERROR);
+    EXPECT_EQ(rcf.SetValue("Key", std::string("Value1")), BRC_NO_ERROR);
+    int result = rcf.SetValue("Key.postfix", std::string("Value2"));
+    EXPECT_EQ(result, BRC_NO_ERROR);
+    result = rcf.SetValue("Key_has_underscore", std::string("Value3"));
+    EXPECT_EQ(result, BRC_NO_ERROR);
+    result = rcf.SetValue("KeyWithIndex01", std::string("Value4"));
+    EXPECT_EQ(result, BRC_NO_ERROR);
+    result = rcf.SetValue("key-with-dash", std::string("Value5"));
+    EXPECT_EQ(result, BRC_NO_ERROR);
+    result = rcf.SetValue("KeyWithEmptyValue", std::string(""));
+    EXPECT_EQ(result, BRC_NO_ERROR);
     EXPECT_EQ(rcf.SetValue("KeyForNegIntValue", -22), BRC_NO_ERROR);
     EXPECT_EQ(rcf.SetValue("KeyForPosIntValue", 577901267), BRC_NO_ERROR);
+    result = rcf.SetValue("KeyForPath", fs::temp_directory_path());
+    EXPECT_EQ(result, BRC_NO_ERROR);
 
     // Now parse and check the created rc-file.
     std::map<std::string, std::string> result_map;
@@ -158,13 +171,16 @@ TEST(test_brcfile, fct_SetValue)
     }
     ifs.close();
 
-    EXPECT_EQ(result_map.size(), 8U);
+    EXPECT_EQ(result_map.size(), 9U);
     EXPECT_EQ(result_map.at("Key"), "\"Value1\"");
     EXPECT_EQ(result_map.at("Key.postfix"), "\"Value2\"");
     EXPECT_EQ(result_map.at("Key_has_underscore"), "\"Value3\"");
     EXPECT_EQ(result_map.at("KeyWithIndex01"), "\"Value4\"");
     EXPECT_EQ(result_map.at("key-with-dash"), "\"Value5\"");
     EXPECT_EQ(result_map.at("KeyWithEmptyValue"), "\"\"");
+    std::stringstream stream;
+    stream << fs::temp_directory_path();
+    EXPECT_EQ(result_map.at("KeyForPath"), stream.str());
     EXPECT_EQ(result_map.at("KeyForNegIntValue"), "-22");
     EXPECT_EQ(result_map.at("KeyForPosIntValue"), "577901267");
     fs::remove(path);

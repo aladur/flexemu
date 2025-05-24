@@ -56,6 +56,25 @@ int BRcFile::SetValue(const char *key, const std::string &value)
     return BRC_NO_ERROR;
 }
 
+int BRcFile::SetValue(const char *key, const fs::path &value)
+{
+    std::ofstream fs(path, std::ios::out | std::ios::app);
+
+    if (!fs.is_open())
+    {
+        return 1;
+    }
+
+    fs << key << "\t\t" << value << "\n";
+
+    if (fs.fail())
+    {
+        return 1;
+    }
+
+    return BRC_NO_ERROR;
+}
+
 int BRcFile::SetValue(const char *key, int value)
 {
     std::ofstream fs(path, std::ios::out | std::ios::app);
@@ -80,6 +99,20 @@ int BRcFile::GetValue(const char *key, std::string &value)
     std::optional<bool> isInteger;
 
     return GetValue(key, value, isInteger);
+}
+
+int BRcFile::GetValue(const char *key, fs::path &value)
+{
+    std::string stringValue;
+
+    auto result = GetValue(key, stringValue);
+
+    if (result == BRC_NO_ERROR)
+    {
+        value = fs::u8path(stringValue);
+    }
+
+    return result;
 }
 
 int BRcFile::GetValue(const char *key, std::string &value,

@@ -27,7 +27,9 @@
 #include "misc1.h"
 #include <string>
 #include <map>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 
 class BRegistry
 {
@@ -48,9 +50,11 @@ public:
     LONG GetLastError() const;
     LONG Delete();
     LONG SetValue(const std::string &name, const std::string &value);
+    LONG SetValue(const std::string &name, const fs::path &value);
     LONG SetValue(const std::string &name, const int value);
     LONG SetValue(const std::string &name, const BYTE *value, int size);
     LONG GetValue(const std::string &name, std::string &value);
+    LONG GetValue(const std::string &name, fs::path &value);
     LONG GetValue(const std::string &name, int &value);
     LONG GetValues(const std::string &keyPrefix,
             std::map<std::string, std::string> &values);
