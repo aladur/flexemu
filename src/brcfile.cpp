@@ -43,14 +43,14 @@ int BRcFile::SetValue(const char *key, const std::string &value)
 
     if (!fs.is_open())
     {
-        return 1;
+        return BRC_FILE_ERROR;
     }
 
     fs << key << "\t\t" << std::quoted(value) << "\n";
 
     if (fs.fail())
     {
-        return 1;
+        return BRC_FILE_ERROR;
     }
 
     return BRC_NO_ERROR;
@@ -62,14 +62,14 @@ int BRcFile::SetValue(const char *key, const fs::path &value)
 
     if (!fs.is_open())
     {
-        return 1;
+        return BRC_FILE_ERROR;
     }
 
     fs << key << "\t\t" << value << "\n";
 
     if (fs.fail())
     {
-        return 1;
+        return BRC_FILE_ERROR;
     }
 
     return BRC_NO_ERROR;
@@ -81,14 +81,14 @@ int BRcFile::SetValue(const char *key, int value)
 
     if (!fs.is_open())
     {
-        return 1;
+        return BRC_FILE_ERROR;
     }
 
     fs << key << "\t\t" << value << "\n";
 
     if (fs.fail())
     {
-        return 1;
+        return BRC_FILE_ERROR;
     }
 
     return BRC_NO_ERROR;
@@ -125,7 +125,7 @@ int BRcFile::GetValue(const char *key, std::string &value,
 
     if (!fs.is_open())
     {
-        return 1;
+        return BRC_FILE_ERROR;
     }
 
     while (!fs.eof())
@@ -185,7 +185,7 @@ int BRcFile::Initialize()
 
     if (!fs.is_open())
     {
-        return 1;
+        return BRC_FILE_ERROR;
     }
 
     return BRC_NO_ERROR;
@@ -199,7 +199,7 @@ int BRcFile::GetValues(const char *keyPrefix,
 
     if (!fs.is_open())
     {
-        return BRC_NOT_FOUND;
+        return BRC_FILE_ERROR;
     }
 
     values.clear();

@@ -37,7 +37,8 @@ enum : uint8_t
 {
     BRC_NO_ERROR = 0,
     BRC_NOT_FOUND = 99,
-    BRC_NO_INTEGER = 100
+    BRC_NO_INTEGER = 100,
+    BRC_FILE_ERROR = 101,
 };
 
 class BRcFile
