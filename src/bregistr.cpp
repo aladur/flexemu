@@ -178,6 +178,7 @@ LONG BRegistry::GetValues(const std::string &keyPrefix,
     auto keyBuf =
         std::unique_ptr<wchar_t>(new wchar_t[size * sizeof(wchar_t)]);
 
+    values.clear();
     while (!isFinished)
     {
         keySize = size;
