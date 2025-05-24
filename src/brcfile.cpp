@@ -197,12 +197,12 @@ int BRcFile::GetValues(const char *keyPrefix,
     std::ifstream fs(path);
     const auto lcKeyPrefix = flx::tolower(keyPrefix);
 
-    values.clear();
     if (!fs.is_open())
     {
         return BRC_NOT_FOUND;
     }
 
+    values.clear();
     while (!fs.eof())
     {
         std::stringbuf strbuf;

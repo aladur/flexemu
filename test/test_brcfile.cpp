@@ -58,6 +58,9 @@ TEST(test_brcfile, fct_Initialize)
     ifs.close();
     EXPECT_TRUE(contents.empty());
     fs::remove(path);
+
+    BRcFile rcnof(fs::temp_directory_path() / "non_existent_dir" / "file.rc");
+    EXPECT_EQ(rcnof.Initialize(), 1);
 }
 
 TEST(test_brcfile, fct_GetValue)
@@ -101,8 +104,29 @@ TEST(test_brcfile, fct_GetValue)
     EXPECT_EQ(rcf.GetValue("KeyForPosIntValue", ivalue), BRC_NO_ERROR);
     EXPECT_EQ(ivalue, 577901267);
     EXPECT_EQ(rcf.GetValue("Key", ivalue), BRC_NO_INTEGER);
+    EXPECT_EQ(ivalue, 577901267);
     EXPECT_EQ(rcf.GetValue("Key", ivalue), BRC_NO_INTEGER);
+    EXPECT_EQ(ivalue, 577901267);
+    svalue = "abc";
+    EXPECT_EQ(rcf.GetValue("InvalidKey", svalue), BRC_NOT_FOUND);
+    EXPECT_EQ(svalue, "abc");
+    pvalue = fs::u8path("my_path");
+    EXPECT_EQ(rcf.GetValue("InvalidKey", pvalue), BRC_NOT_FOUND);
+    EXPECT_EQ(pvalue, "my_path");
+    EXPECT_EQ(rcf.GetValue("InvalidKey", ivalue), BRC_NOT_FOUND);
+    EXPECT_EQ(ivalue, 577901267);
     fs::remove(path);
+
+    BRcFile rcnof(fs::temp_directory_path() / "non_existent_file.rc");
+    svalue = "abc";
+    EXPECT_EQ(rcnof.GetValue("Key", svalue), 1);
+    EXPECT_EQ(svalue, "abc");
+    pvalue = fs::u8path("my_path");
+    EXPECT_EQ(rcnof.GetValue("Key", pvalue), 1);
+    EXPECT_EQ(pvalue, "my_path");
+    ivalue = 123;
+    EXPECT_EQ(rcnof.GetValue("Key", ivalue), 1);
+    EXPECT_EQ(ivalue, 123);
 }
 
 TEST(test_brcfile, fct_GetValues)
@@ -128,6 +152,11 @@ TEST(test_brcfile, fct_GetValues)
     EXPECT_EQ(result_map.at("IndividualKey22"), "Value4");
     EXPECT_EQ(result_map.at("IndividualKey1999"), "Value5");
     fs::remove(path);
+
+    BRcFile rcnof(fs::temp_directory_path() / "non_existent_file.rc");
+    EXPECT_EQ(rcnof.GetValues("KeyPrefix", result_map), BRC_NOT_FOUND);
+    EXPECT_EQ(result_map.size(), 5U);
+    EXPECT_EQ(result_map.at("IndividualKey1"), "Value1");
 }
 
 TEST(test_brcfile, fct_SetValue)
@@ -184,5 +213,10 @@ TEST(test_brcfile, fct_SetValue)
     EXPECT_EQ(result_map.at("KeyForNegIntValue"), "-22");
     EXPECT_EQ(result_map.at("KeyForPosIntValue"), "577901267");
     fs::remove(path);
+
+    BRcFile rcnof(fs::temp_directory_path() / "non_existent_dir" / "file.rc");
+    EXPECT_EQ(rcnof.SetValue("Key", std::string("Value1")), 1);
+    EXPECT_EQ(rcnof.SetValue("Key", 577901267), 1);
+    EXPECT_EQ(rcnof.SetValue("Key", fs::u8path("my_path")), 1);
 }
 
