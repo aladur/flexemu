@@ -69,13 +69,13 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.extractTextFileAskUser = true;
     options.onTrack0OnlyDirSectors = true;
     options.fileSizeType = FileSizeType::FileSize;
-    options.openInjectFilePath = flx::getHomeDirectory().u8string();
+    options.openInjectFilePath = flx::getHomeDirectory();
 #ifdef _WIN32
     options.openDiskPath = flx::getExecutablePath() / u8"Data";
 #else
     options.openDiskPath = F_DATADIR;
 #endif
-    options.openDirectoryPath = flx::getHomeDirectory().u8string();
+    options.openDirectoryPath = flx::getHomeDirectory();
 }
 
 void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
@@ -83,7 +83,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
     reg.SetValue(FLEXPLORERVERSION, std::string(VERSION));
-    reg.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile.u8string());
+    reg.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
     reg.SetValue(FLEXPLORERFILETIMEACCESS,
                  static_cast<int>(options.ft_access));
     reg.SetValue(FLEXPLORERICONSIZE, options.iconSize);
@@ -93,13 +93,11 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     reg.SetValue(FLEXPLOREREXTRACTASK, options.extractTextFileAskUser ? 1 : 0);
     reg.SetValue(FLEXPLORERTRACK0ONLYDIRSEC,
                  options.onTrack0OnlyDirSectors ? 1 : 0);
-    reg.SetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath.u8string());
-    reg.SetValue(FLEXPLOREROPENDIRECTORYPATH,
-            options.openDirectoryPath.u8string());
+    reg.SetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
+    reg.SetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     reg.SetValue(FLEXPLORERFILESIZETYPE,
                  static_cast<int>(options.fileSizeType));
-    reg.SetValue(FLEXPLOREROPENINJECTFILEPATH,
-                 options.openInjectFilePath.u8string());
+    reg.SetValue(FLEXPLOREROPENINJECTFILEPATH, options.openInjectFilePath);
     for (auto i = 0U; i < options.recentDiskPaths.size(); ++i)
     {
         std::stringstream key;
@@ -134,12 +132,10 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     rcFile.SetValue(FLEXPLORERTRACK0ONLYDIRSEC,
                     options.onTrack0OnlyDirSectors ? 1 : 0);
     rcFile.SetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
-    rcFile.SetValue(FLEXPLOREROPENDIRECTORYPATH,
-                    options.openDirectoryPath);
+    rcFile.SetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     rcFile.SetValue(FLEXPLORERFILESIZETYPE,
                     static_cast<int>(options.fileSizeType));
-    rcFile.SetValue(FLEXPLOREROPENINJECTFILEPATH,
-                    options.openInjectFilePath);
+    rcFile.SetValue(FLEXPLOREROPENINJECTFILEPATH, options.openInjectFilePath);
 
     for (auto i = 0U; i < options.recentDiskPaths.size(); ++i)
     {
@@ -167,19 +163,13 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
 void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
 {
     int int_result;
-    std::string string_result;
     fs::path path_result;
 
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
 
     reg.GetValue(FLEXPLORERVERSION, options.version);
-
-    if (!reg.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
-        !string_result.empty())
-    {
-        options.bootSectorFile = fs::u8path(string_result);
-    }
+    reg.GetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
 
     if (!reg.GetValue(FLEXPLORERFILETIMEACCESS, int_result))
     {
@@ -215,16 +205,13 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     {
         options.onTrack0OnlyDirSectors = (int_result != 0);
     }
-    reg.GetValue(FLEXPLOREROPENDISKPATH, string_result);
-    options.openDiskPath = fs::u8path(string_result);
-    reg.GetValue(FLEXPLOREROPENDIRECTORYPATH, string_result);
-    options.openDirectoryPath = fs::u8path(string_result);
+    reg.GetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
+    reg.GetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     reg.GetValue(FLEXPLORERFILESIZETYPE, int_result);
     int_result = std::max(int_result, 1);
     int_result = std::min(int_result, 2);
     options.fileSizeType = static_cast<FileSizeType>(int_result);
-    reg.GetValue(FLEXPLOREROPENINJECTFILEPATH, string_result);
-    options.openInjectFilePath = fs::u8path(string_result);
+    reg.GetValue(FLEXPLOREROPENINJECTFILEPATH, options.openInjectFilePath);
 
     for (auto i = 0; i < options.maxRecentFiles; ++i)
     {
@@ -255,12 +242,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     BRcFile rcFile(rcFilePath);
 
     rcFile.GetValue(FLEXPLORERVERSION, options.version);
-
-    if (!rcFile.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
-        !string_result.empty())
-    {
-        options.bootSectorFile = string_result;
-    }
+    rcFile.GetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
 
     if (!rcFile.GetValue(FLEXPLORERFILETIMEACCESS, int_result))
     {
@@ -296,16 +278,13 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     {
         options.onTrack0OnlyDirSectors = (int_result != 0);
     }
-    rcFile.GetValue(FLEXPLOREROPENDISKPATH, string_result);
-    options.openDiskPath = string_result;
-    rcFile.GetValue(FLEXPLOREROPENDIRECTORYPATH, string_result);
-    options.openDirectoryPath = string_result;
+    rcFile.GetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
+    rcFile.GetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     rcFile.GetValue(FLEXPLORERFILESIZETYPE, int_result);
     int_result = std::max(int_result, 1);
     int_result = std::min(int_result, 2);
     options.fileSizeType = static_cast<FileSizeType>(int_result);
-    rcFile.GetValue(FLEXPLOREROPENINJECTFILEPATH, string_result);
-    options.openInjectFilePath = string_result;
+    rcFile.GetValue(FLEXPLOREROPENINJECTFILEPATH, options.openInjectFilePath);
 
     for (auto i = 0; i < sFPOptions::maxRecentFiles; ++i)
     {
