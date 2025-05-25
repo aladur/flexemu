@@ -263,6 +263,8 @@ PrintOutputWindow::PrintOutputWindow(sOptions &p_options)
     toolBarLayout->addStretch(1);
 
     auto font = GetFont(QString::fromStdString(options.printFont));
+    fontPointSize = QApplication::font().pointSize();
+    font.setPointSize(fontPointSize);
     fontComboBox->setCurrentFont(font);
 
     auto index = GetOrientationKeys().indexOf(
@@ -365,10 +367,10 @@ void PrintOutputWindow::OnClearTextBrowser()
 
 void PrintOutputWindow::OnFontChanged(const QFont &newFont) const
 {
-    auto font = fontComboBox->currentFont();
-
-    options.printFont = font.toString().toStdString();
-    SetTextBrowserFont(newFont);
+    QFont modifiedFont(newFont);
+    modifiedFont.setPointSize(fontPointSize);
+    SetTextBrowserFont(modifiedFont);
+    options.printFont = modifiedFont.toString().toStdString();
 }
 
 void PrintOutputWindow::OnHideWindow()
@@ -1130,6 +1132,13 @@ void PrintOutputWindow::SetTextBrowserFont(const QFont &font) const
     doc->setDefaultFont(font);
 }
 
+void PrintOutputWindow::UpdateFontPointSize() const
+{
+    auto font = fontComboBox->currentFont();
+    font.setPointSize(fontPointSize);
+    SetTextBrowserFont(font);
+}
+
 void PrintOutputWindow::UpdateMarginWidgets()
 {
     // Display unit is Centimeter
@@ -1358,5 +1367,22 @@ bool PrintOutputWindow::event(QEvent *event)
     }
 
     return QWidget::event(event);
+}
+
+void PrintOutputWindow::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::ApplicationFontChange
+        || event->type() == QEvent::FontChange)
+    {
+        auto defaultFont = QApplication::font();
+        fontPointSize = defaultFont.pointSize();
+        UpdateFontPointSize();
+    }
+
+    else if (event->type() == QEvent::StyleChange
+             || event->type() == QEvent::ThemeChange)
+    {
+        QWidget::update();
+    }
 }
 

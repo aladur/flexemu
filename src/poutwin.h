@@ -50,6 +50,7 @@ class QVBoxLayout;
 class QComboBox;
 class QFile;
 class QTextStream;
+class QEvent;
 class QCloseEvent;
 class QFontComboBox;
 class QFont;
@@ -133,6 +134,7 @@ private:
     void SavePrintConfig();
     void SetMarginsInfo(bool isInvalid) const;
     void SetTextBrowserFont(const QFont &font) const;
+    void UpdateFontPointSize() const;
     double ToMillimeter(double displayValue) const;
     void UpdateMarginWidgets();
     void UpdatePageWidthAndHeightWidgets();
@@ -144,6 +146,7 @@ private:
 
     // Event handlers
     void closeEvent(QCloseEvent *event) override;
+    void changeEvent(QEvent *event) override;
     bool event(QEvent *event) override;
 
     // Private member variables
@@ -165,6 +168,7 @@ private:
     Ui::PrintPreview *ui;
 
     bool hasFixedFont;
+    int fontPointSize;
     PrintOverlayHelper overlayHelper;
     RichLines richLines;
     std::vector<bool> isEmptyLine;
