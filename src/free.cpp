@@ -115,14 +115,17 @@ void flx::print_versions(std::ostream &os, const std::string &program_name)
 //    bytesPerLine: Number of bytes output on one line.
 //    withAscii:    If true dump 7-bit ASCII equivalent on the right side
 //    startAddress: Optional, dump the address.
+//    extraSpace:   Optional, Output extra space after "extraSpace" bytes.
 // Address at the beginning on the line is always a multiple of bytesPerLine.
 void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
-        DWord bytesPerLine, bool withAscii, std::optional<DWord> startAddress)
+        DWord bytesPerLine, bool withAscii, std::optional<DWord> startAddress,
+        std::optional<DWord> extraSpace)
 {
     const bool withAddress = startAddress.has_value();
+    bool endsWithNewline = false;
     DWord idx = 0U;
-    DWord address = 0U;
-    DWord offset = 0U;
+    const DWord offset = withAddress ? startAddress.value() % bytesPerLine : 0U;
+    DWord address = withAddress ? startAddress.value() - offset : 0U;
     std::string asciiString;
     auto asciiIter = std::back_inserter(asciiString);
 
@@ -135,11 +138,9 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
     {
         return;
     }
-
-    if (startAddress.has_value())
+    if (extraSpace.has_value() && bytesPerLine <= extraSpace.value())
     {
-        offset = startAddress.value() % bytesPerLine;
-        address = startAddress.value() - offset;
+        extraSpace.reset();
     }
 
     if (withAddress)
@@ -148,21 +149,24 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
     }
 
     // Fill up with spaces to align to base address.
-    os << std::string(3U * offset, ' ');
+    auto extra = extraSpace.has_value() ? offset / extraSpace.value() : 0U;
+    os << std::string(3U * offset + extra, ' ');
+    auto column = offset;
     if (withAscii)
     {
-        for (DWord j = 0U; j < offset; ++j)
+        for (DWord j = 0U; j < offset + extra; ++j)
         {
             *(asciiIter++) = ' ';
         }
-        address += offset;
     }
+    address += offset;
 
     const auto *spacer = "";
     for (idx = 0U; idx < size; ++idx)
     {
         const auto ch = static_cast<char>(*(data++));
 
+        endsWithNewline = false;
         if (address % bytesPerLine == 0U)
         {
             if (withAddress && idx > 0U)
@@ -175,15 +179,31 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
                 asciiString.clear();
                 asciiIter = std::back_inserter(asciiString);
             }
+
+            column = 0U;
         }
 
         os << spacer << fmt::format("{:02X}", ch);
         spacer = " ";
 
+        const bool withExtraSpace = (extraSpace.has_value() &&
+            (column % extraSpace.value() + 1U == extraSpace.value()));
+
+        if (withExtraSpace)
+        {
+            os << " ";
+        }
+
         if (withAscii)
         {
             *(asciiIter++) = (ch >= ' ' && ch <= '~') ? ch : '_';
+
+            if (withExtraSpace)
+            {
+                *(asciiIter++) = ' ';
+            }
         }
+
         if ((address % bytesPerLine + 1U) == bytesPerLine)
         {
             if (withAscii)
@@ -192,14 +212,28 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
             }
             os << "\n";
             spacer = "";
+            endsWithNewline = true;
         }
 
         ++address;
+        ++column;
     }
 
     if (withAscii && (address % bytesPerLine) != 0U)
     {
-        offset = bytesPerLine - (address % bytesPerLine);
-        os << std::string(3U * offset, ' ') << "  " << asciiString << "\n";
+        extra = 0U;
+        if (extraSpace.has_value())
+        {
+            extra = bytesPerLine / extraSpace.value() -
+                    (column / extraSpace.value());
+        }
+
+        auto endOffset = bytesPerLine - (address % bytesPerLine);
+        os << std::string(3U * endOffset + extra, ' ') << "  " << asciiString;
+    }
+
+    if (!endsWithNewline)
+    {
+        os << "\n";
     }
 }

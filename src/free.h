@@ -48,7 +48,9 @@ namespace flx
     extern void print_versions(std::ostream &os,
             const std::string &program_name);
     extern void hex_dump(std::ostream &os, const Byte *data, DWord size,
-            DWord bytesPerLine, bool withAscii = true,
-            std::optional<DWord> startAddress = std::nullopt);
+            DWord bytesPerLine,
+            bool withAscii = true,
+            std::optional<DWord> startAddress = std::nullopt,
+            std::optional<DWord> extraSpace = std::nullopt);
 }
 #endif
