@@ -237,3 +237,58 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
         os << "\n";
     }
 }
+
+// Write a hex dump scale on a stream.
+// Intentionally use the same parameters as for hex_dump() used to format
+// the scale.
+//
+// Parameters:
+//    os:           Where the result is streamed to.
+//    bytesPerLine: Number of bytes to scale on one line.
+//    withAscii:    If true stream the scale for ASCII values on the right.
+//    startAddress: Optional, if set indent the scale.
+//    extraSpace:   Optional, Output extra space after "extraSpace" bytes.
+void flx::hex_dump_scale(std::ostream &os, DWord bytesPerLine, bool withAscii,
+        std::optional<DWord> startAddress,
+        std::optional<DWord> extraSpace)
+{
+    auto streamHexDumpScaleFct = [&](bool isSecondLine)
+    {
+        const auto *spacer = "";
+
+        os << std::string(startAddress.has_value() ? 6U : 0U, ' ');
+        for (DWord idx = 0U; idx < bytesPerLine; ++idx)
+        {
+            const auto *theExtraSpace = (extraSpace.has_value() &&
+                bytesPerLine > extraSpace.value() &&
+                (idx % extraSpace.value() + 1U == extraSpace.value())) ?
+                " " : "";
+
+            os << spacer << ((isSecondLine || (idx & 0x0FU) == 0U) ?
+                fmt::format("{:02X}", idx) : "  ") << theExtraSpace;
+            spacer = " ";
+        }
+
+        if (!withAscii)
+        {
+            return;
+        }
+
+        os << "  ";
+        for (DWord idx = 0U; idx < bytesPerLine; ++idx)
+        {
+            const auto *theExtraSpace = (extraSpace.has_value() &&
+                bytesPerLine > extraSpace.value() &&
+                (idx % extraSpace.value() + 1U == extraSpace.value())) ?
+                " " : "";
+
+            os << ((isSecondLine || (idx & 0x0FU) == 0U) ?
+                fmt::format("{:X}", isSecondLine ? idx & 0x0FU : idx >> 4U) :
+                " ") << theExtraSpace;
+        }
+    };
+
+    streamHexDumpScaleFct(false);
+    os << "\n";
+    streamHexDumpScaleFct(true);
+}

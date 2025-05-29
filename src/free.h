@@ -52,5 +52,9 @@ namespace flx
             bool withAscii = true,
             std::optional<DWord> startAddress = std::nullopt,
             std::optional<DWord> extraSpace = std::nullopt);
+    extern void hex_dump_scale(std::ostream &os, DWord bytesPerLine,
+            bool withAscii = true,
+            std::optional<DWord> startAddress = std::nullopt,
+            std::optional<DWord> extraSpace = std::nullopt);
 }
 #endif

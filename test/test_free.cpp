@@ -547,3 +547,210 @@ TEST(test_free, fct_hex_dump_9)
     ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
+
+// Test scale with 16 bytes, with address, with ascii.
+//       00                                               0
+//       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  0123456789ABCDEF
+TEST(test_free, fct_hex_dump_scale_1)
+{
+    std::stringstream stream;
+    const DWord bpl = 16U; // bytes per line
+    flx::hex_dump_scale(stream, bpl, true, 0x0004);
+    std::string linebuffer;
+    // Test first line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    auto tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 71);
+    ASSERT_EQ(tokens.size(), 2);
+    EXPECT_NE(linebuffer[6], ' '); // first hex digit
+    EXPECT_NE(linebuffer[7], ' '); // last hex digit
+    EXPECT_NE(linebuffer[55], ' '); // first ASCII
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 1].size(), 1U); // ASCII char count
+    // Test second line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 71);
+    ASSERT_EQ(tokens.size(), bpl + 1U);
+    EXPECT_NE(linebuffer[6], ' '); // first hex digit
+    EXPECT_NE(linebuffer[52], ' '); // last hex digit
+    EXPECT_NE(linebuffer[55], ' '); // first ASCII
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last ASCII
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 2], "0F"); // last byte
+    EXPECT_EQ(tokens[tokens.size() - 1].size(), bpl); // ASCII char count
+    // Test third line.
+    ASSERT_FALSE(stream.good());
+}
+
+// Test scale with 8 bytes per line, with address, with ascii.
+//       00                       0
+//       00 01 02 03 04 05 06 07  01234567
+TEST(test_free, fct_hex_dump_scale_3)
+{
+    std::stringstream stream;
+    const DWord bpl = 8U; // bytes per line
+    flx::hex_dump_scale(stream, bpl, true, 0x0202);
+    std::string linebuffer;
+    // Test first line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    auto tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 39);
+    ASSERT_EQ(tokens.size(), 2);
+    EXPECT_NE(linebuffer[6], ' '); // first hex digit
+    EXPECT_NE(linebuffer[7], ' '); // last hex digit
+    EXPECT_NE(linebuffer[31], ' '); // first ASCII
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 1].size(), 1U); // ASCII char count
+    // Test second line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 39);
+    ASSERT_EQ(tokens.size(), bpl + 1);
+    EXPECT_NE(linebuffer[6], ' '); // first hex digit
+    EXPECT_NE(linebuffer[28], ' '); // last hex digit
+    EXPECT_NE(linebuffer[31], ' '); // first ASCII
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last ASCII
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 2], "07"); // last byte
+    EXPECT_EQ(tokens[tokens.size() - 1].size(), 8U); // ASCII char count
+    // Test third line.
+    ASSERT_FALSE(stream.good());
+}
+
+// Test scale with 8 bytes per line, with address, no ascii.
+//       00
+//       00 01 02 03 04 05 06 07
+TEST(test_free, fct_hex_dump_scale_4)
+{
+    std::stringstream stream;
+    const DWord bpl = 8U; // bytes per line
+    flx::hex_dump_scale(stream, bpl, false, 0x0202);
+    std::string linebuffer;
+    // Test first line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    auto tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 29);
+    ASSERT_EQ(tokens.size(), 1);
+    EXPECT_NE(linebuffer[6], ' '); // first hex digit
+    EXPECT_NE(linebuffer[7], ' '); // last hex digit
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    // Test second line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 29);
+    ASSERT_EQ(tokens.size(), bpl);
+    EXPECT_NE(linebuffer[6], ' '); // first hex digit
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 1], "07"); // last byte
+    // Test third line.
+    ASSERT_FALSE(stream.good());
+}
+
+// Test scale with 8 bytes per line, no address, no ascii.
+// 00
+// 00 01 02 03 04  05 06 07
+TEST(test_free, fct_hex_dump_scale_5)
+{
+    std::stringstream stream;
+    const DWord bpl = 8U; // bytes per line
+    flx::hex_dump_scale(stream, bpl, false);
+    std::string linebuffer;
+    // Test first line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    auto tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 23);
+    ASSERT_EQ(tokens.size(), 1);
+    EXPECT_NE(linebuffer[0], ' '); // first hex digit
+    EXPECT_NE(linebuffer[1], ' '); // last hex digit
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    // Test second line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 23);
+    ASSERT_EQ(tokens.size(), bpl);
+    EXPECT_NE(linebuffer[0], ' '); // first hex digit
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 1], "07"); // last byte
+    // Test third line.
+    ASSERT_FALSE(stream.good());
+}
+
+// Test scale with 13 bytes per line, with address, with ascii, extra space
+// each 5 bytes.
+//       00                                        0
+//       00 01 02 03 04  05 06 07 08 09  0A 0B 0C  01234 56789 ABC
+TEST(test_free, fct_hex_dump_scale_8)
+{
+    std::stringstream stream;
+    const DWord bpl = 13U; // bytes per line
+    flx::hex_dump_scale(stream, bpl, true, 0x00C7, 5U);
+    std::string linebuffer;
+    // Test first line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    auto tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 63);
+    ASSERT_EQ(tokens.size(), 2);
+    EXPECT_NE(linebuffer[6], ' '); // first hex digit
+    EXPECT_NE(linebuffer[48], ' '); // first ascii
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    // Test second line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 63);
+    ASSERT_EQ(tokens.size(), bpl + 3);
+    EXPECT_NE(linebuffer[6], ' '); // first hex digit
+    EXPECT_NE(linebuffer[45], ' '); // last hex digit
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 4], "0C"); // last byte
+    EXPECT_EQ(tokens[tokens.size() - 3].size(), 5U); // ascii char count
+    EXPECT_EQ(tokens[tokens.size() - 2].size(), 5U); // ascii char count
+    EXPECT_EQ(tokens[tokens.size() - 1].size(), 3U); // ascii char count
+    // Test third line.
+    ASSERT_FALSE(stream.good());
+}
+
+// Test scale with 13 bytes per line, no address, no ascii, extra space each
+// 5 bytes.
+// 00
+// 00 01 02 03 04  05 06 07 08 09  0A 0B 0C
+TEST(test_free, fct_hex_dump_scale_9)
+{
+    std::stringstream stream;
+    const DWord bpl = 13U; // bytes per line
+    flx::hex_dump_scale(stream, bpl, false, std::nullopt, 5U);
+    std::string linebuffer;
+    // Test first line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    auto tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 40);
+    ASSERT_EQ(tokens.size(), 1);
+    EXPECT_NE(linebuffer[0], ' '); // first hex digit
+    EXPECT_NE(linebuffer[1], ' '); // last hex digit
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    // Test second line.
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 40);
+    ASSERT_EQ(tokens.size(), bpl);
+    EXPECT_NE(linebuffer[0], ' '); // first hex digit
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 1], "0C"); // last byte
+    // Test third line.
+    ASSERT_FALSE(stream.good());
+}
