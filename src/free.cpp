@@ -107,15 +107,15 @@ void flx::print_versions(std::ostream &os, const std::string &program_name)
     os << program_name << " " << COPYRIGHT_MESSAGE;
 }
 
-// hex dump of a byte array.
+// Write a hex dump of a byte array on a stream.
 // parameters:
-//    os:           Output stream
+//    os:           Where the result is streamed to.
 //    data:         The pointer to the data to dump
 //    size:         Byte size of data
-//    bytesPerLine: Number of bytes output on one line.
-//    withAscii:    If true dump 7-bit ASCII equivalent on the right side
-//    startAddress: Optional, dump the address.
-//    extraSpace:   Optional, Output extra space after "extraSpace" bytes.
+//    bytesPerLine: Number of bytes to scale on one line.
+//    withAscii:    If true stream the scale for ASCII values on the right.
+//    startAddress: Optional, stream the address.
+//    extraSpace:   Optional, stream extra space after "extraSpace" bytes.
 // Address at the beginning on the line is always a multiple of bytesPerLine.
 void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
         DWord bytesPerLine, bool withAscii, std::optional<DWord> startAddress,
@@ -247,7 +247,7 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
 //    bytesPerLine: Number of bytes to scale on one line.
 //    withAscii:    If true stream the scale for ASCII values on the right.
 //    startAddress: Optional, if set indent the scale.
-//    extraSpace:   Optional, Output extra space after "extraSpace" bytes.
+//    extraSpace:   Optional, stream extra space after "extraSpace" bytes.
 void flx::hex_dump_scale(std::ostream &os, DWord bytesPerLine, bool withAscii,
         std::optional<DWord> startAddress,
         std::optional<DWord> extraSpace)
