@@ -29,15 +29,8 @@
 #include <sstream>
 #include <fstream>
 #include <filesystem>
-//#include <fmt/format.h>
 
 namespace fs = std::filesystem;
-
-/*
-auto print_fct = [](const Byte b){
-    std::cout << fmt::format("{:02X} ", static_cast<Word>(b));
-};
-*/
 
 TEST(test_brcfile, fct_Initialize)
 {
