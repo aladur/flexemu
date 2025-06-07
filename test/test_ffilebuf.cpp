@@ -27,6 +27,7 @@
 #include "ffilebuf.h"
 #include "fdirent.h"
 #include "flexerr.h"
+#include "fixt_debugout.h"
 #include <filesystem>
 #include <iostream>
 #include <fstream>
@@ -40,12 +41,21 @@
 
 namespace fs = std::filesystem;
 
-class test_ffilebuf : public ::testing::Test
+class test_ffilebuf : public test_DebugOutputFixture
 {
 protected:
     std::function<void(const Byte b)> print_fct = [](const Byte b){
         std::cout << fmt::format("{:02X} ", static_cast<Word>(b));
     };
+
+    template<class T>
+    void DebugOutput(int level, const T &value)
+    {
+        if (HasMinDebugLevel(level))
+        {
+            std::cout << value << "\n";
+        }
+    }
 };
 
 TEST_F(test_ffilebuf, fct_default_ctor)
@@ -419,8 +429,11 @@ TEST_F(test_ffilebuf, fct_buffer_get_set)
     size = 8;
     ffb.Realloc(size, true);
     p = static_cast<const Byte *>(ffb);
-//    std::for_each(p, &p[size], print_fct);
-//    std::cout << "\n";
+    if (HasMinDebugLevel(1))
+    {
+        std::for_each(p, &p[size], print_fct);
+        std::cout << "\n";
+    }
     expected = '\x55'; // Index 0..3 contains '\x55'.
     EXPECT_TRUE(std::all_of(p, &p[4], compare_fct));
     expected = '\0'; // Index 4..7 contains '\0'.
