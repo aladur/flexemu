@@ -23,6 +23,8 @@
 
 #include "ccopymem.h"
 #include "memory.h"
+#include <atomic>
+#include <mutex>
 
 
 CCopyMemory::CCopyMemory(Memory &p_memory,
@@ -30,13 +32,17 @@ CCopyMemory::CCopyMemory(Memory &p_memory,
     : memory(p_memory)
     , start(static_cast<Word>(addressRange.lower()))
     , size(static_cast<Word>(width(addressRange) + 1U))
+    , hasUpdate{}
 {
 }
 
 void CCopyMemory::Execute()
 {
+    std::lock_guard<std::mutex> guard(mutex);
+
     data.resize(size);
     memory.CopyTo(data.data(), start, static_cast<DWord>(data.size()));
+    hasUpdate.store(true, std::memory_order_relaxed);
 }
 
 Word CCopyMemory::GetStartAddress() const
@@ -49,7 +55,17 @@ Word CCopyMemory::GetSize() const
     return size;
 }
 
-const std::vector<Byte> &CCopyMemory::GetData() const
+std::vector<Byte> CCopyMemory::GetData() const
 {
+    std::lock_guard<std::mutex> guard(mutex);
+
     return data;
+}
+
+bool CCopyMemory::HasUpdate()
+{
+    bool result = hasUpdate.load(std::memory_order_relaxed);
+
+    hasUpdate.store(false, std::memory_order_relaxed);
+    return result;
 }

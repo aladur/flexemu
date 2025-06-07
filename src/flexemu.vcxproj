@@ -244,6 +244,9 @@
     <ClCompile Include="mc6809st.cpp" />
     <ClCompile Include="mc6821.cpp" />
     <ClCompile Include="mc6850.cpp" />
+    <ClCompile Include="memsetui.cpp" />
+    <ClCompile Include="memwin.cpp" />
+    <ClCompile Include="memwinmg.cpp" />
     <ClCompile Include="mmu.cpp" />
     <ClCompile Include="ndircont.cpp" />
     <ClCompile Include="pagedet.cpp" />
@@ -303,6 +306,14 @@
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="logfil.ui">
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Message>User interface compile %(Filename).ui</Message>
+      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClInclude</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="memset.ui">
       <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
       <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
@@ -375,6 +386,30 @@
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="logfilui.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="memsetui.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="memwin.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="memwinmg.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>
       <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
@@ -478,6 +513,8 @@
     <ClInclude Include="memory.h" />
     <ClInclude Include="memsrc.h" />
     <ClInclude Include="memtgt.h" />
+    <ClInclude Include="memwin.h" />
+    <ClInclude Include="memwinmg.h" />
     <ClInclude Include="misc1.h" />
     <ClInclude Include="mmu.h" />
     <ClInclude Include="ndircont.h" />

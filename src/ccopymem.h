@@ -26,6 +26,8 @@
 #include "bcommand.h"
 #include "bintervl.h"
 #include "typedefs.h"
+#include <atomic>
+#include <mutex>
 #include <vector>
 
 
@@ -45,13 +47,16 @@ public:
 
     Word GetStartAddress() const;
     Word GetSize() const;
-    const std::vector<Byte> &GetData() const;
+    std::vector<Byte> GetData() const;
+    bool HasUpdate();
 
 protected:
     Memory &memory;
     Word start;
     Word size;
     std::vector<Byte> data;
+    std::atomic<bool> hasUpdate;
+    mutable std::mutex mutex;
 };
 
 using CCopyMemorySPtr = std::shared_ptr<CCopyMemory>;

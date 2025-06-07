@@ -33,6 +33,7 @@
 #include "bobserv.h"
 #include "ccopymem.h"
 #include "qtfree.h"
+#include "memwinmg.h"
 #include <vector>
 #include <string>
 #include <memory>
@@ -145,6 +146,7 @@ private slots:
     void OnRepaintScreen();
     void OnStatusBar();
     void OnSmoothDisplay();
+    void OnOpenMemoryWindow();
     void OnCpuRun();
     void OnCpuStop();
     void OnCpuReset();
@@ -228,6 +230,7 @@ private:
     std::string GetKeyString(Byte key);
     void ParseRomName();
     void ParseOsName();
+    void RequestMemoryUpdate();
     ItemPairList_t GetConfiguration() const;
     std::string GetMainboardName() const;
     void AboutTabChanged(QTextBrowser *browser) const;
@@ -265,6 +268,7 @@ private:
     QAction *exitAction{};
     QAction *preferencesAction{};
     QAction *fullScreenAction{};
+    QAction *memoryWindowAction{};
     QAction *smoothAction{};
     QAction *statusBarAction{};
     QAction *cpuRunAction{};
@@ -313,6 +317,8 @@ private:
     std::string osName;
     CCopyMemorySPtr copyRomCommand;
     CCopyMemorySPtr copyOsCommand;
+    MemoryWindowManager memoryWindowMgr;
+    CpuState cpuState;
 
     Scheduler &scheduler;
     VideoControl1 &vico1;

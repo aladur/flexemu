@@ -9,6 +9,9 @@ appicondir = $(datadir)/icons/hicolor/scalable/apps
 appicon_DATA = $(app_icons)
 
 dist_icons = \
+	flexemu-address.svg \
+	flexemu-ascii.svg \
+	flexemu-autoupdate-winsize.svg \
 	flexemu-breakpoints.svg \
 	flexemu-cpu-undocumented.svg \
 	flexemu-cpu.svg \
@@ -51,6 +54,7 @@ dist_icons = \
 	flexemu-ledwhite-off.svg \
 	flexemu-ledwhite-on.svg \
 	flexemu-logging.svg \
+	flexemu-memory.svg \
 	flexemu-original-frequency.svg \
 	flexemu-run.svg \
 	flexemu-screen-full.svg \
@@ -59,7 +63,9 @@ dist_icons = \
 	flexemu-screen3.svg \
 	flexemu-screen4.svg \
 	flexemu-screen5.svg \
-	flexemu-stop.svg
+	flexemu-space.svg \
+	flexemu-stop.svg \
+	flexemu-update-winsize.svg
 
 mimetype_icons = \
 	flexemu-flexplorer.svg

@@ -50,6 +50,7 @@
 #include "poutwin.h"
 #include "fversion.h"
 #include "free.h"
+#include "qtfree.h"
 #include "bintervl.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
@@ -134,6 +135,7 @@ QtGui::QtGui(
         , isRunning(true)
         , isConfirmClose(true)
         , isForceScreenUpdate(true)
+        , cpuState(CpuState::NONE)
         , scheduler(p_scheduler)
         , vico1(p_vico1)
         , vico2(p_vico2)
@@ -463,6 +465,7 @@ void QtGui::OnCpuRun()
     scheduler.request_new_state(CpuState::Run);
     isRunning = true;
     UpdateCpuRunStopCheck();
+    memoryWindowMgr.SetReadOnly(true);
 }
 
 void QtGui::OnCpuStop()
@@ -470,6 +473,7 @@ void QtGui::OnCpuStop()
     scheduler.request_new_state(CpuState::Stop);
     isRunning = false;
     UpdateCpuRunStopCheck();
+    memoryWindowMgr.SetReadOnly(false);
 }
 
 void QtGui::OnCpuStep()
@@ -477,6 +481,7 @@ void QtGui::OnCpuStep()
     scheduler.request_new_state(CpuState::Step);
     isRunning = false;
     UpdateCpuRunStopCheck();
+    memoryWindowMgr.SetReadOnly(true);
 }
 
 void QtGui::OnCpuNext()
@@ -484,6 +489,7 @@ void QtGui::OnCpuNext()
     scheduler.request_new_state(CpuState::Next);
     isRunning = false;
     UpdateCpuRunStopCheck();
+    memoryWindowMgr.SetReadOnly(true);
 }
 
 void QtGui::OnCpuReset()
@@ -492,6 +498,7 @@ void QtGui::OnCpuReset()
     scheduler.request_new_state(CpuState::Reset);
     isRunning = false;
     UpdateCpuRunStopCheck();
+    memoryWindowMgr.SetReadOnly(false);
 }
 
 void QtGui::OnCpuResetRun()
@@ -500,6 +507,7 @@ void QtGui::OnCpuResetRun()
     scheduler.request_new_state(CpuState::ResetRun);
     isRunning = true;
     UpdateCpuRunStopCheck();
+    memoryWindowMgr.SetReadOnly(true);
 }
 
 void QtGui::OnCpuDialogToggle()
@@ -552,6 +560,13 @@ void QtGui::OnCpuDialogClose()
 {
     cpuDialog->hide();
     cpuViewAction->setChecked(false);
+}
+
+void QtGui::OnOpenMemoryWindow()
+{
+    const auto isReadOnly = (cpuState != CpuState::Stop);
+
+    memoryWindowMgr.OpenMemoryWindow(isReadOnly, options, memory, scheduler);
 }
 
 void QtGui::ConnectCpuUiSignalsWithSlots()
@@ -740,6 +755,7 @@ void QtGui::OnTimer()
         timerTicks = 0;
         ParseRomName();
         ParseOsName();
+        RequestMemoryUpdate();
     }
 
     // check every 100 ms for
@@ -855,7 +871,6 @@ void QtGui::OnTimer()
 
         if (status != nullptr)
         {
-            static CpuState previousState = CpuState::NONE;
             isRunning = (status->state == CpuState::Run ||
                          status->state == CpuState::Next);
 
@@ -863,13 +878,15 @@ void QtGui::OnTimer()
 
             update_cpuview(*status);
 
-            if (previousState != CpuState::Invalid &&
+            if (cpuState != CpuState::Invalid &&
                 status->state == CpuState::Invalid)
             {
                 GotIllegalInstruction(*status);
             }
-            previousState = status->state;
+            cpuState = status->state;
         }
+
+        memoryWindowMgr.UpdateData();
 
         auto firstRasterLine = vico2.get_value();
         bool isRepaintScreen = false;
@@ -1020,6 +1037,14 @@ void QtGui::CreateFileActions(QToolBar &p_toolBar)
     connect(printOutputAction, &QAction::triggered, this,
             &QtGui::OnPrinterOutput);
     printOutputAction->setStatusTip(tr("Open the printer output window"));
+
+    const auto memoryIcon = QIcon(":/resource/memory.png");
+    memoryWindowAction = fileMenu->addAction(memoryIcon,
+            tr("Open &Memory Window"));
+    connect(memoryWindowAction, &QAction::triggered,
+            this, &QtGui::OnOpenMemoryWindow);
+    memoryWindowAction->setStatusTip(tr("Open a new memory window"));
+
     fileMenu->addSeparator();
 
     const auto exitIcon = QIcon(":/resource/exit.png");
@@ -1030,6 +1055,7 @@ void QtGui::CreateFileActions(QToolBar &p_toolBar)
     p_toolBar.addAction(exitAction);
 
     p_toolBar.addAction(printOutputAction);
+    p_toolBar.addAction(memoryWindowAction);
 }
 
 void QtGui::CreateEditActions(QToolBar &p_toolBar)
@@ -1670,6 +1696,7 @@ void QtGui::SetIconSize(const QSize &iconSize)
     toolBar->setIconSize(iconSize);
     statusToolBar->setIconSize(iconSize);
     printOutputWindow->SetIconSize(iconSize);
+    memoryWindowMgr.SetIconSize(iconSize);
 
     resize(size() + QSize(0, heightDiff));
 }
@@ -2157,6 +2184,7 @@ void QtGui::closeEvent(QCloseEvent *event)
             printOutputWindow->close();
             printOutputWindow = nullptr;
         }
+        memoryWindowMgr.CloseAllWindows();
         FlexemuOptionsDifference optionsDiff(options, oldOptions);
 
         if (!optionsDiff.GetNotEquals().empty())
@@ -2310,6 +2338,11 @@ void QtGui::ParseOsName()
                 std::dynamic_pointer_cast<BCommand>(copyOsCommand));
         }
     }
+}
+
+void QtGui::RequestMemoryUpdate()
+{
+    memoryWindowMgr.RequestMemoryUpdate(scheduler);
 }
 
 ItemPairList_t QtGui::GetConfiguration() const

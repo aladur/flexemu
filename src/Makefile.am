@@ -147,6 +147,7 @@ flexemu_ui = \
 	brkpt.ui \
 	cpustat.ui \
 	logfil.ui \
+	memset.ui \
 	fsetup.ui \
 	pprev.ui \
 	about.ui
@@ -167,6 +168,9 @@ flexemu_moc_hdr = \
 	efslctle.h \
 	fsetupui.h \
 	logfilui.h \
+	memsetui.h \
+	memwin.h \
+	memwinmg.h \
 	qtgui.h \
 	poutwin.h
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
@@ -235,6 +239,9 @@ flexemu_SOURCES = \
 	mc6809st.cpp \
 	mc6821.cpp \
 	mc6850.cpp \
+	memsetui.cpp \
+	memwin.cpp \
+	memwinmg.cpp \
 	mmu.cpp \
 	ndircont.cpp \
 	pagedet.cpp \
@@ -343,6 +350,9 @@ flexemu_SOURCES = \
 	memory.h \
 	memsrc.h \
 	memtgt.h \
+	memsetui.h \
+	memwin.h \
+	memwinmg.h \
 	misc1.h \
 	mmu.h \
 	ndircont.h \

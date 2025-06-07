@@ -404,6 +404,7 @@ set(flexemu_gen_SOURCES
     cpustat.ui
     fsetup.ui
     logfil.ui
+    memset.ui
     pprev.ui
 )
 set(flexemu_SOURCES
@@ -445,6 +446,9 @@ set(flexemu_SOURCES
     mc6809st.cpp
     mc6821.cpp
     mc6850.cpp
+    memsetui.cpp
+    memwin.cpp
+    memwinmg.cpp
     mmu.cpp
     ndircont.cpp
     pagedet.cpp
@@ -553,8 +557,11 @@ set(flexemu_HEADER
     mc6850.h
     mdcrtape.h
     memory.h
+    memsetui.h
     memsrc.h
     memtgt.h
+    memwin.h
+    memwinmg.h
     misc1.h
     mmu.h
     ndircont.h

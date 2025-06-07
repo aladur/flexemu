@@ -40,5 +40,10 @@
         <file alias="window-close.png">bitmaps/32x32/flexemu-window-close.png</file>
         <file alias="open_con.png">bitmaps/32x32/flexemu-flexplorer-open.png</file>
         <file alias="open_dir.png">bitmaps/32x32/flexemu-flexplorer-opendir.png</file>
+        <file alias="memory.png">bitmaps/32x32/flexemu-memory.png</file>
+        <file alias="hex-address.png">bitmaps/32x32/flexemu-address.png</file>
+        <file alias="ascii.png">bitmaps/32x32/flexemu-ascii.png</file>
+        <file alias="extra-space.png">bitmaps/32x32/flexemu-space.png</file>
+        <file alias="autoupdate-winsize.png">bitmaps/32x32/flexemu-autoupdate-winsize.png</file>
     </qresource>
 </RCC>

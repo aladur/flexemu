@@ -120,6 +120,15 @@
     <ClCompile Include="mc6850.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="memsetui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="memwin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="memwinmg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="mmu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -444,6 +453,12 @@
     <ClInclude Include="memtgt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="memwin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memwinmg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="misc1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -564,6 +579,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="logfilui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="memsetui.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="qtgui.h">

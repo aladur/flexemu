@@ -9,6 +9,9 @@ appicondir = $(datadir)/icons/hicolor/32x32/apps
 appicon_DATA = $(app_icons)
 
 dist_icons = \
+	flexemu-address.png \
+	flexemu-ascii.png \
+	flexemu-autoupdate-winsize.png \
 	flexemu-breakpoints.png \
 	flexemu-cpu-undocumented.png \
 	flexemu-cpu.png \
@@ -42,6 +45,7 @@ dist_icons = \
 	flexemu-irq-red.png \
 	flexemu-irq-yellow.png \
 	flexemu-logging.png \
+	flexemu-memory.png \
 	flexemu-original-frequency.png \
 	flexemu-print-clear.png \
 	flexemu-print-output.png \
@@ -55,7 +59,9 @@ dist_icons = \
 	flexemu-screen3.png \
 	flexemu-screen4.png \
 	flexemu-screen5.png \
+	flexemu-space.png \
 	flexemu-stop.png \
+	flexemu-update-winsize.png \
 	flexemu-window-close.png \
 	flexemu.png \
 	qt_extended_32x32.png
