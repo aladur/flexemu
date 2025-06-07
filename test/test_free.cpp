@@ -25,10 +25,24 @@
 #include "gmock/gmock.h"
 #include "typedefs.h"
 #include "free.h"
+#include "fixt_debugout.h"
 #include "flexerr.h"
 #include <vector>
 #include <regex>
 #include <numeric>
+
+class test_free : public test_DebugOutputFixture
+{
+public:
+    template<class T>
+    void DebugOutput(int level, const T &value)
+    {
+        if (HasMinDebugLevel(level))
+        {
+            std::cout << value << "\n";
+        }
+    }
+};
 
 static std::vector<std::string> split(const std::string &str, char delimiter)
 {
@@ -54,7 +68,7 @@ static std::vector<std::string> split(const std::string &str, char delimiter)
     return result;
 }
 
-TEST(test_free, fct_find_regex_string)
+TEST_F(test_free, fct_find_regex_string)
 {
     auto flags = std::regex_constants::extended;
     std::vector<Byte> data1{ '\x05', 'y', 'a', 'b', 'c', '\x04' };
@@ -92,7 +106,7 @@ TEST(test_free, fct_find_regex_string)
 }
 
 // 0 hex bytes, data pointer == nullptr or bytesPerLine == 0.
-TEST(test_free, fct_hex_dump_0)
+TEST_F(test_free, fct_hex_dump_0)
 {
     const DWord bpl = 16U; // bytes per line
     std::vector<Byte> data;
@@ -119,7 +133,7 @@ TEST(test_free, fct_hex_dump_0)
 // 0000              00 01 02 03 04 05 06 07 08 09 0A 0B      ____________
 // 0010  0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B  ________________
 // 0020  1C 1D 1E 1F                                      ____
-TEST(test_free, fct_hex_dump_1)
+TEST_F(test_free, fct_hex_dump_1)
 {
     const DWord bpl = 16U; // bytes per line
     std::vector<Byte> data;
@@ -131,6 +145,7 @@ TEST(test_free, fct_hex_dump_1)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 71);
     ASSERT_EQ(tokens.size(), 14);
@@ -149,6 +164,7 @@ TEST(test_free, fct_hex_dump_1)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 71);
     ASSERT_EQ(tokens.size(), bpl + 2U);
@@ -163,6 +179,7 @@ TEST(test_free, fct_hex_dump_1)
     // Test third line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 59);
     ASSERT_EQ(tokens.size(), 6);
@@ -185,7 +202,7 @@ TEST(test_free, fct_hex_dump_1)
 
 // 16 hex bytes, with address, with ascii, 16 bytes per line, offset 0.
 // 0100  00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  ________________
-TEST(test_free, fct_hex_dump_2)
+TEST_F(test_free, fct_hex_dump_2)
 {
     const DWord bpl = 16U; // bytes per line
     std::vector<Byte> data;
@@ -197,6 +214,7 @@ TEST(test_free, fct_hex_dump_2)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 71);
     ASSERT_EQ(tokens.size(), bpl + 2U);
@@ -217,7 +235,7 @@ TEST(test_free, fct_hex_dump_2)
 
 // 4 hex bytes, with address, with ascii, 8 bytes per line, offset 2.
 // 0200        00 01 02 03          ____
-TEST(test_free, fct_hex_dump_3)
+TEST_F(test_free, fct_hex_dump_3)
 {
     const DWord bpl = 8U; // bytes per line
     std::vector<Byte> data;
@@ -229,6 +247,7 @@ TEST(test_free, fct_hex_dump_3)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 37);
     ASSERT_EQ(tokens.size(), 6);
@@ -255,7 +274,7 @@ TEST(test_free, fct_hex_dump_3)
 
 // 8 hex bytes, with address, no ascii, 8 bytes per line, offset 0.
 // 0300  00 01 02 03 04 05 06 07
-TEST(test_free, fct_hex_dump_4)
+TEST_F(test_free, fct_hex_dump_4)
 {
     const DWord bpl = 8U; // bytes per line
     std::vector<Byte> data;
@@ -267,6 +286,7 @@ TEST(test_free, fct_hex_dump_4)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 29);
     ASSERT_EQ(tokens.size(), bpl + 1U);
@@ -284,7 +304,7 @@ TEST(test_free, fct_hex_dump_4)
 
 // 8 hex bytes, no address, no ascii, 8 bytes per line, offset 0.
 // 00 01 02 03 04 05 06 07
-TEST(test_free, fct_hex_dump_5)
+TEST_F(test_free, fct_hex_dump_5)
 {
     const DWord bpl = 8U; // bytes per line
     std::vector<Byte> data;
@@ -296,6 +316,7 @@ TEST(test_free, fct_hex_dump_5)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 23);
     ASSERT_EQ(tokens.size(), bpl);
@@ -314,7 +335,7 @@ TEST(test_free, fct_hex_dump_5)
 // 00F7                             00 01 02 03
 // 0104  04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
 // 0111  11 12 13
-TEST(test_free, fct_hex_dump_6)
+TEST_F(test_free, fct_hex_dump_6)
 {
     const DWord bpl = 13U; // bytes per line
     std::vector<Byte> data;
@@ -326,6 +347,7 @@ TEST(test_free, fct_hex_dump_6)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 44);
     ASSERT_EQ(tokens.size(), 5);
@@ -339,6 +361,7 @@ TEST(test_free, fct_hex_dump_6)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 44);
     ASSERT_EQ(tokens.size(), bpl + 1);
@@ -350,6 +373,7 @@ TEST(test_free, fct_hex_dump_6)
     // Test third line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 14);
     ASSERT_EQ(tokens.size(), 4);
@@ -369,7 +393,7 @@ TEST(test_free, fct_hex_dump_6)
 // 00F7                             00 01 02 03           ____
 // 0104  04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10  _____________
 // 0111  11 12 13                                ___
-TEST(test_free, fct_hex_dump_7)
+TEST_F(test_free, fct_hex_dump_7)
 {
     const DWord bpl = 13U; // bytes per line
     std::vector<Byte> data;
@@ -381,6 +405,7 @@ TEST(test_free, fct_hex_dump_7)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 59);
     ASSERT_EQ(tokens.size(), 6);
@@ -399,6 +424,7 @@ TEST(test_free, fct_hex_dump_7)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 59);
     ASSERT_EQ(tokens.size(), bpl + 2);
@@ -413,6 +439,7 @@ TEST(test_free, fct_hex_dump_7)
     // Test third line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 49);
     ASSERT_EQ(tokens.size(), 5);
@@ -438,7 +465,7 @@ TEST(test_free, fct_hex_dump_7)
 // 00C3              00  01 02 03 04 05  06 07 08      _ _____ ___
 // 00D0  09 0A 0B 0C 0D  0E 0F 10 11 12  13 14 15  _____ _____ ___
 // 00DD  16 17 18 19 1A                            _____
-TEST(test_free, fct_hex_dump_8)
+TEST_F(test_free, fct_hex_dump_8)
 {
     const DWord bpl = 13U; // bytes per line
     std::vector<Byte> data;
@@ -450,6 +477,7 @@ TEST(test_free, fct_hex_dump_8)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 63);
     ASSERT_EQ(tokens.size(), bpl);
@@ -470,6 +498,7 @@ TEST(test_free, fct_hex_dump_8)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 63);
     ASSERT_EQ(tokens.size(), 17);
@@ -486,6 +515,7 @@ TEST(test_free, fct_hex_dump_8)
     // Test third line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 54);
     ASSERT_EQ(tokens.size(), 7);
@@ -511,7 +541,7 @@ TEST(test_free, fct_hex_dump_8)
 // 00 01 02 03 04  05 06 07 08 09  0A 0B 0C
 // 0D 0E 0F 10 11  12 13 14 15 16  17 18 19
 // 1A 1B 1C 1D 1E  1F
-TEST(test_free, fct_hex_dump_9)
+TEST_F(test_free, fct_hex_dump_9)
 {
     const DWord bpl = 13U; // bytes per line
     std::vector<Byte> data;
@@ -524,6 +554,7 @@ TEST(test_free, fct_hex_dump_9)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 40);
     ASSERT_EQ(tokens.size(), bpl);
@@ -534,6 +565,7 @@ TEST(test_free, fct_hex_dump_9)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 40);
     ASSERT_EQ(tokens.size(), bpl);
@@ -544,6 +576,7 @@ TEST(test_free, fct_hex_dump_9)
     // Test third line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 18);
     ASSERT_EQ(tokens.size(), 6);
@@ -561,7 +594,7 @@ TEST(test_free, fct_hex_dump_9)
 // Test scale with 16 bytes, with address, with ascii.
 //       00                                               0
 //       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  0123456789ABCDEF
-TEST(test_free, fct_hex_dump_scale_1)
+TEST_F(test_free, fct_hex_dump_scale_1)
 {
     std::stringstream stream;
     const DWord bpl = 16U; // bytes per line
@@ -570,6 +603,7 @@ TEST(test_free, fct_hex_dump_scale_1)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 71);
     ASSERT_EQ(tokens.size(), 2);
@@ -583,6 +617,7 @@ TEST(test_free, fct_hex_dump_scale_1)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 71);
     ASSERT_EQ(tokens.size(), bpl + 1U);
@@ -600,7 +635,7 @@ TEST(test_free, fct_hex_dump_scale_1)
 // Test scale with 8 bytes per line, with address, with ascii.
 //       00                       0
 //       00 01 02 03 04 05 06 07  01234567
-TEST(test_free, fct_hex_dump_scale_3)
+TEST_F(test_free, fct_hex_dump_scale_3)
 {
     std::stringstream stream;
     const DWord bpl = 8U; // bytes per line
@@ -609,6 +644,7 @@ TEST(test_free, fct_hex_dump_scale_3)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 39);
     ASSERT_EQ(tokens.size(), 2);
@@ -622,6 +658,7 @@ TEST(test_free, fct_hex_dump_scale_3)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 39);
     ASSERT_EQ(tokens.size(), bpl + 1);
@@ -639,7 +676,7 @@ TEST(test_free, fct_hex_dump_scale_3)
 // Test scale with 8 bytes per line, with address, no ascii.
 //       00
 //       00 01 02 03 04 05 06 07
-TEST(test_free, fct_hex_dump_scale_4)
+TEST_F(test_free, fct_hex_dump_scale_4)
 {
     std::stringstream stream;
     const DWord bpl = 8U; // bytes per line
@@ -648,6 +685,7 @@ TEST(test_free, fct_hex_dump_scale_4)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 29);
     ASSERT_EQ(tokens.size(), 1);
@@ -657,6 +695,7 @@ TEST(test_free, fct_hex_dump_scale_4)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 29);
     ASSERT_EQ(tokens.size(), bpl);
@@ -671,7 +710,7 @@ TEST(test_free, fct_hex_dump_scale_4)
 // Test scale with 8 bytes per line, no address, no ascii.
 // 00
 // 00 01 02 03 04  05 06 07
-TEST(test_free, fct_hex_dump_scale_5)
+TEST_F(test_free, fct_hex_dump_scale_5)
 {
     std::stringstream stream;
     const DWord bpl = 8U; // bytes per line
@@ -680,6 +719,7 @@ TEST(test_free, fct_hex_dump_scale_5)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 23);
     ASSERT_EQ(tokens.size(), 1);
@@ -689,6 +729,7 @@ TEST(test_free, fct_hex_dump_scale_5)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 23);
     ASSERT_EQ(tokens.size(), bpl);
@@ -704,7 +745,7 @@ TEST(test_free, fct_hex_dump_scale_5)
 // each 5 bytes.
 //       00                                        0
 //       00 01 02 03 04  05 06 07 08 09  0A 0B 0C  01234 56789 ABC
-TEST(test_free, fct_hex_dump_scale_8)
+TEST_F(test_free, fct_hex_dump_scale_8)
 {
     std::stringstream stream;
     const DWord bpl = 13U; // bytes per line
@@ -713,6 +754,7 @@ TEST(test_free, fct_hex_dump_scale_8)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 63);
     ASSERT_EQ(tokens.size(), 2);
@@ -725,6 +767,7 @@ TEST(test_free, fct_hex_dump_scale_8)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 63);
     ASSERT_EQ(tokens.size(), bpl + 3);
@@ -743,7 +786,7 @@ TEST(test_free, fct_hex_dump_scale_8)
 // 5 bytes.
 // 00
 // 00 01 02 03 04  05 06 07 08 09  0A 0B 0C
-TEST(test_free, fct_hex_dump_scale_9)
+TEST_F(test_free, fct_hex_dump_scale_9)
 {
     std::stringstream stream;
     const DWord bpl = 13U; // bytes per line
@@ -752,6 +795,7 @@ TEST(test_free, fct_hex_dump_scale_9)
     // Test first line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 40);
     ASSERT_EQ(tokens.size(), 1);
@@ -761,6 +805,7 @@ TEST(test_free, fct_hex_dump_scale_9)
     // Test second line.
     ASSERT_TRUE(stream.good());
     std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 40);
     ASSERT_EQ(tokens.size(), bpl);
