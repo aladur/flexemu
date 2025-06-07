@@ -112,6 +112,7 @@ unittests_SOURCES = \
 	../src/filecnts.h \
 	../src/fileread.h \
 	../src/filfschk.h \
+	fixt_debugout.h \
 	fixt_filecont.h \
 	../src/flblfile.h \
 	../src/flexerr.h \
