@@ -122,7 +122,6 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
         std::optional<DWord> extraSpace)
 {
     const bool withAddress = startAddress.has_value();
-    bool endsWithNewline = false;
     DWord idx = 0U;
     const DWord offset = withAddress ? startAddress.value() % bytesPerLine : 0U;
     DWord address = withAddress ? startAddress.value() - offset : 0U;
@@ -166,7 +165,6 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
     {
         const auto ch = static_cast<char>(*(data++));
 
-        endsWithNewline = false;
         if (address % bytesPerLine == 0U)
         {
             if (withAddress && idx > 0U)
@@ -211,9 +209,11 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
             {
                 os << "  " << asciiString;
             }
-            os << "\n";
+            if (idx + 1U != size)
+            {
+                os << "\n";
+            }
             spacer = "";
-            endsWithNewline = true;
         }
 
         ++address;
@@ -231,11 +231,6 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
 
         auto endOffset = bytesPerLine - (address % bytesPerLine);
         os << std::string(3U * endOffset + extra, ' ') << "  " << asciiString;
-    }
-
-    if (!endsWithNewline)
-    {
-        os << "\n";
     }
 }
 

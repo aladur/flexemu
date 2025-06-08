@@ -581,10 +581,7 @@ void MemoryWindow::UpdateData()
     const auto value = textBrowser->horizontalScrollBar()->value();
 
     textScale->setPlainText(QString::fromStdString(scaleStream.str()));
-
-    auto text = hexStream.str();
-    text.resize(text.size() - 1U); // remove last new line.
-    textBrowser->setPlainText(QString::fromStdString(text));
+    textBrowser->setPlainText(QString::fromStdString(hexStream.str()));
 
     std::string line;
     columns = 0;

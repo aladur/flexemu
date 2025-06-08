@@ -194,9 +194,6 @@ TEST_F(test_free, fct_hex_dump_1)
     EXPECT_EQ(tokens[tokens.size() - 2], "1F"); // last byte
     EXPECT_EQ(tokens[tokens.size() - 1].size(), 4U); // ascii char count
     // Test fourth line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 
@@ -227,9 +224,6 @@ TEST_F(test_free, fct_hex_dump_2)
     EXPECT_EQ(tokens[tokens.size() - 2], "0F"); // last byte
     EXPECT_EQ(tokens[tokens.size() - 1].size(), bpl); // ascii char count
     // Test second line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 
@@ -266,9 +260,6 @@ TEST_F(test_free, fct_hex_dump_3)
     EXPECT_EQ(tokens[tokens.size() - 2], "03"); // last byte
     EXPECT_EQ(tokens[tokens.size() - 1].size(), 4U); // ascii char count
     // Test second line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 
@@ -296,9 +287,6 @@ TEST_F(test_free, fct_hex_dump_4)
     EXPECT_EQ(tokens[1], "00"); // first byte
     EXPECT_EQ(tokens[tokens.size() - 1], "07"); // last byte
     // Test second line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 
@@ -325,9 +313,6 @@ TEST_F(test_free, fct_hex_dump_5)
     EXPECT_EQ(tokens[0], "00"); // first byte
     EXPECT_EQ(tokens[tokens.size() - 1], "07"); // last byte
     // Test second line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 
@@ -383,9 +368,6 @@ TEST_F(test_free, fct_hex_dump_6)
     EXPECT_EQ(tokens[1], "11"); // first byte
     EXPECT_EQ(tokens[tokens.size() - 1], "13"); // last byte
     // Test fourth line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 
@@ -454,9 +436,6 @@ TEST_F(test_free, fct_hex_dump_7)
     EXPECT_EQ(tokens[tokens.size() - 2], "13"); // last byte
     EXPECT_EQ(tokens[tokens.size() - 1].size(), 3U); // ascii char count
     // Test fourth line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 
@@ -530,9 +509,6 @@ TEST_F(test_free, fct_hex_dump_8)
     EXPECT_EQ(tokens[tokens.size() - 2], "1A"); // last byte
     EXPECT_EQ(tokens[tokens.size() - 1].size(), 5U); // ascii char count
     // Test fourth line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 
@@ -585,9 +561,6 @@ TEST_F(test_free, fct_hex_dump_9)
     EXPECT_EQ(tokens[0], "1A"); // first byte
     EXPECT_EQ(tokens[tokens.size() - 1], "1F"); // last byte
     // Test fourth line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 
@@ -621,9 +594,6 @@ TEST_F(test_free, fct_hex_dump_10)
     EXPECT_EQ(tokens[tokens.size() - 2].size(), 5U); // ascii char count
     EXPECT_EQ(tokens[tokens.size() - 1].size(), 5U); // ascii char count
     // Test second line.
-    ASSERT_TRUE(stream.good());
-    std::getline(stream, linebuffer);
-    ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream.good());
 }
 // Test scale with 16 bytes, with address, with ascii.
