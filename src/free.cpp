@@ -187,6 +187,7 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
         spacer = " ";
 
         const bool withExtraSpace = (extraSpace.has_value() &&
+            address % bytesPerLine + 1U != bytesPerLine &&
             (column % extraSpace.value() + 1U == extraSpace.value()));
 
         if (withExtraSpace)
@@ -261,6 +262,7 @@ void flx::hex_dump_scale(std::ostream &os, DWord bytesPerLine, bool withAscii,
         {
             const auto *theExtraSpace = (extraSpace.has_value() &&
                 bytesPerLine > extraSpace.value() &&
+                idx + 1U != bytesPerLine &&
                 (idx % extraSpace.value() + 1U == extraSpace.value())) ?
                 " " : "";
 
@@ -279,6 +281,7 @@ void flx::hex_dump_scale(std::ostream &os, DWord bytesPerLine, bool withAscii,
         {
             const auto *theExtraSpace = (extraSpace.has_value() &&
                 bytesPerLine > extraSpace.value() &&
+                idx + 1U != bytesPerLine &&
                 (idx % extraSpace.value() + 1U == extraSpace.value())) ?
                 " " : "";
 
