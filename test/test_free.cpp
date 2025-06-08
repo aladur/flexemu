@@ -709,7 +709,7 @@ TEST_F(test_free, fct_hex_dump_scale_4)
 
 // Test scale with 8 bytes per line, no address, no ascii.
 // 00
-// 00 01 02 03 04  05 06 07
+// 00 01 02 03 04 05 06 07
 TEST_F(test_free, fct_hex_dump_scale_5)
 {
     std::stringstream stream;
