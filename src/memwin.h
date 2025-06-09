@@ -149,8 +149,8 @@ protected:
     QMenu *fileMenu;
     QMenu *viewMenu;
     QStatusBar *statusBar;
-    QTextEdit *textScale;
-    QTextEdit *textBrowser;
+    QTextEdit *e_hexDumpScale;
+    QTextEdit *e_hexDump;
     QComboBox *styleComboBox;
     QAction *withAddressAction;
     QAction *withAsciiAction;

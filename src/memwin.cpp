@@ -79,8 +79,8 @@ MemoryWindow::MemoryWindow(
     , fileMenu(nullptr)
     , viewMenu(nullptr)
     , statusBar(nullptr)
-    , textScale(new QTextEdit(this))
-    , textBrowser(new QTextEdit(this))
+    , e_hexDumpScale(new QTextEdit(this))
+    , e_hexDump(new QTextEdit(this))
     , styleComboBox(new QComboBox(this))
     , withAddressAction(nullptr)
     , withAsciiAction(nullptr)
@@ -123,29 +123,29 @@ MemoryWindow::MemoryWindow(
     toolBarLayout->setSpacing(2);
     mainLayout->addLayout(toolBarLayout);
 
-    textScale->setLineWrapMode(QTextEdit::NoWrap);
-    textScale->setAutoFillBackground(true);
-    textScale->setBackgroundRole(QPalette::Base);
-    textScale->setReadOnly(isReadOnly);
-    textScale->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    textScale->horizontalScrollBar()->setMaximum(0);
-    textScale->setText("\n");
-    textScale->setContextMenuPolicy(Qt::NoContextMenu);
-    mainLayout->addWidget(textScale);
+    e_hexDumpScale->setLineWrapMode(QTextEdit::NoWrap);
+    e_hexDumpScale->setAutoFillBackground(true);
+    e_hexDumpScale->setBackgroundRole(QPalette::Base);
+    e_hexDumpScale->setReadOnly(isReadOnly);
+    e_hexDumpScale->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    e_hexDumpScale->horizontalScrollBar()->setMaximum(0);
+    e_hexDumpScale->setText("\n");
+    e_hexDumpScale->setContextMenuPolicy(Qt::NoContextMenu);
+    mainLayout->addWidget(e_hexDumpScale);
 
-    textBrowser->setMinimumSize(64, 48);
-    textBrowser->setLineWrapMode(QTextEdit::NoWrap);
-    textBrowser->setAutoFillBackground(true);
-    textBrowser->setBackgroundRole(QPalette::Base);
-    textBrowser->setOverwriteMode(true);
-    textBrowser->setReadOnly(isReadOnly);
-    textBrowser->setContextMenuPolicy(Qt::NoContextMenu);
-    textBrowser->setTextInteractionFlags(Qt::NoTextInteraction);
-    mainLayout->addWidget(textBrowser);
-    mainLayout->setStretchFactor(textBrowser, 1);
-    connect(textBrowser, &QTextEdit::cursorPositionChanged,
+    e_hexDump->setMinimumSize(64, 48);
+    e_hexDump->setLineWrapMode(QTextEdit::NoWrap);
+    e_hexDump->setAutoFillBackground(true);
+    e_hexDump->setBackgroundRole(QPalette::Base);
+    e_hexDump->setOverwriteMode(true);
+    e_hexDump->setReadOnly(isReadOnly);
+    e_hexDump->setContextMenuPolicy(Qt::NoContextMenu);
+    e_hexDump->setTextInteractionFlags(Qt::NoTextInteraction);
+    mainLayout->addWidget(e_hexDump);
+    mainLayout->setStretchFactor(e_hexDump, 1);
+    connect(e_hexDump, &QTextEdit::cursorPositionChanged,
             this, &MemoryWindow::OnTextCursorPositionChanged);
-    connect(textBrowser->horizontalScrollBar(),
+    connect(e_hexDump->horizontalScrollBar(),
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
             static_cast<void (QAbstractSlider::*)(int)>(
                 &QAbstractSlider::valueChanged),
@@ -248,7 +248,7 @@ void MemoryWindow::OnToggleExtraSpace()
 
 void MemoryWindow::OnHorizontalScrollBarValueChanged(int value) const
 {
-    textScale->horizontalScrollBar()->setValue(value);
+    e_hexDumpScale->horizontalScrollBar()->setValue(value);
 }
 
 void MemoryWindow::OnTextCursorPositionChanged() const
@@ -422,19 +422,19 @@ void MemoryWindow::SetIconSize(const QSize &iconSize)
 
 void MemoryWindow::SetTextBrowserFont(const QFont &font) const
 {
-    textScale->document()->setDefaultFont(font);
+    e_hexDumpScale->document()->setDefaultFont(font);
     const auto height =
-        static_cast<int>(ceil(textScale->document()->size().height()));
-    textScale->setFixedHeight(height);
-    while(textScale->verticalScrollBar()->isVisible())
+        static_cast<int>(ceil(e_hexDumpScale->document()->size().height()));
+    e_hexDumpScale->setFixedHeight(height);
+    while(e_hexDumpScale->verticalScrollBar()->isVisible())
     {
-        textScale->setFixedHeight(textScale->height() + 1);
+        e_hexDumpScale->setFixedHeight(e_hexDumpScale->height() + 1);
     }
 
     // Show overwrite cursor.
-    textBrowser->document()->setDefaultFont(font);
-    QFontMetrics metrics(textBrowser->document()->defaultFont());
-    textBrowser->setCursorWidth(metrics.averageCharWidth());
+    e_hexDump->document()->setDefaultFont(font);
+    QFontMetrics metrics(e_hexDump->document()->defaultFont());
+    e_hexDump->setCursorWidth(metrics.averageCharWidth());
 
     RequestResize();
 }
@@ -471,7 +471,7 @@ void MemoryWindow::resizeEvent(QResizeEvent *event)
     }
 
     // After resizing window recalculate dynamicBytesPerLine.
-    QFontMetrics metrics(textBrowser->document()->defaultFont());
+    QFontMetrics metrics(e_hexDump->document()->defaultFont());
     auto width = event->size().width();
     auto cols = width / metrics.averageCharWidth();
     auto dividend = withAscii ? 4U : 3U;
@@ -572,16 +572,16 @@ void MemoryWindow::UpdateData()
     flx::hex_dump(hexStream, data.data(), data.size(), bytesPerLine,
             withAscii, startAddress, extraSpace);
 
-    const auto positionStart = textBrowser->textCursor().selectionStart();
-    const auto positionEnd = textBrowser->textCursor().selectionEnd();
-    if (textBrowser->verticalScrollBar() != nullptr)
+    const auto positionStart = e_hexDump->textCursor().selectionStart();
+    const auto positionEnd = e_hexDump->textCursor().selectionEnd();
+    if (e_hexDump->verticalScrollBar() != nullptr)
     {
-        sliderPosition = textBrowser->verticalScrollBar()->sliderPosition();
+        sliderPosition = e_hexDump->verticalScrollBar()->sliderPosition();
     }
-    const auto value = textBrowser->horizontalScrollBar()->value();
+    const auto value = e_hexDump->horizontalScrollBar()->value();
 
-    textScale->setPlainText(QString::fromStdString(scaleStream.str()));
-    textBrowser->setPlainText(QString::fromStdString(hexStream.str()));
+    e_hexDumpScale->setPlainText(QString::fromStdString(scaleStream.str()));
+    e_hexDump->setPlainText(QString::fromStdString(hexStream.str()));
 
     std::string line;
     columns = 0;
@@ -594,18 +594,18 @@ void MemoryWindow::UpdateData()
 
     if (positionStart != 0 || positionEnd != 0)
     {
-        auto cursor = textBrowser->textCursor();
+        auto cursor = e_hexDump->textCursor();
         cursor.setPosition(positionStart);
         cursor.setPosition(positionEnd, QTextCursor::KeepAnchor);
-        textBrowser->setTextCursor(cursor);
+        e_hexDump->setTextCursor(cursor);
     }
 
-    if (textBrowser->verticalScrollBar() != nullptr)
+    if (e_hexDump->verticalScrollBar() != nullptr)
     {
-        textBrowser->verticalScrollBar()->setSliderPosition(sliderPosition);
+        e_hexDump->verticalScrollBar()->setSliderPosition(sliderPosition);
     }
 
-    textBrowser->horizontalScrollBar()->setValue(value);
+    e_hexDump->horizontalScrollBar()->setValue(value);
 }
 
 DWord MemoryWindow::EstimateBytesPerLine() const
@@ -637,28 +637,28 @@ void MemoryWindow::Resize()
             QGuiApplication::screens().first()->geometry().height();
     }
 
-    auto size = textBrowser->document()->size().toSize();
+    auto size = e_hexDump->document()->size().toSize();
     size.setHeight(std::min(size.height(), screenHeight * 3 / 4));
     size.setWidth(std::min(size.width(), screenWidth * 3 / 4));
-    textBrowser->setFixedSize(size);
+    e_hexDump->setFixedSize(size);
 
     // Try to remove scroll bars.
     auto repeat = 0;
-    while (repeat < 20 && textBrowser->verticalScrollBar()->isVisible())
+    while (repeat < 20 && e_hexDump->verticalScrollBar()->isVisible())
     {
-        textBrowser->setFixedHeight(textBrowser->height() + 1);
+        e_hexDump->setFixedHeight(e_hexDump->height() + 1);
         ++repeat;
     }
 
-    while (textBrowser->horizontalScrollBar()->isVisible())
+    while (e_hexDump->horizontalScrollBar()->isVisible())
     {
-        textBrowser->setFixedWidth(textBrowser->width() + 1);
+        e_hexDump->setFixedWidth(e_hexDump->width() + 1);
     }
-    textBrowser->setFixedWidth(textBrowser->width() + 3);
+    e_hexDump->setFixedWidth(e_hexDump->width() + 3);
 
     adjustSize();
-    textBrowser->setMinimumSize(64, 48);
-    textBrowser->setMaximumSize(0xFFFFFF, 0xFFFFFF);
+    e_hexDump->setMinimumSize(64, 48);
+    e_hexDump->setMaximumSize(0xFFFFFF, 0xFFFFFF);
 }
 
 void MemoryWindow::SetStatusMessage(const QString &message) const
