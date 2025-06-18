@@ -203,6 +203,25 @@ std::string flx::ascchr(char x)
     return result;
 }
 
+Byte flx::hexval(char x, bool &isValid)
+{
+    if (x >= '0' && x <= '9')
+    {
+        isValid = true;
+        return static_cast<Byte>(x - '0');
+    }
+
+    toupper_ref(x);
+    if (x >= 'A' && x <= 'F')
+    {
+        isValid = true;
+        return static_cast<Byte>(x - 'A' + 10U);
+    }
+
+    isValid = false;
+    return '\0';
+}
+
 // Check if 'text' matches the wildcard 'pattern'.
 // Supported wildcard characters:
 // *  matches 0 up to any number of arbitrary wildcard characters

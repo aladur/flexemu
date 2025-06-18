@@ -173,6 +173,45 @@ TEST(test_misc1, fct_ascchr)
     EXPECT_EQ(result, ".");
 }
 
+TEST(test_misc1, fct_hexval)
+{
+    bool isValid;
+    auto result = flx::hexval('0', isValid);
+    EXPECT_TRUE(isValid);
+    EXPECT_EQ(result, 0);
+    result = flx::hexval('9', isValid);
+    EXPECT_TRUE(isValid);
+    EXPECT_EQ(result, 9);
+    result = flx::hexval('a', isValid);
+    EXPECT_TRUE(isValid);
+    EXPECT_EQ(result, 10);
+    result = flx::hexval('A', isValid);
+    EXPECT_TRUE(isValid);
+    EXPECT_EQ(result, 10);
+    result = flx::hexval('f', isValid);
+    EXPECT_TRUE(isValid);
+    EXPECT_EQ(result, 15);
+    result = flx::hexval('F', isValid);
+    EXPECT_TRUE(isValid);
+    EXPECT_EQ(result, 15);
+    result = flx::hexval('\0', isValid);
+    EXPECT_FALSE(isValid);
+    result = flx::hexval(' ', isValid);
+    EXPECT_FALSE(isValid);
+    result = flx::hexval('/', isValid);
+    EXPECT_FALSE(isValid);
+    result = flx::hexval(':', isValid);
+    EXPECT_FALSE(isValid);
+    result = flx::hexval('@', isValid);
+    EXPECT_FALSE(isValid);
+    result = flx::hexval('G', isValid);
+    EXPECT_FALSE(isValid);
+    result = flx::hexval('~', isValid);
+    EXPECT_FALSE(isValid);
+    result = flx::hexval('\xAA', isValid);
+    EXPECT_FALSE(isValid);
+}
+
 TEST(test_misc1, fct_matches)
 {
     auto result = flx::matches("", "", false);

@@ -280,6 +280,7 @@ extern std::string hexstr(Byte x);
 extern std::string hexstr(Word x);
 extern std::string ascchr(char x);
 extern char hex_digit(Byte x);
+extern Byte hexval(char x, bool &isValid);
 
 extern std::vector<std::string> split(const std::string &str, char delimiter,
         bool keepEmptyString);
