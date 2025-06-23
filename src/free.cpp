@@ -30,7 +30,6 @@
 #include <cstring>
 #include <regex>
 #include <optional>
-#include <iostream>
 #include <fmt/format.h>
 
 
@@ -289,4 +288,92 @@ void flx::hex_dump_scale(std::ostream &os, DWord bytesPerLine, bool withAscii,
     streamHexDumpScaleFct(false);
     os << "\n";
     streamHexDumpScaleFct(true);
+}
+
+// Return properties for a given row and column within a hex dump .
+// parameters:
+//    row:          zero-based row in hex_dump output
+//    column:       zero-based column in hex_dump output
+//    size:         Byte size of data
+//    bytesPerLine: Number of bytes to scale on one line.
+//    withAscii:    If true the output has ASCII values on the right.
+//    isDisplayAddress: If true the address is output on the right.
+//    startAddress: The address
+//    extraSpace:   Optional, the output has extra space after "extraSpace"
+//                  bytes.
+// Address at the beginning on the line is always a multiple of bytesPerLine.
+flx::sHexDumpProperties flx::get_hex_dump_properties(
+        DWord row, DWord column, size_t size,
+        DWord bytesPerLine, bool withAscii,
+        bool isDisplayAddress,
+        DWord startAddress,
+        std::optional<DWord> extraSpace)
+{
+    flx::sHexDumpProperties result{};
+    const bool isExtraSpc = extraSpace.has_value();
+    const auto offset = isDisplayAddress ? startAddress % bytesPerLine : 0U;
+    const auto indent = isDisplayAddress ? 6U : 0U; // skip address columns
+    const auto lastRow = (size + offset) / bytesPerLine;
+    const auto firstRowBytes = bytesPerLine - offset;
+    const auto lastRowBytes = (size + offset) % bytesPerLine;
+    const auto extraInOffset = isExtraSpc ? offset / extraSpace.value() : 0U;
+    const auto extraInRow =
+        isExtraSpc ? (bytesPerLine - 1U) / extraSpace.value() : 0U;
+    const auto extraInLastRow =
+        isExtraSpc ? (lastRowBytes - 1U) / extraSpace.value() : 0U;
+    const auto maxEndHexCol = indent + 3U * bytesPerLine + extraInRow - 2U;
+    const auto extraDivHex = isExtraSpc ? extraSpace.value() * 3U + 1U : 0U;
+
+    result.beginHexCol = indent + (!row ? 3U * offset + extraInOffset : 0U);
+    result.endHexCol = (row == lastRow) ?
+        indent + 3U * lastRowBytes - 2U +
+        (isExtraSpc ? (lastRowBytes - 1U) / extraSpace.value() : 0U)
+        : maxEndHexCol;
+    const auto beginAscCol =
+        maxEndHexCol + 3U + (!row ? offset + extraInOffset : 0U);
+    result.endCol = withAscii ? maxEndHexCol + 3U - 1U +
+        (row == lastRow ?
+         lastRowBytes + extraInLastRow : bytesPerLine + extraInRow)
+        : result.endHexCol;
+
+    if (column >= result.beginHexCol && column <= result.endHexCol &&
+        (!extraDivHex ?  true :
+         (column - indent) % extraDivHex + 1U != extraDivHex))
+    {
+        const auto extraColHex =
+            extraDivHex ? (column - indent) / extraDivHex : 0U;
+        const auto hexCol = column - indent - extraColHex;
+        const auto byteOffset = hexCol / 3 +
+            (!row ? (0 - offset) : firstRowBytes + (row - 1U) * bytesPerLine);
+
+        if (byteOffset < size && hexCol % 3U != 2U)
+        {
+            // Set address an upper nibble flag only when corsor is
+            // positioned on a hex byte.
+            result.isUpperNibble = (hexCol % 3U == 0U);
+            result.address = startAddress + byteOffset;
+            result.type = HexDumpType::HexByte;
+        }
+    }
+
+    if (withAscii && column >= beginAscCol)
+    {
+        const auto extraDivAsc = isExtraSpc ? extraSpace.value() + 1U : 0U;
+        const auto extraColAsc =
+            extraDivAsc ? (column - maxEndHexCol - 3U) / extraDivAsc : 0U;
+        const auto asciiCol = column - maxEndHexCol - 3U - extraColAsc;
+        const auto byteOffset = asciiCol +
+                (!row ? (0 - offset) :
+                 firstRowBytes + (row - 1U) * bytesPerLine);
+
+        if (byteOffset < size && column <= result.endCol &&
+            (!extraDivAsc ? true :
+             (column - maxEndHexCol - 3U) % extraDivAsc + 1U != extraDivAsc))
+        {
+            result.address = startAddress + byteOffset;
+            result.type = HexDumpType::AsciiChar;
+        }
+    }
+
+    return result;
 }

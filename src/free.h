@@ -56,5 +56,31 @@ namespace flx
             bool withAscii = true,
             std::optional<DWord> startAddress = std::nullopt,
             std::optional<DWord> extraSpace = std::nullopt);
+
+    enum class HexDumpType : uint8_t
+    {
+        NONE,
+        HexByte,
+        AsciiChar,
+    };
+
+    struct sHexDumpProperties
+    {
+        HexDumpType type{};  // The item type
+        bool isUpperNibble{};// if type is HexByte: if true it is the upper
+                             // nibble, if false the lower nibble
+        DWord beginHexCol{}; // The column of first hex byte
+        DWord endHexCol{};   // The column of last hex byte
+        DWord endCol{};      // The column of last char in line
+        DWord address{};     // The address if type is HexByte or AsciiChar
+    };
+
+    extern sHexDumpProperties get_hex_dump_properties(
+            DWord row, DWord column,
+            size_t size, DWord bytesPerLine,
+            bool withAscii = true,
+            bool isDisplayAddress = true,
+            DWord startAddress = 0U,
+            std::optional<DWord> extraSpace = std::nullopt);
 }
 #endif
