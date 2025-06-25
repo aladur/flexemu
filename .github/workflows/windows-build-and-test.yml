@@ -9,8 +9,8 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        os: [ windows-2019 ]
-        qt-version: [ 5, 6 ]
+        os: [ windows-2022 ]
+        qt-build: [ A, B ]
       fail-fast: false
     env:
       QTDIR: ${{ github.workspace }}\Qt
@@ -19,59 +19,29 @@ jobs:
     environment: development
     steps:
 
-      - name: Set Qt5 Version
-        if: ${{ matrix.qt-version == '5' }}
-        shell: cmd
-        run: printf "QT_VERSION=${{ vars.QT5_VERSION }}\n" >> %GITHUB_ENV%
-
       - name: Set Qt6 Version
-        if: ${{ matrix.qt-version == '6' }}
         shell: cmd
-        run: printf "QT_VERSION=${{ vars.QT6_VERSION }}\n" >> %GITHUB_ENV%
+        run: |
+          IF "${{ matrix.qt-build }}"=="A" (
+            echo QT_VERSION=${{ vars.QT6_VERSION_A }}>>%GITHUB_ENV%
+          ) ELSE (
+            IF "${{ matrix.qt-build }}"=="B" (
+              echo QT_VERSION=${{ vars.QT6_VERSION_B }}>>%GITHUB_ENV%
+            )
+          )
 
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: 'true'
 
-      - name: Install Qt5 Win32
-        if: ${{ matrix.qt-version == 5 }}
-        uses: jurplel/install-qt-action@v4
-        with:
-          version:      '${{ vars.QT5_VERSION }}'
-          host:         'windows'
-          target:       'desktop'
-          arch:         'win32_msvc2019'
-          dir:          '${{ github.workspace }}'
-          archives:     'qtbase qtwinextras'
-          setup-python: 'false'
-          aqtversion:   '==3.1.*'
-          py7zrversion: '==0.20.*'
-          extra:        '--base ${{ vars.QT_DOWNLOAD_MIRROR }}'
-
-      - name: Install Qt5 x64
-        if: ${{ matrix.qt-version == 5 }}
-        uses: jurplel/install-qt-action@v4
-        with:
-          version:      '${{ vars.QT5_VERSION }}'
-          host:         'windows'
-          target:       'desktop'
-          arch:         'win64_msvc2019_64'
-          dir:          '${{ github.workspace }}'
-          archives:     'qtbase qtwinextras'
-          setup-python: 'false'
-          aqtversion:   '==3.1.*'
-          py7zrversion: '==0.20.*'
-          extra:        '--base ${{ vars.QT_DOWNLOAD_MIRROR }}'
-
       - name: Install Qt6 x64
-        if: ${{ matrix.qt-version == 6 }}
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@v3
         with:
-          version:      '${{ vars.QT6_VERSION }}'
+          version:      '${{ env.QT_VERSION }}'
           host:         'windows'
           target:       'desktop'
-          arch:         'win64_msvc2019_64'
+          arch:         'win64_msvc2022_64'
           dir:          '${{ github.workspace }}'
           archives:     'qtbase'
           setup-python: 'false'
@@ -83,25 +53,21 @@ jobs:
         shell: cmd
         run: |
           echo OS         ${{ matrix.os }}
-          echo Qt major   ${{ matrix.qt-version }}
-          echo Qt version ${{ env.QT_VERSION }}
+          echo Qt version %QT_VERSION%
           echo Qt dir     %QTDIR%
 
       - name: Configure project for Visual Studio
         shell: bash
         run: |
           cd build/windows
-          echo VS_VERSION=2019 > vsversion.ini
+          echo VS_VERSION=2022 > vsversion.ini
           echo VS_TYPE=Enterprise >> vsversion.ini
 
       - name: Configure Qt
         shell: cmd
         run: |
-          IF "${{ matrix.qt-version }}"=="5" (
-           mklink /d "%QTDIR%\Win32" %QTDIR%\${{ env.QT_VERSION }}\msvc2019
-          )
-          mklink /d "%QTDIR%\x64" %QTDIR%\${{ env.QT_VERSION }}\msvc2019_64
-          powershell.exe .\build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version ${{ env.QT_VERSION }}
+          mklink /d "%QTDIR%\x64" %QTDIR%\%QT_VERSION%\msvc2022_64
+          powershell.exe .\build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version %QT_VERSION%
 
       - name: Build
         shell: bash
@@ -114,11 +80,11 @@ jobs:
         run: |
           mkdir result\x64\Release
           mkdir result\x64\Debug
-          dir /s %QTDIR%\x64 >result\x64\qt${{ env.QT_VERSION }}-x64-dirlist.log
+          dir /s %QTDIR%\x64 >result\x64\qt%QT_VERSION%-x64-dirlist.log
           REM Copy Visual Studio projects and solution
-          mkdir result\x64\vs2019\Qt${{ env.QT_VERSION }}\src
-          COPY /Y buildx64\Flexemu.sln result\x64\vs2019\Qt${{ env.QT_VERSION }}
-          COPY /Y buildx64\src\*.vcxproj result\x64\vs2019\Qt${{ env.QT_VERSION }}\src
+          mkdir result\x64\vs2022\Qt%QT_VERSION%\src
+          COPY /Y buildx64\Flexemu.sln result\x64\vs2022\Qt%QT_VERSION%
+          COPY /Y buildx64\src\*.vcxproj result\x64\vs2022\Qt%QT_VERSION%\src
           REM Copy flexemu executables incl. dependencies
           XCOPY bin result\bin /VSEI
           REM Copy unittests incl. dependencies
@@ -131,61 +97,6 @@ jobs:
           COPY /Y buildx64\bin\Debug\unittests.exe result\x64\Debug
           XCOPY buildx64\test\data result\x64\Debug\data /SVEI
 
-      - name: Qt5 Win32 Directory Artifact
-        if: ${{ matrix.qt-version == 5 }}
-        shell: cmd
-        run: |
-          mkdir result\Win32\Release
-          mkdir result\Win32\Debug
-          dir /s %QTDIR%\Win32 >result\Win32\qt5-win32-dirlist.log
-          REM Copy Visual Studio projects and solution
-          mkdir result\Win32\vs2019\Qt5\src
-          COPY /Y buildWin32\Flexemu.sln result\Win32\vs2019\Qt5
-          COPY /Y buildWin32\src\*.vcxproj result\Win32\vs2019\Qt5\src
-          REM Copy unittests incl. dependencies
-          COPY /Y buildWin32\fmt\bin\Release\fmt*.dll result\Win32\Release
-          COPY /Y buildWin32\bin\Release\gtest.dll result\Win32\Release
-          COPY /Y buildWin32\bin\Release\unittests.exe result\Win32\Release
-          XCOPY buildWin32\test\data result\Win32\Release\data /SVEI
-          COPY /Y buildWin32\fmt\bin\Debug\fmt*.dll result\Win32\Debug
-          COPY /Y buildWin32\bin\Debug\gtest.dll result\Win32\Debug
-          COPY /Y buildWin32\bin\Debug\unittests.exe result\Win32\Debug
-          XCOPY buildWin32\test\data result\Win32\Debug\data /SVEI
-
-      - name: Test Win32
-        if: ${{ matrix.qt-version == 5 }}
-        shell: cmd
-        continue-on-error: false
-        run: |
-          echo ===== Release =====
-          cd buildWin32\test
-          ..\bin\Release\unittests.exe || exit /b
-          cd ..\..
-          set BINPATH=bin\Qt${{ env.QT_VERSION }}\Win32\Release
-          %BINPATH%\dsktool.exe -V || EXIT /B
-          %BINPATH%\mdcrtool.exe -V || EXIT /B
-          %BINPATH%\flex2hex.exe -V || EXIT /B
-          %BINPATH%\dsktool.exe -l disks\games.dsk || EXIT /B
-          %BINPATH%\dsktool.exe -f new_r.dsk -S 80dsdd || EXIT /B
-          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r.dsk || EXIT /B
-          IF EXIST new_r.dsk COPY /Y new_r.dsk result\Win32\Release\new_r5.dsk
-          %BINPATH%\dsktool.exe -l new_r.dsk || EXIT /B
-          del /F new_r.dsk
-          echo ===== Debug =====
-          cd buildWin32\test
-          ..\bin\Debug\unittests.exe || EXIT /B
-          cd ..\..
-          set BINPATH=bin\Qt${{ env.QT_VERSION }}\Win32\Debug
-          %BINPATH%\dsktool.exe -V || EXIT /B
-          %BINPATH%\mdcrtool.exe -V || EXIT /B
-          %BINPATH%\flex2hex.exe -V || EXIT /B
-          %BINPATH%\dsktool.exe -l disks\games.dsk || EXIT /B
-          %BINPATH%\dsktool.exe -f new_d.dsk -S 80dsdd || EXIT /B
-          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_d.dsk || EXIT /B
-          IF EXIST new_d.dsk COPY /Y new_d.dsk result\Win32\Debug\new_d5.dsk
-          %BINPATH%\dsktool.exe -l new_d.dsk || EXIT /B
-          del /F new_d.dsk
-
       - name: Test x64
         shell: cmd
         continue-on-error: false
@@ -194,28 +105,28 @@ jobs:
           cd buildx64\test
           ..\bin\Release\unittests.exe || EXIT /B
           cd ..\..
-          set BINPATH=bin\Qt${{ env.QT_VERSION }}\x64\Release
+          set BINPATH=bin\Qt%QT_VERSION%\x64\Release
           %BINPATH%\dsktool.exe -V || EXIT /B
           %BINPATH%\mdcrtool.exe -V || EXIT /B
           %BINPATH%\flex2hex.exe -V || EXIT /B
           %BINPATH%\dsktool.exe -l disks\games.dsk || EXIT /B
           %BINPATH%\dsktool.exe -f new_r.dsk -S 80dsdd -y || EXIT /B
           %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r.dsk || EXIT /B
-          IF EXIST new_r.dsk COPY /Y new_r.dsk result\x64\Release\new_r${{ matrix.qt-version }}.dsk
+          IF EXIST new_r.dsk COPY /Y new_r.dsk result\x64\Release\new_r%QT_VERSION%.dsk
           %BINPATH%\dsktool.exe -l new_r.dsk || EXIT /B
           del /F new_r.dsk
           echo ===== Debug =====
           cd buildx64\test
           ..\bin\Debug\unittests.exe || EXIT /B
           cd ..\..
-          set BINPATH=bin\Qt${{ env.QT_VERSION }}\x64\Debug
+          set BINPATH=bin\Qt%QT_VERSION%\x64\Debug
           %BINPATH%\dsktool.exe -V || EXIT /B
           %BINPATH%\mdcrtool.exe -V || EXIT /B
           %BINPATH%\flex2hex.exe -V || EXIT /B
           %BINPATH%\dsktool.exe -l disks\games.dsk || EXIT /B
           %BINPATH%\dsktool.exe -f new_d.dsk -S 80dsdd -y || EXIT /B
           %BINPATH%\dsktool.exe -C disks\system.dsk -T new_d.dsk || EXIT /B
-          IF EXIST new_d.dsk COPY /Y new_d.dsk result\x64\Release\new_d${{ matrix.qt-version }}.dsk
+          IF EXIST new_d.dsk COPY /Y new_d.dsk result\x64\Release\new_d%QT_VERSION%.dsk
           %BINPATH%\dsktool.exe -l new_d.dsk || EXIT /B
           del /F new_d.dsk
 
@@ -234,6 +145,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: flexemu-windows-build-result-${{ matrix.qt-version }}
+          name: flexemu-windows-build-result-${{ env.QT_VERSION }}
           path: result
           if-no-files-found: error
