@@ -1,66 +1,67 @@
 # Appveyor build script for flexemu.
 #
 # Supported builds:
-# - Ubuntu1604 x64 Release with Qt5 (Qt apt package and gcc-7/g++-7)
+# - Visual Studio 2019 Win32 Debug with Qt5
+# - Visual Studio 2019 Win32 Release with Qt5
+# - Visual Studio 2019 x64 Debug with Qt5
+# - Visual Studio 2019 x64 Release with Qt5
+# - Visual Studio 2019 x64 Release with Qt6
 
 image:
-  - Ubuntu1604
+  - Visual Studio 2019
 
 environment:
   APPVEYOR_YML_DISABLE_PS_LINUX: true
   matrix:
     - QTMAJOR: 5
+    - QTMAJOR: 6
+
+platform:
+  - Win32
+  - x64
+
+configuration:
+  - Debug
+  - Release
 
 install:
-  - sh: |
-      CC=gcc
-      CXX=g++
-      LDD=ldd
-      CCVER='/[^0-9]([0-9]+\.[0-9]+\.[0-9]+)/p;q'
-      CMAKEVER='/([0-9]+\.[0-9]+\.[0-9]+)/p;q'
-      QTVER='s|([A-Za-z0-9.>/_[:space:]:-]+)([0-9]+\.[0-9]+\.[0-9]+).*|\2|p'
-      if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu1604" ]; then
-          # Install Qt5 from apt packages.
-          sudo apt-get update
-          sudo apt-get install libncursesw5-dev qt5-default libqt5x11extras5-dev -y
-          pushd /lib/x86_64-linux-gnu; sudo ln -s libncursesw.so.5.9 libncursesw.so; popd
-          sudo ldconfig
-          VER=`ls -l /usr/lib/x86_64-linux-gnu/libQt5Core.so | sed -nE $QTVER`
-      fi
-      echo ==================== Build on $APPVEYOR_BUILD_WORKER_IMAGE ====================
-      echo `lscpu | grep "^CPU(s):"`
-      echo `lscpu | grep "Thread(s)"`
-      echo "Qt version:" $VER
-      VER=`$CC --version | sed -nE $CCVER`
-      echo "C compiler version:" $VER
-      VER=`$CXX --version | sed -nE $CCVER`
-      echo "C++ compiler version:" $VER
-      VER=`cmake --version | sed -nE $CMAKEVER`
-      echo "cmake version:" $VER
-      git submodule update --init --recursive
-      echo "shell: $SHELL"
+  # Create links to build all platform/configuration combinations with the
+  # same *.vcxproj project(s).
+  - cmd: echo Current Working Directory is %CD%
+  - cmd: if %QTMAJOR%==6 set QTVERSION=6.5.3
+  - cmd: if %QTMAJOR%==5 set QTVERSION=5.15.2
+  - cmd: set QTDIR=%TEMP%\Qt%QTMAJOR%
+  - cmd: echo Qt Directory is %QTDIR%
+  - cmd: mkdir "%QTDIR%"
+  - cmd: if %QTMAJOR%==5 mklink /d "%QTDIR%\Win32" C:\Qt\%QTVERSION%\msvc2019
+  - cmd: mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2019_64
+  # Create properties file defining the Qt dependencies.
+  - cmd: powershell.exe build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version %QTVERSION%
+  - cmd: git submodule update --init --recursive
+
+matrix:
+  exclude:
+    # Qt6 only supports x64 builds, only test x64 Release.
+    - platform: Win32
+      QTMAJOR: 6
+    - configuration: Debug
+      QTMAJOR: 6
+  fast_finish: true
 
 for:
   -
     matrix:
       only:
-        - image: Ubuntu1604
-    before_build:
-      - sh: mkdir bld; cd bld; cmake ..
-    build_script:
-      - sh: make -j5
-    after_build:
-      - sh: sudo make install
+        - image: Visual Studio 2019
     test_script:
-      - make test ARGS="-V -O unittests.log"
-      - bin/test_gccasm
-      - $LDD bin/flexemu
-      - $LDD bin/flexplorer
-      - bin/dsktool -V
-      - bin/mdcrtool -V
-      - bin/flex2hex -V
-      - bin/dsktool -l ../disks/games.dsk
-      - bin/dsktool -f new.dsk -S 80dsdd
-      - bin/dsktool -C ../disks/system.dsk -T new.dsk
-      - bin/dsktool -l new.dsk
-
+      # "if 1==1" is a workaround for not starting a yaml token with percent.
+      - echo ===== %PLATFORM% %CONFIGURATION% =====
+      - set BINPATH=bin\Qt%QTVERSION%\%PLATFORM%\%CONFIGURATION%
+      - if 1==1 %BINPATH%\dsktool.exe -V
+      - if 1==1 %BINPATH%\mdcrtool.exe -V
+      - if 1==1 %BINPATH%\flex2hex.exe -V
+      - if 1==1 %BINPATH%\dsktool.exe -l disks\games.dsk
+      - if 1==1 %BINPATH%\dsktool.exe -f new_r.dsk -S 80dsdd -y
+      - if 1==1 %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r.dsk
+      - if 1==1 %BINPATH%\dsktool.exe -l new_r.dsk
+      - del /F new_r.dsk
