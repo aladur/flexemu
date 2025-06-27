@@ -198,7 +198,7 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
         {
             *(asciiIter++) = (ch >= ' ' && ch <= '~') ? ch : '_';
 
-            if (withExtraSpace)
+            if (withExtraSpace && idx + 1U != size)
             {
                 *(asciiIter++) = ' ';
             }

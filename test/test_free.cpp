@@ -544,14 +544,14 @@ TEST_F(test_free, fct_hex_dump_8)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 54);
+    ASSERT_EQ(linebuffer.size(), 53);
     ASSERT_EQ(tokens.size(), 7);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[19], ' '); // last hex digit
     EXPECT_EQ(linebuffer[23], ' '); // first hex padding
     EXPECT_EQ(linebuffer[46], ' '); // last hex padding
     EXPECT_NE(linebuffer[48], ' '); // first ascii
-    EXPECT_NE(linebuffer[linebuffer.size() - 2], ' '); // last ascii
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last ascii
     EXPECT_EQ(tokens[0], "00DD"); // start addr
     EXPECT_EQ(tokens[1], "16"); // first byte
     EXPECT_EQ(tokens[tokens.size() - 2], "1A"); // last byte
@@ -682,15 +682,14 @@ TEST_F(test_free, fct_hex_dump_13)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 65U); // ends with a extra space
+    ASSERT_EQ(linebuffer.size(), 64U);
     ASSERT_EQ(tokens.size(), 10U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[28], ' '); // last hex digit
     EXPECT_EQ(linebuffer[31], ' '); // first hex padding
     EXPECT_EQ(linebuffer[53], ' '); // last hex padding
     EXPECT_NE(linebuffer[56], ' '); // first ascii
-    EXPECT_NE(linebuffer[linebuffer.size() - 2], ' '); // last ascii
-    EXPECT_EQ(linebuffer[linebuffer.size() - 1], ' '); // extra space
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last ascii
     EXPECT_EQ(tokens[0], "0010"); // start addr
     EXPECT_EQ(tokens[1], "08"); // first byte
     EXPECT_EQ(tokens[tokens.size() - 2], "0F"); // last byte
