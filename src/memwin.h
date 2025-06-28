@@ -167,6 +167,7 @@ protected:
     bool isUpdateWindowSize;
     bool isReadOnly;
     bool isFirstResizeEvent;
+    bool isFirstUpdate;
     int columns;
     int rows;
     mutable bool isRequestResize;

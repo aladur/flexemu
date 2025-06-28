@@ -96,6 +96,7 @@ MemoryWindow::MemoryWindow(
     , isUpdateWindowSize(p_isUpdateWindowSize)
     , isReadOnly(p_isReadOnly)
     , isFirstResizeEvent(true)
+    , isFirstUpdate(true)
     , columns(0)
     , rows(0)
     , isRequestResize(true)
@@ -126,7 +127,7 @@ MemoryWindow::MemoryWindow(
     e_hexDumpScale->setLineWrapMode(QTextEdit::NoWrap);
     e_hexDumpScale->setAutoFillBackground(true);
     e_hexDumpScale->setBackgroundRole(QPalette::Base);
-    e_hexDumpScale->setReadOnly(isReadOnly);
+    e_hexDumpScale->setReadOnly(true);
     e_hexDumpScale->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     e_hexDumpScale->horizontalScrollBar()->setMaximum(0);
     e_hexDumpScale->setText("\n");
@@ -530,9 +531,10 @@ bool MemoryWindow::event(QEvent *event)
 void MemoryWindow::UpdateData(const std::vector<Byte> &p_data)
 {
     data = p_data;
-    if (isReadOnly)
+    if (isReadOnly || isFirstUpdate)
     {
         UpdateData();
+        isFirstUpdate = false;
     }
 
     if (isUpdateWindowSizeAction->isEnabled() && isUpdateWindowSize &&
