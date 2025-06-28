@@ -84,8 +84,8 @@ void MemoryWindowManager::OpenMemoryWindow(
 
      ui.GetData(addressRange, windowTitle, style, withAddress, withAscii,
                 withExtraSpace, isUpdateWindowSize);
-     auto copyMemoryCommand =
-         std::make_shared<CCopyMemory>(memory, addressRange);
+     auto readMemoryCommand =
+         std::make_shared<CReadMemory>(memory, addressRange);
      auto window = std::make_unique<MemoryWindow>(
              isReadOnly, addressRange, windowTitle, style, withAddress,
              withAscii, withExtraSpace, isUpdateWindowSize);
@@ -93,11 +93,11 @@ void MemoryWindowManager::OpenMemoryWindow(
      window->show();
      connect(window.get(), &MemoryWindow::Closed,
              this, &MemoryWindowManager::OnMemoryWindowClosed);
-     MemoryWindowItem item = { std::move(window), copyMemoryCommand };
+     MemoryWindowItem item = { std::move(window), readMemoryCommand };
      items.push_back(std::move(item));
 
      scheduler.sync_exec(
-         std::dynamic_pointer_cast<BCommand>(copyMemoryCommand));
+         std::dynamic_pointer_cast<BCommand>(readMemoryCommand));
 }
 
 void MemoryWindowManager::RequestMemoryUpdate(Scheduler &scheduler) const
@@ -105,7 +105,7 @@ void MemoryWindowManager::RequestMemoryUpdate(Scheduler &scheduler) const
     for (const auto &item : items)
     {
          scheduler.sync_exec(std::dynamic_pointer_cast<BCommand>(
-                     item.copyMemoryCommand));
+                     item.readMemoryCommand));
      }
 }
 
@@ -113,9 +113,9 @@ void MemoryWindowManager::UpdateData() const
 {
     for (const auto &item : items)
     {
-        if (item.copyMemoryCommand->HasUpdate())
+        if (item.readMemoryCommand->HasUpdate())
         {
-            item.window->UpdateData(item.copyMemoryCommand->GetData());
+            item.window->UpdateData(item.readMemoryCommand->GetData());
         }
     }
 }

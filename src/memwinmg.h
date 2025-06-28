@@ -33,11 +33,11 @@
 class Memory;
 class Scheduler;
 class QSize;
-class CCopyMemory;
+class CReadMemory;
 class MemoryWindow;
 struct sOptions;
 
-using CCopyMemorySPtr = std::shared_ptr<CCopyMemory>;
+using CReadMemorySPtr = std::shared_ptr<CReadMemory>;
 using MemoryWindowSPtr = std::shared_ptr<MemoryWindow>;
 
 class MemoryWindowManager : public QObject
@@ -63,7 +63,7 @@ protected:
     struct MemoryWindowItem
     {
         MemoryWindowSPtr window;
-        CCopyMemorySPtr copyMemoryCommand;
+        CReadMemorySPtr readMemoryCommand;
     };
 
     std::vector<MemoryWindowItem> items;

@@ -33,16 +33,16 @@
 
 class Memory;
 
-class CCopyMemory : public BCommand
+class CReadMemory : public BCommand
 {
 
 public:
-    CCopyMemory(Memory &p_memory, const BInterval<DWord> &p_addressRange);
-    ~CCopyMemory() override = default;
-    CCopyMemory(const CCopyMemory &src) = delete;
-    CCopyMemory(CCopyMemory &&src) = delete;
-    CCopyMemory &operator=(const CCopyMemory &src) = delete;
-    CCopyMemory &operator=(CCopyMemory &&src) = delete;
+    CReadMemory(Memory &p_memory, const BInterval<DWord> &p_addressRange);
+    ~CReadMemory() override = default;
+    CReadMemory(const CReadMemory &src) = delete;
+    CReadMemory(CReadMemory &&src) = delete;
+    CReadMemory &operator=(const CReadMemory &src) = delete;
+    CReadMemory &operator=(CReadMemory &&src) = delete;
     void Execute() override;
 
     Word GetStartAddress() const;
@@ -59,6 +59,6 @@ protected:
     mutable std::mutex mutex;
 };
 
-using CCopyMemorySPtr = std::shared_ptr<CCopyMemory>;
+using CReadMemorySPtr = std::shared_ptr<CReadMemory>;
 
 #endif

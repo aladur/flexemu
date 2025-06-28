@@ -27,7 +27,7 @@
 #include <mutex>
 
 
-CCopyMemory::CCopyMemory(Memory &p_memory,
+CReadMemory::CReadMemory(Memory &p_memory,
         const BInterval<DWord> &addressRange)
     : memory(p_memory)
     , start(static_cast<Word>(addressRange.lower()))
@@ -36,7 +36,7 @@ CCopyMemory::CCopyMemory(Memory &p_memory,
 {
 }
 
-void CCopyMemory::Execute()
+void CReadMemory::Execute()
 {
     std::lock_guard<std::mutex> guard(mutex);
 
@@ -45,24 +45,24 @@ void CCopyMemory::Execute()
     hasUpdate.store(true, std::memory_order_relaxed);
 }
 
-Word CCopyMemory::GetStartAddress() const
+Word CReadMemory::GetStartAddress() const
 {
     return start;
 }
 
-Word CCopyMemory::GetSize() const
+Word CReadMemory::GetSize() const
 {
     return size;
 }
 
-std::vector<Byte> CCopyMemory::GetData() const
+std::vector<Byte> CReadMemory::GetData() const
 {
     std::lock_guard<std::mutex> guard(mutex);
 
     return data;
 }
 
-bool CCopyMemory::HasUpdate()
+bool CReadMemory::HasUpdate()
 {
     bool result = hasUpdate.load(std::memory_order_relaxed);
 

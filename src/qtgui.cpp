@@ -2295,17 +2295,17 @@ void QtGui::ParseRomName()
         return;
     }
 
-    if (!copyRomCommand)
+    if (!readRomCommand)
     {
-        copyRomCommand = std::make_shared<CCopyMemory>(memory, romAddrRange);
+        readRomCommand = std::make_shared<CReadMemory>(memory, romAddrRange);
         scheduler.sync_exec(
-            std::dynamic_pointer_cast<BCommand>(copyRomCommand));
+            std::dynamic_pointer_cast<BCommand>(readRomCommand));
     }
     else
     {
         static const std::regex rom_name_regex(".*(eurocom.*)", flags);
         romName = flx::find_regex_string(rom_name_regex, '\x04',
-            copyRomCommand->GetData());
+            readRomCommand->GetData());
         isParseRomName = false; // Parse ROM name only once.
     }
 }
@@ -2322,20 +2322,20 @@ void QtGui::ParseOsName()
         return;
     }
 
-    if (!copyOsCommand)
+    if (!readOsCommand)
     {
-        copyOsCommand = std::make_shared<CCopyMemory>(memory, flexAddrRange);
-        scheduler.sync_exec(std::dynamic_pointer_cast<BCommand>(copyOsCommand));
+        readOsCommand = std::make_shared<CReadMemory>(memory, flexAddrRange);
+        scheduler.sync_exec(std::dynamic_pointer_cast<BCommand>(readOsCommand));
     }
     else
     {
         static const std::regex os_name_regex(".*(flex.*)", flags);
         osName = flx::find_regex_string(os_name_regex, '\x04',
-            copyOsCommand->GetData());
+            readOsCommand->GetData());
         if (osName.empty())
         {
             scheduler.sync_exec(
-                std::dynamic_pointer_cast<BCommand>(copyOsCommand));
+                std::dynamic_pointer_cast<BCommand>(readOsCommand));
         }
     }
 }

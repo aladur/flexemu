@@ -315,8 +315,8 @@ private:
     bool isParseRomName{true};
     std::string romName;
     std::string osName;
-    CCopyMemorySPtr copyRomCommand;
-    CCopyMemorySPtr copyOsCommand;
+    CReadMemorySPtr readRomCommand;
+    CReadMemorySPtr readOsCommand;
     MemoryWindowManager memoryWindowMgr;
     CpuState cpuState;
 
