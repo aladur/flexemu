@@ -194,11 +194,11 @@ std::string flx::hexstr(Word x)
     return result;
 }
 
-std::string flx::ascchr(char x)
+std::string flx::ascchr(char x, char default_value)
 {
     std::string result(" ");
 
-    result[0] = ((x >= 0x20) && (x < 0x7f)) ? x : '.';
+    result[0] = ((x >= ' ') && (x <= '~')) ? x : default_value;
 
     return result;
 }

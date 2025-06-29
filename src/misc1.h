@@ -278,7 +278,7 @@ extern std::string toupper(std::string&& src);
 extern std::string binstr(Byte x);
 extern std::string hexstr(Byte x);
 extern std::string hexstr(Word x);
-extern std::string ascchr(char x);
+extern std::string ascchr(char x, char default_value = '.');
 extern char hex_digit(Byte x);
 extern Byte hexval(char x, bool &isValid);
 

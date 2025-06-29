@@ -169,8 +169,22 @@ TEST(test_misc1, fct_ascchr)
     EXPECT_EQ(result, "a");
     result = flx::ascchr('3');
     EXPECT_EQ(result, "3");
+    result = flx::ascchr('~');
+    EXPECT_EQ(result, "~");
+    result = flx::ascchr('\x7f');
+    EXPECT_EQ(result, ".");
+    result = flx::ascchr(' ');
+    EXPECT_EQ(result, " ");
+    result = flx::ascchr('\x1f');
+    EXPECT_EQ(result, ".");
     result = flx::ascchr('\xa1');
     EXPECT_EQ(result, ".");
+    result = flx::ascchr('a', '_');
+    EXPECT_EQ(result, "a");
+    result = flx::ascchr('3', '_');
+    EXPECT_EQ(result, "3");
+    result = flx::ascchr('\xa1', '_');
+    EXPECT_EQ(result, "_");
 }
 
 TEST(test_misc1, fct_hexval)
