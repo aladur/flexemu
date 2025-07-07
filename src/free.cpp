@@ -113,20 +113,14 @@ void flx::print_versions(std::ostream &os, const std::string &program_name)
 //    size:         Byte size of data
 //    bytesPerLine: Number of bytes to scale on one line.
 //    withAscii:    If true stream the scale for ASCII values on the right.
-//    startAddress: Optional, stream the address.
+//    isDisplayAddress: Display the address on the left.
+//    startAddress: Used to calculate offset for first displayed byte.
 //    extraSpace:   Optional, stream extra space after "extraSpace" bytes.
 // Address at the beginning on the line is always a multiple of bytesPerLine.
 void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
-        DWord bytesPerLine, bool withAscii, std::optional<DWord> startAddress,
-        std::optional<DWord> extraSpace)
+        DWord bytesPerLine, bool withAscii, bool isDisplayAddress,
+        DWord startAddress, std::optional<DWord> extraSpace)
 {
-    const bool withAddress = startAddress.has_value();
-    DWord idx = 0U;
-    const DWord offset = withAddress ? startAddress.value() % bytesPerLine : 0U;
-    DWord address = withAddress ? startAddress.value() - offset : 0U;
-    std::string asciiString;
-    auto asciiIter = std::back_inserter(asciiString);
-
     if (bytesPerLine == 0U)
     {
         throw FlexException(FERR_WRONG_PARAMETER);
@@ -136,12 +130,19 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
     {
         return;
     }
+
+    DWord idx = 0U;
+    const DWord offset = startAddress % bytesPerLine;
+    DWord address = startAddress - offset;
+    std::string asciiString;
+    auto asciiIter = std::back_inserter(asciiString);
+
     if (extraSpace.has_value() && bytesPerLine <= extraSpace.value())
     {
         extraSpace.reset();
     }
 
-    if (withAddress)
+    if (isDisplayAddress)
     {
         os << fmt::format("{:04X}  ", address);
     }
@@ -166,7 +167,7 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
 
         if (address % bytesPerLine == 0U)
         {
-            if (withAddress && idx > 0U)
+            if (isDisplayAddress && idx > 0U)
             {
                 os << fmt::format("{:04X}  ", address);
             }
@@ -241,27 +242,30 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
 //    os:           Where the result is streamed to.
 //    bytesPerLine: Number of bytes to scale on one line.
 //    withAscii:    If true stream the scale for ASCII values on the right.
-//    startAddress: Optional, if set indent the scale.
+//    isDisplayAddress: Used to calculate offset for first displayed byte.
 //    extraSpace:   Optional, stream extra space after "extraSpace" bytes.
 void flx::hex_dump_scale(std::ostream &os, DWord bytesPerLine, bool withAscii,
-        std::optional<DWord> startAddress,
+        bool isDisplayAddress,
         std::optional<DWord> extraSpace)
 {
     auto streamHexDumpScaleFct = [&](bool isSecondLine)
     {
         const auto *spacer = "";
 
-        os << std::string(startAddress.has_value() ? 6U : 0U, ' ');
+        os << std::string(isDisplayAddress ? 6U : 0U, ' ');
         for (DWord idx = 0U; idx < bytesPerLine; ++idx)
         {
+            const auto scale = 0xFFU & (idx % (2U * bytesPerLine));
             const auto *theExtraSpace = (extraSpace.has_value() &&
                 bytesPerLine > extraSpace.value() &&
-                idx + 1U != bytesPerLine &&
+                scale + 1U != bytesPerLine &&
                 (idx % extraSpace.value() + 1U == extraSpace.value())) ?
                 " " : "";
 
-            os << spacer << ((isSecondLine || (idx & 0x0FU) == 0U) ?
-                fmt::format("{:02X}", idx) : "  ") << theExtraSpace;
+            const auto scaleString =
+                fmt::format("{:02X}", isSecondLine ? scale : scale & 0xF0U);
+            os << spacer << ((isSecondLine || !(scale & 0x0FU)) ?
+                scaleString : "  ") << theExtraSpace;
             spacer = " ";
         }
 
@@ -273,15 +277,17 @@ void flx::hex_dump_scale(std::ostream &os, DWord bytesPerLine, bool withAscii,
         os << "  ";
         for (DWord idx = 0U; idx < bytesPerLine; ++idx)
         {
+            const auto scale = 0xFFU & (idx % (2U * bytesPerLine));
             const auto *theExtraSpace = (extraSpace.has_value() &&
                 bytesPerLine > extraSpace.value() &&
                 idx + 1U != bytesPerLine &&
                 (idx % extraSpace.value() + 1U == extraSpace.value())) ?
                 " " : "";
 
-            os << ((isSecondLine || (idx & 0x0FU) == 0U) ?
-                fmt::format("{:X}", isSecondLine ? idx & 0x0FU : idx >> 4U) :
-                " ") << theExtraSpace;
+            const auto scaleString =
+                fmt::format("{:X}", isSecondLine ? scale & 0x0FU : scale >> 4U);
+            os << ((isSecondLine || !(scale & 0x0FU)) ?
+                scaleString : " ") << theExtraSpace;
         }
     };
 
@@ -311,7 +317,7 @@ flx::sHexDumpProperties flx::get_hex_dump_properties(
 {
     flx::sHexDumpProperties result{};
     const bool isExtraSpc = extraSpace.has_value();
-    const auto offset = isDisplayAddress ? startAddress % bytesPerLine : 0U;
+    const auto offset = startAddress % bytesPerLine;
     const auto indent = isDisplayAddress ? 6U : 0U; // skip address columns
     const auto lastRow = (size + offset) / bytesPerLine;
     const auto firstRowBytes = bytesPerLine - offset;

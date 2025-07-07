@@ -569,10 +569,10 @@ void MemoryWindow::UpdateData()
         extraSpace = 8U;
     }
 
-    flx::hex_dump_scale(scaleStream, bytesPerLine, withAscii, startAddress,
+    flx::hex_dump_scale(scaleStream, bytesPerLine, withAscii, withAddress,
             extraSpace);
     flx::hex_dump(hexStream, data.data(), data.size(), bytesPerLine,
-            withAscii, startAddress, extraSpace);
+            withAscii, withAddress, addressRange.lower(), extraSpace);
 
     const auto positionStart = e_hexDump->textCursor().selectionStart();
     const auto positionEnd = e_hexDump->textCursor().selectionEnd();

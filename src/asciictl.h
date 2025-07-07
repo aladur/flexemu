@@ -27,6 +27,9 @@
 #include <cstdint>
 
 
+// Use ASCII control identifiers as globally defined, for example see:
+// https://en.wikipedia.org/wiki/Control_character
+// NOLINTBEGIN(misc-confusable-identifiers)
 enum : uint8_t {
 NUL = '\x00',
 BEL = '\x07',
@@ -46,5 +49,6 @@ CAN = '\x18',
 ESC = '\x1B',
 DEL = '\x7F',
 };
+// NOLINTEND(misc-confusable-identifiers)
 
 #endif

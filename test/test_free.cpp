@@ -159,14 +159,14 @@ TEST_F(test_free, fct_hex_dump_0)
     const DWord bpl = 16U; // bytes per line
     std::vector<Byte> data;
     std::stringstream stream1;
-    flx::hex_dump(stream1, data.data(), data.size(), bpl, true, 0x0004);
+    flx::hex_dump(stream1, data.data(), data.size(), bpl, true, true, 0x0004);
     std::string linebuffer;
     ASSERT_TRUE(stream1.good());
     std::getline(stream1, linebuffer);
     ASSERT_TRUE(linebuffer.empty());
     ASSERT_FALSE(stream1.good());
     std::stringstream stream2;
-    flx::hex_dump(stream2, nullptr, 1U, bpl, true, 0x0004);
+    flx::hex_dump(stream2, nullptr, 1U, bpl, true, true, 0x0004);
     ASSERT_TRUE(stream2.good());
     std::getline(stream2, linebuffer);
     ASSERT_TRUE(linebuffer.empty());
@@ -185,7 +185,7 @@ TEST_F(test_free, fct_hex_dump_1)
     data.resize(32U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, true, 0x0004);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, true, true, 0x0004);
     std::string linebuffer;
 // Test first row.
 // 0000              00 01 02 03 04 05 06 07 08 09 0A 0B      ____________
@@ -253,7 +253,7 @@ TEST_F(test_free, fct_hex_dump_2)
     data.resize(16U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, true, 0x0100);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, true, true, 0x0100);
     std::string linebuffer;
 // Test first row.
 // 0100  00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  ________________
@@ -283,7 +283,7 @@ TEST_F(test_free, fct_hex_dump_3)
     data.resize(4U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, true, 0x0202);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, true, true, 0x0202);
     std::string linebuffer;
 // Test first row.
 // 0200        00 01 02 03          ____
@@ -319,7 +319,7 @@ TEST_F(test_free, fct_hex_dump_4)
     data.resize(8U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, false, 0x0300);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, false, true, 0x0300);
     std::string linebuffer;
 // Test first row.
 // 0300  00 01 02 03 04 05 06 07
@@ -372,7 +372,7 @@ TEST_F(test_free, fct_hex_dump_6)
     data.resize(20U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, false, 0x0100);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, false, true, 0x0100);
     std::string linebuffer;
 // Test first row.
 // 00F7                             00 01 02 03
@@ -427,7 +427,7 @@ TEST_F(test_free, fct_hex_dump_7)
     data.resize(20U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, true, 0x0100);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, true, true, 0x0100);
     std::string linebuffer;
 // Test first row.
 // 00F7                             00 01 02 03           ____
@@ -496,7 +496,7 @@ TEST_F(test_free, fct_hex_dump_8)
     data.resize(27U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, true, 0x00C7, 5U);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, true, true, 0xC7, 5U);
     std::string linebuffer;
 // Test first row.
 // 00C3              00  01 02 03 04 05  06 07 08      _ _____ ___
@@ -505,7 +505,7 @@ TEST_F(test_free, fct_hex_dump_8)
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
     ASSERT_EQ(linebuffer.size(), 63);
-    ASSERT_EQ(tokens.size(), bpl);
+    ASSERT_EQ(tokens.size(), 13);
     EXPECT_EQ(linebuffer[6], ' '); // first hex padding
     EXPECT_EQ(linebuffer[16], ' '); // last hex padding
     EXPECT_NE(linebuffer[18], ' '); // first hex digit
@@ -560,7 +560,7 @@ TEST_F(test_free, fct_hex_dump_8)
     ASSERT_FALSE(stream.good());
 }
 
-// 32 hex bytes, no address, no ascii, 13 bytes per line, offset 4.
+// 32 hex bytes, no address, no ascii, 13 bytes per line,
 // extra space each 5 bytes.
 TEST_F(test_free, fct_hex_dump_9)
 {
@@ -569,8 +569,7 @@ TEST_F(test_free, fct_hex_dump_9)
     data.resize(32U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, false, std::nullopt,
-            5U);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, false, false, 0U, 5U);
     std::string linebuffer;
 // Test first row.
 // 00 01 02 03 04  05 06 07 08 09  0A 0B 0C
@@ -612,7 +611,7 @@ TEST_F(test_free, fct_hex_dump_9)
     ASSERT_FALSE(stream.good());
 }
 
-// 15 hex bytes, no address, with ascii, 15 bytes per line,
+// 15 hex bytes, no address, with ascii, 15 bytes per line, offset 4
 // extra space each 5 bytes.
 TEST_F(test_free, fct_hex_dump_10)
 {
@@ -621,8 +620,7 @@ TEST_F(test_free, fct_hex_dump_10)
     data.resize(bpl);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, true, std::nullopt,
-            5U);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, true, false, 0U, 5U);
     std::string linebuffer;
 // Test first row.
 // 00 01 02 03 04  05 06 07 08 09  0A 0B 0C 0D 0E  _____ _____ _____
@@ -654,7 +652,7 @@ TEST_F(test_free, fct_hex_dump_13)
     data.resize(16U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, true, 0x0008, 8U);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, true, true, 0x08, 8U);
     std::string linebuffer;
 // Test first row.
 // 0000                           00 01 02 03 04 05 06 07           ________
@@ -698,12 +696,82 @@ TEST_F(test_free, fct_hex_dump_13)
     ASSERT_FALSE(stream.good());
 }
 
+// 27 hex bytes, with address, no display address, with ascii,
+// 13 bytes per line, offset 4, extra space each 5 bytes.
+TEST_F(test_free, fct_hex_dump_14)
+{
+    const DWord bpl = 13U; // bytes per line
+    std::vector<Byte> data;
+    data.resize(27U);
+    std::iota(data.begin(), data.end(), '\0');
+    std::stringstream stream;
+    flx::hex_dump(stream, data.data(), data.size(), bpl, true, false, 0xC7, 5U);
+    std::string linebuffer;
+// Test first row.
+//             00  01 02 03 04 05  06 07 08      _ _____ ___
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
+    auto tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 57);
+    ASSERT_EQ(tokens.size(), 12);
+    EXPECT_EQ(linebuffer[0], ' '); // first hex padding
+    EXPECT_EQ(linebuffer[10], ' '); // last hex padding
+    EXPECT_NE(linebuffer[12], ' '); // first hex digit
+    EXPECT_NE(linebuffer[39], ' '); // last hex digit
+    EXPECT_EQ(linebuffer[42], ' '); // first ascii padding
+    EXPECT_EQ(linebuffer[45], ' '); // last ascii padding
+    EXPECT_NE(linebuffer[46], ' '); // first ascii
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last ascii
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 4], "08"); // last byte
+    EXPECT_EQ(tokens[tokens.size() - 3].size(), 1U); // ascii char count
+    EXPECT_EQ(tokens[tokens.size() - 2].size(), 5U); // ascii char count
+    EXPECT_EQ(tokens[tokens.size() - 1].size(), 3U); // ascii char count
+// Test second row.
+// 09 0A 0B 0C 0D  0E 0F 10 11 12  13 14 15  _____ _____ ___
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
+    tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 57);
+    ASSERT_EQ(tokens.size(), 16);
+    EXPECT_NE(linebuffer[0], ' '); // first hex digit
+    EXPECT_NE(linebuffer[39], ' '); // last hex digit
+    EXPECT_NE(linebuffer[42], ' '); // first ascii
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last ascii
+    EXPECT_EQ(tokens[0], "09"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 4], "15"); // last byte
+    EXPECT_EQ(tokens[tokens.size() - 3].size(), 5U); // ascii char count
+    EXPECT_EQ(tokens[tokens.size() - 2].size(), 5U); // ascii char count
+    EXPECT_EQ(tokens[tokens.size() - 1].size(), 3U); // ascii char count
+// Test third row.
+// 16 17 18 19 1A                            _____
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
+    tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 47);
+    ASSERT_EQ(tokens.size(), 6);
+    EXPECT_NE(linebuffer[0], ' '); // first hex digit
+    EXPECT_NE(linebuffer[13], ' '); // last hex digit
+    EXPECT_EQ(linebuffer[17], ' '); // first hex padding
+    EXPECT_EQ(linebuffer[40], ' '); // last hex padding
+    EXPECT_NE(linebuffer[42], ' '); // first ascii
+    EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last ascii
+    EXPECT_EQ(tokens[0], "16"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 2], "1A"); // last byte
+    EXPECT_EQ(tokens[tokens.size() - 1].size(), 5U); // ascii char count
+// Test fourth row.
+    ASSERT_FALSE(stream.good());
+}
+
 // Test scale with 16 bytes, with address, with ascii.
 TEST_F(test_free, fct_hex_dump_scale_1)
 {
     std::stringstream stream;
     const DWord bpl = 16U; // bytes per line
-    flx::hex_dump_scale(stream, bpl, true, 0x0004);
+    flx::hex_dump_scale(stream, bpl, true, true);
     std::string linebuffer;
 // Test first row.
 //       00                                               0
@@ -744,7 +812,7 @@ TEST_F(test_free, fct_hex_dump_scale_3)
 {
     std::stringstream stream;
     const DWord bpl = 8U; // bytes per line
-    flx::hex_dump_scale(stream, bpl, true, 0x0202);
+    flx::hex_dump_scale(stream, bpl, true, true);
     std::string linebuffer;
 // Test first row.
 //       00                       0
@@ -785,7 +853,7 @@ TEST_F(test_free, fct_hex_dump_scale_4)
 {
     std::stringstream stream;
     const DWord bpl = 8U; // bytes per line
-    flx::hex_dump_scale(stream, bpl, false, 0x0202);
+    flx::hex_dump_scale(stream, bpl, false, true);
     std::string linebuffer;
 // Test first row.
 //       00
@@ -854,7 +922,7 @@ TEST_F(test_free, fct_hex_dump_scale_8)
 {
     std::stringstream stream;
     const DWord bpl = 13U; // bytes per line
-    flx::hex_dump_scale(stream, bpl, true, 0x00C7, 5U);
+    flx::hex_dump_scale(stream, bpl, true, true, 5U);
     std::string linebuffer;
 // Test first row.
 //       00                                        0
@@ -895,7 +963,7 @@ TEST_F(test_free, fct_hex_dump_scale_9)
 {
     std::stringstream stream;
     const DWord bpl = 13U; // bytes per line
-    flx::hex_dump_scale(stream, bpl, false, std::nullopt, 5U);
+    flx::hex_dump_scale(stream, bpl, false, false, 5U);
     std::string linebuffer;
 // Test first row.
 // 00
@@ -930,7 +998,7 @@ TEST_F(test_free, fct_hex_dump_scale_10)
 {
     std::stringstream stream;
     const DWord bpl = 15U; // bytes per line
-    flx::hex_dump_scale(stream, bpl, true, std::nullopt, 5U);
+    flx::hex_dump_scale(stream, bpl, true, false, 5U);
     std::string linebuffer;
 // Test first row.
 // 00                                              0
@@ -960,6 +1028,47 @@ TEST_F(test_free, fct_hex_dump_scale_10)
     EXPECT_EQ(tokens[tokens.size() - 3].size(), 5U); // ascii char count
     EXPECT_EQ(tokens[tokens.size() - 2].size(), 5U); // ascii char count
     EXPECT_EQ(tokens[tokens.size() - 1].size(), 5U); // ascii char count
+// Test third row.
+    ASSERT_FALSE(stream.good());
+}
+
+// Test scale with 13 bytes per line, no address, with ascii, extra space
+// each 5 bytes.
+TEST_F(test_free, fct_hex_dump_scale_14)
+{
+    std::stringstream stream;
+    const DWord bpl = 13U; // bytes per line
+    flx::hex_dump_scale(stream, bpl, true, false, 5U);
+    std::string linebuffer;
+// Test first row.
+// 00                                        0
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
+    auto tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 57);
+    ASSERT_EQ(tokens.size(), 2);
+    EXPECT_NE(linebuffer[0], ' '); // first hex digit
+    EXPECT_NE(linebuffer[1], ' '); // last hex digit
+    EXPECT_EQ(linebuffer[3], ' '); // first hex padding
+    EXPECT_EQ(linebuffer[39], ' '); // last hex padding
+    EXPECT_NE(linebuffer[42], ' '); // first ascii
+    EXPECT_EQ(tokens[0], "00"); // first byte
+// Test second row.
+// 00 01 02 03 04  05 06 07 08 09  0A 0B 0C  01234 56789 ABC
+    ASSERT_TRUE(stream.good());
+    std::getline(stream, linebuffer);
+    DebugOutput(1, linebuffer);
+    tokens = split(linebuffer, ' ');
+    ASSERT_EQ(linebuffer.size(), 57);
+    ASSERT_EQ(tokens.size(), bpl + 3);
+    EXPECT_NE(linebuffer[0], ' '); // first hex digit
+    EXPECT_NE(linebuffer[39], ' '); // last hex digit
+    EXPECT_EQ(tokens[0], "00"); // first byte
+    EXPECT_EQ(tokens[tokens.size() - 4], "0C"); // last byte
+    EXPECT_EQ(tokens[tokens.size() - 3].size(), 5U); // ascii char count
+    EXPECT_EQ(tokens[tokens.size() - 2].size(), 5U); // ascii char count
+    EXPECT_EQ(tokens[tokens.size() - 1].size(), 3U); // ascii char count
 // Test third row.
     ASSERT_FALSE(stream.good());
 }
@@ -1669,6 +1778,98 @@ TEST_F(test_free, fct_get_hex_dump_properties_13)
         { 1, 60, { HexDumpType::AsciiChar, false, 6, 28, 63, 0x0014 }},
         { 1, 63, { HexDumpType::AsciiChar, false, 6, 28, 63, 0x0017 }},
         { 1, 64, { HexDumpType::NONE, false, 6, 28, 63 }},
+    }};
+
+    testHexDumpProperties(patterns);
+}
+
+// 27 hex bytes, no address, with ascii, 13 bytes per line, offset 4.
+// extra space each 5 bytes.
+TEST_F(test_free, fct_get_hex_dump_properties_14)
+{
+    using flx::HexDumpType;
+
+    const sHexDumpPropertiesTestPatterns patterns =
+    {
+    //  size   bpl  ASCI? addr? addr    extraSpace
+        27LLU, 13U, true, false, 0x00C7, 5, {
+// Test first row
+//             00  01 02 03 04 05  06 07 08      _ _____ ___
+        { 0, 0, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 1, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 9, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 10, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 11, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 12, { HexDumpType::HexByte, true, 12, 39, 56, 0x00C7 }},
+        { 0, 13, { HexDumpType::HexByte, false, 12, 39, 56, 0x00C7 }},
+        { 0, 14, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 15, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 16, { HexDumpType::HexByte, true, 12, 39, 56, 0x00C8 }},
+        { 0, 17, { HexDumpType::HexByte, false, 12, 39, 56, 0x00C8 }},
+        { 0, 18, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 28, { HexDumpType::HexByte, true, 12, 39, 56, 0x00CC }},
+        { 0, 29, { HexDumpType::HexByte, false, 12, 39, 56, 0x00CC }},
+        { 0, 30, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 31, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 32, { HexDumpType::HexByte, true, 12, 39, 56, 0x00CD }},
+        { 0, 33, { HexDumpType::HexByte, false, 12, 39, 56, 0x00CD }},
+        { 0, 34, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 38, { HexDumpType::HexByte, true, 12, 39, 56, 0x00CF }},
+        { 0, 39, { HexDumpType::HexByte, false, 12, 39, 56, 0x00CF }},
+        { 0, 40, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 45, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 46, { HexDumpType::AsciiChar, false, 12, 39, 56, 0x00C7 }},
+        { 0, 47, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 48, { HexDumpType::AsciiChar, false, 12, 39, 56, 0x00C8 }},
+        { 0, 52, { HexDumpType::AsciiChar, false, 12, 39, 56, 0x00CC }},
+        { 0, 53, { HexDumpType::NONE, false, 12, 39, 56 }},
+        { 0, 54, { HexDumpType::AsciiChar, false, 12, 39, 56, 0x00CD }},
+        { 0, 56, { HexDumpType::AsciiChar, false, 12, 39, 56, 0x00CF }},
+        { 0, 57, { HexDumpType::NONE, false, 12, 39, 56 }},
+// Test second row
+// 09 0A 0B 0C 0D  0E 0F 10 11 12  13 14 15  _____ _____ ___
+        { 1, 0, { HexDumpType::HexByte, true, 0, 39, 56, 0x00D0 }},
+        { 1, 1, { HexDumpType::HexByte, false, 0, 39, 56, 0x00D0 }},
+        { 1, 2, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 12, { HexDumpType::HexByte, true, 0, 39, 56, 0x00D4 }},
+        { 1, 13, { HexDumpType::HexByte, false, 0, 39, 56, 0x00D4 }},
+        { 1, 14, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 15, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 16, { HexDumpType::HexByte, true, 0, 39, 56, 0x00D5 }},
+        { 1, 17, { HexDumpType::HexByte, false, 0, 39, 56, 0x00D5 }},
+        { 1, 18, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 28, { HexDumpType::HexByte, true, 0, 39, 56, 0x00D9 }},
+        { 1, 29, { HexDumpType::HexByte, false, 0, 39, 56, 0x00D9 }},
+        { 1, 30, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 31, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 32, { HexDumpType::HexByte, true, 0, 39, 56, 0x00DA }},
+        { 1, 33, { HexDumpType::HexByte, false, 0, 39, 56, 0x00DA }},
+        { 1, 34, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 38, { HexDumpType::HexByte, true, 0, 39, 56, 0x00DC }},
+        { 1, 39, { HexDumpType::HexByte, false, 0, 39, 56, 0x00DC }},
+        { 1, 40, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 41, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 42, { HexDumpType::AsciiChar, false, 0, 39, 56, 0x00D0 }},
+        { 1, 46, { HexDumpType::AsciiChar, false, 0, 39, 56, 0x00D4 }},
+        { 1, 47, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 48, { HexDumpType::AsciiChar, false, 0, 39, 56, 0x00D5 }},
+        { 1, 52, { HexDumpType::AsciiChar, false, 0, 39, 56, 0x00D9 }},
+        { 1, 53, { HexDumpType::NONE, false, 0, 39, 56 }},
+        { 1, 54, { HexDumpType::AsciiChar, false, 0, 39, 56, 0x00DA }},
+        { 1, 56, { HexDumpType::AsciiChar, false, 0, 39, 56, 0x00DC }},
+        { 1, 57, { HexDumpType::NONE, false, 0, 39, 56 }},
+// Test third row
+// 16 17 18 19 1A                            _____
+        { 2, 0, { HexDumpType::HexByte, true, 0, 13, 46, 0x00DD }},
+        { 2, 1, { HexDumpType::HexByte, false, 0, 13, 46, 0x00DD }},
+        { 2, 2, { HexDumpType::NONE, false, 0, 13, 46 }},
+        { 2, 12, { HexDumpType::HexByte, true, 0, 13, 46, 0x00E1 }},
+        { 2, 13, { HexDumpType::HexByte, false, 0, 13, 46, 0x00E1 }},
+        { 2, 14, { HexDumpType::NONE, false, 0, 13, 46 }},
+        { 2, 41, { HexDumpType::NONE, false, 0, 13, 46 }},
+        { 2, 42, { HexDumpType::AsciiChar, false, 0, 13, 46, 0x00DD }},
+        { 2, 46, { HexDumpType::AsciiChar, false, 0, 13, 46, 0x00E1 }},
+        { 2, 47, { HexDumpType::NONE, false, 0, 13, 46 }},
     }};
 
     testHexDumpProperties(patterns);

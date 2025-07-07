@@ -50,11 +50,12 @@ namespace flx
     extern void hex_dump(std::ostream &os, const Byte *data, DWord size,
             DWord bytesPerLine,
             bool withAscii = true,
-            std::optional<DWord> startAddress = std::nullopt,
+            bool isDisplayAddress = false,
+            DWord startAddress = 0x0000U,
             std::optional<DWord> extraSpace = std::nullopt);
     extern void hex_dump_scale(std::ostream &os, DWord bytesPerLine,
             bool withAscii = true,
-            std::optional<DWord> startAddress = std::nullopt,
+            bool isDisplayAddress = false,
             std::optional<DWord> extraSpace = std::nullopt);
 
     enum class HexDumpType : uint8_t
