@@ -45,15 +45,13 @@ public:
     CReadMemory &operator=(CReadMemory &&src) = delete;
     void Execute() override;
 
-    Word GetStartAddress() const;
-    Word GetSize() const;
+    BInterval<DWord> GetAddressRange() const;
     std::vector<Byte> GetData() const;
     bool HasUpdate();
 
 protected:
     Memory &memory;
-    Word start;
-    Word size;
+    BInterval<DWord> addressRange;
     std::vector<Byte> data;
     std::atomic<bool> hasUpdate;
     mutable std::mutex mutex;

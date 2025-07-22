@@ -28,10 +28,9 @@
 
 
 CReadMemory::CReadMemory(Memory &p_memory,
-        const BInterval<DWord> &addressRange)
+        const BInterval<DWord> &p_addressRange)
     : memory(p_memory)
-    , start(static_cast<Word>(addressRange.lower()))
-    , size(static_cast<Word>(width(addressRange) + 1U))
+    , addressRange(p_addressRange)
     , hasUpdate{}
 {
 }
@@ -39,20 +38,16 @@ CReadMemory::CReadMemory(Memory &p_memory,
 void CReadMemory::Execute()
 {
     std::lock_guard<std::mutex> guard(mutex);
+    auto size = width(addressRange) + 1U;
 
     data.resize(size);
-    memory.CopyTo(data.data(), start, static_cast<DWord>(data.size()));
+    memory.CopyTo(data.data(), addressRange.lower(), size);
     hasUpdate.store(true, std::memory_order_relaxed);
 }
 
-Word CReadMemory::GetStartAddress() const
+BInterval<DWord> CReadMemory::GetAddressRange() const
 {
-    return start;
-}
-
-Word CReadMemory::GetSize() const
-{
-    return size;
+    return addressRange;
 }
 
 std::vector<Byte> CReadMemory::GetData() const
