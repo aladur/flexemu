@@ -52,15 +52,15 @@ namespace flx
             const Byte *data,
             DWord size,
             DWord bytesPerLine,
-            bool withAscii = true,
-            bool isDisplayAddress = false,
-            DWord startAddress = 0x0000U,
+            bool withAscii,
+            bool isDisplayAddress,
+            DWord startAddress,
             std::optional<DWord> extraSpace = std::nullopt);
     extern void hex_dump_scale(
             std::ostream &os,
             DWord bytesPerLine,
-            bool withAscii = true,
-            bool isDisplayAddress = false,
+            bool withAscii,
+            bool isDisplayAddress,
             std::optional<DWord> extraSpace = std::nullopt);
 
     enum class HexDumpType : uint8_t
@@ -86,9 +86,9 @@ namespace flx
             DWord column,
             size_t size,
             DWord bytesPerLine,
-            bool withAscii = true,
-            bool isDisplayAddress = true,
-            DWord startAddress = 0U,
+            bool withAscii,
+            bool isDisplayAddress,
+            DWord startAddress,
             std::optional<DWord> extraSpace = std::nullopt);
 
     extern std::optional<std::pair<DWord, DWord> >
@@ -96,11 +96,11 @@ namespace flx
             DWord address,
             size_t size,
             DWord bytesPerLine,
-            bool withAscii = true,
-            bool isDisplayAddress = true,
-            bool isAscii = false,
-            bool isUpperNibble = true,
-            DWord startAddress = 0U,
+            bool withAscii,
+            bool isDisplayAddress,
+            bool isAscii,
+            bool isUpperNibble,
+            DWord startAddress,
             std::optional<DWord> extraSpace = std::nullopt);
 }
 

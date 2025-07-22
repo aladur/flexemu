@@ -214,8 +214,8 @@ TEST_F(test_free, fct_hex_dump_0)
     ASSERT_FALSE(stream2.good());
     std::stringstream stream3;
     EXPECT_THAT([&](){
-        flx::hex_dump(stream3, data.data(), data.size(), 0U, false); },
-        testing::Throws<FlexException>());
+        flx::hex_dump(stream3, data.data(), data.size(), 0U, false, false, 0U);
+        }, testing::Throws<FlexException>());
 }
 
 // 32 hex bytes, with address, with ascii, 16 bytes per line, offset 4.
@@ -387,7 +387,7 @@ TEST_F(test_free, fct_hex_dump_5)
     data.resize(8U);
     std::iota(data.begin(), data.end(), '\0');
     std::stringstream stream;
-    flx::hex_dump(stream, data.data(), data.size(), bpl, false);
+    flx::hex_dump(stream, data.data(), data.size(), bpl, false, false, 0U);
     std::string linebuffer;
 // Test first row.
 // 00 01 02 03 04 05 06 07
@@ -928,7 +928,7 @@ TEST_F(test_free, fct_hex_dump_scale_5)
 {
     std::stringstream stream;
     const DWord bpl = 8U; // bytes per line
-    flx::hex_dump_scale(stream, bpl, false);
+    flx::hex_dump_scale(stream, bpl, false, false);
     std::string linebuffer;
 // Test first row.
 // 00
