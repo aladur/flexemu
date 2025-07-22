@@ -83,5 +83,17 @@ namespace flx
             bool isDisplayAddress = true,
             DWord startAddress = 0U,
             std::optional<DWord> extraSpace = std::nullopt);
+
+    extern std::optional<std::pair<DWord, DWord> >
+        get_hex_dump_position_for_address(
+            DWord address,
+            size_t size,
+            DWord bytesPerLine,
+            bool withAscii = true,
+            bool isDisplayAddress = true,
+            bool isAscii = false,
+            bool isUpperNibble = true,
+            DWord startAddress = 0U,
+            std::optional<DWord> extraSpace = std::nullopt);
 }
 #endif

@@ -30,6 +30,7 @@
 #include <cstring>
 #include <regex>
 #include <optional>
+#include <utility>
 #include <fmt/format.h>
 
 
@@ -382,4 +383,62 @@ flx::sHexDumpProperties flx::get_hex_dump_properties(
     }
 
     return result;
+}
+
+// Return row, column for a given address within a hex dump.
+// parameters:
+//    address:      Address for which to return row, column
+//    size:         Byte size of data
+//    bytesPerLine: Number of bytes to scale on one line.
+//    withAscii:    If true the output has ASCII values on the right.
+//    isDisplayAddress: If true the address is output on the right.
+//    isAscii:      If true return row, column within ASCII values.
+//                  If false return row, column within HEX values.
+//    startAddress: The start address of hex dump
+//    extraSpace:   Optional, there are extra space after "extraSpace"
+//                  bytes.
+// If address is not within valid range {0U, 0U} is returned;
+// If withAscii is false and isAscii is true return row, column within
+// HEX values.
+std::optional<std::pair<DWord, DWord> > flx::get_hex_dump_position_for_address(
+        DWord address,
+        size_t size,
+        DWord bytesPerLine,
+        bool withAscii,
+        bool isDisplayAddress,
+        bool isAscii,
+        bool isUpperNibble,
+        DWord startAddress,
+        std::optional<DWord> extraSpace)
+{
+    const auto offset = startAddress % bytesPerLine;
+    const bool isExtraSpc = extraSpace.has_value();
+
+    if (address < startAddress || address >= startAddress + size)
+    {
+         return std::nullopt;
+    }
+
+    std::pair<DWord, DWord> row_col;
+    row_col.first = (address - (startAddress - offset)) / bytesPerLine;
+    const auto indexInRow = (address - (startAddress - offset)) % bytesPerLine;
+    const auto extraForAddress =
+            isExtraSpc ? indexInRow / extraSpace.value() : 0U;
+    row_col.second = isDisplayAddress ? 6U : 0U;
+    if (withAscii && isAscii)
+    {
+        // Calculate column within ASCII values.
+        const auto extraInRow =
+            isExtraSpc ? (bytesPerLine - 1U) / extraSpace.value() : 0U;
+        row_col.second += 3U * bytesPerLine + extraInRow + 1U + indexInRow +
+            extraForAddress;
+    }
+    else
+    {
+        // Calculate column within HEX values.
+        row_col.second += 3U * indexInRow + extraForAddress +
+            (isUpperNibble ? 0U : 1U);
+    }
+
+    return row_col;
 }

@@ -19,8 +19,8 @@ jobs:
         # Use bash login shell sourcing ~/.bash_profile
         shell: bash -leo pipefail {0}
     env:
-      CLANG_TIDY: clang-tidy-21
-      RUN_CLANG_TIDY: run-clang-tidy-21
+      CLANG_TIDY: clang-tidy-20
+      RUN_CLANG_TIDY: run-clang-tidy-20
       RUN_CLANG_TIDY_PROCESSES: 5
 
     steps:
@@ -32,14 +32,18 @@ jobs:
       - name: Install packages (Linux)
         if: runner.os == 'Linux'
         # Avoid 'apt-get upgrade'. It takes a long time.
+        # See link how to install LLVM nightly package
+        # https://apt.llvm.org/
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository -y "deb https://apt.llvm.org/noble/ llvm-toolchain-noble main"
+          sudo add-apt-repository -y "deb https://apt.llvm.org/noble/ llvm-toolchain-noble-20 main"
           sudo apt-get update
           sudo apt list --upgradable
           sudo apt-get install build-essential qtbase5-dev qtbase5-dev-tools libqt5x11extras5-dev $CLANG_TIDY
       - name: Install packages (MacOS)
         if: runner.os == 'macOS'
+        # See link how to install LLVM with latest version using homebrew
+        # https://formulae.brew.sh/formula/llvm
         run: |
           echo "CLANG_TIDY=clang-tidy" >> $GITHUB_ENV
           echo "RUN_CLANG_TIDY=run-clang-tidy" >> $GITHUB_ENV
@@ -48,7 +52,7 @@ jobs:
           export PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/qt@5/lib/pkgconfig"
           echo "$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           echo "$HOMEBREW_PREFIX/opt/qt@5/bin" >> $GITHUB_PATH
-          echo "$HOMEBREW_PREFIX/opt/llvm@19/bin" >> $GITHUB_PATH
+          echo "$HOMEBREW_PREFIX/opt/llvm@20/bin" >> $GITHUB_PATH
 
       - name: Context (Linux)
         if: runner.os == 'Linux'

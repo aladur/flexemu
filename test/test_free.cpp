@@ -30,6 +30,7 @@
 #include <vector>
 #include <regex>
 #include <numeric>
+#include <utility>
 #include <sstream>
 
 class test_free : public test_DebugOutputFixture
@@ -88,6 +89,46 @@ protected:
                     patterns.startAddress, patterns.extraSpace);
             SCOPED_TRACE(scope.str());
             checkProperties(props, expected);
+        }
+    }
+
+    struct sHexDumpPosForAddrTestAddressAndResult
+    {
+        DWord address{};
+        bool isAscii{};
+        bool isUpperNibble{};
+        std::optional<std::pair<DWord, DWord> > expected;
+    };
+
+    struct sHexDumpPosForAddrTestPatterns
+    {
+        size_t size{};
+        DWord bytesPerLine{};
+        bool withAscii{};
+        bool isDisplayAddress{};
+        DWord startAddress{};
+        std::optional<DWord> extraSpace{std::nullopt};
+        std::vector<sHexDumpPosForAddrTestAddressAndResult> params;
+    };
+
+    static void testHexDumpPosForAddr(
+            const sHexDumpPosForAddrTestPatterns &patterns)
+    {
+        for (const auto &[address, isAscii, isUpperNibble, expected] :
+                patterns.params)
+        {
+            std::stringstream scope;
+
+            scope << "address=0x" << std::hex << address <<
+                " isAscii=" << std::boolalpha << isAscii <<
+                " isUpperNibble=" << std::boolalpha << isUpperNibble;
+            const auto row_col = flx::get_hex_dump_position_for_address(
+                    address, patterns.size, patterns.bytesPerLine,
+                    patterns.withAscii, patterns.isDisplayAddress,
+                    isAscii, isUpperNibble,
+                    patterns.startAddress, patterns.extraSpace);
+            SCOPED_TRACE(scope.str());
+            EXPECT_EQ(row_col, expected);
         }
     }
 };
@@ -1873,4 +1914,517 @@ TEST_F(test_free, fct_get_hex_dump_properties_14)
     }};
 
     testHexDumpProperties(patterns);
+}
+
+// 32 hex bytes, with address, with ascii, 16 bytes per line, offset 4.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_1)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI? addr? addr    extraSpace
+        32LLU, 16U, true, true, 0x0004, std::nullopt, {
+    //    addr   ISASC? ISUPN? row, col
+        { 0x00U, false, false, std::nullopt },
+        { 0x24U, false, false, std::nullopt },
+        { 0x00U, true, false, std::nullopt },
+        { 0x24U, true, false, std::nullopt },
+// 0000              00 01 02 03 04 05 06 07 08 09 0A 0B      ____________
+        { 0x04U, false, true, std::make_optional(std::make_pair(0U, 18U)) },
+        { 0x07U, false, true, std::make_optional(std::make_pair(0U, 27U)) },
+        { 0x0FU, false, true, std::make_optional(std::make_pair(0U, 51U)) },
+        { 0x04U, false, false, std::make_optional(std::make_pair(0U, 19U)) },
+        { 0x07U, false, false, std::make_optional(std::make_pair(0U, 28U)) },
+        { 0x0FU, false, false, std::make_optional(std::make_pair(0U, 52U)) },
+        { 0x04U, true, false, std::make_optional(std::make_pair(0U, 59U)) },
+        { 0x07U, true, false, std::make_optional(std::make_pair(0U, 62U)) },
+        { 0x0FU, true, false, std::make_optional(std::make_pair(0U, 70U)) },
+// 0010  0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B  ________________
+        { 0x10U, false, true, std::make_optional(std::make_pair(1U, 6U)) },
+        { 0x17U, false, true, std::make_optional(std::make_pair(1U, 27U)) },
+        { 0x1FU, false, true, std::make_optional(std::make_pair(1U, 51U)) },
+        { 0x10U, false, false, std::make_optional(std::make_pair(1U, 7U)) },
+        { 0x17U, false, false, std::make_optional(std::make_pair(1U, 28U)) },
+        { 0x1FU, false, false, std::make_optional(std::make_pair(1U, 52U)) },
+        { 0x10U, true, false, std::make_optional(std::make_pair(1U, 55U)) },
+        { 0x17U, true, false, std::make_optional(std::make_pair(1U, 62U)) },
+        { 0x1FU, true, false, std::make_optional(std::make_pair(1U, 70U)) },
+// 0020  1C 1D 1E 1F                                      ____
+        { 0x20U, false, true, std::make_optional(std::make_pair(2U, 6U)) },
+        { 0x23U, false, true, std::make_optional(std::make_pair(2U, 15U)) },
+        { 0x20U, false, false, std::make_optional(std::make_pair(2U, 7U)) },
+        { 0x23U, false, false, std::make_optional(std::make_pair(2U, 16U)) },
+        { 0x20U, true, false, std::make_optional(std::make_pair(2U, 55U)) },
+        { 0x23U, true, false, std::make_optional(std::make_pair(2U, 58U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 16 hex bytes, with address, with ascii, 16 bytes per line, offset 0.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_2)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI? addr? addr    extraSpace
+        16LLU, 16U, true, true, 0x0100, std::nullopt, {
+    //    addr    ISASC? row, col
+        { 0x0FFU, false, false, std::nullopt },
+        { 0x110U, false, false, std::nullopt },
+        { 0x0FFU, true, false, std::nullopt },
+        { 0x110U, true, false, std::nullopt },
+// 0100  00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  ________________
+        { 0x100U, false, true, std::make_optional(std::make_pair(0U, 6U)) },
+        { 0x107U, false, true, std::make_optional(std::make_pair(0U, 27U)) },
+        { 0x10FU, false, true, std::make_optional(std::make_pair(0U, 51U)) },
+        { 0x100U, false, false, std::make_optional(std::make_pair(0U, 7U)) },
+        { 0x107U, false, false, std::make_optional(std::make_pair(0U, 28U)) },
+        { 0x10FU, false, false, std::make_optional(std::make_pair(0U, 52U)) },
+        { 0x100U, true, false, std::make_optional(std::make_pair(0U, 55U)) },
+        { 0x107U, true, false, std::make_optional(std::make_pair(0U, 62U)) },
+        { 0x10FU, true, false, std::make_optional(std::make_pair(0U, 70U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 4 hex bytes, with address, with ascii, 8 bytes per line, offset 2.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_3)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size  bpl ASCI? addr? addr    extraSpace
+        4LLU, 8U, true, true, 0x0202, std::nullopt, {
+    //    addr    ISASC? row, col
+        { 0x201U, false, false, std::nullopt },
+        { 0x206U, false, false, std::nullopt },
+        { 0x201U, true, false, std::nullopt },
+        { 0x206U, true, false, std::nullopt },
+// 0200        00 01 02 03          ____
+        { 0x202U, false, true, std::make_optional(std::make_pair(0U, 12U)) },
+        { 0x205U, false, true, std::make_optional(std::make_pair(0U, 21U)) },
+        { 0x202U, false, false, std::make_optional(std::make_pair(0U, 13U)) },
+        { 0x205U, false, false, std::make_optional(std::make_pair(0U, 22U)) },
+        { 0x202U, true, false, std::make_optional(std::make_pair(0U, 33U)) },
+        { 0x205U, true, false, std::make_optional(std::make_pair(0U, 36U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 8 hex bytes, with address, no ascii, 8 bytes per line, offset 0.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_4)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size  bpl ASCI?  addr? addr   extraSpace
+        8LLU, 8U, false, true, 0x300, std::nullopt, {
+    //    addr    ISASC? row, col
+        { 0x2FFU, false, false, std::nullopt },
+        { 0x308U, false, false, std::nullopt },
+        { 0x2FFU, true, false, std::nullopt },
+        { 0x308U, true, false, std::nullopt },
+// 0300  00 01 02 03 04 05 06 07
+        { 0x300U, false, true, std::make_optional(std::make_pair(0U, 6U)) },
+        { 0x307U, false, true, std::make_optional(std::make_pair(0U, 27U)) },
+        { 0x300U, false, false, std::make_optional(std::make_pair(0U, 7U)) },
+        { 0x307U, false, false, std::make_optional(std::make_pair(0U, 28U)) },
+        { 0x300U, true, true, std::make_optional(std::make_pair(0U, 6U)) },
+        { 0x307U, true, true, std::make_optional(std::make_pair(0U, 27U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 8 hex bytes, no address, no ascii, 8 bytes per line, offset 0.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_5)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size  bpl ASCI?  addr?  addr   extraSpace
+        8LLU, 8U, false, false, 0x300, std::nullopt, {
+    //    addr    ISASC? row, col
+        { 0x2FFU, false, false, std::nullopt },
+        { 0x308U, false, false, std::nullopt },
+        { 0x2FFU, true, false, std::nullopt },
+        { 0x308U, true, false, std::nullopt },
+// 00 01 02 03 04 05 06 07
+        { 0x300U, false, true, std::make_optional(std::make_pair(0U, 0U)) },
+        { 0x307U, false, true, std::make_optional(std::make_pair(0U, 21U)) },
+        { 0x300U, false, false, std::make_optional(std::make_pair(0U, 1U)) },
+        { 0x307U, false, false, std::make_optional(std::make_pair(0U, 22U)) },
+        { 0x300U, true, true, std::make_optional(std::make_pair(0U, 0U)) },
+        { 0x307U, true, true, std::make_optional(std::make_pair(0U, 21U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 20 hex bytes, with address, no ascii, 13 bytes per line, offset 9.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_6)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI?  addr? addr   extraSpace
+        20LLU, 13U, false, true, 0x100, std::nullopt, {
+    //    addr    ISASC? row, col
+        { 0x0FFU, false, false, std::nullopt },
+        { 0x114U, false, false, std::nullopt },
+        { 0x0FFU, true, false, std::nullopt },
+        { 0x114U, true, false, std::nullopt },
+// 00F7                             00 01 02 03
+        { 0x100U, false, true, std::make_optional(std::make_pair(0U, 33U)) },
+        { 0x103U, false, true, std::make_optional(std::make_pair(0U, 42U)) },
+        { 0x100U, false, false, std::make_optional(std::make_pair(0U, 34U)) },
+        { 0x103U, false, false, std::make_optional(std::make_pair(0U, 43U)) },
+        { 0x100U, true, true, std::make_optional(std::make_pair(0U, 33U)) },
+        { 0x103U, true, true, std::make_optional(std::make_pair(0U, 42U)) },
+// 0104  04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+        { 0x104U, false, true, std::make_optional(std::make_pair(1U, 6U)) },
+        { 0x10AU, false, true, std::make_optional(std::make_pair(1U, 24U)) },
+        { 0x110U, false, true, std::make_optional(std::make_pair(1U, 42U)) },
+        { 0x104U, false, false, std::make_optional(std::make_pair(1U, 7U)) },
+        { 0x10AU, false, false, std::make_optional(std::make_pair(1U, 25U)) },
+        { 0x110U, false, false, std::make_optional(std::make_pair(1U, 43U)) },
+        { 0x104U, true, true, std::make_optional(std::make_pair(1U, 6U)) },
+        { 0x10AU, true, true, std::make_optional(std::make_pair(1U, 24U)) },
+        { 0x110U, true, true, std::make_optional(std::make_pair(1U, 42U)) },
+// 0111  11 12 13
+        { 0x111U, false, true, std::make_optional(std::make_pair(2U, 6U)) },
+        { 0x113U, false, true, std::make_optional(std::make_pair(2U, 12U)) },
+        { 0x111U, false, false, std::make_optional(std::make_pair(2U, 7U)) },
+        { 0x113U, false, false, std::make_optional(std::make_pair(2U, 13U)) },
+        { 0x111U, true, true, std::make_optional(std::make_pair(2U, 6U)) },
+        { 0x113U, true, true, std::make_optional(std::make_pair(2U, 12U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 20 hex bytes, with address, with ascii, 13 bytes per line, offset 9.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_7)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI? addr? addr   extraSpace
+        20LLU, 13U, true, true, 0x100, std::nullopt, {
+    //    addr    ISASC? row, col
+        { 0x0FFU, false, false, std::nullopt },
+        { 0x114U, false, false, std::nullopt },
+        { 0x0FFU, true, false, std::nullopt },
+        { 0x114U, true, false, std::nullopt },
+// 00F7                             00 01 02 03           ____
+        { 0x100U, false, true, std::make_optional(std::make_pair(0U, 33U)) },
+        { 0x103U, false, true, std::make_optional(std::make_pair(0U, 42U)) },
+        { 0x100U, false, false, std::make_optional(std::make_pair(0U, 34U)) },
+        { 0x103U, false, false, std::make_optional(std::make_pair(0U, 43U)) },
+        { 0x100U, true, false, std::make_optional(std::make_pair(0U, 55U)) },
+        { 0x103U, true, false, std::make_optional(std::make_pair(0U, 58U)) },
+// 0104  04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10  _____________
+        { 0x104U, false, true, std::make_optional(std::make_pair(1U, 6U)) },
+        { 0x10AU, false, true, std::make_optional(std::make_pair(1U, 24U)) },
+        { 0x110U, false, true, std::make_optional(std::make_pair(1U, 42U)) },
+        { 0x104U, false, false, std::make_optional(std::make_pair(1U, 7U)) },
+        { 0x10AU, false, false, std::make_optional(std::make_pair(1U, 25U)) },
+        { 0x110U, false, false, std::make_optional(std::make_pair(1U, 43U)) },
+        { 0x104U, true, false, std::make_optional(std::make_pair(1U, 46U)) },
+        { 0x10AU, true, false, std::make_optional(std::make_pair(1U, 52U)) },
+        { 0x110U, true, false, std::make_optional(std::make_pair(1U, 58U)) },
+// 0111  11 12 13                                ___
+        { 0x111U, false, true, std::make_optional(std::make_pair(2U, 6U)) },
+        { 0x113U, false, true, std::make_optional(std::make_pair(2U, 12U)) },
+        { 0x111U, false, false, std::make_optional(std::make_pair(2U, 7U)) },
+        { 0x113U, false, false, std::make_optional(std::make_pair(2U, 13U)) },
+        { 0x111U, true, false, std::make_optional(std::make_pair(2U, 46U)) },
+        { 0x113U, true, false, std::make_optional(std::make_pair(2U, 48U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 27 hex bytes, with address, with ascii, 13 bytes per line, offset 4.
+// extra space each 5 bytes.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_8)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI? addr? addr   extraSpace
+        27LLU, 13U, true, true, 0x0C7, 5U, {
+    //    addr    ISASC? row, col
+        { 0x0C6U, false, false, std::nullopt },
+        { 0x0E2U, false, false, std::nullopt },
+        { 0x0C6U, true, false, std::nullopt },
+        { 0x0E2U, true, false, std::nullopt },
+// 00C3              00  01 02 03 04 05  06 07 08      _ _____ ___
+        { 0x0C7U, false, true, std::make_optional(std::make_pair(0U, 18U)) },
+        { 0x0C8U, false, true, std::make_optional(std::make_pair(0U, 22U)) },
+        { 0x0CCU, false, true, std::make_optional(std::make_pair(0U, 34U)) },
+        { 0x0CDU, false, true, std::make_optional(std::make_pair(0U, 38U)) },
+        { 0x0CFU, false, true, std::make_optional(std::make_pair(0U, 44U)) },
+        { 0x0C7U, false, false, std::make_optional(std::make_pair(0U, 19U)) },
+        { 0x0C8U, false, false, std::make_optional(std::make_pair(0U, 23U)) },
+        { 0x0CCU, false, false, std::make_optional(std::make_pair(0U, 35U)) },
+        { 0x0CDU, false, false, std::make_optional(std::make_pair(0U, 39U)) },
+        { 0x0CFU, false, false, std::make_optional(std::make_pair(0U, 45U)) },
+        { 0x0C7U, true, false, std::make_optional(std::make_pair(0U, 52U)) },
+        { 0x0C8U, true, false, std::make_optional(std::make_pair(0U, 54U)) },
+        { 0x0CCU, true, false, std::make_optional(std::make_pair(0U, 58U)) },
+        { 0x0CDU, true, false, std::make_optional(std::make_pair(0U, 60U)) },
+        { 0x0CFU, true, false, std::make_optional(std::make_pair(0U, 62U)) },
+// 00D0  09 0A 0B 0C 0D  0E 0F 10 11 12  13 14 15  _____ _____ ___
+        { 0x0D0U, false, true, std::make_optional(std::make_pair(1U, 6U)) },
+        { 0x0D4U, false, true, std::make_optional(std::make_pair(1U, 18U)) },
+        { 0x0D5U, false, true, std::make_optional(std::make_pair(1U, 22U)) },
+        { 0x0D9U, false, true, std::make_optional(std::make_pair(1U, 34U)) },
+        { 0x0DAU, false, true, std::make_optional(std::make_pair(1U, 38U)) },
+        { 0x0DCU, false, true, std::make_optional(std::make_pair(1U, 44U)) },
+        { 0x0D0U, false, false, std::make_optional(std::make_pair(1U, 7U)) },
+        { 0x0D4U, false, false, std::make_optional(std::make_pair(1U, 19U)) },
+        { 0x0D5U, false, false, std::make_optional(std::make_pair(1U, 23U)) },
+        { 0x0D9U, false, false, std::make_optional(std::make_pair(1U, 35U)) },
+        { 0x0DAU, false, false, std::make_optional(std::make_pair(1U, 39U)) },
+        { 0x0DCU, false, false, std::make_optional(std::make_pair(1U, 45U)) },
+        { 0x0D0U, true, false, std::make_optional(std::make_pair(1U, 48U)) },
+        { 0x0D4U, true, false, std::make_optional(std::make_pair(1U, 52U)) },
+        { 0x0D5U, true, false, std::make_optional(std::make_pair(1U, 54U)) },
+        { 0x0D9U, true, false, std::make_optional(std::make_pair(1U, 58U)) },
+        { 0x0DAU, true, false, std::make_optional(std::make_pair(1U, 60U)) },
+        { 0x0DCU, true, false, std::make_optional(std::make_pair(1U, 62U)) },
+// 00DD  16 17 18 19 1A                            _____
+        { 0x0DDU, false, true, std::make_optional(std::make_pair(2U, 6U)) },
+        { 0x0E1U, false, true, std::make_optional(std::make_pair(2U, 18U)) },
+        { 0x0DDU, false, false, std::make_optional(std::make_pair(2U, 7U)) },
+        { 0x0E1U, false, false, std::make_optional(std::make_pair(2U, 19U)) },
+        { 0x0DDU, true, false, std::make_optional(std::make_pair(2U, 48U)) },
+        { 0x0E1U, true, false, std::make_optional(std::make_pair(2U, 52U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 32 hex bytes, no address, no ascii, 13 bytes per line,
+// extra space each 5 bytes.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_9)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI?  addr?  addr  extraSpace
+        32LLU, 13U, false, false, 0x00, 5U, {
+    //    addr    ISASC? row, col
+        { 0x020U, false, false, std::nullopt },
+        { 0x020U, true, false, std::nullopt },
+// 00 01 02 03 04  05 06 07 08 09  0A 0B 0C
+        { 0x00U, false, true, std::make_optional(std::make_pair(0U, 0U)) },
+        { 0x04U, false, true, std::make_optional(std::make_pair(0U, 12U)) },
+        { 0x05U, false, true, std::make_optional(std::make_pair(0U, 16U)) },
+        { 0x09U, false, true, std::make_optional(std::make_pair(0U, 28U)) },
+        { 0x0AU, false, true, std::make_optional(std::make_pair(0U, 32U)) },
+        { 0x0CU, false, true, std::make_optional(std::make_pair(0U, 38U)) },
+        { 0x00U, false, false, std::make_optional(std::make_pair(0U, 1U)) },
+        { 0x04U, false, false, std::make_optional(std::make_pair(0U, 13U)) },
+        { 0x05U, false, false, std::make_optional(std::make_pair(0U, 17U)) },
+        { 0x09U, false, false, std::make_optional(std::make_pair(0U, 29U)) },
+        { 0x0AU, false, false, std::make_optional(std::make_pair(0U, 33U)) },
+        { 0x0CU, false, false, std::make_optional(std::make_pair(0U, 39U)) },
+        { 0x00U, true, true, std::make_optional(std::make_pair(0U, 0U)) },
+        { 0x04U, true, true, std::make_optional(std::make_pair(0U, 12U)) },
+        { 0x05U, true, true, std::make_optional(std::make_pair(0U, 16U)) },
+        { 0x09U, true, true, std::make_optional(std::make_pair(0U, 28U)) },
+        { 0x0AU, true, true, std::make_optional(std::make_pair(0U, 32U)) },
+        { 0x0CU, true, true, std::make_optional(std::make_pair(0U, 38U)) },
+// 0D 0E 0F 10 11  12 13 14 15 16  17 18 19
+        { 0x0DU, false, true, std::make_optional(std::make_pair(1U, 0U)) },
+        { 0x11U, false, true, std::make_optional(std::make_pair(1U, 12U)) },
+        { 0x12U, false, true, std::make_optional(std::make_pair(1U, 16U)) },
+        { 0x16U, false, true, std::make_optional(std::make_pair(1U, 28U)) },
+        { 0x17U, false, true, std::make_optional(std::make_pair(1U, 32U)) },
+        { 0x19U, false, true, std::make_optional(std::make_pair(1U, 38U)) },
+        { 0x0DU, false, false, std::make_optional(std::make_pair(1U, 1U)) },
+        { 0x11U, false, false, std::make_optional(std::make_pair(1U, 13U)) },
+        { 0x12U, false, false, std::make_optional(std::make_pair(1U, 17U)) },
+        { 0x16U, false, false, std::make_optional(std::make_pair(1U, 29U)) },
+        { 0x17U, false, false, std::make_optional(std::make_pair(1U, 33U)) },
+        { 0x19U, false, false, std::make_optional(std::make_pair(1U, 39U)) },
+        { 0x0DU, true, true, std::make_optional(std::make_pair(1U, 0U)) },
+        { 0x11U, true, true, std::make_optional(std::make_pair(1U, 12U)) },
+        { 0x12U, true, true, std::make_optional(std::make_pair(1U, 16U)) },
+        { 0x16U, true, true, std::make_optional(std::make_pair(1U, 28U)) },
+        { 0x17U, true, true, std::make_optional(std::make_pair(1U, 32U)) },
+        { 0x19U, true, true, std::make_optional(std::make_pair(1U, 38U)) },
+// 1A 1B 1C 1D 1E  1F
+        { 0x1AU, false, true, std::make_optional(std::make_pair(2U, 0U)) },
+        { 0x1EU, false, true, std::make_optional(std::make_pair(2U, 12U)) },
+        { 0x1FU, false, true, std::make_optional(std::make_pair(2U, 16U)) },
+        { 0x1AU, false, false, std::make_optional(std::make_pair(2U, 1U)) },
+        { 0x1EU, false, false, std::make_optional(std::make_pair(2U, 13U)) },
+        { 0x1FU, false, false, std::make_optional(std::make_pair(2U, 17U)) },
+        { 0x1AU, true, true, std::make_optional(std::make_pair(2U, 0U)) },
+        { 0x1EU, true, true, std::make_optional(std::make_pair(2U, 12U)) },
+        { 0x1FU, true, true, std::make_optional(std::make_pair(2U, 16U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 15 hex bytes, no address, with ascii, 15 bytes per line, offset 4
+// extra space each 5 bytes.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_10)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI? addr?  addr  extraSpace
+        15LLU, 15U, true, false, 0x00, 5U, {
+    //    addr    ISASC? row, col
+        { 0x020U, false, false, std::nullopt },
+        { 0x020U, true, false, std::nullopt },
+// 00 01 02 03 04  05 06 07 08 09  0A 0B 0C 0D 0E  _____ _____ _____
+        { 0x00U, false, true, std::make_optional(std::make_pair(0U, 0U)) },
+        { 0x04U, false, true, std::make_optional(std::make_pair(0U, 12U)) },
+        { 0x05U, false, true, std::make_optional(std::make_pair(0U, 16U)) },
+        { 0x09U, false, true, std::make_optional(std::make_pair(0U, 28U)) },
+        { 0x0AU, false, true, std::make_optional(std::make_pair(0U, 32U)) },
+        { 0x0EU, false, true, std::make_optional(std::make_pair(0U, 44U)) },
+        { 0x00U, false, false, std::make_optional(std::make_pair(0U, 1U)) },
+        { 0x04U, false, false, std::make_optional(std::make_pair(0U, 13U)) },
+        { 0x05U, false, false, std::make_optional(std::make_pair(0U, 17U)) },
+        { 0x09U, false, false, std::make_optional(std::make_pair(0U, 29U)) },
+        { 0x0AU, false, false, std::make_optional(std::make_pair(0U, 33U)) },
+        { 0x0EU, false, false, std::make_optional(std::make_pair(0U, 45U)) },
+        { 0x00U, true, false, std::make_optional(std::make_pair(0U, 48U)) },
+        { 0x04U, true, false, std::make_optional(std::make_pair(0U, 52U)) },
+        { 0x05U, true, false, std::make_optional(std::make_pair(0U, 54U)) },
+        { 0x09U, true, false, std::make_optional(std::make_pair(0U, 58U)) },
+        { 0x0AU, true, false, std::make_optional(std::make_pair(0U, 60U)) },
+        { 0x0EU, true, false, std::make_optional(std::make_pair(0U, 64U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 12 hex bytes, with address, with ascii, 15 bytes per line,
+// extra space each 3 bytes.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_11)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI?  addr? addr  extraSpace
+        12LLU, 15U, true,  true, 0x09, 3U, {
+    //    addr    ISASC? row, col
+        { 0x008U, false, false, std::nullopt },
+        { 0x015U, false, false, std::nullopt },
+        { 0x008U, true, false, std::nullopt },
+        { 0x015U, true, false, std::nullopt },
+// 0000                                00 01 02  03 04 05              ___ ___
+        { 0x09U, false, true, std::make_optional(std::make_pair(0U, 36U)) },
+        { 0x0BU, false, true, std::make_optional(std::make_pair(0U, 42U)) },
+        { 0x0CU, false, true, std::make_optional(std::make_pair(0U, 46U)) },
+        { 0x0EU, false, true, std::make_optional(std::make_pair(0U, 52U)) },
+        { 0x09U, false, false, std::make_optional(std::make_pair(0U, 37U)) },
+        { 0x0BU, false, false, std::make_optional(std::make_pair(0U, 43U)) },
+        { 0x0CU, false, false, std::make_optional(std::make_pair(0U, 47U)) },
+        { 0x0EU, false, false, std::make_optional(std::make_pair(0U, 53U)) },
+        { 0x09U, true, false, std::make_optional(std::make_pair(0U, 68U)) },
+        { 0x0BU, true, false, std::make_optional(std::make_pair(0U, 70U)) },
+        { 0x0CU, true, false, std::make_optional(std::make_pair(0U, 72U)) },
+        { 0x0EU, true, false, std::make_optional(std::make_pair(0U, 74U)) },
+// 000F  06 07 08  09 0A 0B                                ___ ___
+        { 0x0FU, false, true, std::make_optional(std::make_pair(1U, 6U)) },
+        { 0x11U, false, true, std::make_optional(std::make_pair(1U, 12U)) },
+        { 0x12U, false, true, std::make_optional(std::make_pair(1U, 16U)) },
+        { 0x14U, false, true, std::make_optional(std::make_pair(1U, 22U)) },
+        { 0x0FU, false, false, std::make_optional(std::make_pair(1U, 7U)) },
+        { 0x11U, false, false, std::make_optional(std::make_pair(1U, 13U)) },
+        { 0x12U, false, false, std::make_optional(std::make_pair(1U, 17U)) },
+        { 0x14U, false, false, std::make_optional(std::make_pair(1U, 23U)) },
+        { 0x0FU, true, false, std::make_optional(std::make_pair(1U, 56U)) },
+        { 0x11U, true, false, std::make_optional(std::make_pair(1U, 58U)) },
+        { 0x12U, true, false, std::make_optional(std::make_pair(1U, 60U)) },
+        { 0x14U, true, false, std::make_optional(std::make_pair(1U, 62U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 13 hex bytes, with address, with ascii, 15 bytes per line,
+// extra space each 3 bytes.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_12)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI?  addr? addr  extraSpace
+        13LLU, 15U, true,  true, 0x08, 3U, {
+    //    addr    ISASC? row, col
+        { 0x007U, false, false, std::nullopt },
+        { 0x015U, false, false, std::nullopt },
+        { 0x007U, true, false, std::nullopt },
+        { 0x015U, true, false, std::nullopt },
+// 0000                            00  01 02 03  04 05 06            _ ___ ___
+        { 0x08U, false, true, std::make_optional(std::make_pair(0U, 32U)) },
+        { 0x09U, false, true, std::make_optional(std::make_pair(0U, 36U)) },
+        { 0x0BU, false, true, std::make_optional(std::make_pair(0U, 42U)) },
+        { 0x0CU, false, true, std::make_optional(std::make_pair(0U, 46U)) },
+        { 0x0EU, false, true, std::make_optional(std::make_pair(0U, 52U)) },
+        { 0x08U, false, false, std::make_optional(std::make_pair(0U, 33U)) },
+        { 0x09U, false, false, std::make_optional(std::make_pair(0U, 37U)) },
+        { 0x0BU, false, false, std::make_optional(std::make_pair(0U, 43U)) },
+        { 0x0CU, false, false, std::make_optional(std::make_pair(0U, 47U)) },
+        { 0x0EU, false, false, std::make_optional(std::make_pair(0U, 53U)) },
+        { 0x08U, true, false, std::make_optional(std::make_pair(0U, 66U)) },
+        { 0x09U, true, false, std::make_optional(std::make_pair(0U, 68U)) },
+        { 0x0BU, true, false, std::make_optional(std::make_pair(0U, 70U)) },
+        { 0x0CU, true, false, std::make_optional(std::make_pair(0U, 72U)) },
+        { 0x0EU, true, false, std::make_optional(std::make_pair(0U, 74U)) },
+// 000F  07 08 09  0A 0B 0C  0D                            ___ ___ _
+        { 0x0FU, false, true, std::make_optional(std::make_pair(1U, 6U)) },
+        { 0x11U, false, true, std::make_optional(std::make_pair(1U, 12U)) },
+        { 0x12U, false, true, std::make_optional(std::make_pair(1U, 16U)) },
+        { 0x14U, false, true, std::make_optional(std::make_pair(1U, 22U)) },
+        { 0x0FU, false, false, std::make_optional(std::make_pair(1U, 7U)) },
+        { 0x11U, false, false, std::make_optional(std::make_pair(1U, 13U)) },
+        { 0x12U, false, false, std::make_optional(std::make_pair(1U, 17U)) },
+        { 0x14U, false, false, std::make_optional(std::make_pair(1U, 23U)) },
+        { 0x0FU, true, false, std::make_optional(std::make_pair(1U, 56U)) },
+        { 0x11U, true, false, std::make_optional(std::make_pair(1U, 58U)) },
+        { 0x12U, true, false, std::make_optional(std::make_pair(1U, 60U)) },
+        { 0x14U, true, false, std::make_optional(std::make_pair(1U, 62U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
+}
+
+// 16 hex bytes, with address, with ascii, 16 bytes per line, offset 8.
+// extra space each 8 bytes.
+TEST_F(test_free, fct_get_hex_dump_pos_for_addr_13)
+{
+    const sHexDumpPosForAddrTestPatterns patterns =
+    {
+    //  size   bpl  ASCI?  addr? addr  extraSpace
+        16LLU, 16U, true,  true, 0x08, 8U, {
+    //    addr    ISASC? row, col
+        { 0x007U, false, false, std::nullopt },
+        { 0x018U, false, false, std::nullopt },
+        { 0x007U, true, false, std::nullopt },
+        { 0x018U, true, false, std::nullopt },
+// 0000                           00 01 02 03 04 05 06 07           ________
+        { 0x08U, false, true, std::make_optional(std::make_pair(0U, 31U)) },
+        { 0x0BU, false, true, std::make_optional(std::make_pair(0U, 40U)) },
+        { 0x0FU, false, true, std::make_optional(std::make_pair(0U, 52U)) },
+        { 0x08U, false, false, std::make_optional(std::make_pair(0U, 32U)) },
+        { 0x0BU, false, false, std::make_optional(std::make_pair(0U, 41U)) },
+        { 0x0FU, false, false, std::make_optional(std::make_pair(0U, 53U)) },
+        { 0x08U, true, false, std::make_optional(std::make_pair(0U, 65U)) },
+        { 0x0BU, true, false, std::make_optional(std::make_pair(0U, 68U)) },
+        { 0x0FU, true, false, std::make_optional(std::make_pair(0U, 72U)) },
+// 0010  08 09 0A 0B 0C 0D 0E 0F                           ________
+        { 0x10U, false, true, std::make_optional(std::make_pair(1U, 6U)) },
+        { 0x13U, false, true, std::make_optional(std::make_pair(1U, 15U)) },
+        { 0x17U, false, true, std::make_optional(std::make_pair(1U, 27U)) },
+        { 0x10U, false, false, std::make_optional(std::make_pair(1U, 7U)) },
+        { 0x13U, false, false, std::make_optional(std::make_pair(1U, 16U)) },
+        { 0x17U, false, false, std::make_optional(std::make_pair(1U, 28U)) },
+        { 0x10U, true, false, std::make_optional(std::make_pair(1U, 56U)) },
+        { 0x13U, true, false, std::make_optional(std::make_pair(1U, 59U)) },
+        { 0x17U, true, false, std::make_optional(std::make_pair(1U, 63U)) },
+    }};
+
+    testHexDumpPosForAddr(patterns);
 }
