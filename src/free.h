@@ -96,4 +96,7 @@ namespace flx
             DWord startAddress = 0U,
             std::optional<DWord> extraSpace = std::nullopt);
 }
+
+extern std::ostream &operator<<(std::ostream &os, flx::HexDumpType type);
+
 #endif

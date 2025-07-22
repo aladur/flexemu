@@ -442,3 +442,23 @@ std::optional<std::pair<DWord, DWord> > flx::get_hex_dump_position_for_address(
 
     return row_col;
 }
+
+std::ostream &operator<<(std::ostream &os, flx::HexDumpType type)
+{
+    switch (type)
+    {
+        case flx::HexDumpType::NONE:
+            os << "HexDumpType::NONE";
+            break;
+
+        case flx::HexDumpType::HexByte:
+            os << "HexDumpType::HexByte";
+            break;
+
+        case flx::HexDumpType::AsciiChar:
+            os << "HexDumpType::AsciiChar";
+            break;
+    }
+
+    return os;
+}
