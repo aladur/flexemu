@@ -47,13 +47,18 @@ namespace flx
             const MemorySource<DWord>::AddressRanges &ranges);
     extern void print_versions(std::ostream &os,
             const std::string &program_name);
-    extern void hex_dump(std::ostream &os, const Byte *data, DWord size,
+    extern void hex_dump(
+            std::ostream &os,
+            const Byte *data,
+            DWord size,
             DWord bytesPerLine,
             bool withAscii = true,
             bool isDisplayAddress = false,
             DWord startAddress = 0x0000U,
             std::optional<DWord> extraSpace = std::nullopt);
-    extern void hex_dump_scale(std::ostream &os, DWord bytesPerLine,
+    extern void hex_dump_scale(
+            std::ostream &os,
+            DWord bytesPerLine,
             bool withAscii = true,
             bool isDisplayAddress = false,
             std::optional<DWord> extraSpace = std::nullopt);
@@ -77,8 +82,10 @@ namespace flx
     };
 
     extern sHexDumpProperties get_hex_dump_properties(
-            DWord row, DWord column,
-            size_t size, DWord bytesPerLine,
+            DWord row,
+            DWord column,
+            size_t size,
+            DWord bytesPerLine,
             bool withAscii = true,
             bool isDisplayAddress = true,
             DWord startAddress = 0U,

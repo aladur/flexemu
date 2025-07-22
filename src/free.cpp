@@ -118,9 +118,15 @@ void flx::print_versions(std::ostream &os, const std::string &program_name)
 //    startAddress: Used to calculate offset for first displayed byte.
 //    extraSpace:   Optional, stream extra space after "extraSpace" bytes.
 // Address at the beginning on the line is always a multiple of bytesPerLine.
-void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
-        DWord bytesPerLine, bool withAscii, bool isDisplayAddress,
-        DWord startAddress, std::optional<DWord> extraSpace)
+void flx::hex_dump(
+        std::ostream &os,
+        const Byte *data,
+        DWord size,
+        DWord bytesPerLine,
+        bool withAscii,
+        bool isDisplayAddress,
+        DWord startAddress,
+        std::optional<DWord> extraSpace)
 {
     if (bytesPerLine == 0U)
     {
@@ -245,7 +251,10 @@ void flx::hex_dump(std::ostream &os, const Byte *data, DWord size,
 //    withAscii:    If true stream the scale for ASCII values on the right.
 //    isDisplayAddress: Used to calculate offset for first displayed byte.
 //    extraSpace:   Optional, stream extra space after "extraSpace" bytes.
-void flx::hex_dump_scale(std::ostream &os, DWord bytesPerLine, bool withAscii,
+void flx::hex_dump_scale(
+        std::ostream &os,
+        DWord bytesPerLine,
+        bool withAscii,
         bool isDisplayAddress,
         std::optional<DWord> extraSpace)
 {
@@ -310,8 +319,11 @@ void flx::hex_dump_scale(std::ostream &os, DWord bytesPerLine, bool withAscii,
 //                  bytes.
 // Address at the beginning on the line is always a multiple of bytesPerLine.
 flx::sHexDumpProperties flx::get_hex_dump_properties(
-        DWord row, DWord column, size_t size,
-        DWord bytesPerLine, bool withAscii,
+        DWord row,
+        DWord column,
+        size_t size,
+        DWord bytesPerLine,
+        bool withAscii,
         bool isDisplayAddress,
         DWord startAddress,
         std::optional<DWord> extraSpace)
