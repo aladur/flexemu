@@ -107,15 +107,15 @@ void flx::print_versions(std::ostream &os, const std::string &program_name)
     os << program_name << " " << COPYRIGHT_MESSAGE;
 }
 
-// Write a hex dump of a byte array on a stream.
-// parameters:
+// Write hex dump of a byte array to a stream.
+// Parameters:
 //    os:           Where the result is streamed to.
-//    data:         The pointer to the data to dump
-//    size:         Byte size of data
-//    bytesPerLine: Number of bytes to scale on one line.
-//    withAscii:    If true stream the scale for ASCII values on the right.
-//    isDisplayAddress: Display the address on the left.
-//    startAddress: Used to calculate offset for first displayed byte.
+//    data:         Pointer to the data to dump.
+//    size:         Byte size of data.
+//    bytesPerLine: Number of bytes to stream per line.
+//    withAscii:    If true stream ASCII values on the right.
+//    isDisplayAddress: Stream the 4-digit address on the left.
+//    startAddress: First address to stream data for.
 //    extraSpace:   Optional, stream extra space after "extraSpace" bytes.
 // Address at the beginning on the line is always a multiple of bytesPerLine.
 void flx::hex_dump(
@@ -242,14 +242,11 @@ void flx::hex_dump(
 }
 
 // Write a hex dump scale on a stream.
-// Intentionally use the same parameters as for hex_dump() used to format
-// the scale.
-//
 // Parameters:
 //    os:           Where the result is streamed to.
-//    bytesPerLine: Number of bytes to scale on one line.
+//    bytesPerLine: Number of bytes to scale per line.
 //    withAscii:    If true stream the scale for ASCII values on the right.
-//    isDisplayAddress: Used to calculate offset for first displayed byte.
+//    isDisplayAddress: Used to reserve columns on the left.
 //    extraSpace:   Optional, stream extra space after "extraSpace" bytes.
 void flx::hex_dump_scale(
         std::ostream &os,
@@ -307,17 +304,15 @@ void flx::hex_dump_scale(
 }
 
 // Return properties for a given row and column within a hex dump .
-// parameters:
-//    row:          zero-based row in hex_dump output
-//    column:       zero-based column in hex_dump output
-//    size:         Byte size of data
-//    bytesPerLine: Number of bytes to scale on one line.
-//    withAscii:    If true the output has ASCII values on the right.
+// Parameters:
+//    row:          Zero-based row in hex_dump output.
+//    column:       Zero-based column in hex_dump output.
+//    size:         Byte size of data.
+//    bytesPerLine: Number of bytes to scale per line.
+//    withAscii:    If true there are ASCII values on the right.
 //    isDisplayAddress: If true the address is output on the right.
-//    startAddress: The address
-//    extraSpace:   Optional, the output has extra space after "extraSpace"
-//                  bytes.
-// Address at the beginning on the line is always a multiple of bytesPerLine.
+//    startAddress: First address with data.
+//    extraSpace:   Optional, there is extra space after "extraSpace" bytes.
 flx::sHexDumpProperties flx::get_hex_dump_properties(
         DWord row,
         DWord column,
@@ -398,19 +393,18 @@ flx::sHexDumpProperties flx::get_hex_dump_properties(
 }
 
 // Return row, column for a given address within a hex dump.
-// parameters:
+// Parameters:
 //    address:      Address for which to return row, column
 //    size:         Byte size of data
-//    bytesPerLine: Number of bytes to scale on one line.
-//    withAscii:    If true the output has ASCII values on the right.
+//    bytesPerLine: Number of bytes per line.
+//    withAscii:    If true there are ASCII values on the right.
 //    isDisplayAddress: If true the address is output on the right.
 //    isAscii:      If true return row, column within ASCII values.
 //                  If false return row, column within HEX values.
-//    startAddress: The start address of hex dump
-//    extraSpace:   Optional, there are extra space after "extraSpace"
-//                  bytes.
-// If address is not within valid range {0U, 0U} is returned;
-// If withAscii is false and isAscii is true return row, column within
+//    startAddress: First address with data.
+//    extraSpace:   Optional, there is extra space after "extraSpace" bytes.
+// If address is out of valid range std::nullopt is returned.
+// If ASCII is not displayed and isAscii is true return row, column within
 // HEX values.
 std::optional<std::pair<DWord, DWord> > flx::get_hex_dump_position_for_address(
         DWord address,
