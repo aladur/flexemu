@@ -27,7 +27,6 @@
 
 #include <memory>
 #include <iostream>
-#include "typedefs.h"
 
 enum class CpuState : uint8_t
 {

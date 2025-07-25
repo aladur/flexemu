@@ -25,6 +25,7 @@
 #ifndef MC6809ST_INCLUDED
 #define MC6809ST_INCLUDED
 
+#include "typedefs.h"
 #include "cpustate.h"
 
 
