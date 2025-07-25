@@ -26,6 +26,7 @@
 #define CPUSTATE_INCLUDED
 
 #include <memory>
+#include <iostream>
 #include "typedefs.h"
 
 enum class CpuState : uint8_t
@@ -43,6 +44,63 @@ enum class CpuState : uint8_t
     Schedule,
     _count
 };
+
+inline std::ostream &operator<<(std::ostream &os, CpuState state)
+{
+    switch (state)
+    {
+        case CpuState::NONE:
+            os << "CpuState::NONE";
+            break;
+
+        case CpuState::Run:
+            os << "CpuState::Run";
+            break;
+
+        case CpuState::Stop:
+            os << "CpuState::Stop";
+            break;
+
+        case CpuState::Step:
+            os << "CpuState::Step";
+            break;
+
+        case CpuState::Exit:
+            os << "CpuState::Exit";
+            break;
+
+        case CpuState::Reset:
+            os << "CpuState::Reset";
+            break;
+
+        case CpuState::Next:
+            os << "CpuState::Next";
+            break;
+
+        case CpuState::ResetRun:
+            os << "CpuState::ResetRun";
+            break;
+
+        case CpuState::Invalid:
+            os << "CpuState::Invalid";
+            break;
+
+        case CpuState::Suspend:
+            os << "CpuState::Suspend";
+            break;
+
+        case CpuState::Schedule:
+            os << "CpuState::Schedule";
+            break;
+
+        case CpuState::_count:
+        default:
+            os << "CpuState::unknown";
+            break;
+    }
+
+    return os;
+}
 
 // The time in micro-seconds on which a timer get's a timeout
 // to execute updates.
