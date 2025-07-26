@@ -93,7 +93,10 @@ void Scheduler::process_events()
             {
                 // Do 1 second update
                 update_frequency();
-                events |= Event::SetStatus;
+                if (state != CpuState::Stop && state != CpuState::Invalid)
+                {
+                    events |= Event::SetStatus;
+                }
 
                 inout.update_1_second();
 
@@ -115,7 +118,6 @@ void Scheduler::process_events()
             if (inout.is_gui_present())
             {
                 cpu.get_status(cpu_status.get());
-                cpu_status->freq = frequency;
                 cpu_status->state = state;
                 is_status_valid = true;
             }

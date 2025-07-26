@@ -194,6 +194,7 @@ private:
     void UpdateDiskStatus(Word floppyIndex, DiskStatus oldStatus,
                           DiskStatus newStatus);
     void UpdateInterruptStatus(tIrqType irqType, bool status);
+    void UpdateFrequencyStatus() const;
     void ToggleSmoothDisplay();
     void ToggleCpuFrequency();
     void ToggleCpuUndocumented();
@@ -253,11 +254,13 @@ private:
     QHBoxLayout *e2screenLayout{};
     QHBoxLayout *statusBarLayout{};
     QStackedWidget *statusBarFrame{};
+    QStackedWidget *frequencyFrame{};
     QStackedWidget *newKeyFrame{};
     E2Screen *e2screen{};
     QMenuBar *menuBar{};
     FlexemuToolBar *toolBar{};
     FlexemuToolBar *statusToolBar{};
+    QLabel *frequencyLabel{};
     QLabel *newKeyLabel{};
     QStatusBar *statusBar{};
     QStatusBar *dummyStatusBar{};

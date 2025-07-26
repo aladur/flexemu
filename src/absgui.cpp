@@ -60,8 +60,6 @@ void AbstractGui::redraw_cpuview(const Mc6809CpuStatus &status)
     text(10, 6, "   B:");
     text(19, 5, "  bp1:");
     text(19, 6, "  bp2:");
-    text(22, 0, "Freq:");
-    text(35, 0, "MHz");
 
     for (Word i = 0U; i < CPU_STACK_LINES; ++i)
     {
@@ -86,11 +84,6 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
 
     std::string cycles_str = fmt::format("{:16}", status.total_cycles);
     text(5, 0, cycles_str);
-
-    std::stringstream freq_str;
-    freq_str << std::fixed << std::setprecision(2) << std::setw(6) <<
-        status.freq;
-    text(28, 0, freq_str.str());
 
     static const std::string spaces(24, ' ');
     text(6, 1, spaces); // Clear previous mnemonic.

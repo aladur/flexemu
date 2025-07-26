@@ -855,6 +855,7 @@ void QtGui::OnTimer()
             }
         }
 
+        UpdateFrequencyStatus();
         memcpy(&irqStat, &newIrqStat, sizeof(tInterruptStatus));
     }
 
@@ -1380,6 +1381,7 @@ void QtGui::CreateStatusBar(QBoxLayout &layout)
     layout.addWidget(statusBarFrame, 1);
     statusBarFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     statusBarAction->setChecked(true);
+
     newKeyFrame = new QStackedWidget();
     newKeyLabel = new QLabel(this);
     newKeyLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -1393,6 +1395,15 @@ void QtGui::CreateStatusBar(QBoxLayout &layout)
     newKeyFrame->addWidget(newKeyLabel);
     newKeyFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     layout.addWidget(newKeyFrame);
+
+    frequencyFrame = new QStackedWidget();
+    frequencyLabel = new QLabel(this);
+    frequencyLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    frequencyLabel->setToolTip(tr("CPU frequency"));
+    frequencyFrame->addWidget(frequencyLabel);
+    frequencyFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    layout.addWidget(frequencyFrame);
+
     dummyStatusBar = new QStatusBar(this);
     dummyStatusBar->setMaximumWidth(14);
     dummyStatusBar->setSizeGripEnabled(true);
@@ -2476,4 +2487,13 @@ void QtGui::GotIllegalInstruction(const Mc6809CpuStatus &status)
 #pragma GCC diagnostic pop
 #endif
     });
+}
+
+void QtGui::UpdateFrequencyStatus() const
+{
+    std::stringstream stream;
+
+    stream << std::fixed << std::setprecision(2) << std::setw(6) <<
+        scheduler.get_frequency() << " MHz";
+    frequencyLabel->setText(QString::fromStdString(stream.str()));
 }
