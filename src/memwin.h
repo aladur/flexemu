@@ -34,6 +34,7 @@
 #include <memory>
 #include "warnon.h"
 #include <vector>
+#include <optional>
 
 
 class QSize;
@@ -128,6 +129,7 @@ protected:
     void SetTextBrowserFont(const QFont &font) const;
     void SetStatusMessage(const QString &message) const;
     DWord EstimateBytesPerLine() const;
+    std::optional<DWord> CurrentExtraSpace() const;
     void UpdateData();
     void UpdateStyleCheck(int index) const;
     void UpdateStyleValue(int index) const;

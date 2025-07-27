@@ -544,7 +544,6 @@ void MemoryWindow::UpdateData()
     std::stringstream hexStream;
     int sliderPosition = 0;
     std::optional<DWord> startAddress;
-    std::optional<DWord> extraSpace;
     auto bytesPerLine = EstimateBytesPerLine();
 
     if (withAddress)
@@ -552,15 +551,10 @@ void MemoryWindow::UpdateData()
         startAddress = addressRange.lower();
     }
 
-    if (withExtraSpace)
-    {
-        extraSpace = 8U;
-    }
-
     flx::hex_dump_scale(scaleStream, bytesPerLine, withAscii, withAddress,
-            extraSpace);
+            CurrentExtraSpace());
     flx::hex_dump(hexStream, data.data(), data.size(), bytesPerLine,
-            withAscii, withAddress, addressRange.lower(), extraSpace);
+            withAscii, withAddress, addressRange.lower(), CurrentExtraSpace());
 
     const auto positionStart = e_hexDump->textCursor().selectionStart();
     const auto positionEnd = e_hexDump->textCursor().selectionEnd();
@@ -781,4 +775,9 @@ QString MemoryWindow::CreateDefaultWindowTitle(
     const auto upperStr = QString("%1").arg(addressRange.upper(), 4, 16,
             QLatin1Char('0')).toUpper();
     return QString("%1-%2").arg(lowerStr).arg(upperStr);
+}
+
+std::optional<DWord> MemoryWindow::CurrentExtraSpace() const
+{
+    return withExtraSpace ? std::optional<DWord>(8U) : std::nullopt;
 }
