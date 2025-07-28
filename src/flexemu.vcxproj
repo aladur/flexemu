@@ -513,8 +513,6 @@
     <ClInclude Include="memory.h" />
     <ClInclude Include="memsrc.h" />
     <ClInclude Include="memtgt.h" />
-    <ClInclude Include="memwin.h" />
-    <ClInclude Include="memwinmg.h" />
     <ClInclude Include="misc1.h" />
     <ClInclude Include="mmu.h" />
     <ClInclude Include="ndircont.h" />
