@@ -220,6 +220,7 @@
     <ClCompile Include="colors.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="csetfreq.cpp" />
+    <ClCompile Include="cwritmem.cpp" />
     <ClCompile Include="da6809.cpp" />
     <ClCompile Include="drawnwid.cpp" />
     <ClCompile Include="drisel.cpp" />
@@ -469,6 +470,7 @@
     <ClInclude Include="crc.h" />
     <ClInclude Include="csetfreq.h" />
     <ClInclude Include="cvtwchar.h" />
+    <ClInclude Include="cwritmem.h" />
     <ClInclude Include="da6809.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="drisel.h" />
@@ -513,6 +515,7 @@
     <ClInclude Include="memory.h" />
     <ClInclude Include="memsrc.h" />
     <ClInclude Include="memtgt.h" />
+    <ClInclude Include="memtype.h" />
     <ClInclude Include="misc1.h" />
     <ClInclude Include="mmu.h" />
     <ClInclude Include="ndircont.h" />

@@ -182,32 +182,32 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-cacttrns.$(OBJEXT) flexemu-ccopymem.$(OBJEXT) \
 	flexemu-clogfile.$(OBJEXT) flexemu-colors.$(OBJEXT) \
 	flexemu-command.$(OBJEXT) flexemu-csetfreq.$(OBJEXT) \
-	flexemu-da6809.$(OBJEXT) flexemu-drawnwid.$(OBJEXT) \
-	flexemu-drisel.$(OBJEXT) flexemu-e2floppy.$(OBJEXT) \
-	flexemu-e2screen.$(OBJEXT) flexemu-efslctle.$(OBJEXT) \
-	flexemu-fdoptman.$(OBJEXT) flexemu-flblfile.$(OBJEXT) \
-	flexemu-foptman.$(OBJEXT) flexemu-fsetupui.$(OBJEXT) \
-	flexemu-fversion.$(OBJEXT) flexemu-inout.$(OBJEXT) \
-	flexemu-iodevdbg.$(OBJEXT) flexemu-joystick.$(OBJEXT) \
-	flexemu-keyboard.$(OBJEXT) flexemu-logfilui.$(OBJEXT) \
-	flexemu-main.$(OBJEXT) flexemu-mc146818.$(OBJEXT) \
-	flexemu-mc6809.$(OBJEXT) flexemu-mc6809in.$(OBJEXT) \
-	flexemu-mc6809lg.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
-	flexemu-mc6821.$(OBJEXT) flexemu-mc6850.$(OBJEXT) \
-	flexemu-memsetui.$(OBJEXT) flexemu-memwin.$(OBJEXT) \
-	flexemu-memwinmg.$(OBJEXT) flexemu-mmu.$(OBJEXT) \
-	flexemu-ndircont.$(OBJEXT) flexemu-pagedet.$(OBJEXT) \
-	flexemu-pagedetd.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
-	flexemu-pia2.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
-	flexemu-poutwin.$(OBJEXT) flexemu-poverhlp.$(OBJEXT) \
-	flexemu-qtfree.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
-	flexemu-schedule.$(OBJEXT) flexemu-sodiff.$(OBJEXT) \
-	flexemu-soptions.$(OBJEXT) flexemu-termimpc.$(OBJEXT) \
-	flexemu-termimpd.$(OBJEXT) flexemu-termimpf.$(OBJEXT) \
-	flexemu-termimps.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
-	flexemu-tstdev.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
-	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
-	flexemu-winmain.$(OBJEXT)
+	flexemu-cwritmem.$(OBJEXT) flexemu-da6809.$(OBJEXT) \
+	flexemu-drawnwid.$(OBJEXT) flexemu-drisel.$(OBJEXT) \
+	flexemu-e2floppy.$(OBJEXT) flexemu-e2screen.$(OBJEXT) \
+	flexemu-efslctle.$(OBJEXT) flexemu-fdoptman.$(OBJEXT) \
+	flexemu-flblfile.$(OBJEXT) flexemu-foptman.$(OBJEXT) \
+	flexemu-fsetupui.$(OBJEXT) flexemu-fversion.$(OBJEXT) \
+	flexemu-inout.$(OBJEXT) flexemu-iodevdbg.$(OBJEXT) \
+	flexemu-joystick.$(OBJEXT) flexemu-keyboard.$(OBJEXT) \
+	flexemu-logfilui.$(OBJEXT) flexemu-main.$(OBJEXT) \
+	flexemu-mc146818.$(OBJEXT) flexemu-mc6809.$(OBJEXT) \
+	flexemu-mc6809in.$(OBJEXT) flexemu-mc6809lg.$(OBJEXT) \
+	flexemu-mc6809st.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
+	flexemu-mc6850.$(OBJEXT) flexemu-memsetui.$(OBJEXT) \
+	flexemu-memwin.$(OBJEXT) flexemu-memwinmg.$(OBJEXT) \
+	flexemu-mmu.$(OBJEXT) flexemu-ndircont.$(OBJEXT) \
+	flexemu-pagedet.$(OBJEXT) flexemu-pagedetd.$(OBJEXT) \
+	flexemu-pia1.$(OBJEXT) flexemu-pia2.$(OBJEXT) \
+	flexemu-pia2v5.$(OBJEXT) flexemu-poutwin.$(OBJEXT) \
+	flexemu-poverhlp.$(OBJEXT) flexemu-qtfree.$(OBJEXT) \
+	flexemu-qtgui.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
+	flexemu-sodiff.$(OBJEXT) flexemu-soptions.$(OBJEXT) \
+	flexemu-termimpc.$(OBJEXT) flexemu-termimpd.$(OBJEXT) \
+	flexemu-termimpf.$(OBJEXT) flexemu-termimps.$(OBJEXT) \
+	flexemu-terminal.$(OBJEXT) flexemu-tstdev.$(OBJEXT) \
+	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
+	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
 am__objects_1 =
 am__objects_2 = $(am__objects_1)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
@@ -294,7 +294,8 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/flexemu-ccopymem.Po \
 	./$(DEPDIR)/flexemu-clogfile.Po ./$(DEPDIR)/flexemu-colors.Po \
 	./$(DEPDIR)/flexemu-command.Po ./$(DEPDIR)/flexemu-csetfreq.Po \
-	./$(DEPDIR)/flexemu-da6809.Po ./$(DEPDIR)/flexemu-drawnwid.Po \
+	./$(DEPDIR)/flexemu-cwritmem.Po ./$(DEPDIR)/flexemu-da6809.Po \
+	./$(DEPDIR)/flexemu-drawnwid.Po \
 	./$(DEPDIR)/flexemu-drawnwid_moc.Po \
 	./$(DEPDIR)/flexemu-drisel.Po ./$(DEPDIR)/flexemu-e2floppy.Po \
 	./$(DEPDIR)/flexemu-e2screen.Po \
@@ -906,6 +907,7 @@ flexemu_SOURCES = \
 	colors.cpp \
 	command.cpp \
 	csetfreq.cpp \
+	cwritmem.cpp \
 	da6809.cpp \
 	drawnwid.cpp \
 	drisel.cpp \
@@ -994,6 +996,7 @@ flexemu_SOURCES = \
 	crc.h \
 	csetfreq.h \
 	cvtwchar.h \
+	cwritmem.h \
 	da6809.h \
 	debug.h \
 	drawnwid.h \
@@ -1538,6 +1541,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-colors.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-command.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-csetfreq.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-cwritmem.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-da6809.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-drawnwid.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-drawnwid_moc.Po@am__quote@ # am--include-marker
@@ -2503,6 +2507,20 @@ flexemu-csetfreq.obj: csetfreq.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='csetfreq.cpp' object='flexemu-csetfreq.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-csetfreq.obj `if test -f 'csetfreq.cpp'; then $(CYGPATH_W) 'csetfreq.cpp'; else $(CYGPATH_W) '$(srcdir)/csetfreq.cpp'; fi`
+
+flexemu-cwritmem.o: cwritmem.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-cwritmem.o -MD -MP -MF $(DEPDIR)/flexemu-cwritmem.Tpo -c -o flexemu-cwritmem.o `test -f 'cwritmem.cpp' || echo '$(srcdir)/'`cwritmem.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-cwritmem.Tpo $(DEPDIR)/flexemu-cwritmem.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cwritmem.cpp' object='flexemu-cwritmem.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-cwritmem.o `test -f 'cwritmem.cpp' || echo '$(srcdir)/'`cwritmem.cpp
+
+flexemu-cwritmem.obj: cwritmem.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-cwritmem.obj -MD -MP -MF $(DEPDIR)/flexemu-cwritmem.Tpo -c -o flexemu-cwritmem.obj `if test -f 'cwritmem.cpp'; then $(CYGPATH_W) 'cwritmem.cpp'; else $(CYGPATH_W) '$(srcdir)/cwritmem.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-cwritmem.Tpo $(DEPDIR)/flexemu-cwritmem.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cwritmem.cpp' object='flexemu-cwritmem.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-cwritmem.obj `if test -f 'cwritmem.cpp'; then $(CYGPATH_W) 'cwritmem.cpp'; else $(CYGPATH_W) '$(srcdir)/cwritmem.cpp'; fi`
 
 flexemu-da6809.o: da6809.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-da6809.o -MD -MP -MF $(DEPDIR)/flexemu-da6809.Tpo -c -o flexemu-da6809.o `test -f 'da6809.cpp' || echo '$(srcdir)/'`da6809.cpp
@@ -4127,6 +4145,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-colors.Po
 	-rm -f ./$(DEPDIR)/flexemu-command.Po
 	-rm -f ./$(DEPDIR)/flexemu-csetfreq.Po
+	-rm -f ./$(DEPDIR)/flexemu-cwritmem.Po
 	-rm -f ./$(DEPDIR)/flexemu-da6809.Po
 	-rm -f ./$(DEPDIR)/flexemu-drawnwid.Po
 	-rm -f ./$(DEPDIR)/flexemu-drawnwid_moc.Po
@@ -4323,6 +4342,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-colors.Po
 	-rm -f ./$(DEPDIR)/flexemu-command.Po
 	-rm -f ./$(DEPDIR)/flexemu-csetfreq.Po
+	-rm -f ./$(DEPDIR)/flexemu-cwritmem.Po
 	-rm -f ./$(DEPDIR)/flexemu-da6809.Po
 	-rm -f ./$(DEPDIR)/flexemu-drawnwid.Po
 	-rm -f ./$(DEPDIR)/flexemu-drawnwid_moc.Po

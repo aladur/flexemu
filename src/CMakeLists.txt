@@ -423,6 +423,7 @@ set(flexemu_SOURCES
     colors.cpp
     command.cpp
     csetfreq.cpp
+    cwritmem.cpp
     da6809.cpp
     drawnwid.cpp
     drisel.cpp
@@ -513,6 +514,7 @@ set(flexemu_HEADER
     crc.h
     csetfreq.h
     cvtwchar.h
+    cwritmem.h
     da6809.h
     debug.h
     drawnwid.h

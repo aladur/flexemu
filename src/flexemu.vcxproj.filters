@@ -51,6 +51,9 @@
     <ClCompile Include="csetfreq.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cwritmem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="da6809.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -322,6 +325,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cvtwchar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cwritmem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="da6809.h">
