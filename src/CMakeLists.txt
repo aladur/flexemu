@@ -149,6 +149,7 @@ set(flex_HEADER
     ifilecnt.h
     mdcrtape.h
     memory.h
+    memtype.h
     misc1.h
     rfilecnt.h
     rndcheck.h

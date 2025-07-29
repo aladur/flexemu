@@ -131,6 +131,9 @@
     <ClInclude Include="memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="memtype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="misc1.h">
       <Filter>Header Files</Filter>
     </ClInclude>

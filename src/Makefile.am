@@ -607,6 +607,7 @@ libflex_a_SOURCES = \
 	ifilecnt.h \
 	mdcrtape.h \
 	memory.h \
+	memtype.h \
 	misc1.h \
 	rfilecnt.h \
 	rndcheck.h \

@@ -291,6 +291,7 @@
     <ClInclude Include="ifilecnt.h" />
     <ClInclude Include="mdcrtape.h" />
     <ClInclude Include="memory.h" />
+    <ClInclude Include="memtype.h" />
     <ClInclude Include="misc1.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="rfilecnt.h" />

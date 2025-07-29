@@ -26,6 +26,7 @@
 #define MEMORY_INCLUDED
 
 #include "misc1.h"
+#include "memtype.h"
 #include "warnoff.h"
 #include "warnon.h"
 #include <functional>
@@ -85,6 +86,7 @@ private:
     std::vector<Byte> memory;
     std::vector<Byte> video_ram;
     MemorySource<DWord>::AddressRanges addressRanges;
+    MemoryRanges_t memoryRanges;
 
     // I/O device access
     std::vector<std::reference_wrapper<IoDevice> > ioDevices;
@@ -127,6 +129,7 @@ public:
 
     // memory source interface
     const MemorySource<DWord>::AddressRanges& GetAddressRanges() const override;
+    const MemoryRanges_t &GetMemoryRanges() const;
     void CopyTo(Byte *target, DWord address, DWord size) const override;
 
     // memory target interface

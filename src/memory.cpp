@@ -60,14 +60,19 @@ Memory::Memory(const struct sOptions &options) :
 
     if (isEurocom2V5)
     {
-        // 48 KByte mainboard memory + 4KByte BOOT rom.
+        // 48 KByte mainboard memory + 4KByte BOOT ROM.
         addressRanges.emplace_back(0x0000U, 0xBFFFU);
         addressRanges.emplace_back(0xF000U, 0xFFFFU);
+        memoryRanges.push_back({MemoryType::RAM, addressRanges[0]});
+        memoryRanges.push_back({MemoryType::ROM, addressRanges[1]});
+        memoryRanges.push_back({MemoryType::NONE, { 0xC000U, 0xEFFFU}});
     }
     else
     {
-        // 60 KByte mainboard memory + 4KByte BOOT rom.
+        // 60 KByte mainboard memory + 4KByte BOOT ROM.
         addressRanges.emplace_back(0x0000U, 0xFFFFU);
+        memoryRanges.push_back({MemoryType::RAM, { 0x0000U, 0xEFFFU}});
+        memoryRanges.push_back({MemoryType::ROM, { 0xF000U, 0xFFFFU}});
     }
 }
 
@@ -413,6 +418,11 @@ void Memory::CopyTo(Byte *target, DWord address, DWord size) const
 const MemorySource<DWord>::AddressRanges& Memory::GetAddressRanges() const
 {
     return addressRanges;
+}
+
+const MemoryRanges_t &Memory::GetMemoryRanges() const
+{
+    return memoryRanges;
 }
 
 unsigned Memory::get_ram_size() const
