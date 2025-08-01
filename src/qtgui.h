@@ -231,7 +231,6 @@ private:
     std::string GetKeyString(Byte key);
     void ParseRomName();
     void ParseOsName();
-    void RequestMemoryUpdate();
     ItemPairList_t GetConfiguration() const;
     std::string GetMainboardName() const;
     void AboutTabChanged(QTextBrowser *browser) const;
@@ -254,14 +253,14 @@ private:
     QHBoxLayout *e2screenLayout{};
     QHBoxLayout *statusBarLayout{};
     QStackedWidget *statusBarFrame{};
-    QStackedWidget *frequencyFrame{};
     QStackedWidget *newKeyFrame{};
+    QStackedWidget *frequencyFrame{};
     E2Screen *e2screen{};
     QMenuBar *menuBar{};
     FlexemuToolBar *toolBar{};
     FlexemuToolBar *statusToolBar{};
-    QLabel *frequencyLabel{};
     QLabel *newKeyLabel{};
+    QLabel *frequencyLabel{};
     QStatusBar *statusBar{};
     QStatusBar *dummyStatusBar{};
     QComboBox *screenSizeComboBox{};

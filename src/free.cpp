@@ -31,7 +31,9 @@
 #include <regex>
 #include <optional>
 #include <utility>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 std::string flx::find_regex_string(const std::regex &regex,

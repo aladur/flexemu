@@ -452,6 +452,7 @@ set(flexemu_SOURCES
     memwin.cpp
     memwinmg.cpp
     mmu.cpp
+    mwtedit.cpp
     ndircont.cpp
     pagedet.cpp
     pagedetd.cpp
@@ -565,6 +566,7 @@ set(flexemu_HEADER
     memtgt.h
     memwin.h
     memwinmg.h
+    mwtedit.h
     misc1.h
     mmu.h
     ndircont.h

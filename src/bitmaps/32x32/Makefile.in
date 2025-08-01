@@ -388,6 +388,7 @@ dist_icons = \
 	flexemu-screen5.png \
 	flexemu-space.png \
 	flexemu-stop.png \
+	flexemu-toggle.png \
 	flexemu-update-winsize.png \
 	flexemu-window-close.png \
 	flexemu.png \

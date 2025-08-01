@@ -73,7 +73,7 @@ void MemorySettingsUi::InitializeWidgets()
     e_startAddress->setInputMask(inputMask);
     e_endAddress->setInputMask(inputMask);
 
-    QString rxString("[^,]*");
+    QString rxString("[^,;]*");
     QRegularExpression regex(rxString);
     auto *validator = new QRegularExpressionValidator(regex, dialog);
     e_windowTitle->setValidator(validator);

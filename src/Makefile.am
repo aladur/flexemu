@@ -171,6 +171,7 @@ flexemu_moc_hdr = \
 	memsetui.h \
 	memwin.h \
 	memwinmg.h \
+	mwtedit.h \
 	qtgui.h \
 	poutwin.h
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
@@ -244,6 +245,7 @@ flexemu_SOURCES = \
 	memwin.cpp \
 	memwinmg.cpp \
 	mmu.cpp \
+	mwtedit.cpp \
 	ndircont.cpp \
 	pagedet.cpp \
 	pagedetd.cpp \
@@ -357,6 +359,7 @@ flexemu_SOURCES = \
 	memwinmg.h \
 	misc1.h \
 	mmu.h \
+	mwtedit.h \
 	ndircont.h \
 	pagedet.h \
 	pagedetd.h \

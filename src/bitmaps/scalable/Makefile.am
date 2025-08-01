@@ -65,6 +65,7 @@ dist_icons = \
 	flexemu-screen5.svg \
 	flexemu-space.svg \
 	flexemu-stop.svg \
+	flexemu-toggle.svg \
 	flexemu-update-winsize.svg
 
 mimetype_icons = \
