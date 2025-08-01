@@ -249,6 +249,7 @@
     <ClCompile Include="memwin.cpp" />
     <ClCompile Include="memwinmg.cpp" />
     <ClCompile Include="mmu.cpp" />
+    <ClCompile Include="mwtedit.cpp" />
     <ClCompile Include="ndircont.cpp" />
     <ClCompile Include="pagedet.cpp" />
     <ClCompile Include="pagedetd.cpp" />
@@ -411,6 +412,14 @@
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="memwinmg.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="mwtedit.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>
       <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>

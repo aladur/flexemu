@@ -135,6 +135,9 @@
     <ClCompile Include="mmu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mwtedit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ndircont.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -469,6 +472,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mmu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mwtedit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ndircont.h">

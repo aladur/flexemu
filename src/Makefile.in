@@ -196,18 +196,19 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-mc6809st.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
 	flexemu-mc6850.$(OBJEXT) flexemu-memsetui.$(OBJEXT) \
 	flexemu-memwin.$(OBJEXT) flexemu-memwinmg.$(OBJEXT) \
-	flexemu-mmu.$(OBJEXT) flexemu-ndircont.$(OBJEXT) \
-	flexemu-pagedet.$(OBJEXT) flexemu-pagedetd.$(OBJEXT) \
-	flexemu-pia1.$(OBJEXT) flexemu-pia2.$(OBJEXT) \
-	flexemu-pia2v5.$(OBJEXT) flexemu-poutwin.$(OBJEXT) \
-	flexemu-poverhlp.$(OBJEXT) flexemu-qtfree.$(OBJEXT) \
-	flexemu-qtgui.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
-	flexemu-sodiff.$(OBJEXT) flexemu-soptions.$(OBJEXT) \
-	flexemu-termimpc.$(OBJEXT) flexemu-termimpd.$(OBJEXT) \
-	flexemu-termimpf.$(OBJEXT) flexemu-termimps.$(OBJEXT) \
-	flexemu-terminal.$(OBJEXT) flexemu-tstdev.$(OBJEXT) \
-	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
-	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
+	flexemu-mmu.$(OBJEXT) flexemu-mwtedit.$(OBJEXT) \
+	flexemu-ndircont.$(OBJEXT) flexemu-pagedet.$(OBJEXT) \
+	flexemu-pagedetd.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
+	flexemu-pia2.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
+	flexemu-poutwin.$(OBJEXT) flexemu-poverhlp.$(OBJEXT) \
+	flexemu-qtfree.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
+	flexemu-schedule.$(OBJEXT) flexemu-sodiff.$(OBJEXT) \
+	flexemu-soptions.$(OBJEXT) flexemu-termimpc.$(OBJEXT) \
+	flexemu-termimpd.$(OBJEXT) flexemu-termimpf.$(OBJEXT) \
+	flexemu-termimps.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
+	flexemu-tstdev.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
+	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
+	flexemu-winmain.$(OBJEXT)
 am__objects_1 =
 am__objects_2 = $(am__objects_1)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
@@ -217,7 +218,8 @@ am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
 	flexemu-efslctle_moc.$(OBJEXT) flexemu-fsetupui_moc.$(OBJEXT) \
 	flexemu-logfilui_moc.$(OBJEXT) flexemu-memsetui_moc.$(OBJEXT) \
 	flexemu-memwin_moc.$(OBJEXT) flexemu-memwinmg_moc.$(OBJEXT) \
-	flexemu-qtgui_moc.$(OBJEXT) flexemu-poutwin_moc.$(OBJEXT)
+	flexemu-mwtedit_moc.$(OBJEXT) flexemu-qtgui_moc.$(OBJEXT) \
+	flexemu-poutwin_moc.$(OBJEXT)
 am__objects_6 = $(am__objects_5)
 nodist_flexemu_OBJECTS = $(am__objects_2) $(am__objects_4) \
 	$(am__objects_6)
@@ -323,6 +325,8 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/flexemu-memwin_moc.Po \
 	./$(DEPDIR)/flexemu-memwinmg.Po \
 	./$(DEPDIR)/flexemu-memwinmg_moc.Po ./$(DEPDIR)/flexemu-mmu.Po \
+	./$(DEPDIR)/flexemu-mwtedit.Po \
+	./$(DEPDIR)/flexemu-mwtedit_moc.Po \
 	./$(DEPDIR)/flexemu-ndircont.Po ./$(DEPDIR)/flexemu-pagedet.Po \
 	./$(DEPDIR)/flexemu-pagedetd.Po ./$(DEPDIR)/flexemu-pia1.Po \
 	./$(DEPDIR)/flexemu-pia2.Po ./$(DEPDIR)/flexemu-pia2v5.Po \
@@ -862,6 +866,7 @@ flexemu_moc_hdr = \
 	memsetui.h \
 	memwin.h \
 	memwinmg.h \
+	mwtedit.h \
 	qtgui.h \
 	poutwin.h
 
@@ -936,6 +941,7 @@ flexemu_SOURCES = \
 	memwin.cpp \
 	memwinmg.cpp \
 	mmu.cpp \
+	mwtedit.cpp \
 	ndircont.cpp \
 	pagedet.cpp \
 	pagedetd.cpp \
@@ -1049,6 +1055,7 @@ flexemu_SOURCES = \
 	memwinmg.h \
 	misc1.h \
 	mmu.h \
+	mwtedit.h \
 	ndircont.h \
 	pagedet.h \
 	pagedetd.h \
@@ -1579,6 +1586,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-memwinmg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-memwinmg_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mmu.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mwtedit.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mwtedit_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ndircont.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pagedet.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pagedetd.Po@am__quote@ # am--include-marker
@@ -2914,6 +2923,20 @@ flexemu-mmu.obj: mmu.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mmu.obj `if test -f 'mmu.cpp'; then $(CYGPATH_W) 'mmu.cpp'; else $(CYGPATH_W) '$(srcdir)/mmu.cpp'; fi`
 
+flexemu-mwtedit.o: mwtedit.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mwtedit.o -MD -MP -MF $(DEPDIR)/flexemu-mwtedit.Tpo -c -o flexemu-mwtedit.o `test -f 'mwtedit.cpp' || echo '$(srcdir)/'`mwtedit.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-mwtedit.Tpo $(DEPDIR)/flexemu-mwtedit.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mwtedit.cpp' object='flexemu-mwtedit.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mwtedit.o `test -f 'mwtedit.cpp' || echo '$(srcdir)/'`mwtedit.cpp
+
+flexemu-mwtedit.obj: mwtedit.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mwtedit.obj -MD -MP -MF $(DEPDIR)/flexemu-mwtedit.Tpo -c -o flexemu-mwtedit.obj `if test -f 'mwtedit.cpp'; then $(CYGPATH_W) 'mwtedit.cpp'; else $(CYGPATH_W) '$(srcdir)/mwtedit.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-mwtedit.Tpo $(DEPDIR)/flexemu-mwtedit.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mwtedit.cpp' object='flexemu-mwtedit.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mwtedit.obj `if test -f 'mwtedit.cpp'; then $(CYGPATH_W) 'mwtedit.cpp'; else $(CYGPATH_W) '$(srcdir)/mwtedit.cpp'; fi`
+
 flexemu-ndircont.o: ndircont.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-ndircont.o -MD -MP -MF $(DEPDIR)/flexemu-ndircont.Tpo -c -o flexemu-ndircont.o `test -f 'ndircont.cpp' || echo '$(srcdir)/'`ndircont.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-ndircont.Tpo $(DEPDIR)/flexemu-ndircont.Po
@@ -3375,6 +3398,20 @@ flexemu-memwinmg_moc.obj: memwinmg_moc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='memwinmg_moc.cpp' object='flexemu-memwinmg_moc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-memwinmg_moc.obj `if test -f 'memwinmg_moc.cpp'; then $(CYGPATH_W) 'memwinmg_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/memwinmg_moc.cpp'; fi`
+
+flexemu-mwtedit_moc.o: mwtedit_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mwtedit_moc.o -MD -MP -MF $(DEPDIR)/flexemu-mwtedit_moc.Tpo -c -o flexemu-mwtedit_moc.o `test -f 'mwtedit_moc.cpp' || echo '$(srcdir)/'`mwtedit_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-mwtedit_moc.Tpo $(DEPDIR)/flexemu-mwtedit_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mwtedit_moc.cpp' object='flexemu-mwtedit_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mwtedit_moc.o `test -f 'mwtedit_moc.cpp' || echo '$(srcdir)/'`mwtedit_moc.cpp
+
+flexemu-mwtedit_moc.obj: mwtedit_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mwtedit_moc.obj -MD -MP -MF $(DEPDIR)/flexemu-mwtedit_moc.Tpo -c -o flexemu-mwtedit_moc.obj `if test -f 'mwtedit_moc.cpp'; then $(CYGPATH_W) 'mwtedit_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/mwtedit_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-mwtedit_moc.Tpo $(DEPDIR)/flexemu-mwtedit_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mwtedit_moc.cpp' object='flexemu-mwtedit_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mwtedit_moc.obj `if test -f 'mwtedit_moc.cpp'; then $(CYGPATH_W) 'mwtedit_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/mwtedit_moc.cpp'; fi`
 
 flexemu-qtgui_moc.o: qtgui_moc.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-qtgui_moc.o -MD -MP -MF $(DEPDIR)/flexemu-qtgui_moc.Tpo -c -o flexemu-qtgui_moc.o `test -f 'qtgui_moc.cpp' || echo '$(srcdir)/'`qtgui_moc.cpp
@@ -4183,6 +4220,8 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-memwinmg.Po
 	-rm -f ./$(DEPDIR)/flexemu-memwinmg_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-mmu.Po
+	-rm -f ./$(DEPDIR)/flexemu-mwtedit.Po
+	-rm -f ./$(DEPDIR)/flexemu-mwtedit_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-ndircont.Po
 	-rm -f ./$(DEPDIR)/flexemu-pagedet.Po
 	-rm -f ./$(DEPDIR)/flexemu-pagedetd.Po
@@ -4380,6 +4419,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-memwinmg.Po
 	-rm -f ./$(DEPDIR)/flexemu-memwinmg_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-mmu.Po
+	-rm -f ./$(DEPDIR)/flexemu-mwtedit.Po
+	-rm -f ./$(DEPDIR)/flexemu-mwtedit_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-ndircont.Po
 	-rm -f ./$(DEPDIR)/flexemu-pagedet.Po
 	-rm -f ./$(DEPDIR)/flexemu-pagedetd.Po

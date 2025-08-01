@@ -135,6 +135,7 @@ QtGui::QtGui(
         , isRunning(true)
         , isConfirmClose(true)
         , isForceScreenUpdate(true)
+        , memoryWindowMgr(p_scheduler, p_memory)
         , cpuState(CpuState::NONE)
         , scheduler(p_scheduler)
         , vico1(p_vico1)
@@ -566,7 +567,7 @@ void QtGui::OnOpenMemoryWindow()
 {
     const auto isReadOnly = (cpuState != CpuState::Stop);
 
-    memoryWindowMgr.OpenMemoryWindow(isReadOnly, options, memory, scheduler);
+    memoryWindowMgr.OpenMemoryWindow(isReadOnly, options);
 }
 
 void QtGui::ConnectCpuUiSignalsWithSlots()
@@ -755,7 +756,6 @@ void QtGui::OnTimer()
         timerTicks = 0;
         ParseRomName();
         ParseOsName();
-        RequestMemoryUpdate();
     }
 
     // check every 100 ms for
@@ -878,6 +878,11 @@ void QtGui::OnTimer()
             UpdateCpuRunStopCheck();
 
             update_cpuview(*status);
+            if (status->state == CpuState::Stop)
+            {
+                memoryWindowMgr.SetReadOnly(false);
+            }
+            memoryWindowMgr.RequestMemoryUpdate();
 
             if (cpuState != CpuState::Invalid &&
                 status->state == CpuState::Invalid)
@@ -2349,11 +2354,6 @@ void QtGui::ParseOsName()
                 std::dynamic_pointer_cast<BCommand>(readOsCommand));
         }
     }
-}
-
-void QtGui::RequestMemoryUpdate()
-{
-    memoryWindowMgr.RequestMemoryUpdate(scheduler);
 }
 
 ItemPairList_t QtGui::GetConfiguration() const

@@ -45,5 +45,6 @@
         <file alias="ascii.png">bitmaps/32x32/flexemu-ascii.png</file>
         <file alias="extra-space.png">bitmaps/32x32/flexemu-space.png</file>
         <file alias="autoupdate-winsize.png">bitmaps/32x32/flexemu-autoupdate-winsize.png</file>
+        <file alias="toggle.png">bitmaps/32x32/flexemu-toggle.png</file>
     </qresource>
 </RCC>

@@ -23,9 +23,11 @@
 #ifndef MEMORYWINDOWMANAGER_INCLUDED
 #define MEMORYWINDOWMANAGER_INCLUDED
 
+#include "typedefs.h"
 #include "warnoff.h"
 #include <QObject>
 #include "warnon.h"
+#include "bintervl.h"
 #include <memory>
 #include <vector>
 
@@ -34,10 +36,13 @@ class Memory;
 class Scheduler;
 class QSize;
 class CReadMemory;
+class CWriteMemory;
+class MemoryWindowManager;
 class MemoryWindow;
 struct sOptions;
 
 using CReadMemorySPtr = std::shared_ptr<CReadMemory>;
+using MemoryWindowManagerSPtr = std::shared_ptr<MemoryWindowManager>;
 using MemoryWindowSPtr = std::shared_ptr<MemoryWindow>;
 
 class MemoryWindowManager : public QObject
@@ -45,12 +50,19 @@ class MemoryWindowManager : public QObject
     Q_OBJECT
 
 public:
-    MemoryWindowManager() = default;
+    explicit MemoryWindowManager(Scheduler &p_scheduler, Memory &p_memory);
+    MemoryWindowManager() = delete;
     ~MemoryWindowManager() override = default;
+    MemoryWindowManager(const MemoryWindowManager &src) = delete;
+    MemoryWindowManager(MemoryWindowManager &&src) = delete;
+    MemoryWindowManager &operator=(const MemoryWindowManager &src) = delete;
+    MemoryWindowManager &operator=(MemoryWindowManager &&src) = delete;
 
-    void OpenMemoryWindow(bool isReadOnly, const sOptions &options,
-            Memory &memory, Scheduler &scheduler);
-    void RequestMemoryUpdate(Scheduler &scheduler) const;
+    void OpenMemoryWindow(bool isReadOnly, const sOptions &options);
+    void RequestMemoryUpdate(
+            const BInterval<DWord> &addressRange =
+                BInterval<DWord>(0x0000U, 0xFFFFU),
+            const MemoryWindow *excludeWindow = nullptr) const;
     void UpdateData() const;
     void SetIconSize(const QSize &iconSize) const;
     void CloseAllWindows();
@@ -58,8 +70,10 @@ public:
 
 protected slots:
     void OnMemoryWindowClosed(const MemoryWindow *memoryWindow);
+    void OnMemoryModified(const MemoryWindow *memoryWindow, Word address,
+            const std::vector<Byte> &data);
 
-protected:
+private:
     struct MemoryWindowItem
     {
         MemoryWindowSPtr window;
@@ -67,6 +81,8 @@ protected:
     };
 
     std::vector<MemoryWindowItem> items;
+    Scheduler &scheduler;
+    Memory &memory;
 };
 
 #endif

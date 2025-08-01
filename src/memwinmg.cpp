@@ -26,6 +26,7 @@
 #include "memsetui.h"
 #include "bintervl.h"
 #include "ccopymem.h"
+#include "cwritmem.h"
 #include "memory.h"
 #include "schedule.h"
 #include "soptions.h"
@@ -33,9 +34,19 @@
 #include <QSize>
 #include <QString>
 #include <QDialog>
+#include <QMessageBox>
+#include <fmt/format.h>
 #include "warnon.h"
 #include <memory>
 #include <cassert>
+#include <sstream>
+
+MemoryWindowManager::MemoryWindowManager(Scheduler &p_scheduler,
+        Memory &p_memory)
+    : scheduler(p_scheduler)
+    , memory(p_memory)
+{
+}
 
 /********************
 ** Protected slots **
@@ -43,24 +54,37 @@
 void MemoryWindowManager::OnMemoryWindowClosed(
         const MemoryWindow *memoryWindow)
 {
-      for (auto iter = items.cbegin(); iter != items.cend(); ++iter)
-     {
-         if (iter->window.get() == memoryWindow)
-         {
-             items.erase(iter);
-             break;
-         }
-     }
+    for (auto iter = items.cbegin(); iter != items.cend(); ++iter)
+    {
+        if (iter->window.get() == memoryWindow)
+        {
+            items.erase(iter);
+            break;
+        }
+    }
+}
+
+void MemoryWindowManager::OnMemoryModified(const MemoryWindow *memoryWindow,
+        Word address, const std::vector<Byte> &data)
+{
+    if (!data.empty())
+    {
+        const auto writeMemoryCommand =
+            std::make_shared<CWriteMemory>(memory, address, data);
+        scheduler.sync_exec(
+            std::dynamic_pointer_cast<BCommand>(writeMemoryCommand));
+
+        const BInterval<DWord> addressRange(address,
+            address + data.size() - 1U);
+        RequestMemoryUpdate(addressRange, memoryWindow);
+    }
 }
 
 /****************************
 ** Public member functions **
 ****************************/
-void MemoryWindowManager::OpenMemoryWindow(
-        bool isReadOnly,
-        const sOptions &options,
-        Memory &memory,
-        Scheduler &scheduler)
+void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
+        const sOptions &options)
 {
      BInterval<DWord> addressRange = { 0xC100U, 0xC6FFU };
      QString windowTitle;
@@ -84,15 +108,43 @@ void MemoryWindowManager::OpenMemoryWindow(
 
      ui.GetData(addressRange, windowTitle, style, withAddress, withAscii,
                 withExtraSpace, isUpdateWindowSize);
+
+     if (!flx::is_range_in_ranges(addressRange, memory.GetAddressRanges()))
+     {
+         std::stringstream stream;
+
+         for (const auto &item : memory.GetMemoryRanges())
+         {
+            if (item.type != MemoryType::NONE)
+            {
+                std::stringstream typeStream;
+
+                typeStream << item.type;
+                stream <<
+                    fmt::format("\n{}: {:04X}-{:04X}", typeStream.str(),
+                        item.addressRange.lower(), item.addressRange.upper());
+            }
+         }
+
+         QString message =
+             tr("Invalid address range specified.\n\nValid address ranges:") +
+             QString::fromStdString(stream.str());
+         QMessageBox::critical(nullptr, tr("flexemu error"), message);
+         return;
+     }
+
      auto readMemoryCommand =
          std::make_shared<CReadMemory>(memory, addressRange);
      auto window = std::make_unique<MemoryWindow>(
-             isReadOnly, addressRange, windowTitle, style, withAddress,
+             isReadOnly, addressRange, memory.GetMemoryRanges(),
+             windowTitle, style, withAddress,
              withAscii, withExtraSpace, isUpdateWindowSize);
      window->SetIconSize({ options.iconSize, options.iconSize });
      window->show();
      connect(window.get(), &MemoryWindow::Closed,
              this, &MemoryWindowManager::OnMemoryWindowClosed);
+     connect(window.get(), &MemoryWindow::MemoryModified,
+             this, &MemoryWindowManager::OnMemoryModified);
      MemoryWindowItem item = { std::move(window), readMemoryCommand };
      items.push_back(std::move(item));
 
@@ -100,13 +152,19 @@ void MemoryWindowManager::OpenMemoryWindow(
          std::dynamic_pointer_cast<BCommand>(readMemoryCommand));
 }
 
-void MemoryWindowManager::RequestMemoryUpdate(Scheduler &scheduler) const
+void MemoryWindowManager::RequestMemoryUpdate(
+        const BInterval<DWord> &addressRange,
+        const MemoryWindow *excludeWindow) const
 {
     for (const auto &item : items)
     {
-         scheduler.sync_exec(std::dynamic_pointer_cast<BCommand>(
-                     item.readMemoryCommand));
-     }
+        if (item.window.get() != excludeWindow &&
+            overlap(item.window->GetAddressRange(), addressRange))
+        {
+            scheduler.sync_exec(std::dynamic_pointer_cast<BCommand>(
+                item.readMemoryCommand));
+        }
+    }
 }
 
 void MemoryWindowManager::UpdateData() const
