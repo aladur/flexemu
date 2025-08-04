@@ -856,6 +856,11 @@ void MemoryWindow::Resize()
     }
 
     auto size = e_hexDump->document()->size().toSize();
+    // Make sure to always display the whole hex dump scale even if
+    // the first row contains less than the max. byte number per line.
+    const auto hdsSize = e_hexDumpScale->document()->size().toSize();
+    size.setWidth(std::max(size.width(), hdsSize.width()));
+
     size.setHeight(std::min(size.height(), screenHeight * 3 / 4));
     size.setWidth(std::min(size.width(), screenWidth * 3 / 4));
     e_hexDump->setFixedSize(size);
