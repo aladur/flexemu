@@ -112,12 +112,7 @@ MemoryWindow::MemoryWindow(
     const QSize iconSize(16, 16);
 
     setObjectName("MemoryWindow");
-    auto title = CreateDefaultWindowTitle(addressRange);
-    if (!windowTitle.isEmpty())
-    {
-        title = windowTitle.contains("%1") ?
-            windowTitle.arg(title) : windowTitle;
-    }
+    auto title = CreateWindowTitle(windowTitle, addressRange);
     title = tr("Memory") + " - " + title;
     setWindowTitle(title);
 
@@ -704,6 +699,20 @@ bool MemoryWindow::event(QEvent *event)
     return QWidget::event(event);
 }
 
+const QString &MemoryWindow::GetStartAddrLiteral()
+{
+    static const QString literal{"%START"};
+
+    return literal;
+}
+
+const QString &MemoryWindow::GetEndAddrLiteral()
+{
+    static const QString literal{"%END"};
+
+    return literal;
+}
+
 void MemoryWindow::UpdateData(const std::vector<Byte> &p_data)
 {
     data = p_data;
@@ -992,14 +1001,30 @@ const QStringList &MemoryWindow::GetStyleHotKeys()
     return hotKeys;
 }
 
-QString MemoryWindow::CreateDefaultWindowTitle(
+QString MemoryWindow::GetDefaultWindowTitle()
+{
+    return GetStartAddrLiteral() + "-" + GetEndAddrLiteral();
+}
+
+QString MemoryWindow::CreateWindowTitle(
+        QString title,
         const BInterval<DWord> &addressRange)
 {
-    const auto lowerStr = QString("%1").arg(addressRange.lower(), 4, 16,
+    if (auto index = title.indexOf(GetStartAddrLiteral()); index >= 0)
+    {
+        const auto startAddr = QString("%1").arg(addressRange.lower(), 4, 16,
             QLatin1Char('0')).toUpper();
-    const auto upperStr = QString("%1").arg(addressRange.upper(), 4, 16,
+        title.replace(GetStartAddrLiteral(), startAddr);
+    }
+
+    if (auto index = title.indexOf(GetEndAddrLiteral()); index >= 0)
+    {
+        const auto endAddr = QString("%1").arg(addressRange.upper(), 4, 16,
             QLatin1Char('0')).toUpper();
-    return QString("%1-%2").arg(lowerStr).arg(upperStr);
+        title.replace(GetEndAddrLiteral(), endAddr);
+    }
+
+    return title;
 }
 
 std::optional<DWord> MemoryWindow::CurrentExtraSpace() const

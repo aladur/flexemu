@@ -101,7 +101,9 @@ public:
     static const QStringList &GetStyleStatusTips();
     static const QStringList &GetStyleHotKeys();
     static DWord GetBytesPerLine(MemoryWindow::Style style);
-    static QString CreateDefaultWindowTitle(
+    static QString GetDefaultWindowTitle();
+    static QString CreateWindowTitle(
+            QString title,
             const BInterval<DWord> &addressRange);
 
     void SetIconSize(const QSize &iconSize);
@@ -167,6 +169,9 @@ protected:
     void closeEvent(QCloseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     bool event(QEvent *event) override;
+
+    static const QString &GetStartAddrLiteral();
+    static const QString &GetEndAddrLiteral();
 
 private:
     QVBoxLayout *mainLayout{};

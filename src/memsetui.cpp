@@ -106,7 +106,7 @@ void MemorySettingsUi::SetData(const BInterval<DWord> &addressRange,
     c_isUpdateWindowSize->setChecked(isUpdateWindowSize);
     c_withExtraSpace->setChecked(withExtraSpace);
 
-    text = MemoryWindow::CreateDefaultWindowTitle(addressRange);
+    text = MemoryWindow::GetDefaultWindowTitle();
     e_windowTitle->setPlaceholderText(text);
     e_windowTitle->setText(windowTitle);
 }
@@ -141,7 +141,8 @@ void MemorySettingsUi::GetData(BInterval<DWord> &addressRange,
     }
 
     addressRange = { startAddress, endAddress };
-    windowTitle = e_windowTitle->text();
+    windowTitle = e_windowTitle->text().isEmpty() ?
+        MemoryWindow::GetDefaultWindowTitle() : e_windowTitle->text();
     withAddress = c_withAddress->isChecked();
     withAscii = c_withAscii->isChecked();
     isUpdateWindowSize = c_isUpdateWindowSize->isChecked();
