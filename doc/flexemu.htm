@@ -886,6 +886,92 @@ other frequencies can be specified. See
 <a href="flexutil.htm">FLEX Utilities</a> for details.
 </div>
 
+<h3 id="frequency_control">Memory Window</h3>
+<div class="justify">
+ The Memory Window displays and updates the memory content for a given address
+ range. When the CPU is running the display gets updated once a second. When
+ the CPU is stopped it is possible to change memory contents for memory type
+ RAM. The cursor control automatically positions on memory values only.
+ The current address, its value and the memory type is displayed in the lower
+ right corner.
+ Any changes are taken over immediately by pressing a key. Any number of
+ Memory Windows can be opened at the same time.
+ <p>
+ The contents of a Memory Window can be controlled by the following
+ properties:
+</div>
+<p>
+<table>
+ <tr>
+  <th>Property</th>
+  <th>Default value</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>Window Title</td>
+  <td>%START-%END</td>
+  <td>The window title. It can contain variables which are replaced. [1]
+   <ul>
+    <li>%START: Is replaced by the 4-digit start address in hex</li>
+    <li>%END: Is replaced by the 4-digit end address in hex</li>
+   </ul>
+  </td>
+ </tr>
+ <tr>
+  <td>Start Address</td>
+  <td>C100</td>
+  <td>The start address of the memory range to be displayed. [2][3]</td>
+ </tr>
+ <tr>
+  <td>End Address</td>
+  <td>C6FF</td>
+  <td>The end address of the memory range to be displayed. [2][3]</td>
+ </tr>
+ <tr>
+  <td>Style</td>
+  <td>16 bytes per line</td>
+  <td>The display style to be used.
+   <ul>
+    <li>Dynamic: Diplay a multiple of 8 bytes depending on the window width</li>
+    <li>4 bytes per line: Diplay 4 bytes per line</li>
+    <li>8 bytes per line: Diplay 8 bytes per line</li>
+    <li>16 bytes per line: Diplay 16 bytes per line</li>
+    <li>32 bytes per line: Diplay 32 bytes per line</li>
+    <li>64 bytes per line: Diplay 64 bytes per line</li>
+   </ul>
+  </td>
+ </tr>
+ <tr>
+  <td>Display Address</td>
+  <td>Yes</td>
+  <td>Display the address on the left of each row.</td>
+ </tr>
+ <tr>
+  <td>Display ASCII</td>
+  <td>Yes</td>
+  <td>Display the ASCII content on the right of each row. [4]</td>
+ </tr>
+ <tr>
+  <td>Extra space each 8th byte</td>
+  <td>No</td>
+  <td>Insert an extra space every 8 bytes.</td>
+ </tr>
+ <tr>
+  <td>Automatic update window size</td>
+  <td>Yes</td>
+  <td>When changing the style the window size gets updated automatically.</td>
+ </tr>
+</table>
+<div>
+<p>
+ [1] The window title must not contain comma or semicolon.<br>
+ [2] If end address is lower than start address the values are automatically
+ swapped.<br>
+ [3] The default address range is the <a href="flexmem.htm#map">FLEX Utility Command Space</a>.<br>
+ [4] Only printable ASCII characters are displayed. ASCII control characters
+ or non ASCII values are replaced by an underscore.
+</div>
+
 <h3 id="flexemu_con">Flexemu configuration file</h3>
 <div class="justify">
  There is a system wide configuration file <b>flexemu.conf</b>. It's location
