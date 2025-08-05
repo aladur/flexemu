@@ -95,7 +95,7 @@ public:
     explicit MemoryWindow(
             bool p_isReadOnly,
             MemoryRanges_t p_availableMemoryRanges,
-            const Config_t &p_config);
+            Config_t p_config);
     MemoryWindow(const MemoryWindow &src) = delete;
     MemoryWindow(MemoryWindow &&src) = delete;
     MemoryWindow &operator=(const MemoryWindow &src) = delete;
@@ -110,7 +110,7 @@ public:
     static DWord GetBytesPerLine(MemoryWindow::Style style);
     static QString GetDefaultWindowTitle();
     static QString CreateWindowTitle(
-            QString title,
+            const std::string &title,
             const BInterval<DWord> &addressRange);
 
     void SetIconSize(const QSize &iconSize);
@@ -205,14 +205,8 @@ private:
     QAction *toggleHexAsciiAction{};
     QList<QAction *> styleActions;
     const MemoryRanges_t availableMemoryRanges;
-    BInterval<DWord> addressRange;
-    QString windowTitle;
-    MemoryWindow::Style style{};
+    Config_t config;
     DWord dynamicBytesPerLine{};
-    bool withAddress{};
-    bool withAscii{};
-    bool withExtraSpace{};
-    bool isUpdateWindowSize{};
     bool isReadOnly{};
     bool isFirstResizeEvent{};
     QEvent::Type lastEventType{QEvent::None};

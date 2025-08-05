@@ -82,7 +82,7 @@
 MemoryWindow::MemoryWindow(
         bool p_isReadOnly,
         MemoryRanges_t p_availableMemoryRanges,
-        const Config_t &p_config)
+        Config_t p_config)
     : mainLayout(new QVBoxLayout(this))
     , toolBarLayout(new QHBoxLayout)
     , statusBarLayout(new QHBoxLayout)
@@ -91,14 +91,8 @@ MemoryWindow::MemoryWindow(
     , e_hexDump(new MemoryWindowTextEdit(this))
     , styleComboBox(new QComboBox(this))
     , availableMemoryRanges(std::move(p_availableMemoryRanges))
-    , addressRange(p_config.addressRange)
-    , windowTitle(QString::fromStdString(p_config.windowTitle))
-    , style(p_config.style)
+    , config(std::move(p_config))
     , dynamicBytesPerLine(16)
-    , withAddress(p_config.withAddress)
-    , withAscii(p_config.withAscii)
-    , withExtraSpace(p_config.withExtraSpace)
-    , isUpdateWindowSize(p_config.isUpdateWindowSize)
     , isReadOnly(p_isReadOnly)
     , isFirstResizeEvent(true)
     , isRequestResize(true)
@@ -106,7 +100,7 @@ MemoryWindow::MemoryWindow(
     const QSize iconSize(16, 16);
 
     setObjectName("MemoryWindow");
-    auto title = CreateWindowTitle(windowTitle, addressRange);
+    auto title = CreateWindowTitle(config.windowTitle, config.addressRange);
     title = tr("Memory") + " - " + title;
     setWindowTitle(title);
 
@@ -204,7 +198,7 @@ void MemoryWindow::OnStyleChanged(int index)
 {
     if (index >= 0 && index < GetStyleValues().size())
     {
-        style = GetStyleValues()[index];
+        config.style = GetStyleValues()[index];
         UpdateStyleCheck(index);
         UpdateStyleValue(index);
         UpdateData();
@@ -233,15 +227,15 @@ void MemoryWindow::OnClose()
 
 void MemoryWindow::OnToggleDisplayAddresses()
 {
-    withAddress = !withAddress;
+    config.withAddress = !config.withAddress;
     UpdateData();
     RequestResize();
 }
 
 void MemoryWindow::OnToggleDisplayAscii()
 {
-    withAscii = !withAscii;
-    withAsciiAction->setChecked(withAscii);
+    config.withAscii = !config.withAscii;
+    withAsciiAction->setChecked(config.withAscii);
     UpdateToggleHexAsciiEnabled();
     UpdateData();
     RequestResize();
@@ -249,14 +243,14 @@ void MemoryWindow::OnToggleDisplayAscii()
 
 void MemoryWindow::OnToggleUpdateWindowSize()
 {
-    isUpdateWindowSize = !isUpdateWindowSize;
+    config.isUpdateWindowSize = !config.isUpdateWindowSize;
     UpdateData();
     RequestResize();
 }
 
 void MemoryWindow::OnToggleExtraSpace()
 {
-    withExtraSpace = !withExtraSpace;
+    config.withExtraSpace = !config.withExtraSpace;
     UpdateData();
     RequestResize();
 }
@@ -264,9 +258,9 @@ void MemoryWindow::OnToggleExtraSpace()
 void MemoryWindow::OnToggleHexAscii()
 {
     const auto rowCol = flx::get_hex_dump_position_for_address(
-        currentAddress, data.size(), EstimateBytesPerLine(), withAscii,
-        withAddress, currentType != flx::HexDumpType::AsciiChar,
-        true, addressRange.lower(), CurrentExtraSpace());
+        currentAddress, data.size(), EstimateBytesPerLine(), config.withAscii,
+        config.withAddress, currentType != flx::HexDumpType::AsciiChar,
+        true, config.addressRange.lower(), CurrentExtraSpace());
 
     if (rowCol.has_value())
     {
@@ -302,8 +296,8 @@ void MemoryWindow::OnTextCursorPositionChanged()
 
     const auto properties = flx::get_hex_dump_properties(
             currentRow, currentColumn, data.size(),
-            EstimateBytesPerLine(), withAscii, withAddress,
-            addressRange.lower(), CurrentExtraSpace());
+            EstimateBytesPerLine(), config.withAscii, config.withAddress,
+            config.addressRange.lower(), CurrentExtraSpace());
 
     DetectAndExecuteChangedValue();
     UpdateAddressStatus(properties.address);
@@ -437,7 +431,7 @@ void MemoryWindow::CreateViewActions(QToolBar &p_toolBar)
     withAddressAction->setCheckable(true);
     withAddressAction->setShortcut(QKeySequence(tr("Ctrl+R")));
     withAddressAction->setStatusTip(tr("Toggle displaying address column"));
-    withAddressAction->setChecked(withAddress);
+    withAddressAction->setChecked(config.withAddress);
     p_toolBar.addAction(withAddressAction);
     connect(withAddressAction, &QAction::triggered, this,
             &MemoryWindow::OnToggleDisplayAddresses);
@@ -447,7 +441,7 @@ void MemoryWindow::CreateViewActions(QToolBar &p_toolBar)
     withAsciiAction->setCheckable(true);
     withAsciiAction->setShortcut(QKeySequence(tr("Ctrl+A")));
     withAsciiAction->setStatusTip(tr("Toggle displaying ASCII column"));
-    withAsciiAction->setChecked(withAscii);
+    withAsciiAction->setChecked(config.withAscii);
     p_toolBar.addAction(withAsciiAction);
     connect(withAsciiAction, &QAction::triggered, this,
             &MemoryWindow::OnToggleDisplayAscii);
@@ -459,7 +453,7 @@ void MemoryWindow::CreateViewActions(QToolBar &p_toolBar)
     withExtraSpaceAction->setShortcut(QKeySequence(tr("Ctrl+E")));
     withExtraSpaceAction->setStatusTip(
             tr("Display extra space after each 8 byte"));
-    withExtraSpaceAction->setChecked(withExtraSpace);
+    withExtraSpaceAction->setChecked(config.withExtraSpace);
     p_toolBar.addAction(withExtraSpaceAction);
     connect(withExtraSpaceAction, &QAction::triggered, this,
             &MemoryWindow::OnToggleExtraSpace);
@@ -471,7 +465,7 @@ void MemoryWindow::CreateViewActions(QToolBar &p_toolBar)
     isUpdateWindowSizeAction->setShortcut(QKeySequence(tr("Ctrl+U")));
     isUpdateWindowSizeAction->setStatusTip(
             tr("Automatic window size update"));
-    isUpdateWindowSizeAction->setChecked(isUpdateWindowSize);
+    isUpdateWindowSizeAction->setChecked(config.isUpdateWindowSize);
     p_toolBar.addAction(isUpdateWindowSizeAction);
     connect(isUpdateWindowSizeAction, &QAction::triggered, this,
             &MemoryWindow::OnToggleUpdateWindowSize);
@@ -554,7 +548,7 @@ void MemoryWindow::InitializeStyleWidget()
     styleComboBox->addItems(GetStyleStrings());
     styleComboBox->setMinimumWidth(45);
 
-    if (auto index = GetStyleValues().indexOf(style); index >= 0)
+    if (auto index = GetStyleValues().indexOf(config.style); index >= 0)
     {
         styleComboBox->setCurrentText(GetStyleStrings()[index]);
         UpdateStyleCheck(index);
@@ -640,8 +634,9 @@ void MemoryWindow::resizeEvent(QResizeEvent *event)
     QFontMetrics metrics(e_hexDump->document()->defaultFont());
     auto width = event->size().width();
     auto cols = width / metrics.averageCharWidth();
-    auto dividend = withAscii ? 4U : 3U;
-    auto offset1 = (withAscii ? 1U : 0U) + (withAddress ? 6U : 0U);
+    auto dividend = config.withAscii ? 4U : 3U;
+    auto offset1 = (config.withAscii ? 1U : 0U) +
+        (config.withAddress ? 6U : 0U);
 
     // First calculation without extra space.
     dynamicBytesPerLine = (cols - offset1) / dividend;
@@ -649,8 +644,8 @@ void MemoryWindow::resizeEvent(QResizeEvent *event)
             dynamicBytesPerLine - (dynamicBytesPerLine % 8U));
 
     // The extra space every 8 bytes needs an extra calculation.
-    auto offset2 = (withExtraSpace && dynamicBytesPerLine > 8U) ?
-        (withAscii ? 2U : 1U) * ((dynamicBytesPerLine / 8U) - 1U) : 0U;
+    auto offset2 = (config.withExtraSpace && dynamicBytesPerLine > 8U) ?
+        (config.withAscii ? 2U : 1U) * ((dynamicBytesPerLine / 8U) - 1U) : 0U;
 
     dynamicBytesPerLine = (cols - offset1 - offset2) / dividend;
     dynamicBytesPerLine = std::max(4U,
@@ -713,7 +708,7 @@ void MemoryWindow::UpdateData(const std::vector<Byte> &p_data)
 
     UpdateData();
 
-    if (isUpdateWindowSizeAction->isEnabled() && isUpdateWindowSize &&
+    if (isUpdateWindowSizeAction->isEnabled() && config.isUpdateWindowSize &&
         isRequestResize)
     {
         Resize();
@@ -736,21 +731,23 @@ void MemoryWindow::UpdateData()
     std::optional<DWord> startAddress;
     auto bytesPerLine = EstimateBytesPerLine();
 
-    if (withAddress)
+    if (config.withAddress)
     {
-        startAddress = addressRange.lower();
+        startAddress = config.addressRange.lower();
     }
 
     ConnectHexDumpCursorPositionChanged(false);
 
     const auto rowCol = flx::get_hex_dump_position_for_address(
-            currentAddress, data.size(), bytesPerLine, withAscii,
-            withAddress, currentType == flx::HexDumpType::AsciiChar,
-            currentIsUpperNibble, addressRange.lower(), CurrentExtraSpace());
-    flx::hex_dump_scale(scaleStream, bytesPerLine, withAscii, withAddress,
+            currentAddress, data.size(), bytesPerLine, config.withAscii,
+            config.withAddress, currentType == flx::HexDumpType::AsciiChar,
+            currentIsUpperNibble, config.addressRange.lower(),
             CurrentExtraSpace());
+    flx::hex_dump_scale(scaleStream, bytesPerLine, config.withAscii,
+            config.withAddress, CurrentExtraSpace());
     flx::hex_dump(hexStream, data.data(), data.size(), bytesPerLine,
-            withAscii, withAddress, addressRange.lower(), CurrentExtraSpace());
+            config.withAscii, config.withAddress, config.addressRange.lower(),
+            CurrentExtraSpace());
 
     if (e_hexDump->verticalScrollBar() != nullptr)
     {
@@ -774,7 +771,7 @@ void MemoryWindow::UpdateData()
     {
         currentRow = static_cast<int>(rowCol.value().first);
         currentColumn = static_cast<int>(rowCol.value().second);
-        if (!withAscii)
+        if (!config.withAscii)
         {
             UpdateValidCharacters(currentAddress, flx::HexDumpType::HexByte);
             currentType = flx::HexDumpType::HexByte;
@@ -811,19 +808,19 @@ DWord MemoryWindow::EstimateBytesPerLine() const
 {
     using T = std::underlying_type_t<MemoryWindow::Style>;
 
-    if (style == MemoryWindow::Style::Dynamic)
+    if (config.style == MemoryWindow::Style::Dynamic)
     {
         return dynamicBytesPerLine;
     }
 
-    return static_cast<T>(style);
+    return static_cast<T>(config.style);
 }
 
 void MemoryWindow::RequestResize()
 {
     if (!isReadOnly)
     {
-        if (isUpdateWindowSizeAction->isEnabled() && isUpdateWindowSize)
+        if (isUpdateWindowSizeAction->isEnabled() && config.isUpdateWindowSize)
         {
             // Execute in event loop to also work when opening the window.
             QTimer::singleShot(100, this, [&](){
@@ -1006,9 +1003,11 @@ QString MemoryWindow::GetDefaultWindowTitle()
 }
 
 QString MemoryWindow::CreateWindowTitle(
-        QString title,
+        const std::string &sTitle,
         const BInterval<DWord> &addressRange)
 {
+    auto title = QString::fromStdString(sTitle);
+
     if (auto index = title.indexOf(GetStartAddrLiteral()); index >= 0)
     {
         const auto startAddr = QString("%1").arg(addressRange.lower(), 4, 16,
@@ -1028,7 +1027,7 @@ QString MemoryWindow::CreateWindowTitle(
 
 std::optional<DWord> MemoryWindow::CurrentExtraSpace() const
 {
-    return withExtraSpace ? std::optional<DWord>(8U) : std::nullopt;
+    return config.withExtraSpace ? std::optional<DWord>(8U) : std::nullopt;
 }
 
 void MemoryWindow::DetectAndExecuteChangedValue()
@@ -1058,7 +1057,7 @@ void MemoryWindow::HexValueChanged(char ch, DWord address, bool isUpperNibble)
 {
     bool isValid = false;
     const Byte operand = flx::hexval(ch, isValid) << (isUpperNibble ? 4U : 0U);
-    const auto offset = address - addressRange.lower();
+    const auto offset = address - config.addressRange.lower();
 
     if (isValid && offset < data.size())
     {
@@ -1080,7 +1079,7 @@ void MemoryWindow::HexValueChanged(char ch, DWord address, bool isUpperNibble)
 
 void MemoryWindow::AsciiValueChanged(char ch, DWord address)
 {
-    const auto offset = address - addressRange.lower();
+    const auto offset = address - config.addressRange.lower();
 
     if (offset < data.size())
     {
@@ -1132,12 +1131,12 @@ void MemoryWindow::UpdateValidCharacters(DWord address,
 
 BInterval<DWord> MemoryWindow::GetAddressRange() const
 {
-    return addressRange;
+    return config.addressRange;
 }
 
 void MemoryWindow::UpdateAddressStatus(DWord address)
 {
-    const auto offset = address - addressRange.lower();
+    const auto offset = address - config.addressRange.lower();
     const auto byteValue = (offset < data.size()) ? data[offset] : 0U;
     const auto statusString = fmt::format("{:04X} {:02X}", address,
             byteValue);
@@ -1158,7 +1157,7 @@ void MemoryWindow::UpdateAddressStatus(DWord address)
 
 void MemoryWindow::UpdateToggleHexAsciiEnabled() const
 {
-    toggleHexAsciiAction->setEnabled(withAscii & !isReadOnly);
+    toggleHexAsciiAction->setEnabled(config.withAscii & !isReadOnly);
 }
 
 // After changing a HEX or ASCII value the corresponding ASCII or HEX
@@ -1167,7 +1166,7 @@ void MemoryWindow::UpdateToggleHexAsciiEnabled() const
 // The data vector is unchanged.
 void MemoryWindow::ReplaceHexOrAsciiText(const QString &text) const
 {
-    if (!withAscii)
+    if (!config.withAscii)
     {
         return;
     }
@@ -1175,9 +1174,9 @@ void MemoryWindow::ReplaceHexOrAsciiText(const QString &text) const
     ConnectHexDumpCursorPositionChanged(false);
 
     const auto rowCol = flx::get_hex_dump_position_for_address(
-        currentAddress, data.size(), EstimateBytesPerLine(), withAscii,
-        withAddress, currentType != flx::HexDumpType::AsciiChar,
-        true, addressRange.lower(), CurrentExtraSpace());
+        currentAddress, data.size(), EstimateBytesPerLine(), config.withAscii,
+        config.withAddress, currentType != flx::HexDumpType::AsciiChar,
+        true, config.addressRange.lower(), CurrentExtraSpace());
 
     if (rowCol.has_value())
     {
