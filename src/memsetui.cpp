@@ -80,11 +80,9 @@ void MemorySettingsUi::InitializeWidgets()
     e_windowTitle->setMaxLength(255);
 }
 
-void MemorySettingsUi::SetData(const BInterval<DWord> &addressRange,
-        const QString &windowTitle, MemoryWindow::Style style,
-        bool withAddress, bool withAscii, bool withExtraSpace,
-        bool isUpdateWindowSize) const
+void MemorySettingsUi::SetData(const MemoryWindow::Config_t &config) const
 {
+    const auto latin1Zero = QLatin1Char('0');
     QString text;
 
     if (dialog == nullptr)
@@ -92,29 +90,27 @@ void MemorySettingsUi::SetData(const BInterval<DWord> &addressRange,
         throw std::logic_error("setupUi(dialog) has to be called before.");
     }
 
-    if (auto index = MemoryWindow::GetStyleValues().indexOf(style); index >= 0)
+    if (auto index = MemoryWindow::GetStyleValues().indexOf(config.style);
+        index >= 0)
     {
         cb_style->setCurrentIndex(index);
     }
 
-    text = QString("%1").arg(addressRange.lower(), 4, 16, QLatin1Char('0'));
+    text = QString("%1").arg(config.addressRange.lower(), 4, 16, latin1Zero);
     e_startAddress->setText(text);
-    text = QString("%1").arg(addressRange.upper(), 4, 16, QLatin1Char('0'));
+    text = QString("%1").arg(config.addressRange.upper(), 4, 16, latin1Zero);
     e_endAddress->setText(text);
-    c_withAddress->setChecked(withAddress);
-    c_withAscii->setChecked(withAscii);
-    c_isUpdateWindowSize->setChecked(isUpdateWindowSize);
-    c_withExtraSpace->setChecked(withExtraSpace);
+    c_withAddress->setChecked(config.withAddress);
+    c_withAscii->setChecked(config.withAscii);
+    c_isUpdateWindowSize->setChecked(config.isUpdateWindowSize);
+    c_withExtraSpace->setChecked(config.withExtraSpace);
 
     text = MemoryWindow::GetDefaultWindowTitle();
     e_windowTitle->setPlaceholderText(text);
-    e_windowTitle->setText(windowTitle);
+    e_windowTitle->setText(QString::fromStdString(config.windowTitle));
 }
 
-void MemorySettingsUi::GetData(BInterval<DWord> &addressRange,
-        QString &windowTitle, MemoryWindow::Style &style,
-        bool &withAddress, bool &withAscii, bool &withExtraSpace,
-        bool &isUpdateWindowSize) const
+void MemorySettingsUi::GetData(MemoryWindow::Config_t &config) const
 {
     bool isSuccess;
     DWord startAddress;
@@ -123,7 +119,7 @@ void MemorySettingsUi::GetData(BInterval<DWord> &addressRange,
 
     if (auto index = cb_style->currentIndex(); index >= 0)
     {
-        style = MemoryWindow::GetStyleValues()[index];
+        config.style = MemoryWindow::GetStyleValues()[index];
     }
 
     value = e_startAddress->text().toUInt(&isSuccess, 16);
@@ -140,13 +136,14 @@ void MemorySettingsUi::GetData(BInterval<DWord> &addressRange,
         endAddress = temp;
     }
 
-    addressRange = { startAddress, endAddress };
-    windowTitle = e_windowTitle->text().isEmpty() ?
+    config.addressRange = { startAddress, endAddress };
+    auto title = e_windowTitle->text().isEmpty() ?
         MemoryWindow::GetDefaultWindowTitle() : e_windowTitle->text();
-    withAddress = c_withAddress->isChecked();
-    withAscii = c_withAscii->isChecked();
-    isUpdateWindowSize = c_isUpdateWindowSize->isChecked();
-    withExtraSpace = c_withExtraSpace->isChecked();
+    config.windowTitle = title.toStdString();
+    config.withAddress = c_withAddress->isChecked();
+    config.withAscii = c_withAscii->isChecked();
+    config.isUpdateWindowSize = c_isUpdateWindowSize->isChecked();
+    config.withExtraSpace = c_withExtraSpace->isChecked();
 }
 
 
@@ -193,4 +190,3 @@ bool MemorySettingsUi::Validate()
 
     return true;
 }
-

@@ -24,8 +24,6 @@
 #ifndef MEMORYSETTINGSUI_INCLUDE
 #define MEMORYSETTINGSUI_INCLUDE
 
-#include "typedefs.h"
-#include "bintervl.h"
 #include "memwin.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
@@ -48,14 +46,8 @@ public:
     MemorySettingsUi();
     ~MemorySettingsUi() override = default;
     void setupUi(QDialog &dialog);
-    void SetData(const BInterval<DWord> &addressRange,
-            const QString &windowTitle, MemoryWindow::Style style,
-            bool withAddress, bool withAscii, bool withExtraSpace,
-            bool isUpdateWindowSize) const;
-    void GetData(BInterval<DWord> &addressRange,
-            QString &windowTitle, MemoryWindow::Style &style,
-            bool &withAddress, bool &withAscii, bool &withExtraSpace,
-            bool &isUpdateWindowSize) const;
+    void SetData(const MemoryWindow::Config_t &config) const;
+    void GetData(MemoryWindow::Config_t &config) const;
 
 protected:
     void OnClicked(QAbstractButton *button);

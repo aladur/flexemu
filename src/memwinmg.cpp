@@ -87,18 +87,13 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
         const sOptions &options)
 {
      BInterval<DWord> addressRange = { 0xC100U, 0xC6FFU };
-     QString windowTitle;
-     auto style = MemoryWindow::Style::Bytes16;
-     bool withAddress = true;
-     bool withAscii = true;
-     bool withExtraSpace = false;
-     bool isUpdateWindowSize = true;
+     MemoryWindow::Config_t config{"", addressRange,
+        MemoryWindow::Style::Bytes16, true, true, false, true};
      auto *dialog = new QDialog;
      MemorySettingsUi ui;
 
      ui.setupUi(*dialog);
-     ui.SetData(addressRange, windowTitle, style, withAddress, withAscii,
-                withExtraSpace, isUpdateWindowSize);
+     ui.SetData(config);
      dialog->adjustSize();
      auto result = dialog->exec();
      if (result != QDialog::Accepted)
@@ -106,10 +101,7 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
          return;
      }
 
-     ui.GetData(addressRange, windowTitle, style, withAddress, withAscii,
-                withExtraSpace, isUpdateWindowSize);
-     MemoryWindow::Config_t config{windowTitle.toStdString(), addressRange,
-         style, withAddress, withAscii, withExtraSpace, isUpdateWindowSize};
+     ui.GetData(config);
 
      if (!flx::is_range_in_ranges(addressRange, memory.GetAddressRanges()))
      {
