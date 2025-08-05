@@ -81,9 +81,9 @@ public:
     MemoryWindow() = delete;
     explicit MemoryWindow(
             bool p_isReadOnly,
-            const BInterval<DWord> &p_addressRange,
             MemoryRanges_t p_availableMemoryRanges,
             QString p_windowTitle,
+            const BInterval<DWord> &p_addressRange,
             MemoryWindow::Style p_style,
             bool p_withAddress,
             bool p_withAscii,

@@ -136,8 +136,8 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
      auto readMemoryCommand =
          std::make_shared<CReadMemory>(memory, addressRange);
      auto window = std::make_unique<MemoryWindow>(
-             isReadOnly, addressRange, memory.GetMemoryRanges(),
-             windowTitle, style, withAddress,
+             isReadOnly, memory.GetMemoryRanges(), windowTitle,
+             addressRange, style, withAddress,
              withAscii, withExtraSpace, isUpdateWindowSize);
      window->SetIconSize({ options.iconSize, options.iconSize });
      window->show();
