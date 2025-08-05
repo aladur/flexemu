@@ -108,6 +108,8 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
 
      ui.GetData(addressRange, windowTitle, style, withAddress, withAscii,
                 withExtraSpace, isUpdateWindowSize);
+     MemoryWindow::Config_t config{windowTitle.toStdString(), addressRange,
+         style, withAddress, withAscii, withExtraSpace, isUpdateWindowSize};
 
      if (!flx::is_range_in_ranges(addressRange, memory.GetAddressRanges()))
      {
@@ -136,9 +138,7 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
      auto readMemoryCommand =
          std::make_shared<CReadMemory>(memory, addressRange);
      auto window = std::make_unique<MemoryWindow>(
-             isReadOnly, memory.GetMemoryRanges(), windowTitle,
-             addressRange, style, withAddress,
-             withAscii, withExtraSpace, isUpdateWindowSize);
+             isReadOnly, memory.GetMemoryRanges(), config);
      window->SetIconSize({ options.iconSize, options.iconSize });
      window->show();
      connect(window.get(), &MemoryWindow::Closed,

@@ -78,17 +78,24 @@ public:
 
     using StyleValues_t = QList<enum MemoryWindow::Style>;
 
+    struct sConfig
+    {
+        std::string windowTitle;
+        BInterval<DWord> addressRange;
+        MemoryWindow::Style style{};
+        bool withAddress{};
+        bool withAscii{};
+        bool withExtraSpace{};
+        bool isUpdateWindowSize{};
+    };
+
+    using Config_t = struct sConfig;
+
     MemoryWindow() = delete;
     explicit MemoryWindow(
             bool p_isReadOnly,
             MemoryRanges_t p_availableMemoryRanges,
-            QString p_windowTitle,
-            const BInterval<DWord> &p_addressRange,
-            MemoryWindow::Style p_style,
-            bool p_withAddress,
-            bool p_withAscii,
-            bool p_withExtraSpace,
-            bool p_isUpdateWindowSize);
+            const Config_t &p_config);
     MemoryWindow(const MemoryWindow &src) = delete;
     MemoryWindow(MemoryWindow &&src) = delete;
     MemoryWindow &operator=(const MemoryWindow &src) = delete;

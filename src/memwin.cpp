@@ -82,13 +82,7 @@
 MemoryWindow::MemoryWindow(
         bool p_isReadOnly,
         MemoryRanges_t p_availableMemoryRanges,
-        QString p_windowTitle,
-        const BInterval<DWord> &p_addressRange,
-        MemoryWindow::Style p_style,
-        bool p_withAddress,
-        bool p_withAscii,
-        bool p_withExtraSpace,
-        bool p_isUpdateWindowSize)
+        const Config_t &p_config)
     : mainLayout(new QVBoxLayout(this))
     , toolBarLayout(new QHBoxLayout)
     , statusBarLayout(new QHBoxLayout)
@@ -97,14 +91,14 @@ MemoryWindow::MemoryWindow(
     , e_hexDump(new MemoryWindowTextEdit(this))
     , styleComboBox(new QComboBox(this))
     , availableMemoryRanges(std::move(p_availableMemoryRanges))
-    , addressRange(p_addressRange)
-    , windowTitle(std::move(p_windowTitle))
-    , style(p_style)
+    , addressRange(p_config.addressRange)
+    , windowTitle(QString::fromStdString(p_config.windowTitle))
+    , style(p_config.style)
     , dynamicBytesPerLine(16)
-    , withAddress(p_withAddress)
-    , withAscii(p_withAscii)
-    , withExtraSpace(p_withExtraSpace)
-    , isUpdateWindowSize(p_isUpdateWindowSize)
+    , withAddress(p_config.withAddress)
+    , withAscii(p_config.withAscii)
+    , withExtraSpace(p_config.withExtraSpace)
+    , isUpdateWindowSize(p_config.isUpdateWindowSize)
     , isReadOnly(p_isReadOnly)
     , isFirstResizeEvent(true)
     , isRequestResize(true)
