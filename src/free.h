@@ -33,6 +33,7 @@
 #include <regex>
 #include <optional>
 #include <iostream>
+#include <charconv>
 
 
 using ItemPairList_t = std::vector<std::pair<
@@ -102,6 +103,14 @@ namespace flx
             bool isUpperNibble,
             DWord startAddress,
             std::optional<DWord> extraSpace = std::nullopt);
+
+    template<typename T>
+    bool convert(const std::string &str, T &value, int base = 10)
+    {
+        const auto [ptr, ec] =
+            std::from_chars(str.data(), str.data() + str.size(), value, base);
+        return (ec == std::errc() && *ptr == '\0');
+    };
 }
 
 extern std::ostream &operator<<(std::ostream &os, flx::HexDumpType type);

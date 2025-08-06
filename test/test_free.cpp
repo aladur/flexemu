@@ -21,6 +21,12 @@
 */
 
 
+// This is needed compiling on Windows and using
+// std::numeric_limits<decltype(value)>::max();
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "typedefs.h"
@@ -32,6 +38,7 @@
 #include <numeric>
 #include <utility>
 #include <sstream>
+#include <limits>
 
 class test_free : public test_DebugOutputFixture
 {
@@ -2427,4 +2434,112 @@ TEST_F(test_free, fct_get_hex_dump_pos_for_addr_13)
     }};
 
     testHexDumpPosForAddr(patterns);
+}
+
+TEST_F(test_free, fct_convert)
+{
+    int int_val;
+    unsigned int uint_val;
+    short short_val;
+    unsigned short ushort_val;
+    long long int long_val;
+    long long unsigned int ulong_val;
+    char ch_val;
+    unsigned char uch_val;
+
+    // Positive tests.
+    EXPECT_TRUE(flx::convert("0000", int_val));
+    EXPECT_EQ(int_val, 0);
+    EXPECT_TRUE(flx::convert("0", short_val));
+    EXPECT_EQ(int_val, 0);
+    EXPECT_TRUE(flx::convert("-0", int_val));
+    EXPECT_EQ(int_val, 0);
+    EXPECT_TRUE(flx::convert("000012345", int_val));
+    EXPECT_EQ(int_val, 12345);
+    EXPECT_TRUE(flx::convert("12345", int_val));
+    EXPECT_EQ(int_val, 12345);
+    EXPECT_TRUE(flx::convert("-12345", int_val));
+    EXPECT_EQ(int_val, -12345);
+    EXPECT_TRUE(flx::convert("0", uint_val));
+    EXPECT_EQ(uint_val, 0);
+    EXPECT_TRUE(flx::convert("12345", uint_val));
+    EXPECT_EQ(uint_val, 12345);
+    EXPECT_TRUE(flx::convert("4294967295", uint_val));
+    const auto uint_expected = std::numeric_limits<decltype(uint_val)>::max();
+    EXPECT_EQ(uint_val, uint_expected);
+    EXPECT_TRUE(flx::convert("0", short_val));
+    EXPECT_EQ(short_val, 0);
+    EXPECT_TRUE(flx::convert("12345", short_val));
+    EXPECT_EQ(short_val, 12345);
+    EXPECT_TRUE(flx::convert("-12345", short_val));
+    EXPECT_EQ(short_val, -12345);
+    EXPECT_TRUE(flx::convert("0", ushort_val));
+    EXPECT_EQ(ushort_val, 0);
+    EXPECT_TRUE(flx::convert("12345", ushort_val));
+    EXPECT_EQ(ushort_val, 12345);
+    EXPECT_TRUE(flx::convert("65535", ushort_val));
+    const auto ushort_expected =
+        std::numeric_limits<decltype(ushort_val)>::max();
+    EXPECT_EQ(ushort_val, ushort_expected);
+    EXPECT_TRUE(flx::convert("0", long_val));
+    EXPECT_EQ(long_val, 0);
+    EXPECT_TRUE(flx::convert("12345", long_val));
+    EXPECT_EQ(long_val, 12345);
+    EXPECT_TRUE(flx::convert("-12345", long_val));
+    EXPECT_EQ(long_val, -12345);
+    EXPECT_TRUE(flx::convert("0", ulong_val));
+    EXPECT_EQ(ulong_val, 0);
+    EXPECT_TRUE(flx::convert("12345", ulong_val));
+    EXPECT_EQ(ulong_val, 12345);
+    EXPECT_TRUE(flx::convert("18446744073709551615", ulong_val));
+    const auto ulong_expected = std::numeric_limits<decltype(ulong_val)>::max();
+    EXPECT_EQ(ulong_val, ulong_expected);
+    EXPECT_TRUE(flx::convert("0", ch_val));
+    EXPECT_EQ(ch_val, 0);
+    EXPECT_TRUE(flx::convert("123", ch_val));
+    EXPECT_EQ(ch_val, 123);
+    EXPECT_TRUE(flx::convert("-123", ch_val));
+    EXPECT_EQ(ch_val, -123);
+    EXPECT_TRUE(flx::convert("0", uch_val));
+    EXPECT_EQ(uch_val, 0);
+    EXPECT_TRUE(flx::convert("123", uch_val));
+    EXPECT_EQ(uch_val, 123);
+    EXPECT_TRUE(flx::convert("255", uch_val));
+    const auto uch_expected = std::numeric_limits<decltype(uch_val)>::max();
+    EXPECT_EQ(uch_val, uch_expected);
+    EXPECT_TRUE(flx::convert("0", int_val, 16));
+    EXPECT_EQ(int_val, 0);
+    EXPECT_TRUE(flx::convert("ABCDE", int_val, 16));
+    EXPECT_EQ(int_val, 0xABCDE);
+    EXPECT_TRUE(flx::convert("-ABCDE", int_val, 16));
+    EXPECT_EQ(int_val, -0xABCDE);
+    EXPECT_TRUE(flx::convert("0", int_val, 2));
+    EXPECT_EQ(int_val, 0);
+    EXPECT_TRUE(flx::convert("011011100010101011101", int_val, 2));
+    EXPECT_EQ(int_val, 0b011011100010101011101);
+    EXPECT_TRUE(flx::convert("-011011100010101011101", int_val, 2));
+    EXPECT_EQ(int_val, -0b011011100010101011101);
+    // Negative tests.
+    EXPECT_FALSE(flx::convert("", int_val));
+    EXPECT_FALSE(flx::convert("xxx", int_val));
+    EXPECT_FALSE(flx::convert(" 1", int_val));
+    EXPECT_FALSE(flx::convert("2147483648", int_val));
+    EXPECT_FALSE(flx::convert("-2147483649", int_val));
+    EXPECT_FALSE(flx::convert("4294967296", uint_val));
+    EXPECT_FALSE(flx::convert("-1", uint_val));
+    EXPECT_FALSE(flx::convert("32768", short_val));
+    EXPECT_FALSE(flx::convert("-32769", short_val));
+    EXPECT_FALSE(flx::convert("65536", ushort_val));
+    EXPECT_FALSE(flx::convert("-0", ushort_val));
+    EXPECT_FALSE(flx::convert("-1", ushort_val));
+    EXPECT_FALSE(flx::convert("1.3", int_val));
+    EXPECT_FALSE(flx::convert("1e8", int_val));
+    EXPECT_FALSE(flx::convert("+12345", int_val));
+    EXPECT_FALSE(flx::convert("123456789A", int_val));
+    EXPECT_FALSE(flx::convert("ABCDEFG", int_val, 16));
+    EXPECT_FALSE(flx::convert("012", int_val, 2));
+    EXPECT_FALSE(flx::convert("0xABCDEF", int_val, 16));
+    EXPECT_FALSE(flx::convert("0XABCDEF", int_val, 16));
+    EXPECT_FALSE(flx::convert("0b01", int_val, 2));
+    EXPECT_FALSE(flx::convert("0B01", int_val, 2));
 }
