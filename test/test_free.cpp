@@ -2543,3 +2543,92 @@ TEST_F(test_free, fct_convert)
     EXPECT_FALSE(flx::convert("0b01", int_val, 2));
     EXPECT_FALSE(flx::convert("0B01", int_val, 2));
 }
+
+TEST_F(test_free, fct_countSetBits)
+{
+    unsigned short ushort_val;
+    unsigned char uch_val;
+
+    EXPECT_EQ(flx::countSetBits(0U), 0);
+    EXPECT_EQ(flx::countSetBits(1U), 1);
+    EXPECT_EQ(flx::countSetBits(2U), 1);
+    EXPECT_EQ(flx::countSetBits(3U), 2);
+    EXPECT_EQ(flx::countSetBits(0xFFFFU), 16);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFU), 32);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFFULL), 64);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFEULL), 63);
+    EXPECT_EQ(flx::countSetBits(0x7FFFFFFFFFFFFFFFULL), 63);
+    EXPECT_EQ(flx::countSetBits(0xF0F0F0F0F0F0F0F0ULL), 32);
+    EXPECT_EQ(flx::countSetBits(0x0F0F0F0F0F0F0F0FULL), 32);
+    EXPECT_EQ(flx::countSetBits(0xAAAAAAAAAAAAAAAAULL), 32);
+    EXPECT_EQ(flx::countSetBits(0x1111111111111111ULL), 16);
+    EXPECT_EQ(flx::countSetBits(0x8000000000000000ULL), 1);
+    EXPECT_EQ(flx::countSetBits(0), 0);
+    EXPECT_EQ(flx::countSetBits(1), 1);
+    EXPECT_EQ(flx::countSetBits(2), 1);
+    EXPECT_EQ(flx::countSetBits(3), 2);
+    EXPECT_EQ(flx::countSetBits(0xFFFF), 16);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFF), 32);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFFLL), 64);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFELL), 63);
+    EXPECT_EQ(flx::countSetBits(0x7FFFFFFFFFFFFFFFLL), 63);
+    EXPECT_EQ(flx::countSetBits(0xF0F0F0F0F0F0F0F0LL), 32);
+    EXPECT_EQ(flx::countSetBits(0x0F0F0F0F0F0F0F0FLL), 32);
+    EXPECT_EQ(flx::countSetBits(0xAAAAAAAAAAAAAAAALL), 32);
+    EXPECT_EQ(flx::countSetBits(0x1111111111111111LL), 16);
+    EXPECT_EQ(flx::countSetBits(0x8000000000000000LL), 1);
+    ushort_val = 0U;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 0);
+    ushort_val = 1U;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 1);
+    ushort_val = 0x8000U;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 1);
+    ushort_val = 0xFFFFU;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 16);
+    ushort_val = 0xFFFEU;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 15);
+    ushort_val = 0x7FFFU;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 15);
+    ushort_val = 0xAAAAU;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 8);
+    ushort_val = 0xF0F0U;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 8);
+    ushort_val = 0x0F0FU;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 8);
+    ushort_val = 0x1111U;
+    EXPECT_EQ(flx::countSetBits(ushort_val), 4);
+    uch_val = 0U;
+    EXPECT_EQ(flx::countSetBits(uch_val), 0);
+    uch_val = 1U;
+    EXPECT_EQ(flx::countSetBits(uch_val), 1);
+    uch_val = 0x80U;
+    EXPECT_EQ(flx::countSetBits(uch_val), 1);
+    uch_val = 0xFFU;
+    EXPECT_EQ(flx::countSetBits(uch_val), 8);
+    uch_val = 0xFEU;
+    EXPECT_EQ(flx::countSetBits(uch_val), 7);
+    uch_val = 0x7FU;
+    EXPECT_EQ(flx::countSetBits(uch_val), 7);
+    uch_val = 0xAAU;
+    EXPECT_EQ(flx::countSetBits(uch_val), 4);
+    uch_val = 0xF0U;
+    EXPECT_EQ(flx::countSetBits(uch_val), 4);
+    uch_val = 0x0FU;
+    EXPECT_EQ(flx::countSetBits(uch_val), 4);
+    uch_val = 0x11U;
+    EXPECT_EQ(flx::countSetBits(uch_val), 2);
+    // There is an issue with g++ 11.3.0, g++ 12.2.0: endless loop.
+    // compiler option: -O2, with -O0 or -O1 it works.
+    // Issue fixed on x86-64 with g++ >= 13.1
+    // Still issues on arm64 with g++ 15.1
+    // Not reproducible on:
+    // clang++ 14.0.6, clang++ 16.0.6, clang++ 19.1.4, clang++ 21.0.0
+    //EXPECT_EQ(flx::countSetBits(static_cast<int>(0xFFFFFFFFFLL)), 32);
+    std::cout << "mark5.1\n"; std::cout.flush();
+    EXPECT_EQ(flx::countSetBits(static_cast<short>(0xFFFFF)), 16);
+    EXPECT_EQ(flx::countSetBits(static_cast<char>(0xFFF)), 8);
+    EXPECT_EQ(flx::countSetBits(static_cast<unsigned int>(0xFFFFFFFFFULL)), 32);
+    EXPECT_EQ(flx::countSetBits(static_cast<unsigned short>(0xFFFFFU)), 16);
+    EXPECT_EQ(flx::countSetBits(static_cast<unsigned char>(0xFFFU)), 8);
+    std::cout.flush();
+}

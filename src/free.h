@@ -110,7 +110,25 @@ namespace flx
         const auto [ptr, ec] =
             std::from_chars(str.data(), str.data() + str.size(), value, base);
         return (ec == std::errc() && *ptr == '\0');
-    };
+    }
+
+    // Brian Kernighan's Algorithm to count bits set in an signed/unsigned
+    // integer datatype.
+    template <typename T>
+    static unsigned countSetBits(T value)
+    {
+        unsigned result{};
+
+        while (value)
+        {
+            // Algorithm verified for signed integer datatypes by unit tests.
+            // NOLINTNEXTLINE(hicpp-signed-bitwise)
+            value &= (value - 1);
+            ++result;
+        }
+
+        return result;
+    }
 }
 
 extern std::ostream &operator<<(std::ostream &os, flx::HexDumpType type);
