@@ -86,8 +86,7 @@ void MemoryWindowManager::OnMemoryModified(const MemoryWindow *memoryWindow,
 void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
         const sOptions &options)
 {
-     BInterval<DWord> addressRange = { 0xC100U, 0xC6FFU };
-     MemoryWindow::Config_t config{"", addressRange,
+     MemoryWindow::Config_t config{"", { 0xC100U, 0xC6FFU },
         MemoryWindow::Style::Bytes16, true, true, false, true};
      auto *dialog = new QDialog;
      MemorySettingsUi ui;
@@ -103,7 +102,8 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
 
      ui.GetData(config);
 
-     if (!flx::is_range_in_ranges(addressRange, memory.GetAddressRanges()))
+     if (!flx::is_range_in_ranges(config.addressRange,
+                 memory.GetAddressRanges()))
      {
          std::stringstream stream;
 
@@ -128,7 +128,7 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
      }
 
      auto readMemoryCommand =
-         std::make_shared<CReadMemory>(memory, addressRange);
+         std::make_shared<CReadMemory>(memory, config.addressRange);
      auto window = std::make_unique<MemoryWindow>(
              isReadOnly, memory.GetMemoryRanges(), config);
      window->SetIconSize({ options.iconSize, options.iconSize });
