@@ -1007,6 +1007,10 @@ QString MemoryWindow::CreateWindowTitle(
         const BInterval<DWord> &addressRange)
 {
     auto title = QString::fromStdString(sTitle);
+    if (title.isEmpty())
+    {
+        title = GetDefaultWindowTitle();
+    }
 
     if (auto index = title.indexOf(GetStartAddrLiteral()); index >= 0)
     {
