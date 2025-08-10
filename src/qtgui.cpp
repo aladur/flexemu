@@ -220,6 +220,8 @@ QtGui::QtGui(
         SetStatusBarVisibility(false);
     }
     UpdateStatusBarCheck();
+
+    QTimer::singleShot(0, this, &QtGui::RestoreMemoryWindows);
 }
 
 QtGui::~QtGui()
@@ -418,6 +420,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::TerminalType:
                 case FlexemuOptionId::IsStatusBarVisible:
                 case FlexemuOptionId::IsConfirmExit:
+                case FlexemuOptionId::MemoryWindowConfigs:
                     break;
             }
         }
@@ -2200,7 +2203,7 @@ void QtGui::closeEvent(QCloseEvent *event)
             printOutputWindow->close();
             printOutputWindow = nullptr;
         }
-        memoryWindowMgr.CloseAllWindows();
+        memoryWindowMgr.CloseAllWindows(options);
         FlexemuOptionsDifference optionsDiff(options, oldOptions);
 
         if (!optionsDiff.GetNotEquals().empty())
@@ -2496,4 +2499,11 @@ void QtGui::UpdateFrequencyStatus() const
     stream << std::fixed << std::setprecision(2) << std::setw(6) <<
         scheduler.get_frequency() << " MHz";
     frequencyLabel->setText(QString::fromStdString(stream.str()));
+}
+
+void QtGui::RestoreMemoryWindows()
+{
+    const auto isReadOnly = (cpuState != CpuState::Stop);
+
+    memoryWindowMgr.OpenAllWindows(isReadOnly, options);
 }

@@ -95,7 +95,8 @@ public:
     explicit MemoryWindow(
             bool p_isReadOnly,
             MemoryRanges_t p_availableMemoryRanges,
-            Config_t p_config);
+            Config_t p_config,
+            const std::optional<QRect> &positionAndSize = std::nullopt);
     MemoryWindow(const MemoryWindow &src) = delete;
     MemoryWindow(MemoryWindow &&src) = delete;
     MemoryWindow &operator=(const MemoryWindow &src) = delete;
@@ -112,11 +113,14 @@ public:
     static QString CreateWindowTitle(
             const std::string &title,
             const BInterval<DWord> &addressRange);
+    static void ConvertConfigString(const std::string &configString,
+            Config_t &config, QRect &positionAndSize);
 
     void SetIconSize(const QSize &iconSize);
     void UpdateData(const std::vector<Byte> &p_data);
     void SetReadOnly(bool p_isReadOnly);
     BInterval<DWord> GetAddressRange() const;
+    std::string GetConfigString() const;
 
 public slots:
     void OnClose();

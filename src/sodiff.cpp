@@ -232,6 +232,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
     {
         notEquals.push_back(FlexemuOptionId::PrintConfigs);
     }
+
+    if (opt1.memoryWindowConfigs != opt2.memoryWindowConfigs)
+    {
+        notEquals.push_back(FlexemuOptionId::MemoryWindowConfigs);
+    }
 }
 
 const FlexemuOptionsDifference::Result&

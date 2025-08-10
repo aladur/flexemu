@@ -137,9 +137,7 @@ void MemorySettingsUi::GetData(MemoryWindow::Config_t &config) const
     }
 
     config.addressRange = { startAddress, endAddress };
-    auto title = e_windowTitle->text().isEmpty() ?
-        MemoryWindow::GetDefaultWindowTitle() : e_windowTitle->text();
-    config.windowTitle = title.toStdString();
+    config.windowTitle = e_windowTitle->text().toStdString();
     config.withAddress = c_withAddress->isChecked();
     config.withAscii = c_withAscii->isChecked();
     config.isUpdateWindowSize = c_isUpdateWindowSize->isChecked();

@@ -34,6 +34,7 @@
 #include <QSize>
 #include <QString>
 #include <QDialog>
+#include <QTimer>
 #include <QMessageBox>
 #include <fmt/format.h>
 #include "warnon.h"
@@ -91,6 +92,16 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
      auto *dialog = new QDialog;
      MemorySettingsUi ui;
 
+     if (items.size() >= sOptions::maxMemoryWindows)
+     {
+        const auto msg = QString(
+                "A maximum of %1 Memory Windows are open.\n"
+                "No more Memory Windows can be opened.")
+                 .arg(sOptions::maxMemoryWindows);
+         QMessageBox::warning(nullptr, PROGRAMNAME " warning", msg);
+         return;
+     }
+
      ui.setupUi(*dialog);
      ui.SetData(config);
      dialog->adjustSize();
@@ -102,6 +113,14 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
 
      ui.GetData(config);
 
+     OpenMemoryWindow(isReadOnly, options, config);
+}
+
+void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
+        const sOptions &options,
+        const MemoryWindow::Config_t &config,
+        const std::optional<QRect> positionAndSize)
+{
      if (!flx::is_range_in_ranges(config.addressRange,
                  memory.GetAddressRanges()))
      {
@@ -130,7 +149,7 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
      auto readMemoryCommand =
          std::make_shared<CReadMemory>(memory, config.addressRange);
      auto window = std::make_unique<MemoryWindow>(
-             isReadOnly, memory.GetMemoryRanges(), config);
+             isReadOnly, memory.GetMemoryRanges(), config, positionAndSize);
      window->SetIconSize({ options.iconSize, options.iconSize });
      window->show();
      connect(window.get(), &MemoryWindow::Closed,
@@ -178,15 +197,38 @@ void MemoryWindowManager::SetIconSize(const QSize &iconSize) const
     }
 }
 
-void MemoryWindowManager::CloseAllWindows()
+void MemoryWindowManager::CloseAllWindows(sOptions &options)
 {
     // Iterate on a copy because for each close() OnMemoryWindowClosed()
     // slot is called which modifies items.
     std::vector<MemoryWindowItem> itemsCopy = items;
 
+    options.memoryWindowConfigs.clear();
     for (auto &item : itemsCopy)
     {
+        options.memoryWindowConfigs.push_back(item.window->GetConfigString());
         item.window->close();
+    }
+}
+
+void MemoryWindowManager::OpenAllWindows(bool isReadOnly,
+        const sOptions &options)
+{
+    for (const auto &configString : options.memoryWindowConfigs)
+    {
+        if (items.size() >= sOptions::maxMemoryWindows)
+        {
+            return;
+        }
+
+        QTimer::singleShot(0, this, [&, configString, isReadOnly](){
+            MemoryWindow::Config_t config;
+            QRect positionAndSize{};
+
+            MemoryWindow::ConvertConfigString(configString, config,
+                positionAndSize);
+            OpenMemoryWindow(isReadOnly, options, config, positionAndSize);
+        });
     }
 }
 

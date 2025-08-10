@@ -80,6 +80,7 @@ enum class FlexemuOptionId : uint8_t
     IsStatusBarVisible,
     TerminalType,
     IsConfirmExit,
+    MemoryWindowConfigs,
 };
 using FlexemuOptionIds_t = std::vector<FlexemuOptionId>;
 
@@ -143,6 +144,10 @@ struct sOptions
 
     FlexemuOptionIds_t readOnlyOptionIds;// List of option ids which are
                                          // read-only.
+    std::vector<std::string> memoryWindowConfigs; // configuration of all
+                                                  // memory windows.
+
+    static const int maxMemoryWindows = 24;
 };
 
 #endif

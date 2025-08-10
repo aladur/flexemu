@@ -67,6 +67,7 @@ const FlexemuOptionIds_t &GetAllFlexemuOptionIds()
         FlexemuOptionId::DirectoryDiskTrkSec,
         FlexemuOptionId::IsStatusBarVisible,
         FlexemuOptionId::TerminalType,
+        FlexemuOptionId::MemoryWindowConfigs,
     };
 
     return allFlexemuOptionIds;

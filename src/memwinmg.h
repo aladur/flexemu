@@ -28,6 +28,7 @@
 #include <QObject>
 #include "warnon.h"
 #include "bintervl.h"
+#include "memwin.h"
 #include <memory>
 #include <vector>
 
@@ -38,7 +39,6 @@ class QSize;
 class CReadMemory;
 class CWriteMemory;
 class MemoryWindowManager;
-class MemoryWindow;
 struct sOptions;
 
 using CReadMemorySPtr = std::shared_ptr<CReadMemory>;
@@ -65,13 +65,20 @@ public:
             const MemoryWindow *excludeWindow = nullptr) const;
     void UpdateData() const;
     void SetIconSize(const QSize &iconSize) const;
-    void CloseAllWindows();
+    void CloseAllWindows(sOptions &options);
+    void OpenAllWindows(bool isReadOnly, const sOptions &options);
     void SetReadOnly(bool isReadOnly) const;
 
 protected slots:
     void OnMemoryWindowClosed(const MemoryWindow *memoryWindow);
     void OnMemoryModified(const MemoryWindow *memoryWindow, Word address,
             const std::vector<Byte> &data);
+
+protected:
+    void OpenMemoryWindow(bool isReadOnly,
+            const sOptions &options,
+            const MemoryWindow::Config_t &config,
+            std::optional<QRect> positionAndSize = std::nullopt);
 
 private:
     struct MemoryWindowItem

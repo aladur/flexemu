@@ -238,6 +238,7 @@ private:
     QString GetConfigurationHtmlText() const;
     void GotIllegalInstruction(const Mc6809CpuStatus &status);
     void ForceRestart();
+    void RestoreMemoryWindows();
 
     // QWidget Overrides
     bool event(QEvent *event) override;

@@ -88,6 +88,7 @@ static const char * const FLEXPRINTCONFIG = "PrintConfig";
 static const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
 static const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
 static const char * const FLEXISDIRECTORYDISKACTIVE = "IsDirectoryDiskActive";
+static const char * const FLEXMEMORYWINDOWCONFIG = "MemoryWindowConfig";
 
 void FlexemuOptions::PrintHelp(std::ostream &os)
 {
@@ -461,6 +462,7 @@ void FlexemuOptions::WriteOptionsToRegistry(
 {
     BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
     std::string str;
+    int index;
     bool ok;
 
     if (ifNotExists && reg.GetValue(FLEXVERSION, str) == ERROR_SUCCESS)
@@ -641,6 +643,18 @@ void FlexemuOptions::WriteOptionsToRegistry(
         case FlexemuOptionId::IsDirectoryDiskActive:
             reg.SetValue(FLEXISDIRECTORYDISKACTIVE,
                 options.isDirectoryDiskActive ? 1 : 0);
+            break;
+
+        case FlexemuOptionId::MemoryWindowConfigs:
+            index = 0;
+            for (const auto& config : options.memoryWindowConfigs)
+            {
+                str = std::to_string(index);
+                const auto key = std::string(FLEXMEMORYWINDOWCONFIG) + str;
+                reg.SetValue(key.c_str(), config);
+                ++index;
+            }
+            break;
         }
     }
 }
@@ -854,6 +868,11 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isStatusBarVisible =
                 previousOptions.isStatusBarVisible;
             break;
+
+        case FlexemuOptionId::MemoryWindowConfigs:
+            optionsToWrite.memoryWindowConfigs =
+                previousOptions.memoryWindowConfigs;
+            break;
         }
 
         optionsToWrite.version = VERSION;
@@ -928,6 +947,13 @@ void FlexemuOptions::WriteOptionsToFile(
     {
         const auto key = std::string(FLEXPRINTCONFIG) + iter.first;
         rcFile.SetValue(key.c_str(), iter.second);
+    }
+
+    for (auto i = 0U; i < optionsToWrite.memoryWindowConfigs.size(); ++i)
+    {
+        str = std::to_string(i);
+        const auto key = std::string(FLEXMEMORYWINDOWCONFIG) + str;
+        rcFile.SetValue(key.c_str(), optionsToWrite.memoryWindowConfigs[i]);
     }
 }
 #endif
@@ -1113,6 +1139,17 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     reg.GetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
             options.printPreviewDialogGeometry);
     reg.GetValues(FLEXPRINTCONFIG, options.printConfigs);
+
+    for (auto i = 0; i < sOptions::maxMemoryWindows; ++i)
+    {
+        std::stringstream key;
+
+        key << FLEXMEMORYWINDOWCONFIG << i;
+        if (ERROR_SUCCESS == reg.GetValue(key.str(), string_result))
+        {
+            options.memoryWindowConfigs.push_back(string_result);
+        }
+    }
 #endif
 #ifdef UNIX
     auto rcFilePath = flx::getFlexemuUserConfigPath() / FLEXEMURC;
@@ -1300,6 +1337,17 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     rcFile.GetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
             options.printPreviewDialogGeometry);
     rcFile.GetValues(FLEXPRINTCONFIG, options.printConfigs);
+
+    for (auto i = 0; i < sOptions::maxMemoryWindows; ++i)
+    {
+        std::stringstream key;
+
+        key << FLEXMEMORYWINDOWCONFIG << i;
+        if (BRC_NO_ERROR == rcFile.GetValue(key.str().c_str(), string_result))
+        {
+            options.memoryWindowConfigs.emplace_back(string_result);
+        }
+    }
 #endif
 }
 
