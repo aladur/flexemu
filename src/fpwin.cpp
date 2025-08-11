@@ -1001,8 +1001,6 @@ void FLEXplorer::CreateWindowsActions(QToolBar &p_toolBar)
     windowMenuSeparatorAction = new QAction(this);
     windowMenuSeparatorAction->setSeparator(true);
     menuBar()->addSeparator();
-
-    OnUpdateWindowMenu();
 }
 
 void FLEXplorer::CreateHelpActions(QToolBar &p_toolBar)
