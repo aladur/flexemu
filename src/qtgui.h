@@ -169,6 +169,7 @@ private slots:
     void OnScreenSizeHighlighted(int index) const;
     void AdjustSize();
     void OnResize();
+    void OnUpdateWindowMenu();
 
 private:
     FlexemuToolBar *CreateToolBar(QWidget *parent, const QString &title,
@@ -180,6 +181,7 @@ private:
     void CreateViewActions(QToolBar &p_toolBar);
     void CreateCpuActions(QToolBar &p_toolBar);
     void CreateHelpActions(QToolBar &p_toolBar);
+    void CreateWindowActions(QToolBar &p_toolBar);
     QAction *CreateScreenSizeAction(const QIcon &icon, QMenu &menu,
                                     uint16_t index);
     void CreateStatusToolBar(QLayout &layout, const QSize &iconSize);
@@ -258,6 +260,7 @@ private:
     QStackedWidget *frequencyFrame{};
     E2Screen *e2screen{};
     QMenuBar *menuBar{};
+    QMenu *windowMenu{};
     FlexemuToolBar *toolBar{};
     FlexemuToolBar *statusToolBar{};
     QLabel *newKeyLabel{};

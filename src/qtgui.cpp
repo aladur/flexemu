@@ -108,6 +108,7 @@
 #include <array>
 #include <vector>
 #include <regex>
+#include <algorithm>
 
 int QtGui::preferencesTabIndex = 0;
 
@@ -273,8 +274,14 @@ FlexemuToolBar *QtGui::CreateToolBar(QWidget *parent, const QString &title,
 
 void QtGui::OnPrinterOutput()
 {
+    auto state = printOutputWindow->windowState();
+
+    // NOLINTNEXTLINE(hicpp-signed-bitwise)
+    state &= ~Qt::WindowMinimized | Qt::WindowActive;
+    printOutputWindow->setWindowState(state);
     printOutputWindow->show();
     printOutputWindow->raise();
+    printOutputWindow->activateWindow();
 }
 
 void QtGui::OnExit()
@@ -1033,6 +1040,7 @@ void QtGui::CreateActions(QLayout &layout, const QSize &iconSize)
     CreateEditActions(*toolBar);
     CreateViewActions(*toolBar);
     CreateCpuActions(*toolBar);
+    CreateWindowActions(*toolBar);
     CreateHelpActions(*toolBar);
 }
 
@@ -1221,6 +1229,12 @@ void QtGui::CreateCpuActions(QToolBar &p_toolBar)
     undocumentedAction->setCheckable(true);
     undocumentedAction->setStatusTip(
             tr("Toggle support of undocumented CPU instructions"));
+}
+
+void QtGui::CreateWindowActions(QToolBar & /* toolBar */)
+{
+    windowMenu = menuBar->addMenu(tr("&Window"));
+    connect(windowMenu, &QMenu::aboutToShow, this, &QtGui::OnUpdateWindowMenu);
 }
 
 void QtGui::CreateHelpActions(QToolBar &p_toolBar)
@@ -1747,6 +1761,79 @@ void QtGui::OnResize()
     // within the event loop, e.g. with a singleShot timer.
     // See also: QtGui::AdjustSize().
     resize(sizeHint());
+}
+
+void QtGui::OnUpdateWindowMenu()
+{
+    assert(windowMenu);
+
+    windowMenu->clear();
+
+    if (cpuDialog->isVisible())
+    {
+        auto title = cpuDialog->windowTitle();
+        if (const auto pos = title.indexOf('M'); pos >= 0)
+        {
+            title.insert(pos, '&');
+        }
+
+        auto *action = windowMenu->addAction(title);
+        connect(action, &QAction::triggered, [&]() {
+                    cpuDialog->activateWindow();
+                });
+    }
+
+    if (printOutputWindow != nullptr && printOutputWindow->isVisible())
+    {
+        auto title = printOutputWindow->windowTitle();
+        if (const auto pos = title.indexOf('P'); pos >= 0)
+        {
+            title.insert(pos, '&');
+        }
+
+        auto *action = windowMenu->addAction(title);
+        connect(action, &QAction::triggered, [&]() {
+                    OnPrinterOutput();
+                });
+    }
+
+    auto memoryWindows = memoryWindowMgr.GetAllWindows();
+
+    struct
+    {
+        bool operator()(MemoryWindowSPtr &lhs, MemoryWindowSPtr &rhs)
+        {
+            return lhs->GetAddressRange().lower() <
+                   rhs->GetAddressRange().lower();
+        };
+    } compareMemoryWindows;
+
+    std::sort(memoryWindows.begin(), memoryWindows.end(), compareMemoryWindows);
+
+    for (size_t i = 0U; i < memoryWindows.size(); ++i)
+    {
+        if (i == 0U)
+        {
+            windowMenu->addSeparator();
+        }
+
+        auto &memoryWindow = memoryWindows[i];
+        QString acceleratorPrefix = (i < 9U) ? "&" : "";
+        QString text = tr("%1%2 %3").arg(acceleratorPrefix)
+                                .arg(i + 1U)
+                                .arg(memoryWindow->windowTitle());
+        auto *action = windowMenu->addAction(text);
+        connect(action, &QAction::triggered, [memoryWindow]() {
+                    auto state = memoryWindow->windowState();
+
+                    // NOLINTNEXTLINE(hicpp-signed-bitwise)
+                    state &= ~Qt::WindowMinimized | Qt::WindowActive;
+                    memoryWindow->setWindowState(state);
+                    memoryWindow->show();
+                    memoryWindow->raise();
+                    memoryWindow->activateWindow();
+                });
+    }
 }
 
 QUrl QtGui::CreateDocumentationUrl(const QString &docDir,

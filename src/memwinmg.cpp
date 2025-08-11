@@ -41,6 +41,7 @@
 #include <memory>
 #include <cassert>
 #include <sstream>
+#include <algorithm>
 
 MemoryWindowManager::MemoryWindowManager(Scheduler &p_scheduler,
         Memory &p_memory)
@@ -230,6 +231,19 @@ void MemoryWindowManager::OpenAllWindows(bool isReadOnly,
             OpenMemoryWindow(isReadOnly, options, config, positionAndSize);
         });
     }
+}
+
+MemoryWindowSPtrs MemoryWindowManager::GetAllWindows() const
+{
+    MemoryWindowSPtrs result;
+
+    std::transform(items.cbegin(), items.cend(), std::back_inserter(result),
+        [&](const MemoryWindowItem &item)
+        {
+            return item.window;
+        });
+
+    return result;
 }
 
 void MemoryWindowManager::SetReadOnly(bool isReadOnly) const

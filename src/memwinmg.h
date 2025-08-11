@@ -44,6 +44,7 @@ struct sOptions;
 using CReadMemorySPtr = std::shared_ptr<CReadMemory>;
 using MemoryWindowManagerSPtr = std::shared_ptr<MemoryWindowManager>;
 using MemoryWindowSPtr = std::shared_ptr<MemoryWindow>;
+using MemoryWindowSPtrs = std::vector<MemoryWindowSPtr>;
 
 class MemoryWindowManager : public QObject
 {
@@ -67,6 +68,7 @@ public:
     void SetIconSize(const QSize &iconSize) const;
     void CloseAllWindows(sOptions &options);
     void OpenAllWindows(bool isReadOnly, const sOptions &options);
+    MemoryWindowSPtrs GetAllWindows() const;
     void SetReadOnly(bool isReadOnly) const;
 
 protected slots:
