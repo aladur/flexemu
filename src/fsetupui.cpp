@@ -493,6 +493,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::PrintPageSize:
             case FlexemuOptionId::PrintUnit:
             case FlexemuOptionId::MainWindowGeometry:
+            case FlexemuOptionId::CpuDialogGeometry:
             case FlexemuOptionId::PrintOutputWindowGeometry:
             case FlexemuOptionId::PrintPreviewDialogGeometry:
             case FlexemuOptionId::PrintConfigs:
@@ -596,6 +597,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::PrintPageSize:
                 case FlexemuOptionId::PrintUnit:
                 case FlexemuOptionId::MainWindowGeometry:
+                case FlexemuOptionId::CpuDialogGeometry:
                 case FlexemuOptionId::PrintOutputWindowGeometry:
                 case FlexemuOptionId::PrintPreviewDialogGeometry:
                 case FlexemuOptionId::PrintConfigs:

@@ -530,41 +530,13 @@ void QtGui::OnCpuDialogToggle()
 
     if (cpuViewAction->isChecked())
     {
-        // Choose the right position for the CPU Dialog
-        // either above or below the main window.
-        auto position = pos();
-        int x;
-        int y;
-
-        x = frameGeometry().x() +
-            (frameGeometry().width() / 2) -
-             (cpuDialog->frameGeometry().width() / 2);
-        y = frameGeometry().y() - cpuDialog->frameGeometry().height() - 1;
-        if (y >= 0)
-        {
-            position = QPoint(x, y);
-        }
-        else
-        {
-            int screenHeight = 0;
-
-            if (!QGuiApplication::screens().isEmpty())
-            {
-                screenHeight =
-                    QGuiApplication::screens().first()->geometry().height();
-            }
-
-            y = frameGeometry().y() + frameGeometry().height() + 1;
-            if (y + cpuDialog->frameGeometry().height() < screenHeight)
-            {
-                position = QPoint(x, y);
-            }
-            else
-            {
-                position = QPoint(x, 0);
-            }
-        }
-        cpuDialog->move(position);
+        const auto geometry = QString::fromStdString(options.cpuDialogGeometry);
+        ::UpdateWindowGeometry(*cpuDialog, geometry, true);
+    }
+    else
+    {
+        //const auto geometry = ::GetWindowGeometry(*cpuDialog);
+        //options.cpuDialogGeometry = geometry.toStdString();
     }
 
     cpuDialog->setVisible(cpuViewAction->isChecked());
@@ -2294,6 +2266,11 @@ void QtGui::closeEvent(QCloseEvent *event)
             printOutputWindow = nullptr;
         }
         memoryWindowMgr.CloseAllWindows(options);
+        if (cpuDialog->isVisible())
+        {
+            const auto geometry = ::GetWindowGeometry(*cpuDialog);
+            options.cpuDialogGeometry = geometry.toStdString();
+        }
         auto geometry = ::GetWindowGeometry(*this);
         options.mainWindowGeometry = geometry.toStdString();
 

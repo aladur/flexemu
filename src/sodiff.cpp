@@ -223,6 +223,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::MainWindowGeometry);
     }
 
+    if (opt1.cpuDialogGeometry != opt2.cpuDialogGeometry)
+    {
+        notEquals.push_back(FlexemuOptionId::CpuDialogGeometry);
+    }
+
     if (opt1.printOutputWindowGeometry != opt2.printOutputWindowGeometry)
     {
         notEquals.push_back(FlexemuOptionId::PrintOutputWindowGeometry);
