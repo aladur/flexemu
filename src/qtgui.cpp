@@ -2460,8 +2460,16 @@ ItemPairList_t QtGui::GetConfiguration() const
     result.emplace_back("Mainboard", std::vector(1U, GetMainboardName()));
     values = { cpu.get_vendor() + " " + cpu.get_name() };
     result.emplace_back("CPU", values);
-    values = { std::to_string(memory.get_ram_size()) + " KByte" };
+    const auto ranges = memory.GetMemoryRanges();
+    auto iter = std::find_if(ranges.cbegin(), ranges.cend(), [](auto &item){
+                return item.type == MemoryType::RAM; });
+    assert(iter != ranges.end());
+    values = { fmt::format("{:04X}-{:04X}",
+            iter->addressRange.lower(), iter->addressRange.upper()) };
     result.emplace_back("RAM", values);
+    values = { fmt::format("{} KByte",
+               (1U + ::width(iter->addressRange)) / 1024) };
+    result.emplace_back("RAM size", values);
     values = { "none" };
     if (memory.get_ram_extension_size() > 0U)
     {
@@ -2469,7 +2477,15 @@ ItemPairList_t QtGui::GetConfiguration() const
             std::to_string(memory.get_ram_extension_size()) + " KByte" };
     }
     result.emplace_back("RAM extension", values);
-    result.emplace_back("Boot ROM", std::vector(1U, romName));
+    iter = std::find_if(ranges.cbegin(), ranges.cend(), [](auto &item){
+                return item.type == MemoryType::ROM; });
+    values = { fmt::format("{:04X}-{:04X}",
+            iter->addressRange.lower(), iter->addressRange.upper()) };
+    result.emplace_back("Boot ROM", values);
+    values = { fmt::format("{} KByte",
+               (1U + ::width(iter->addressRange)) / 1024) };
+    result.emplace_back("Boot ROM size", values);
+    result.emplace_back("Boot ROM id", std::vector(1U, romName));
     if (!osName.empty())
     {
         result.emplace_back("Operating system", std::vector(1U, osName));
