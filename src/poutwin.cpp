@@ -59,7 +59,7 @@
 #include <QFileDialog>
 #include <QProgressDialog>
 #include <QEvent>
-#include <QCloseEvent>
+#include <QMoveEvent>
 #include <QStatusTipEvent>
 #include <QEventLoop>
 #include <QFont>
@@ -283,7 +283,7 @@ PrintOutputWindow::PrintOutputWindow(sOptions &p_options)
             &PrintOutputWindow::OnCyclicTimer);
 
     cyclicTimer.start(100);
-    QTimer::singleShot(0, this, &PrintOutputWindow::OnUpdateGeometry);
+    UpdateGeometry();
 }
 
 PrintOutputWindow::~PrintOutputWindow()
@@ -375,10 +375,6 @@ void PrintOutputWindow::OnFontChanged(const QFont &newFont) const
 
 void PrintOutputWindow::OnHideWindow()
 {
-    auto geometry = ::GetWindowGeometry(*this);
-
-    options.printOutputWindowGeometry = geometry.toStdString();
-
     hide();
 }
 
@@ -764,7 +760,7 @@ void PrintOutputWindow::OnCyclicTimer()
     cyclicTimer.start(20);
 }
 
-void PrintOutputWindow::OnUpdateGeometry()
+void PrintOutputWindow::UpdateGeometry()
 {
     auto geometry = QString::fromStdString(options.printOutputWindowGeometry);
 
@@ -1349,18 +1345,6 @@ void PrintOutputWindow::ProcessSerialInput()
 ** Event handlers **
 *******************/
 
-void PrintOutputWindow::closeEvent(QCloseEvent *event)
-{
-    if (isVisible())
-    {
-        auto geometry = ::GetWindowGeometry(*this);
-
-        options.printOutputWindowGeometry = geometry.toStdString();
-    }
-
-    event->accept();
-}
-
 bool PrintOutputWindow::event(QEvent *event)
 {
     if (event->type() == QEvent::StatusTip)
@@ -1393,3 +1377,35 @@ void PrintOutputWindow::changeEvent(QEvent *event)
     }
 }
 
+void PrintOutputWindow::moveEvent(QMoveEvent *event)
+{
+    if (isVisible())
+    {
+        auto geometry = ::GetWindowGeometry(*this);
+        options.printOutputWindowGeometry = geometry.toStdString();
+    }
+
+    QWidget::moveEvent(event);
+}
+
+void PrintOutputWindow::SetVisible()
+{
+    if (!isVisible())
+    {
+        // On Linux/X11 this window gets a move event after hide(). This
+        // avoids keeping the window position when repeating hide() and
+        // show(). The reason is unknown. A workaround is to only store
+        // the window geometry in the moveEvent() if window is visible,
+        // and update the window geometry at this point before show().
+        UpdateGeometry();
+
+        show();
+    }
+
+    auto state = windowState();
+    // NOLINTNEXTLINE(hicpp-signed-bitwise)
+    state &= ~Qt::WindowMinimized | Qt::WindowActive;
+    setWindowState(state);
+    raise();
+    activateWindow();
+}

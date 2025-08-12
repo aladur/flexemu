@@ -277,14 +277,7 @@ FlexemuToolBar *QtGui::CreateToolBar(QWidget *parent, const QString &title,
 
 void QtGui::OnPrinterOutput()
 {
-    auto state = printOutputWindow->windowState();
-
-    // NOLINTNEXTLINE(hicpp-signed-bitwise)
-    state &= ~Qt::WindowMinimized | Qt::WindowActive;
-    printOutputWindow->setWindowState(state);
-    printOutputWindow->show();
-    printOutputWindow->raise();
-    printOutputWindow->activateWindow();
+    printOutputWindow->SetVisible();
 }
 
 void QtGui::OnExit()

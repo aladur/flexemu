@@ -51,7 +51,7 @@ class QComboBox;
 class QFile;
 class QTextStream;
 class QEvent;
-class QCloseEvent;
+class QMoveEvent;
 class QFontComboBox;
 class QFont;
 class QStatusBar;
@@ -84,6 +84,7 @@ public:
     void write_char_serial(Byte value);
 
     void SetIconSize(const QSize &iconSize);
+    void SetVisible();
 
 public slots:
     void OnClearTextBrowser();
@@ -109,7 +110,6 @@ public slots:
     void OnSizeFactorChanged(int value);
     void OnSizeFactorDecrement();
     void OnSizeFactorIncrement();
-    void OnUpdateGeometry();
     void OnUnitChanged(int index);
 
 private:
@@ -140,12 +140,13 @@ private:
     void UpdatePageWidthAndHeightWidgets();
     void UpdateSizeAdjustmentWidget() const;
     void UpdateSpinBoxUnit(const QString &unit);
+    void UpdateGeometry();
 
     // Process flexemu print output
     void PrintLine(const RichLine &richLine, bool isPageBreak = false) const;
 
     // Event handlers
-    void closeEvent(QCloseEvent *event) override;
+    void moveEvent(QMoveEvent *event) override;
     void changeEvent(QEvent *event) override;
     bool event(QEvent *event) override;
 
