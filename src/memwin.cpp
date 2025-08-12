@@ -1263,6 +1263,13 @@ void MemoryWindow::OnEventTypeChanged(QEvent::Type eventType)
     lastEventType = eventType;
 }
 
+// Specification of configString:
+// <width>,<height>,<x>,<y>,<windowTitle>,<startAddr>,<endAddr>,<style>,
+// <withAddress>,<withAscii>,<withExtraSpace>,<isUpdateWindowSize>
+//
+// <startAddr> and <endAddr> are hexadecimal.
+// for <style> the underlying enum value is used.
+// for windowTitle no comma and semicolon is allowed.
 void MemoryWindow::ConvertConfigString(const std::string &configString,
         Config_t &p_config, QRect &positionAndSize)
 {
@@ -1338,16 +1345,16 @@ void MemoryWindow::ConvertConfigString(const std::string &configString,
             p_config.windowTitle = items[4];
             [[fallthrough]];
         case 4:
-            validCount = (convertToInt(items[3], height)) ? 1 : 0;
+            validCount = (convertToInt(items[3], y)) ? 1 : 0;
             [[fallthrough]];
         case 3:
-            validCount += (convertToInt(items[2], width)) ? 1 : 0;
+            validCount += (convertToInt(items[2], x)) ? 1 : 0;
             [[fallthrough]];
         case 2:
-            validCount += (convertToInt(items[1], y)) ? 1 : 0;
+            validCount += (convertToInt(items[1], height)) ? 1 : 0;
             [[fallthrough]];
         case 1:
-            validCount += (convertToInt(items[0], x)) ? 1 : 0;
+            validCount += (convertToInt(items[0], width)) ? 1 : 0;
             if (validCount == 4)
             {
                 positionAndSize = QRect(x, y, width, height);
@@ -1368,10 +1375,10 @@ std::string MemoryWindow::GetConfigString() const
     const auto positionAndSize = geometry();
 
     stream <<
-        positionAndSize.x() << ',' <<
-        positionAndSize.y() << ',' <<
         positionAndSize.width() << ',' <<
         positionAndSize.height() << ',' <<
+        positionAndSize.x() << ',' <<
+        positionAndSize.y() << ',' <<
         config.windowTitle << ',' <<
         std::hex << config.addressRange.lower() << ',' <<
         std::hex << config.addressRange.upper() << ',' <<
