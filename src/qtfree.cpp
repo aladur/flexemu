@@ -78,7 +78,8 @@ QFont GetFont(const QString &fontName)
 QString GetWindowGeometry(const QWidget &w)
 {
     return QString(
-        "%1,%2,%3,%4").arg(w.width()).arg(w.height()).arg(w.x()).arg(w.y());
+        "%1,%2,%3,%4").arg(w.width()).arg(w.height())
+                      .arg(w.geometry().x()).arg(w.geometry().y());
 }
 
 void UpdateWindowGeometry(QWidget &w, const QString &geometry)
