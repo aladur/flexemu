@@ -218,6 +218,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::PrintUnit);
     }
 
+    if (opt1.mainWindowGeometry != opt2.mainWindowGeometry)
+    {
+        notEquals.push_back(FlexemuOptionId::MainWindowGeometry);
+    }
+
     if (opt1.printOutputWindowGeometry != opt2.printOutputWindowGeometry)
     {
         notEquals.push_back(FlexemuOptionId::PrintOutputWindowGeometry);

@@ -72,6 +72,7 @@ enum class FlexemuOptionId : uint8_t
     PrintOrientation,
     PrintPageSize,
     PrintUnit,
+    MainWindowGeometry,
     PrintOutputWindowGeometry,
     PrintPreviewDialogGeometry,
     PrintConfigs,
@@ -134,8 +135,10 @@ struct sOptions
     // Print preview options: Margins and size factor.
     // Orientation, page size and font are used as a key into the dictionary.
     std::map<std::string, std::string> printConfigs;
+    std::string mainWindowGeometry; // Geometry of mein window
     std::string printOutputWindowGeometry; // Geometry of print output window
     std::string printPreviewDialogGeometry; // Geometry of print preview dialog
+
     int directoryDiskTracks{}; // Default number of track for a directory disk
     int directoryDiskSectors{}; // Default number of sectors for a directory disk
     bool isDirectoryDiskActive{}; // true if directory disk is active.

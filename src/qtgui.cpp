@@ -222,6 +222,9 @@ QtGui::QtGui(
     }
     UpdateStatusBarCheck();
 
+    const auto geometry = QString::fromStdString(options.mainWindowGeometry);
+    ::UpdateWindowGeometry(*this, geometry, true);
+
     QTimer::singleShot(0, this, &QtGui::RestoreMemoryWindows);
 }
 
@@ -2291,6 +2294,9 @@ void QtGui::closeEvent(QCloseEvent *event)
             printOutputWindow = nullptr;
         }
         memoryWindowMgr.CloseAllWindows(options);
+        auto geometry = ::GetWindowGeometry(*this);
+        options.mainWindowGeometry = geometry.toStdString();
+
         FlexemuOptionsDifference optionsDiff(options, oldOptions);
 
         if (!optionsDiff.GetNotEquals().empty())

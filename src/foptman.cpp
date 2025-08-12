@@ -81,6 +81,7 @@ static const char * const FLEXPRINTPAGEBREAKDETECTED = "PrintPageBreakDetected";
 static const char * const FLEXPRINTORIENTATION = "PrintOrientation";
 static const char * const FLEXPRINTPAGESIZE = "PrintPageSize";
 static const char * const FLEXPRINTUNIT = "PrintUnit";
+static const char * const FLEXMAINWINDOWGEOMETRY = "MainWindowGeometry";
 static const char * const FLEXPRINTOUTPUTWINDOWGEOMETRY = "PrintOutputWindowGeometry";
 static const char * const FLEXPRINTPREVIEWDIALOGGEOMETRY =
                     "PrintPreviewDialogGeometry";
@@ -617,6 +618,10 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXPRINTUNIT, options.printUnit);
             break;
 
+        case FlexemuOptionId::MainWindowGeometry:
+            reg.SetValue(FLEXMAINWINDOWGEOMETRY, options.mainWindowGeometry);
+            break;
+
         case FlexemuOptionId::PrintOutputWindowGeometry:
             reg.SetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
                     options.printOutputWindowGeometry);
@@ -850,6 +855,11 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.printUnit = previousOptions.printUnit;
             break;
 
+        case FlexemuOptionId::MainWindowGeometry:
+            optionsToWrite.mainWindowGeometry =
+                    previousOptions.mainWindowGeometry;
+            break;
+
         case FlexemuOptionId::PrintOutputWindowGeometry:
             optionsToWrite.printOutputWindowGeometry =
                     previousOptions.printOutputWindowGeometry;
@@ -938,6 +948,7 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXPRINTORIENTATION, optionsToWrite.printOrientation);
     rcFile.SetValue(FLEXPRINTPAGESIZE, optionsToWrite.printPageSize);
     rcFile.SetValue(FLEXPRINTUNIT, optionsToWrite.printUnit);
+    rcFile.SetValue(FLEXMAINWINDOWGEOMETRY, optionsToWrite.mainWindowGeometry);
     rcFile.SetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
             optionsToWrite.printOutputWindowGeometry);
     rcFile.SetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
@@ -1134,6 +1145,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     reg.GetValue(FLEXPRINTORIENTATION, options.printOrientation);
     reg.GetValue(FLEXPRINTPAGESIZE, options.printPageSize);
     reg.GetValue(FLEXPRINTUNIT, options.printUnit);
+    reg.GetValue(FLEXMAINWINDOWGEOMETRY, options.mainWindowGeometry);
     reg.GetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
             options.printOutputWindowGeometry);
     reg.GetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
@@ -1332,6 +1344,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     rcFile.GetValue(FLEXPRINTORIENTATION, options.printOrientation);
     rcFile.GetValue(FLEXPRINTPAGESIZE, options.printPageSize);
     rcFile.GetValue(FLEXPRINTUNIT, options.printUnit);
+    rcFile.GetValue(FLEXMAINWINDOWGEOMETRY, options.mainWindowGeometry);
     rcFile.GetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
             options.printOutputWindowGeometry);
     rcFile.GetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,

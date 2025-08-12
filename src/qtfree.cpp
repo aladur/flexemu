@@ -82,13 +82,14 @@ QString GetWindowGeometry(const QWidget &w)
                       .arg(w.geometry().x()).arg(w.geometry().y());
 }
 
-void UpdateWindowGeometry(QWidget &w, const QString &geometry)
+void UpdateWindowGeometry(QWidget &w, const QString &geometry,
+        bool isPositionOnly)
 {
     auto list = geometry.split(QLatin1Char(','));
     bool ok1 = false;
     bool ok2 = false;
 
-    if (list.size() >= 2)
+    if (!isPositionOnly && list.size() >= 2)
     {
         auto width = list[0].toInt(&ok1);
         auto height = list[1].toInt(&ok2);
