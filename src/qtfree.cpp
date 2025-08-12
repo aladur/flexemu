@@ -82,31 +82,41 @@ QString GetWindowGeometry(const QWidget &w)
                       .arg(w.geometry().x()).arg(w.geometry().y());
 }
 
-void UpdateWindowGeometry(QWidget &w, const QString &geometry,
+void UpdateWindowGeometry(QWidget &w, const QString &geometryString,
         bool isPositionOnly)
 {
-    auto list = geometry.split(QLatin1Char(','));
-    bool ok1 = false;
-    bool ok2 = false;
+    int temp1;
+    int temp2;
+    QSize size;
+    auto list = flx::split(geometryString.toStdString(), ',', true);
+
+    if (isPositionOnly)
+    {
+        size = w.size();
+    }
 
     if (!isPositionOnly && list.size() >= 2)
     {
-        auto width = list[0].toInt(&ok1);
-        auto height = list[1].toInt(&ok2);
-        if (ok1 && ok2)
-        {
-            w.resize(QSize(width, height));
-        }
+        size = (flx::convert(list[0], temp1) && flx::convert(list[1], temp2)) ?
+            QSize(temp1, temp2) : w.size();
     }
 
     if (list.size() == 4)
     {
-        auto x = list[2].toInt(&ok1);
-        auto y = list[3].toInt(&ok2);
-        if (ok1 && ok2)
+        QPoint position;
+
+        if (flx::convert(list[2], temp1) && flx::convert(list[3], temp2))
         {
-            w.move(QPoint(x, y));
+            position = QPoint(temp1, temp2);
         }
+        else
+        {
+            const auto geometry = w.geometry();
+            position.setX(geometry.x());
+            position.setY(geometry.y());
+        }
+
+        w.setGeometry({ position, size });
     }
 }
 
