@@ -1351,6 +1351,13 @@ void PrintOutputWindow::ProcessSerialInput()
 
 void PrintOutputWindow::closeEvent(QCloseEvent *event)
 {
+    if (isVisible())
+    {
+        auto geometry = ::GetWindowGeometry(*this);
+
+        options.printOutputWindowGeometry = geometry.toStdString();
+    }
+
     event->accept();
 }
 
