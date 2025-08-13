@@ -136,7 +136,7 @@ struct sOptions
     // Print preview options: Margins and size factor.
     // Orientation, page size and font are used as a key into the dictionary.
     std::map<std::string, std::string> printConfigs;
-    std::string mainWindowGeometry; // Geometry of mein window
+    std::string mainWindowGeometry; // Geometry of main window
     std::string cpuDialogGeometry; // Geometry of CPU dialog
     std::string printOutputWindowGeometry; // Geometry of print output window
     std::string printPreviewDialogGeometry; // Geometry of print preview dialog
