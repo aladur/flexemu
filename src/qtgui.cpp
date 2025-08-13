@@ -204,7 +204,7 @@ QtGui::QtGui(
     cpuUi.b_stop->setCheckable(true);
     ConnectCpuUiSignalsWithSlots();
 
-    printOutputWindow = new PrintOutputWindow(options);
+    printOutputWindow = new PrintOutputWindow(options, this);
 
     SetCpuDialogMonospaceFont(QApplication::font().pointSize());
     UpdateCpuFrequencyCheck();

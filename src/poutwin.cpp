@@ -207,8 +207,9 @@ const char PrintOutputWindow::separator = ',';
 ** Constructor, Destructor **
 ****************************/
 
-PrintOutputWindow::PrintOutputWindow(sOptions &p_options)
-    : mainLayout(new QVBoxLayout(this))
+PrintOutputWindow::PrintOutputWindow(sOptions &p_options, QWidget *parent)
+    : QWidget(parent, Qt::Window)
+    , mainLayout(new QVBoxLayout(this))
     , toolBarLayout(new QHBoxLayout)
     , statusBarFrame(nullptr)
     , menuBar(new QMenuBar(this))

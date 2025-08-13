@@ -68,7 +68,8 @@ class PrintOutputWindow : public QWidget
 
 public:
     PrintOutputWindow() = delete;
-    explicit PrintOutputWindow(sOptions &p_options);
+    explicit PrintOutputWindow(sOptions &p_options,
+            QWidget *p_parent = nullptr);
     ~PrintOutputWindow() override;
 
     // Static functions
