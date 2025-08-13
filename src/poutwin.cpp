@@ -763,9 +763,7 @@ void PrintOutputWindow::OnCyclicTimer()
 
 void PrintOutputWindow::UpdateGeometry()
 {
-    auto geometry = QString::fromStdString(options.printOutputWindowGeometry);
-
-    ::UpdateWindowGeometry(*this, geometry);
+    ::UpdateWindowGeometry(*this, options.printOutputWindowGeometry);
 }
 
 void PrintOutputWindow::OnUnitChanged(int index)

@@ -222,8 +222,7 @@ QtGui::QtGui(
     }
     UpdateStatusBarCheck();
 
-    const auto geometry = QString::fromStdString(options.mainWindowGeometry);
-    ::UpdateWindowGeometry(*this, geometry, true);
+    ::UpdateWindowGeometry(*this, options.mainWindowGeometry, true);
 
     QTimer::singleShot(0, this, &QtGui::RestoreMemoryWindows);
 }
@@ -523,8 +522,7 @@ void QtGui::OnCpuDialogToggle()
 
     if (cpuViewAction->isChecked())
     {
-        const auto geometry = QString::fromStdString(options.cpuDialogGeometry);
-        ::UpdateWindowGeometry(*cpuDialog, geometry, true);
+        ::UpdateWindowGeometry(*cpuDialog, options.cpuDialogGeometry, true);
     }
     else
     {

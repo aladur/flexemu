@@ -45,7 +45,7 @@ class FlexDiskAttributes;
 
 extern QFont GetFont(const QString &fontName);
 extern std::string GetWindowGeometry(const QWidget &w);
-extern void UpdateWindowGeometry(QWidget &w, const QString &geometryString,
+extern void UpdateWindowGeometry(QWidget &w, const std::string &geometryString,
         bool isPositionOnly = false);
 extern QString StripPath(const QString &path, int maxSize = 64);
 extern void OpenDiskStatusDialog(QWidget *parent,
@@ -61,13 +61,13 @@ extern QFont GetMonospaceFont(int pointSize);
 class UpdateWindowGeometryFtor
 {
     QWidget *widget;
-    QString geometry;
+    std::string geometry;
 
 public:
     UpdateWindowGeometryFtor() = delete;
-    UpdateWindowGeometryFtor(QWidget *w, const std::string &p_geometry) :
+    UpdateWindowGeometryFtor(QWidget *w, std::string p_geometry) :
         widget(w)
-      , geometry(QString::fromStdString(p_geometry)) { }
+      , geometry(std::move(p_geometry)) { }
     UpdateWindowGeometryFtor(const UpdateWindowGeometryFtor &f) = default;
     void operator() ()
     {

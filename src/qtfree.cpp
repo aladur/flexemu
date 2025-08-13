@@ -83,13 +83,13 @@ std::string GetWindowGeometry(const QWidget &w)
             w.geometry().x(), w.geometry().y());
 }
 
-void UpdateWindowGeometry(QWidget &w, const QString &geometryString,
+void UpdateWindowGeometry(QWidget &w, const std::string &geometryString,
         bool isPositionOnly)
 {
     int temp1;
     int temp2;
     QSize size;
-    auto list = flx::split(geometryString.toStdString(), ',', true);
+    auto list = flx::split(geometryString, ',', true);
 
     if (isPositionOnly)
     {
