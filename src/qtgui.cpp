@@ -136,7 +136,7 @@ QtGui::QtGui(
         , isRunning(true)
         , isConfirmClose(true)
         , isForceScreenUpdate(true)
-        , memoryWindowMgr(p_scheduler, p_memory)
+        , memoryWindowMgr(this, p_scheduler, p_memory)
         , cpuState(CpuState::NONE)
         , scheduler(p_scheduler)
         , vico1(p_vico1)

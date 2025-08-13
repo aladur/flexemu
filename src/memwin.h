@@ -96,7 +96,8 @@ public:
             bool p_isReadOnly,
             MemoryRanges_t p_availableMemoryRanges,
             Config_t p_config,
-            const std::optional<QRect> &positionAndSize = std::nullopt);
+            const std::optional<QRect> &positionAndSize = std::nullopt,
+            QWidget *p_parent = nullptr);
     MemoryWindow(const MemoryWindow &src) = delete;
     MemoryWindow(MemoryWindow &&src) = delete;
     MemoryWindow &operator=(const MemoryWindow &src) = delete;

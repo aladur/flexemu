@@ -36,6 +36,7 @@
 class Memory;
 class Scheduler;
 class QSize;
+class QWidget;
 class CReadMemory;
 class CWriteMemory;
 class MemoryWindowManager;
@@ -51,7 +52,8 @@ class MemoryWindowManager : public QObject
     Q_OBJECT
 
 public:
-    explicit MemoryWindowManager(Scheduler &p_scheduler, Memory &p_memory);
+    explicit MemoryWindowManager(QWidget *p_parent, Scheduler &p_scheduler,
+            Memory &p_memory);
     MemoryWindowManager() = delete;
     ~MemoryWindowManager() override = default;
     MemoryWindowManager(const MemoryWindowManager &src) = delete;
@@ -92,6 +94,7 @@ private:
     std::vector<MemoryWindowItem> items;
     Scheduler &scheduler;
     Memory &memory;
+    QWidget *parent{};
 };
 
 #endif

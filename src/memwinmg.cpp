@@ -33,6 +33,7 @@
 #include "warnoff.h"
 #include <QSize>
 #include <QString>
+#include <QWidget>
 #include <QDialog>
 #include <QTimer>
 #include <QMessageBox>
@@ -43,10 +44,12 @@
 #include <sstream>
 #include <algorithm>
 
-MemoryWindowManager::MemoryWindowManager(Scheduler &p_scheduler,
+MemoryWindowManager::MemoryWindowManager(QWidget *p_parent,
+        Scheduler &p_scheduler,
         Memory &p_memory)
     : scheduler(p_scheduler)
     , memory(p_memory)
+    , parent(p_parent)
 {
 }
 
@@ -149,8 +152,8 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
 
      auto readMemoryCommand =
          std::make_shared<CReadMemory>(memory, config.addressRange);
-     auto window = std::make_unique<MemoryWindow>(
-             isReadOnly, memory.GetMemoryRanges(), config, positionAndSize);
+     auto window = std::make_unique<MemoryWindow>( isReadOnly,
+             memory.GetMemoryRanges(), config, positionAndSize, parent);
      window->SetIconSize({ options.iconSize, options.iconSize });
      window->show();
      connect(window.get(), &MemoryWindow::Closed,
