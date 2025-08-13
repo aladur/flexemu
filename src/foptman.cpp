@@ -664,6 +664,12 @@ void FlexemuOptions::WriteOptionsToRegistry(
                 reg.SetValue(key.c_str(), config);
                 ++index;
             }
+            for (; index < sOptions::maxMemoryWindows; ++index)
+            {
+                str = std::to_string(index);
+                const auto key = std::string(FLEXMEMORYWINDOWCONFIG) + str;
+                reg.DeleteValue(key);
+            }
             break;
         }
     }

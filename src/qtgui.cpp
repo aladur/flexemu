@@ -397,6 +397,8 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::PrintOrientation:
                 case FlexemuOptionId::PrintPageSize:
                 case FlexemuOptionId::PrintUnit:
+                case FlexemuOptionId::MainWindowGeometry:
+                case FlexemuOptionId::CpuDialogGeometry:
                 case FlexemuOptionId::PrintOutputWindowGeometry:
                 case FlexemuOptionId::PrintPreviewDialogGeometry:
                 case FlexemuOptionId::PrintConfigs:
@@ -526,7 +528,7 @@ void QtGui::OnCpuDialogToggle()
     }
     else
     {
-        //options.cpuDialogGeometry = ::GetWindowGeometry(*cpuDialog);
+        options.cpuDialogGeometry = ::GetWindowGeometry(*cpuDialog);
     }
 
     cpuDialog->setVisible(cpuViewAction->isChecked());
@@ -534,8 +536,8 @@ void QtGui::OnCpuDialogToggle()
 
 void QtGui::OnCpuDialogClose()
 {
-    cpuDialog->hide();
     cpuViewAction->setChecked(false);
+    OnCpuDialogToggle();
 }
 
 void QtGui::OnOpenMemoryWindow()

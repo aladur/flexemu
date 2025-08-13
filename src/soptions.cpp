@@ -61,6 +61,8 @@ const FlexemuOptionIds_t &GetAllFlexemuOptionIds()
         FlexemuOptionId::PrintOrientation,
         FlexemuOptionId::PrintPageSize,
         FlexemuOptionId::PrintUnit,
+        FlexemuOptionId::MainWindowGeometry,
+        FlexemuOptionId::CpuDialogGeometry,
         FlexemuOptionId::PrintOutputWindowGeometry,
         FlexemuOptionId::PrintPreviewDialogGeometry,
         FlexemuOptionId::PrintConfigs,
