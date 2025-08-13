@@ -28,6 +28,7 @@
 #include "bintervl.h"
 #include "memsrc.h"
 #include <string>
+#include <array>
 #include <vector>
 #include <utility>
 #include <regex>
@@ -110,6 +111,52 @@ namespace flx
         const auto [ptr, ec] =
             std::from_chars(str.data(), str.data() + str.size(), value, base);
         return (ec == std::errc() && *ptr == '\0');
+    }
+
+    template<typename T>
+    bool convert(T value, std::string &str, int base = 10, int minDigits = 1,
+            bool isUppercase = true)
+    {
+        if (base < 2 || base > 36 || minDigits < 0 || minDigits > 64)
+        {
+            return false;
+        }
+
+        constexpr size_t size = 72;
+        std::array<char, size> buf{};
+
+        const auto res =
+            std::to_chars(buf.data(), buf.data() + size, value, base);
+        bool result = (res.ec == std::errc() && *res.ptr == '\0');
+        if (result)
+        {
+            const auto digits = res.ptr - buf.data();
+            if (isUppercase)
+            {
+                // MSVC does not allow auto *iter
+                // NOLINTNEXTLINE(readability-qualified-auto)
+                for (auto iter = buf.begin(); iter != buf.begin() + digits;
+                     ++iter)
+                {
+                    if (*iter >= 'a' && *iter <= 'z')
+                    {
+                        *iter = static_cast<char>(*iter - ('z' - 'Z'));
+                    }
+                }
+            }
+
+            if (minDigits > digits)
+            {
+                str = std::string(minDigits - digits, '0');
+                str.append(std::string(buf.data(), digits));
+            }
+            else
+            {
+                str = std::string(buf.data(), digits);
+            }
+        }
+
+        return result;
     }
 
     // Brian Kernighan's Algorithm to count bits set in an signed/unsigned

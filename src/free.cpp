@@ -143,6 +143,7 @@ void flx::hex_dump(
     DWord idx = 0U;
     const DWord offset = startAddress % bytesPerLine;
     DWord address = startAddress - offset;
+    std::string hexString;
     std::string asciiString;
     auto asciiIter = std::back_inserter(asciiString);
 
@@ -153,7 +154,8 @@ void flx::hex_dump(
 
     if (isDisplayAddress)
     {
-        os << fmt::format("{:04X}  ", address);
+        convert(address, hexString, 16, 4);
+        os << hexString << "  ";
     }
 
     // Fill up with spaces to align to base address.
@@ -178,7 +180,8 @@ void flx::hex_dump(
         {
             if (isDisplayAddress && idx > 0U)
             {
-                os << fmt::format("{:04X}  ", address);
+                convert(address, hexString, 16, 4);
+                os << hexString << "  ";
             }
 
             if (withAscii)
@@ -190,7 +193,9 @@ void flx::hex_dump(
             extraSpaces = 0U;
         }
 
-        os << spacer << fmt::format("{:02X}", ch);
+        convert(static_cast<Byte>(ch), hexString, 16, 2);
+        os << spacer << hexString;
+
         spacer = " ";
 
         const bool withExtraSpace = (extraSpace.has_value() &&
