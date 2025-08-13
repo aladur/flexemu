@@ -45,7 +45,9 @@
 #include "fcinfo.h"
 #include "fversion.h"
 #include "e2.h"
+#include "fmt/format.h"
 #include <cmath>
+#include <string>
 
 
 QFont GetFont(const QString &fontName)
@@ -75,11 +77,10 @@ QFont GetFont(const QString &fontName)
     return {};
 }
 
-QString GetWindowGeometry(const QWidget &w)
+std::string GetWindowGeometry(const QWidget &w)
 {
-    return QString(
-        "%1,%2,%3,%4").arg(w.width()).arg(w.height())
-                      .arg(w.geometry().x()).arg(w.geometry().y());
+    return fmt::format("{},{},{},{}", w.width(), w.height(),
+            w.geometry().x(), w.geometry().y());
 }
 
 void UpdateWindowGeometry(QWidget &w, const QString &geometryString,

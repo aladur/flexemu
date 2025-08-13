@@ -526,9 +526,9 @@ void PrintOutputWindow::OnOpenPrintPreview()
 
     if (printPreviewDialog->exec() == QDialog::Accepted)
     {
-        auto geometry = ::GetWindowGeometry(*printPreviewDialog);
+        const auto geometry = ::GetWindowGeometry(*printPreviewDialog);
 
-        options.printPreviewDialogGeometry = geometry.toStdString();
+        options.printPreviewDialogGeometry = geometry;
         SavePrintConfig();
     }
 
@@ -1382,8 +1382,7 @@ void PrintOutputWindow::moveEvent(QMoveEvent *event)
 {
     if (isVisible())
     {
-        auto geometry = ::GetWindowGeometry(*this);
-        options.printOutputWindowGeometry = geometry.toStdString();
+        options.printOutputWindowGeometry = ::GetWindowGeometry(*this);
     }
 
     QWidget::moveEvent(event);

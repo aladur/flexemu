@@ -528,8 +528,7 @@ void QtGui::OnCpuDialogToggle()
     }
     else
     {
-        //const auto geometry = ::GetWindowGeometry(*cpuDialog);
-        //options.cpuDialogGeometry = geometry.toStdString();
+        //options.cpuDialogGeometry = ::GetWindowGeometry(*cpuDialog);
     }
 
     cpuDialog->setVisible(cpuViewAction->isChecked());
@@ -2261,11 +2260,9 @@ void QtGui::closeEvent(QCloseEvent *event)
         memoryWindowMgr.CloseAllWindows(options);
         if (cpuDialog->isVisible())
         {
-            const auto geometry = ::GetWindowGeometry(*cpuDialog);
-            options.cpuDialogGeometry = geometry.toStdString();
+            options.cpuDialogGeometry = ::GetWindowGeometry(*cpuDialog);
         }
-        auto geometry = ::GetWindowGeometry(*this);
-        options.mainWindowGeometry = geometry.toStdString();
+        options.mainWindowGeometry = ::GetWindowGeometry(*this);
 
         FlexemuOptionsDifference optionsDiff(options, oldOptions);
 

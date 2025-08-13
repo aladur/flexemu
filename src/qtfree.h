@@ -44,7 +44,7 @@ class QMenu;
 class FlexDiskAttributes;
 
 extern QFont GetFont(const QString &fontName);
-extern QString GetWindowGeometry(const QWidget &w);
+extern std::string GetWindowGeometry(const QWidget &w);
 extern void UpdateWindowGeometry(QWidget &w, const QString &geometryString,
         bool isPositionOnly = false);
 extern QString StripPath(const QString &path, int maxSize = 64);
