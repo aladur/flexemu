@@ -641,7 +641,7 @@ void FlexemuOptions::WriteOptionsToRegistry(
             for (const auto& [subKey, value] : options.printConfigs)
             {
                 const auto key = std::string(FLEXPRINTCONFIG) + subKey;
-                reg.SetValue(key.c_str(), value);
+                reg.SetValue(key, value);
             }
             break;
 
@@ -661,7 +661,7 @@ void FlexemuOptions::WriteOptionsToRegistry(
             {
                 str = std::to_string(index);
                 const auto key = std::string(FLEXMEMORYWINDOWCONFIG) + str;
-                reg.SetValue(key.c_str(), config);
+                reg.SetValue(key, config);
                 ++index;
             }
             for (; index < sOptions::maxMemoryWindows; ++index)
