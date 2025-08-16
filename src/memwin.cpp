@@ -1290,7 +1290,7 @@ void MemoryWindow::ConvertConfigString(const std::string &configString,
 
     auto convertToInt = [&](const std::string &str, int &value) -> bool
     {
-        int temp = 0;
+        temp = 0;
 
         bool success = (flx::convert(str, temp) && temp > 0);
         if (success)
@@ -1302,11 +1302,11 @@ void MemoryWindow::ConvertConfigString(const std::string &configString,
 
     auto convertToBool = [&](const std::string &str, bool &value)
     {
-        uint8_t temp = 0;
+        uint8_t u8temp = 0;
 
-        if (flx::convert(str, temp) && temp <= 1)
+        if (flx::convert(str, u8temp) && u8temp <= 1)
         {
-            value = (temp != 0);
+            value = (u8temp != 0);
         }
     };
 
