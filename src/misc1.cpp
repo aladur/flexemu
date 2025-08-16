@@ -49,12 +49,6 @@
 
 namespace fs = std::filesystem;
 
-#ifdef _WIN32
-    static const char * const pathSeparators = "\\/";
-#else
-    static const char * const pathSeparators = "/";
-#endif
-
 const char * const RANDOM_FILE_LIST = u8"random";
 const char * const RANDOM_FILE_LIST_NEW = u8".random";
 const char * const flx::white_space = " \t\n\r\f\v";
