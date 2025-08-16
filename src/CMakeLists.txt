@@ -378,7 +378,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
-    find_package(Qt5 REQUIRED Core Widgets Gui PrintSupport)
+    find_package(Qt5 REQUIRED Core Widgets Gui PrintSupport Concurrent)
     if (UNIX)
         if (APPLE)
             find_package(Qt5 REQUIRED MacExtras)
@@ -388,7 +388,7 @@ if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
     endif()
 endif()
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 6)
-    find_package(Qt6 REQUIRED Core Widgets Gui PrintSupport)
+    find_package(Qt6 REQUIRED Core Widgets Gui PrintSupport Concurrent)
     if (UNIX AND APPLE)
         find_package(Qt6 REQUIRED MacExtras)
     endif()
@@ -615,6 +615,7 @@ target_include_directories(flexemu SYSTEM PRIVATE
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Widgets_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}Gui_INCLUDE_DIRS}
     ${Qt${FLEXEMU_QT_MAJOR_VERSION}PrintSupport_INCLUDE_DIRS}
+    ${Qt${FLEXEMU_QT_MAJOR_VERSION}Concurrent_INCLUDE_DIRS}
 )
 if(UNIX)
     if(APPLE)
@@ -656,6 +657,7 @@ if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
         endif()
     endif()
     target_link_libraries(flexemu PRIVATE
+        Qt5::Concurrent
         Qt5::PrintSupport
         Qt5::Gui
         Qt5::Widgets
@@ -667,6 +669,7 @@ if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 6)
         target_link_libraries(flexemu PRIVATE Qt6::MacExtras)
     endif()
     target_link_libraries(flexemu PRIVATE
+        Qt6::Concurrent
         Qt6::PrintSupport
         Qt6::Gui
         Qt6::Widgets
