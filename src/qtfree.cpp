@@ -36,6 +36,7 @@
 #include <QDialog>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include "fmt/format.h"
 #include <optional>
 #include "warnon.h"
 #include "typedefs.h"
@@ -45,7 +46,6 @@
 #include "fcinfo.h"
 #include "fversion.h"
 #include "e2.h"
-#include "fmt/format.h"
 #include <cmath>
 #include <string>
 
