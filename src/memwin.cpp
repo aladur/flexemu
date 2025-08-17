@@ -84,8 +84,8 @@ MemoryWindow::MemoryWindow(
         MemoryRanges_t p_availableMemoryRanges,
         Config_t p_config,
         const std::optional<QRect> &positionAndSize,
-        QWidget *p_parent)
-    : QWidget(p_parent, Qt::Window)
+        QWidget * /*p_parent*/)
+    : QWidget(nullptr, Qt::Window)
     , mainLayout(new QVBoxLayout(this))
     , toolBarLayout(new QHBoxLayout)
     , statusBarLayout(new QHBoxLayout)
