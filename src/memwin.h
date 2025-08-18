@@ -175,6 +175,7 @@ protected:
     void UpdateAddressStatus(DWord address);
     void UpdateToggleHexAsciiEnabled() const;
     void ReplaceHexOrAsciiText(const QString &text) const;
+    void RecalculateDynamicBytesPerLine(const QSize &size);
 
     // Event handlers
     void changeEvent(QEvent *event) override;

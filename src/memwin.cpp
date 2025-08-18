@@ -1392,3 +1392,26 @@ std::string MemoryWindow::GetConfigString() const
 
     return stream.str();
 }
+
+void MemoryWindow::RecalculateDynamicBytesPerLine(const QSize &size)
+{
+    QFontMetrics metrics(e_hexDump->document()->defaultFont());
+    const auto width = size.width();
+    const auto cols = width / metrics.averageCharWidth();
+    const auto dividend = config.withAscii ? 4U : 3U;
+    const auto offset1 = (config.withAscii ? 1U : 0U) +
+        (config.withAddress ? 6U : 0U);
+
+    // First calculation without extra space.
+    dynamicBytesPerLine = (cols - offset1) / dividend;
+    dynamicBytesPerLine = std::max(4U,
+            dynamicBytesPerLine - (dynamicBytesPerLine % 8U));
+
+    // The extra space every 8 bytes needs an extra calculation.
+    auto offset2 = (config.withExtraSpace && dynamicBytesPerLine > 8U) ?
+        (config.withAscii ? 2U : 1U) * ((dynamicBytesPerLine / 8U) - 1U) : 0U;
+
+    dynamicBytesPerLine = (cols - offset1 - offset2) / dividend;
+    dynamicBytesPerLine = std::max(4U,
+            dynamicBytesPerLine - (dynamicBytesPerLine % 8U));
+}
