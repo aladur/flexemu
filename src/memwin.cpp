@@ -69,6 +69,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPixmap>
+#include <QIODevice>
+#include <QtConcurrent>
 #include <fmt/format.h>
 #include "warnon.h"
 #include "qtfree.h"
@@ -103,7 +105,7 @@ MemoryWindow::MemoryWindow(
     , config(std::move(p_config))
     , dynamicBytesPerLine(16)
     , isReadOnly(p_isReadOnly)
-    , isFirstResizeEvent(true)
+    , isIgnoreResizeEvent(!positionAndSize.has_value())
     , isRequestResize(true)
 {
     const QSize iconSize(16, 16);
@@ -643,6 +645,8 @@ void MemoryWindow::changeEvent(QEvent *event)
 
 void MemoryWindow::closeEvent(QCloseEvent *event)
 {
+    hexDumpFuture.waitForFinished();
+
     emit Closed(this);
     event->accept();
 }
@@ -652,33 +656,16 @@ void MemoryWindow::resizeEvent(QResizeEvent *event)
     // Ignore first resize event, to avoid recalculating dynamicBytesPerLine
     // based on the default window size and instead use the default
     // initialized value for dynamicBytesPerline as defined in ctor.
-    if (isFirstResizeEvent)
+    if (isIgnoreResizeEvent)
     {
-        isFirstResizeEvent = false;
+        isIgnoreResizeEvent = false;
         event->accept();
         return;
     }
 
     // After resizing window recalculate dynamicBytesPerLine.
-    QFontMetrics metrics(e_hexDump->document()->defaultFont());
-    auto width = event->size().width();
-    auto cols = width / metrics.averageCharWidth();
-    auto dividend = config.withAscii ? 4U : 3U;
-    auto offset1 = (config.withAscii ? 1U : 0U) +
-        (config.withAddress ? 6U : 0U);
+    RecalculateDynamicBytesPerLine(event->size());
 
-    // First calculation without extra space.
-    dynamicBytesPerLine = (cols - offset1) / dividend;
-    dynamicBytesPerLine = std::max(4U,
-            dynamicBytesPerLine - (dynamicBytesPerLine % 8U));
-
-    // The extra space every 8 bytes needs an extra calculation.
-    auto offset2 = (config.withExtraSpace && dynamicBytesPerLine > 8U) ?
-        (config.withAscii ? 2U : 1U) * ((dynamicBytesPerLine / 8U) - 1U) : 0U;
-
-    dynamicBytesPerLine = (cols - offset1 - offset2) / dividend;
-    dynamicBytesPerLine = std::max(4U,
-            dynamicBytesPerLine - (dynamicBytesPerLine % 8U));
 
     if (styleComboBox->width() < 60)
     {
@@ -736,13 +723,6 @@ void MemoryWindow::UpdateData(const std::vector<Byte> &p_data)
     data = p_data;
 
     UpdateData();
-
-    if (isUpdateWindowSizeAction->isEnabled() && config.isUpdateWindowSize &&
-        isRequestResize)
-    {
-        Resize();
-        isRequestResize = false;
-    }
 }
 
 void MemoryWindow::SetReadOnly(bool p_isReadOnly)
@@ -755,12 +735,10 @@ void MemoryWindow::SetReadOnly(bool p_isReadOnly)
 void MemoryWindow::UpdateData()
 {
     std::stringstream scaleStream;
-    std::stringstream hexStream;
-    int sliderPosition = 0;
     std::optional<DWord> startAddress;
     auto bytesPerLine = EstimateBytesPerLine();
+    updateDataStartTime = std::chrono::system_clock::now();
 
-    const auto startTime = std::chrono::system_clock::now();
     SetUpdateDataPixmap(QPixmap(":/resource/ledredon.png"));
 
     if (config.withAddress)
@@ -770,42 +748,82 @@ void MemoryWindow::UpdateData()
 
     ConnectHexDumpCursorPositionChanged(false);
 
-    const auto rowCol = flx::get_hex_dump_position_for_address(
-            currentAddress, data.size(), bytesPerLine, config.withAscii,
-            config.withAddress, currentType == flx::HexDumpType::AsciiChar,
-            currentIsUpperNibble, config.addressRange.lower(),
-            CurrentExtraSpace());
     flx::hex_dump_scale(scaleStream, bytesPerLine, config.withAscii,
             config.withAddress, CurrentExtraSpace());
+    e_hexDumpScale->setPlainText(QString::fromStdString(scaleStream.str()));
+
+    if (hexDumpFuture.isRunning())
+    {
+        hexDumpFuture.waitForFinished();
+    }
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    hexDumpFuture = QtConcurrent::run(&MemoryWindow::CreateHexDump, this,
+            bytesPerLine, config.withAscii, config.withAddress,
+            config.addressRange.lower(), CurrentExtraSpace());
+#else
+    hexDumpFuture = QtConcurrent::run(this, &MemoryWindow::CreateHexDump,
+            bytesPerLine, config.withAscii, config.withAddress,
+            config.addressRange.lower(), CurrentExtraSpace());
+#endif
+    hexDumpWatcher.setFuture(hexDumpFuture);
+    connect(&hexDumpWatcher, &QFutureWatcher<QString>::finished,
+            this, &MemoryWindow::UpdateDataFinish);
+}
+
+QString MemoryWindow::CreateHexDump(DWord bytesPerLine, bool withAscii,
+        bool isDisplayAddress, DWord startAddress,
+        std::optional<DWord> extraSpace)
+{
+    std::stringstream hexStream;
+
     flx::hex_dump(hexStream, data.data(), data.size(), bytesPerLine,
-            config.withAscii, config.withAddress, config.addressRange.lower(),
-            CurrentExtraSpace());
+            withAscii, isDisplayAddress, startAddress, extraSpace);
+
+    return QString::fromStdString(hexStream.str());
+}
+
+void MemoryWindow::UpdateDataFinish()
+{
+    disconnect(&hexDumpWatcher, &QFutureWatcher<QString>::finished,
+               this, &MemoryWindow::UpdateDataFinish);
+    assert(hexDumpWatcher.isFinished());
+    auto hexDumpString = hexDumpWatcher.result();
+    auto bytesPerLine = EstimateBytesPerLine();
+
+    int sliderPosition = 0;
 
     if (e_hexDump->verticalScrollBar() != nullptr)
     {
         sliderPosition = e_hexDump->verticalScrollBar()->sliderPosition();
     }
-    const auto value = e_hexDump->horizontalScrollBar()->value();
+    auto value = e_hexDump->horizontalScrollBar()->value();
 
-    e_hexDumpScale->setPlainText(QString::fromStdString(scaleStream.str()));
-    e_hexDump->setPlainText(QString::fromStdString(hexStream.str()));
+    e_hexDump->setPlainText(hexDumpString);
 
-    std::string line;
+    QTextStream stream(&hexDumpString, QIODevice::ReadOnly);
+    QString line;
     columns = 0;
     rows = 0;
     bool isForceMoveCursor = false;
-    while (std::getline(hexStream, line))
+    while (stream.readLineInto(&line))
     {
-        columns = std::max(columns, static_cast<int>(line.size()));
+        columns = std::max(columns, cast_from_qsizetype(line.size()));
         ++rows;
     }
 
-    if (rowCol.has_value())
+    const auto currentRowCol = flx::get_hex_dump_position_for_address(
+            currentAddress, data.size(), bytesPerLine, config.withAscii,
+            config.withAddress, currentType == flx::HexDumpType::AsciiChar,
+            currentIsUpperNibble, config.addressRange.lower(),
+            CurrentExtraSpace());
+
+    if (currentRowCol.has_value())
     {
         isForceMoveCursor =
-            (rowCol.value() == std::pair(0U, 0U)) && !config.withAddress;
-        currentRow = static_cast<int>(rowCol.value().first);
-        currentColumn = static_cast<int>(rowCol.value().second);
+            (currentRowCol.value() == std::pair(0U, 0U)) && !config.withAddress;
+        currentRow = static_cast<int>(currentRowCol.value().first);
+        currentColumn = static_cast<int>(currentRowCol.value().second);
         if (!config.withAscii)
         {
             UpdateValidCharacters(currentAddress, flx::HexDumpType::HexByte);
@@ -814,8 +832,8 @@ void MemoryWindow::UpdateData()
 
         const auto position = static_cast<int>(
                 (columns + 1U) *
-                (rowCol.value().first ? rowCol.value().first : 0U) +
-                 rowCol.value().second + (isForceMoveCursor ? 1 : 0));
+                (currentRowCol.value().first ? currentRowCol.value().first : 0U) +
+                 currentRowCol.value().second + (isForceMoveCursor ? 1 : 0));
 
         auto cursor = e_hexDump->textCursor();
         cursor.setPosition(position);
@@ -853,7 +871,8 @@ void MemoryWindow::UpdateData()
         e_hexDump->setTextCursor(cursor);
     }
 
-    const auto timeDiff = std::chrono::system_clock::now() - startTime;
+    const auto timeDiff = std::chrono::system_clock::now() -
+        updateDataStartTime;
     const auto msecDiff =
         std::chrono::duration_cast<std::chrono::milliseconds>(timeDiff).count();
     // Indicate update duration with LED switched on, for at least 200 ms.
@@ -867,6 +886,13 @@ void MemoryWindow::UpdateData()
                 safeThis->SetUpdateDataPixmap(pixmap);
             }
     });
+
+    if (isUpdateWindowSizeAction->isEnabled() && config.isUpdateWindowSize &&
+        isRequestResize)
+    {
+        Resize();
+        isRequestResize = false;
+    }
 }
 
 DWord MemoryWindow::EstimateBytesPerLine() const
@@ -888,9 +914,12 @@ void MemoryWindow::RequestResize()
         if (isUpdateWindowSizeAction->isEnabled() && config.isUpdateWindowSize)
         {
             // Execute in event loop to also work when opening the window.
-            QTimer::singleShot(100, this, [&](){
-                Resize();
-                isRequestResize = false;
+            QPointer<MemoryWindow> safeThis(this);
+            QTimer::singleShot(50, this, [safeThis](){
+                if (safeThis)
+                {
+                    safeThis->Resize();
+                };
             });
         };
         return;

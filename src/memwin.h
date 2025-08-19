@@ -34,10 +34,13 @@
 #include <QWidget>
 #include <QList>
 #include <QStringList>
+#include <QFuture>
+#include <QFutureWatcher>
 #include <memory>
 #include "warnon.h"
 #include <vector>
 #include <optional>
+#include <chrono>
 
 
 class QSize;
@@ -164,6 +167,10 @@ protected:
     DWord EstimateBytesPerLine() const;
     std::optional<DWord> CurrentExtraSpace() const;
     void UpdateData();
+    void UpdateDataFinish();
+    QString CreateHexDump(DWord bytesPerLine, bool withAscii,
+        bool isDisplayAddress, DWord startAddress,
+        std::optional<DWord> extraSpace);
     void UpdateStyleCheck(int index) const;
     void UpdateStyleValue(int index) const;
     void RequestResize();
@@ -215,11 +222,13 @@ private:
     QAction *withExtraSpaceAction{};
     QAction *toggleHexAsciiAction{};
     QList<QAction *> styleActions;
+    QFuture<QString> hexDumpFuture;
+    QFutureWatcher<QString> hexDumpWatcher;
     const MemoryRanges_t availableMemoryRanges;
     Config_t config;
     DWord dynamicBytesPerLine{};
     bool isReadOnly{};
-    bool isFirstResizeEvent{};
+    bool isIgnoreResizeEvent{};
     QEvent::Type lastEventType{QEvent::None};
     char lastKeyPressedCharacter{'\0'};
     int lastKeyPressedKey{Qt::Key_unknown};
@@ -228,6 +237,7 @@ private:
     int currentColumn{};
     int currentRow{};
     DWord currentAddress{};
+    std::chrono::time_point<std::chrono::system_clock> updateDataStartTime;
     flx::HexDumpType currentType{};
     bool currentIsUpperNibble{true};
     bool isRequestResize{};
