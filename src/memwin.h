@@ -57,6 +57,8 @@ class QStatusBar;
 class QIcon;
 class QTextEdit;
 class QComboBox;
+class QPixmap;
+class QGraphicsView;
 class MemoryWindowTextEdit;
 
 class MemoryWindow : public QWidget
@@ -175,6 +177,7 @@ protected:
     void UpdateAddressStatus(DWord address);
     void UpdateToggleHexAsciiEnabled() const;
     void ReplaceHexOrAsciiText(const QString &text) const;
+    void SetUpdateDataPixmap(const QPixmap &pixmap) const;
     void RecalculateDynamicBytesPerLine(const QSize &size);
 
     // Event handlers
@@ -197,8 +200,10 @@ private:
     QMenu *viewMenu{};
     QStatusBar *statusBar{};
     QStatusBar *dummyStatusBar{};
+    QStackedWidget *updateLedFrame{};
     QStackedWidget *memoryTypeFrame{};
     QStackedWidget *addressFrame{};
+    QGraphicsView *updateLedGraphics{};
     QLabel *memoryTypeLabel{};
     QLabel *addressLabel{};
     QTextEdit *e_hexDumpScale{};

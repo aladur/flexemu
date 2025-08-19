@@ -373,14 +373,8 @@ dist_icons = \
 	flexemu-irq-red.svg \
 	flexemu-irq-yellow.svg \
 	flexemu-irqs.svg \
-	flexemu-ledblue-off.svg \
-	flexemu-ledblue-on.svg \
-	flexemu-ledgreen-off.svg \
-	flexemu-ledgreen-on.svg \
 	flexemu-ledred-off.svg \
 	flexemu-ledred-on.svg \
-	flexemu-ledwhite-off.svg \
-	flexemu-ledwhite-on.svg \
 	flexemu-logging.svg \
 	flexemu-memory.svg \
 	flexemu-original-frequency.svg \

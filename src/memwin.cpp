@@ -29,6 +29,7 @@
 #include "mwtedit.h"
 #include "warnoff.h"
 #include <QtGlobal>
+#include <QPointer>
 #include <QSize>
 #include <QSizePolicy>
 #include <QLatin1Char>
@@ -64,6 +65,10 @@
 #include <QResizeEvent>
 #include <QStatusTipEvent>
 #include <QCloseEvent>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QPixmap>
 #include <fmt/format.h>
 #include "warnon.h"
 #include "qtfree.h"
@@ -73,6 +78,7 @@
 #include <cassert>
 #include <sstream>
 #include <string>
+#include <chrono>
 
 
 /****************************
@@ -519,6 +525,21 @@ void MemoryWindow::CreateStatusBar(QBoxLayout &layout)
     addressFrame->addWidget(addressLabel);
     addressFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     layout.addWidget(addressFrame);
+
+    updateLedFrame = new QStackedWidget(this);
+    updateLedFrame->setObjectName("updateLedFrame");
+    updateLedGraphics = new QGraphicsView(this);
+    updateLedGraphics->setObjectName("updateLedGraphics");
+    updateLedGraphics->setMaximumSize(QSize(22, 22));
+    updateLedGraphics->setToolTip(
+            tr("Indicator for memory update in progress"));
+    updateLedGraphics->setFrameStyle(QFrame::NoFrame);
+    auto *scene = new QGraphicsScene(updateLedGraphics);
+    updateLedGraphics->setScene(scene);
+    scene->addPixmap(QPixmap(":/resource/ledredoff.png"));
+    updateLedFrame->addWidget(updateLedGraphics);
+    layout.addWidget(updateLedFrame);
+
     dummyStatusBar = new QStatusBar(this);
     dummyStatusBar->setMaximumWidth(14);
     dummyStatusBar->setSizeGripEnabled(true);
@@ -739,6 +760,9 @@ void MemoryWindow::UpdateData()
     std::optional<DWord> startAddress;
     auto bytesPerLine = EstimateBytesPerLine();
 
+    const auto startTime = std::chrono::system_clock::now();
+    SetUpdateDataPixmap(QPixmap(":/resource/ledredon.png"));
+
     if (config.withAddress)
     {
         startAddress = config.addressRange.lower();
@@ -828,6 +852,21 @@ void MemoryWindow::UpdateData()
         cursor.setPosition(0);
         e_hexDump->setTextCursor(cursor);
     }
+
+    const auto timeDiff = std::chrono::system_clock::now() - startTime;
+    const auto msecDiff =
+        std::chrono::duration_cast<std::chrono::milliseconds>(timeDiff).count();
+    // Indicate update duration with LED switched on, for at least 200 ms.
+    const int msecDelay = std::max(0, 200 - static_cast<int>(msecDiff));
+
+    QPointer<MemoryWindow> safeThis(this);
+    QTimer::singleShot(msecDelay, [safeThis](){
+            if (safeThis)
+            {
+                const auto pixmap = QPixmap(":/resource/ledredoff.png");
+                safeThis->SetUpdateDataPixmap(pixmap);
+            }
+    });
 }
 
 DWord MemoryWindow::EstimateBytesPerLine() const
@@ -1391,6 +1430,21 @@ std::string MemoryWindow::GetConfigString() const
         config.isUpdateWindowSize;
 
     return stream.str();
+}
+
+void MemoryWindow::SetUpdateDataPixmap(const QPixmap &pixmap) const
+{
+    assert(updateLedGraphics != nullptr);
+
+    auto *scene = updateLedGraphics->scene();
+    assert(scene != nullptr);
+    auto items = scene->items();
+    if (!items.isEmpty())
+    {
+        auto *pixmapItem = dynamic_cast<QGraphicsPixmapItem *>(items[0]);
+        assert(pixmapItem != nullptr);
+        pixmapItem->setPixmap(pixmap);
+    }
 }
 
 void MemoryWindow::RecalculateDynamicBytesPerLine(const QSize &size)
