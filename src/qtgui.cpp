@@ -2308,7 +2308,7 @@ void QtGui::write_char_serial(Byte value)
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 std::string QtGui::GetKeyString(Byte key)
 {
-    const std::array<const char *, 32> code{
+    constexpr std::array<const char *, 32> code{
         "NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL", "BS",
         "HT", "LF", "VT", "FF", "CR", "SO", "SI", "DLE", "DC1", "DC2",
         "DC3", "DC4", "NAK", "SYN", "ETB", "CAN", "EM", "SUB", "ESC",
