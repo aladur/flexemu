@@ -1255,7 +1255,7 @@ void MemoryWindow::UpdateAddressStatus(DWord address)
 
 void MemoryWindow::UpdateToggleHexAsciiEnabled() const
 {
-    toggleHexAsciiAction->setEnabled(config.withAscii & !isReadOnly);
+    toggleHexAsciiAction->setEnabled(config.withAscii && !isReadOnly);
 }
 
 // After changing a HEX or ASCII value the corresponding ASCII or HEX
