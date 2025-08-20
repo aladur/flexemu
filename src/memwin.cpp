@@ -29,6 +29,7 @@
 #include "mwtedit.h"
 #include "warnoff.h"
 #include <QtGlobal>
+#include <QAbstractEventDispatcher>
 #include <QPointer>
 #include <QSize>
 #include <QSizePolicy>
@@ -105,8 +106,9 @@ MemoryWindow::MemoryWindow(
     , config(std::move(p_config))
     , dynamicBytesPerLine(16)
     , isReadOnly(p_isReadOnly)
-    , isIgnoreResizeEvent(!positionAndSize.has_value())
-    , isRequestResize(true)
+    , isIgnoreResizeEvent(config.style == Style::Dynamic &&
+            !positionAndSize.has_value())
+    , isRequestResize(!positionAndSize.has_value())
 {
     const QSize iconSize(16, 16);
 
@@ -215,10 +217,11 @@ void MemoryWindow::OnStyleChanged(int index)
     if (index >= 0 && index < GetStyleValues().size())
     {
         config.style = GetStyleValues()[index];
+        isUpdateWindowSizeAction->setEnabled(config.style != Style::Dynamic);
         UpdateStyleCheck(index);
         UpdateStyleValue(index);
-        UpdateData();
         RequestResize();
+        UpdateData();
         e_hexDump->setFocus(Qt::OtherFocusReason);
     }
 }
@@ -244,8 +247,8 @@ void MemoryWindow::OnClose()
 void MemoryWindow::OnToggleDisplayAddresses()
 {
     config.withAddress = !config.withAddress;
-    UpdateData();
     RequestResize();
+    UpdateData();
 }
 
 void MemoryWindow::OnToggleDisplayAscii()
@@ -253,22 +256,22 @@ void MemoryWindow::OnToggleDisplayAscii()
     config.withAscii = !config.withAscii;
     withAsciiAction->setChecked(config.withAscii);
     UpdateToggleHexAsciiEnabled();
-    UpdateData();
     RequestResize();
+    UpdateData();
 }
 
 void MemoryWindow::OnToggleUpdateWindowSize()
 {
     config.isUpdateWindowSize = !config.isUpdateWindowSize;
-    UpdateData();
     RequestResize();
+    UpdateData();
 }
 
 void MemoryWindow::OnToggleExtraSpace()
 {
     config.withExtraSpace = !config.withExtraSpace;
-    UpdateData();
     RequestResize();
+    UpdateData();
 }
 
 void MemoryWindow::OnToggleHexAscii()
@@ -482,6 +485,7 @@ void MemoryWindow::CreateViewActions(QToolBar &p_toolBar)
     isUpdateWindowSizeAction->setStatusTip(
             tr("Automatic window size update"));
     isUpdateWindowSizeAction->setChecked(config.isUpdateWindowSize);
+    isUpdateWindowSizeAction->setEnabled(config.style != Style::Dynamic);
     p_toolBar.addAction(isUpdateWindowSizeAction);
     connect(isUpdateWindowSizeAction, &QAction::triggered, this,
             &MemoryWindow::OnToggleUpdateWindowSize);
@@ -628,6 +632,7 @@ void MemoryWindow::SetTextBrowserFont(const QFont &font)
     e_hexDump->setCursorWidth(metrics.averageCharWidth());
 
     RequestResize();
+    DoResize(true);
 }
 
 /*******************
@@ -653,7 +658,8 @@ void MemoryWindow::closeEvent(QCloseEvent *event)
 
 void MemoryWindow::resizeEvent(QResizeEvent *event)
 {
-    // Ignore first resize event, to avoid recalculating dynamicBytesPerLine
+    // Ignore first resize event for a new window with style == Style::Dynamic.
+    // This avoids recalculating dynamicBytesPerLine
     // based on the default window size and instead use the default
     // initialized value for dynamicBytesPerline as defined in ctor.
     if (isIgnoreResizeEvent)
@@ -887,12 +893,33 @@ void MemoryWindow::UpdateDataFinish()
             }
     });
 
-    if (isUpdateWindowSizeAction->isEnabled() && config.isUpdateWindowSize &&
-        isRequestResize)
+    DoResize(isRequestResize);
+}
+
+void MemoryWindow::DoResize(bool condition)
+{
+    if (condition && !data.empty())
     {
-        Resize();
-        isRequestResize = false;
-    }
+        QPointer<MemoryWindow> safeThis(this);
+        const auto fctResize = [safeThis](){
+                if (safeThis)
+                {
+                    safeThis->Resize();
+                    safeThis->isRequestResize = false;
+                };
+            };
+
+        if (QAbstractEventDispatcher::instance() != nullptr)
+        {
+            // We are already in the event loop, call function.
+            fctResize();
+        }
+        else
+        {
+            // Execute in event loop to also work when opening the window.
+            QTimer::singleShot(50, this, fctResize);
+        }
+    };
 }
 
 DWord MemoryWindow::EstimateBytesPerLine() const
@@ -909,25 +936,30 @@ DWord MemoryWindow::EstimateBytesPerLine() const
 
 void MemoryWindow::RequestResize()
 {
-    if (!isReadOnly)
+    if (isUpdateWindowSizeAction->isEnabled() && config.isUpdateWindowSize)
     {
-        if (isUpdateWindowSizeAction->isEnabled() && config.isUpdateWindowSize)
-        {
-            // Execute in event loop to also work when opening the window.
-            QPointer<MemoryWindow> safeThis(this);
-            QTimer::singleShot(50, this, [safeThis](){
-                if (safeThis)
-                {
-                    safeThis->Resize();
-                };
-            });
-        };
-        return;
+        isRequestResize = true;
     }
-
-    isRequestResize = true;
 }
 
+// Resize strategy
+//
+// No reason - no resize.
+// Reasons for resize:
+// - When opening a memory window (only if no position and size available)
+//   This is done event if Automatic Update Window Size is disabled or not
+//   checked.
+// - Display Style has changed
+// - Display Address has changed
+// - Display ASCII has changed
+// - Display extra space has changed
+// - Automatic Update Window Size has been checked
+// Prerequisites for request a resize (See RequestResize() ):
+// - Automatic Update Window Size is enabled
+// - Automatic Update Window Size is checked
+// Prerequisites for resize (See DoResize() ):
+// - Data is available
+// The Resize is always executed in the event loop.
 void MemoryWindow::Resize()
 {
     int screenWidth = 640;
@@ -1443,6 +1475,7 @@ std::string MemoryWindow::GetConfigString() const
 
     std::stringstream stream;
     const auto positionAndSize = geometry();
+    bool isEnabled = isUpdateWindowSizeAction->isEnabled();
 
     stream <<
         positionAndSize.width() << ',' <<
@@ -1456,7 +1489,7 @@ std::string MemoryWindow::GetConfigString() const
         config.withAddress << ',' <<
         config.withAscii << ',' <<
         config.withExtraSpace << ',' <<
-        config.isUpdateWindowSize;
+        (isEnabled && config.isUpdateWindowSize);
 
     return stream.str();
 }

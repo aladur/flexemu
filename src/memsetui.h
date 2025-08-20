@@ -51,6 +51,7 @@ public:
 
 protected:
     void OnClicked(QAbstractButton *button);
+    void OnStyleChanged(int index);
     void InitializeWidgets();
     void ConnectSignalsWithSlots();
 

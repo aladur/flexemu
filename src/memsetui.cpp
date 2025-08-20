@@ -104,6 +104,8 @@ void MemorySettingsUi::SetData(const MemoryWindow::Config_t &config) const
     c_withAscii->setChecked(config.withAscii);
     c_isUpdateWindowSize->setChecked(config.isUpdateWindowSize);
     c_withExtraSpace->setChecked(config.withExtraSpace);
+    c_isUpdateWindowSize->setEnabled(config.style !=
+            MemoryWindow::Style::Dynamic);
 
     text = MemoryWindow::GetDefaultWindowTitle();
     e_windowTitle->setPlaceholderText(text);
@@ -140,7 +142,8 @@ void MemorySettingsUi::GetData(MemoryWindow::Config_t &config) const
     config.windowTitle = e_windowTitle->text().toStdString();
     config.withAddress = c_withAddress->isChecked();
     config.withAscii = c_withAscii->isChecked();
-    config.isUpdateWindowSize = c_isUpdateWindowSize->isChecked();
+    config.isUpdateWindowSize = c_isUpdateWindowSize->isEnabled() &&
+        c_isUpdateWindowSize->isChecked();
     config.withExtraSpace = c_withExtraSpace->isChecked();
 }
 
@@ -151,6 +154,14 @@ void MemorySettingsUi::ConnectSignalsWithSlots()
             this, &MemorySettingsUi::OnAccepted);
     connect(c_buttonBox, &QDialogButtonBox::rejected,
             this, &MemorySettingsUi::OnRejected);
+    connect(cb_style,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+            static_cast<void (QComboBox::*)(int)>(
+                &QComboBox::currentIndexChanged),
+#else
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
+#endif
+           this, &MemorySettingsUi::OnStyleChanged);
 }
 
 void MemorySettingsUi::OnAccepted()
@@ -187,4 +198,13 @@ bool MemorySettingsUi::Validate()
     }
 
     return true;
+}
+
+void MemorySettingsUi::OnStyleChanged(int index)
+{
+    if (index >= 0 && index < MemoryWindow::GetStyleValues().size())
+    {
+        auto style = MemoryWindow::GetStyleValues()[index];
+        c_isUpdateWindowSize->setEnabled(style != MemoryWindow::Style::Dynamic);
+    }
 }

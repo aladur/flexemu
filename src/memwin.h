@@ -174,6 +174,7 @@ protected:
     void UpdateStyleCheck(int index) const;
     void UpdateStyleValue(int index) const;
     void RequestResize();
+    void DoResize(bool condition);
     void Resize();
     void AdjustTextCursorPosition(
             const flx::sHexDumpProperties &properties, int previousRow) const;
