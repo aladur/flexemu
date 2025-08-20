@@ -1643,9 +1643,16 @@ void QtGui::ToggleStatusBarVisibility()
 
 void QtGui::SetStatusBarVisibility(bool isVisible)
 {
-    statusBarFrame->setVisible(isVisible);
-    newKeyFrame->setVisible(isVisible);
-    dummyStatusBar->setVisible(isVisible);
+    for (int index = 0; index < statusBarLayout->count(); ++index)
+    {
+        if (auto *item = statusBarLayout->itemAt(index); item != nullptr)
+        {
+            if (auto *widget = item->widget(); widget != nullptr)
+            {
+                widget->setVisible(isVisible);
+            }
+        }
+    }
 }
 
 void QtGui::UpdateSmoothDisplayCheck() const
