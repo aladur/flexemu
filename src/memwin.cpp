@@ -190,10 +190,6 @@ MemoryWindow::MemoryWindow(
     }
 }
 
-/*********************
-** Static functions **
-*********************/
-
 /*****************
 ** Public Slots **
 *****************/
@@ -1047,6 +1043,10 @@ QAction *MemoryWindow::CreateAction(QIcon *icon, QMenu &menu,
 
     return action;
 }
+
+/*********************
+** Static functions **
+*********************/
 
 const MemoryWindow::StyleValues_t &MemoryWindow::GetStyleValues()
 {
