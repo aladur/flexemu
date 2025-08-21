@@ -1155,6 +1155,110 @@ QString MemoryWindow::CreateWindowTitle(
     return title;
 }
 
+// Specification of configString:
+// <width>,<height>,<x>,<y>,<windowTitle>,<startAddr>,<endAddr>,<style>,
+// <withAddress>,<withAscii>,<withExtraSpace>,<isUpdateWindowSize>
+//
+// <startAddr> and <endAddr> are hexadecimal.
+// for <style> the underlying enum value is used.
+// for windowTitle no comma and semicolon is allowed.
+void MemoryWindow::ConvertConfigString(const std::string &configString,
+        Config_t &p_config, QRect &positionAndSize)
+{
+    Word startAddr = 0U;
+    Word endAddr = 15U;
+    int validCount = 0;
+    int temp{};
+    int height{};
+    int width{};
+    int x{};
+    int y{};
+    const auto items = flx::split(configString, ',', true);
+    const decltype(items)::size_type min = 12U;
+
+    positionAndSize = QRect(100, 100, 560, 768); // Set some default.
+
+    auto convertToInt = [&](const std::string &str, int &value) -> bool
+    {
+        temp = 0;
+
+        bool success = (flx::convert(str, temp) && temp > 0);
+        if (success)
+        {
+            value = temp;
+        }
+        return success;
+    };
+
+    auto convertToBool = [&](const std::string &str, bool &value)
+    {
+        uint8_t u8temp = 0;
+
+        if (flx::convert(str, u8temp) && u8temp <= 1)
+        {
+            value = (u8temp != 0);
+        }
+    };
+
+    switch(std::min(items.size(), min))
+    {
+        case 12:
+            convertToBool(items[11], p_config.isUpdateWindowSize);
+            [[fallthrough]];
+        case 11:
+            convertToBool(items[10], p_config.withExtraSpace);
+            [[fallthrough]];
+        case 10:
+            convertToBool(items[9], p_config.withAscii);
+            [[fallthrough]];
+        case 9:
+            convertToBool(items[8], p_config.withAddress);
+            [[fallthrough]];
+        case 8:
+            if (flx::convert(items[7], temp) && temp <= 64 &&
+                flx::countSetBits(temp) <= 1 && temp != 1 && temp != 2)
+            {
+                p_config.style = static_cast<Style>(temp);
+            }
+            [[fallthrough]];
+        case 7:
+            validCount = flx::convert(items[6], endAddr, 16) ? 1 : 0;
+            [[fallthrough]];
+        case 6:
+            validCount += flx::convert(items[5], startAddr, 16) ? 1 : 0;
+            if (validCount == 2)
+            {
+                p_config.addressRange = (startAddr <= endAddr) ?
+                    BInterval<DWord>(startAddr, endAddr) :
+                    BInterval<DWord>(endAddr, startAddr);
+            }
+            [[fallthrough]];
+        case 5:
+            p_config.windowTitle = items[4];
+            [[fallthrough]];
+        case 4:
+            validCount = (convertToInt(items[3], y)) ? 1 : 0;
+            [[fallthrough]];
+        case 3:
+            validCount += (convertToInt(items[2], x)) ? 1 : 0;
+            [[fallthrough]];
+        case 2:
+            validCount += (convertToInt(items[1], height)) ? 1 : 0;
+            [[fallthrough]];
+        case 1:
+            validCount += (convertToInt(items[0], width)) ? 1 : 0;
+            if (validCount == 4)
+            {
+                positionAndSize = QRect(x, y, width, height);
+            }
+            break;
+
+        case 0:
+        default:
+            break;
+    }
+}
+
 std::optional<DWord> MemoryWindow::CurrentExtraSpace() const
 {
     return config.withExtraSpace ? std::optional<DWord>(8U) : std::nullopt;
@@ -1363,110 +1467,6 @@ void MemoryWindow::OnNotifyKeyPressed(QKeyEvent *event)
 void MemoryWindow::OnEventTypeChanged(QEvent::Type eventType)
 {
     lastEventType = eventType;
-}
-
-// Specification of configString:
-// <width>,<height>,<x>,<y>,<windowTitle>,<startAddr>,<endAddr>,<style>,
-// <withAddress>,<withAscii>,<withExtraSpace>,<isUpdateWindowSize>
-//
-// <startAddr> and <endAddr> are hexadecimal.
-// for <style> the underlying enum value is used.
-// for windowTitle no comma and semicolon is allowed.
-void MemoryWindow::ConvertConfigString(const std::string &configString,
-        Config_t &p_config, QRect &positionAndSize)
-{
-    Word startAddr = 0U;
-    Word endAddr = 15U;
-    int validCount = 0;
-    int temp{};
-    int height{};
-    int width{};
-    int x{};
-    int y{};
-    const auto items = flx::split(configString, ',', true);
-    const decltype(items)::size_type min = 12U;
-
-    positionAndSize = QRect(100, 100, 560, 768); // Set some default.
-
-    auto convertToInt = [&](const std::string &str, int &value) -> bool
-    {
-        temp = 0;
-
-        bool success = (flx::convert(str, temp) && temp > 0);
-        if (success)
-        {
-            value = temp;
-        }
-        return success;
-    };
-
-    auto convertToBool = [&](const std::string &str, bool &value)
-    {
-        uint8_t u8temp = 0;
-
-        if (flx::convert(str, u8temp) && u8temp <= 1)
-        {
-            value = (u8temp != 0);
-        }
-    };
-
-    switch(std::min(items.size(), min))
-    {
-        case 12:
-            convertToBool(items[11], p_config.isUpdateWindowSize);
-            [[fallthrough]];
-        case 11:
-            convertToBool(items[10], p_config.withExtraSpace);
-            [[fallthrough]];
-        case 10:
-            convertToBool(items[9], p_config.withAscii);
-            [[fallthrough]];
-        case 9:
-            convertToBool(items[8], p_config.withAddress);
-            [[fallthrough]];
-        case 8:
-            if (flx::convert(items[7], temp) && temp <= 64 &&
-                flx::countSetBits(temp) <= 1 && temp != 1 && temp != 2)
-            {
-                p_config.style = static_cast<Style>(temp);
-            }
-            [[fallthrough]];
-        case 7:
-            validCount = flx::convert(items[6], endAddr, 16) ? 1 : 0;
-            [[fallthrough]];
-        case 6:
-            validCount += flx::convert(items[5], startAddr, 16) ? 1 : 0;
-            if (validCount == 2)
-            {
-                p_config.addressRange = (startAddr <= endAddr) ?
-                    BInterval<DWord>(startAddr, endAddr) :
-                    BInterval<DWord>(endAddr, startAddr);
-            }
-            [[fallthrough]];
-        case 5:
-            p_config.windowTitle = items[4];
-            [[fallthrough]];
-        case 4:
-            validCount = (convertToInt(items[3], y)) ? 1 : 0;
-            [[fallthrough]];
-        case 3:
-            validCount += (convertToInt(items[2], x)) ? 1 : 0;
-            [[fallthrough]];
-        case 2:
-            validCount += (convertToInt(items[1], height)) ? 1 : 0;
-            [[fallthrough]];
-        case 1:
-            validCount += (convertToInt(items[0], width)) ? 1 : 0;
-            if (validCount == 4)
-            {
-                positionAndSize = QRect(x, y, width, height);
-            }
-            break;
-
-        case 0:
-        default:
-            break;
-    }
 }
 
 std::string MemoryWindow::GetConfigString() const
