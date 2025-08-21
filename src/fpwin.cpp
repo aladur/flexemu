@@ -606,6 +606,14 @@ void FLEXplorer::OnAbout()
     ui.e_versions->setOpenExternalLinks(true);
     ui.e_versions->setHtml(versionsText);
     ui.c_tabWidget->setCurrentIndex(0);
+    for (int index = 0; index < ui.c_tabWidget->count(); ++index)
+    {
+        if (ui.c_tabWidget->tabText(index) == "Configuration")
+        {
+            ui.c_tabWidget->setTabVisible(2, false);
+            break;
+        }
+    }
 
     dialog.exec();
 }
