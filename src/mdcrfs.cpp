@@ -27,14 +27,15 @@
 #include <limits>
 #include <algorithm>
 #include <cctype>
+#include <array>
 #include <filesystem>
 
 namespace fs = std::filesystem;
 
 
-const std::string &GetMdcrError(int index)
+std::string GetMdcrError(int index)
 {
-    static const std::vector<std::string> mdcrErrors
+    static constexpr const std::array<const char *, 8> mdcrErrors
     {
         "Success",
         "Invalid input data",

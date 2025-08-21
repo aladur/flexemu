@@ -52,7 +52,7 @@ enum class MdcrStatus : uint8_t
     WriteError,    // An error occurred when writing a record.
 };
 
-extern const std::string &GetMdcrError(int index);
+extern std::string GetMdcrError(int index);
 
 class MdcrFileSystem
 {
