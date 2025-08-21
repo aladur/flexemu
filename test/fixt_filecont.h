@@ -54,7 +54,8 @@ protected:
     const int FLX{1};// *.flx disk image file index.
     const int DIR{2};// directory disk index.
 
-    const std::array<std::array<const char *, 3>, 8> diskFiles{{
+    static constexpr const std::array<std::array<const char *, 3>, 8> diskFiles
+    {{
         {"testdisk_ro.dsk", "testdisk_ro.flx", "testdir_ro"},
         {"testdisk_rw.dsk", "testdisk_rw.flx", "testdir_rw"},
         {"testdisk_ .dsk", "testdisk_ .flx", "testdir_ sp"},

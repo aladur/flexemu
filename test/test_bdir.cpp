@@ -35,12 +35,12 @@ namespace fs = std::filesystem;
 class test_BDirectory : public ::testing::Test
 {
 protected:
-    static const unsigned HAS_FILES{1U};
-    static const unsigned HAS_SUBDIRS{2U};
-    static const unsigned HAS_UTF8{4U};
-    static const unsigned MAX_INDEX{7U};
+    static constexpr const unsigned HAS_FILES{1U};
+    static constexpr const unsigned HAS_SUBDIRS{2U};
+    static constexpr const unsigned HAS_UTF8{4U};
+    static constexpr const unsigned MAX_INDEX{7U};
 
-    static constexpr std::array<const char *, 9> filenames{{
+    static constexpr const std::array<const char *, 9> filenames{{
         "f", "filename.txt", "_filename.txt",
         "~file", "_", "@",
         "file_sp_ .txt",
@@ -48,7 +48,7 @@ protected:
         u8"filename\u2665.ext\u2665",
     }};
 
-    static constexpr std::array<const char *, 9> subdirnames{{
+    static constexpr const std::array<const char *, 9> subdirnames{{
         "d", "dirname", "_dir.ext",
         "~dir", "__", "@@",
         "dir_sp_ .ext",

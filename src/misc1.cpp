@@ -157,7 +157,7 @@ std::string flx::binstr(Byte x)
 
 inline char flx::hex_digit(Byte x)
 {
-    static const char *digits = "0123456789abcdef";
+    constexpr const char *digits = "0123456789abcdef";
 
     return digits[x & 0x0FU];
 }
@@ -233,7 +233,7 @@ bool flx::matches(const std::string &text, const std::string &pattern,
         return text == pattern;
     }
 
-    static const int MAX = std::numeric_limits<int>::max();
+    constexpr const int MAX = std::numeric_limits<int>::max();
     auto ipattern = pattern.cbegin();
     auto ilaststar = pattern.cend();
     auto itext = text.cbegin();
@@ -463,7 +463,7 @@ fs::path flx::getFlexemuUserConfigPath()
 
 fs::path flx::getFlexemuConfigFile()
 {
-    static const auto * const flexemuConfigFile = u8"flexemu.conf";
+    constexpr const auto * const flexemuConfigFile = u8"flexemu.conf";
     static const auto userPath = getFlexemuUserConfigPath() / flexemuConfigFile;
 
     if (fs::exists(userPath))
@@ -480,7 +480,7 @@ fs::path flx::getFlexemuConfigFile()
 
 fs::path flx::getFlexLabelFile()
 {
-    static const auto * const flexLabelFile = u8"flexlabl.conf";
+    constexpr const auto * const flexLabelFile = u8"flexlabl.conf";
     static const auto userPath = getFlexemuUserConfigPath() / flexLabelFile;
 
     if (fs::exists(userPath))

@@ -26,8 +26,8 @@
 
 namespace fs = std::filesystem;
 
-static const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
-static const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
+constexpr const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
+constexpr const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
 
 FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(const fs::path &directory)
     : path(directory / GetRcFilename())

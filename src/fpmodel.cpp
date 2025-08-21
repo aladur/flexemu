@@ -143,7 +143,7 @@ void FlexplorerTableModel::CreateAttributesBitmasks(const QString &attributes,
 QModelIndex FlexplorerTableModel::SetRow(const FlexDirEntry &dirEntry, int row,
                                          int role)
 {
-    static const int ssm4 = SECTOR_SIZE - 4;
+    constexpr const int ssm4 = SECTOR_SIZE - 4;
     int column = 0;
 
     setData(index(row, column++), row, role);
@@ -222,8 +222,8 @@ void FlexplorerTableModel::UpdateFileSizeHeaderName()
 
 void FlexplorerTableModel::UpdateFileSizeColumn()
 {
-    static const int column = COL_SIZE;
-    static const int ssm4 = SECTOR_SIZE - 4;
+    constexpr const int column = COL_SIZE;
+    constexpr const int ssm4 = SECTOR_SIZE - 4;
 
     for (auto &row : rows)
     {

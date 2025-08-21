@@ -31,12 +31,12 @@
 
 namespace fs = std::filesystem;
 
-static const std::array<Byte, 12> days_per_month{
+constexpr const std::array<Byte, 12> days_per_month{
     31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 
-static const auto * const OLDCONFIGBIN = u8".mc146818";
-static const auto * const CONFIGBIN = u8"mc146818.bin";
+constexpr const auto * const OLDCONFIGBIN = u8".mc146818";
+constexpr const auto * const CONFIGBIN = u8"mc146818.bin";
 
 Mc146818::Mc146818()
 {

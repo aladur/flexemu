@@ -65,14 +65,14 @@ const char *Da6809::FlexLabel(Word addr)
 
 const char *Da6809::IndexRegister(Byte which)
 {
-    static const std::array<const char *, 4> reg_names{ "X", "Y", "U", "S" };
+    constexpr const std::array<const char *, 4> reg_names{ "X", "Y", "U", "S" };
 
     return reg_names[which & 0x03U];
 }
 
 const char *Da6809::InterRegister(Byte which)
 {
-    static const std::array<const char *, 16> reg_names{
+    constexpr const std::array<const char *, 16> reg_names{
         "D", "X", "Y", "U", "S", "PC", "??", "??",
         "A", "B", "CC", "DP", "??", "??", "??", "??"
     };
@@ -83,7 +83,7 @@ const char *Da6809::InterRegister(Byte which)
 
 const char *Da6809::StackRegister(Byte which, const char *not_stack)
 {
-    static const std::array<const char *, 8> reg_names{
+    constexpr const std::array<const char *, 8> reg_names{
         "CC", "A", "B", "DP", "X", "Y", "??", "PC"
     };
 
@@ -1937,13 +1937,13 @@ InstFlg Da6809::Disassemble(
 
 unsigned Da6809::getByteSize(const Byte *p_memory)
 {
-    static const Byte X = 1;
-    static const Byte Y = 2;
+    constexpr const Byte X = 1;
+    constexpr const Byte Y = 2;
     // Bit 0-3: byte size.
     // Bit 4: Flag, if set, add additional bytes for index mode.
     // Bit 5-7: reserved, should be 0.
     // Table includes byte sizes of undocumented instructions.
-    static const std::array<Byte, 256> byteSizesPage1
+    constexpr const std::array<Byte, 256> byteSizesPage1
     {//-0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, // 0-
         X, X, 1, 1, X, X, 3, 3, X, 1, 2, X, 2, 1, 2, 2, // 1-
@@ -1963,7 +1963,7 @@ unsigned Da6809::getByteSize(const Byte *p_memory)
         3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, // F-
     };
 
-    static const std::array<Byte, 256> byteSizesPage2
+    constexpr const std::array<Byte, 256> byteSizesPage2
     {//-0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F
         Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 0-
         Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 1-
@@ -1983,7 +1983,7 @@ unsigned Da6809::getByteSize(const Byte *p_memory)
         Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, 4, 4, // F-
     };
 
-    static const std::array<Byte, 256> byteSizesPage3
+    constexpr const std::array<Byte, 256> byteSizesPage3
     {//-0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F
         Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 0-
         Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 1-
@@ -2004,7 +2004,7 @@ unsigned Da6809::getByteSize(const Byte *p_memory)
     };
 
     // Contains the additional bytes using postbyte as index.
-    static const std::array<Byte, 256> additionalIndexedByteSize
+    constexpr const std::array<Byte, 256> additionalIndexedByteSize
     {//-0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0-
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 1-

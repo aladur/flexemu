@@ -512,10 +512,10 @@ bool E2Screen::IsNumLockOn() const
 
 int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
 {
-    static const auto modifiers =
+    constexpr const auto modifiers =
         Qt::ControlModifier | Qt::ShiftModifier | Qt::AltModifier;
-    static constexpr int NR = 11; // Number of rows in following table.
-    static constexpr int NC = 4; // Number of columns in following table.
+    constexpr const int NR = 11; // Number of rows in following table.
+    constexpr const int NC = 4; // Number of columns in following table.
     // On Eurocom II PAT09 keyboard the following keys are mapped:
     //
     // keyboard input           | Eurocom II mapped key
@@ -558,7 +558,7 @@ int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
     //     |     |     +--------- Ctrl+key
     //     |     |     |     +--- Shift+Ctrl+key
     //     |     |     |     |
-    static constexpr std::array <int, NR * NC> cursorCtrlCode = {
+    constexpr const std::array <int, NR * NC> cursorCtrlCode = {
         0xFA, 0xEA, 0xFA, 0xEA, // Key_Insert
         0xF9, 0xE9, 0xB9, 0xA9, // Key_End
         0xF2, 0xE2, 0xB2, 0xA2, // Key_Down
@@ -572,7 +572,7 @@ int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
         0x91, 0x81, 0x91, 0x81, // Key_Delete
     };
     // Define key_code for Delete
-    static constexpr std::array<int, 4> deleteKeyCode{
+    constexpr const std::array<int, 4> deleteKeyCode{
         0x7F, 0x7F, 0x1F, 0x7F
     };
     Word index = event->modifiers() & Qt::ShiftModifier ? 1U : 0U;

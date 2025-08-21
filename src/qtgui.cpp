@@ -2167,7 +2167,7 @@ void QtGui::keyPressEvent(QKeyEvent *event)
     // GNOME          | Ctrl+F11
     // Others         | F11
 
-    static const auto modifiers =
+    constexpr const auto modifiers =
         Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier;
 
     switch (event->modifiers() & modifiers)
@@ -2371,7 +2371,7 @@ void QtGui::UpdateFrom(NotifyId id, void *param)
 
 void QtGui::ParseRomName()
 {
-    static const auto flags =
+    constexpr const auto flags =
         std::regex_constants::extended | std::regex_constants::icase;
     static const BInterval<DWord> romAddrRange(0xF000U, 0xFFFFU);
 
@@ -2398,7 +2398,7 @@ void QtGui::ParseRomName()
 
 void QtGui::ParseOsName()
 {
-    static const auto flags =
+    constexpr const auto flags =
         std::regex_constants::extended | std::regex_constants::icase;
     static const BInterval<DWord> flexAddrRange(0xC700, 0xDFFF);
 

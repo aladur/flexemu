@@ -145,7 +145,7 @@ void KeyboardIO::set_bell(Word /*p_percent*/)
     // the write syscall may be aborted by EINTR or no byte is written.
     // This is defined bahaviour.
     // Solution: Retry up to 4 times.
-    static const char bell = BEL;
+    constexpr const char bell = BEL;
 
     for (int i = 0; i < 4; ++i)
     {

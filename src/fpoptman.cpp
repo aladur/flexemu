@@ -34,24 +34,24 @@
 
 namespace fs = std::filesystem;
 
-static const auto * const OLDFLEXPLORERRC = u8".flexplorerrc";
-static const auto * const FLEXPLORERRC = u8"flexplorerrc";
+constexpr const auto * const OLDFLEXPLORERRC = u8".flexplorerrc";
+constexpr const auto * const FLEXPLORERRC = u8"flexplorerrc";
 
-static const char * const FLEXPLORERBOOTSECTORFILE = "BootSectorFile";
-static const char * const FLEXPLOREREXTRACTCNV = "ExtractTextFileConvert";
-static const char * const FLEXPLOREREXTRACTASK = "ExtractTextFileAskUser";
-static const char * const FLEXPLORERFILESIZETYPE = "FileSizeType";
-static const char * const FLEXPLORERFILETIMEACCESS = "FileTimeAccess";
-static const char * const FLEXPLORERICONSIZE = "IconSize";
-static const char * const FLEXPLORERINJECTASK = "InjectTextFileAskUser";
-static const char * const FLEXPLORERINJECTCNV = "InjectTextFileConvert";
-static const char * const FLEXPLOREROPENDIRECTORYPATH = "OpenDirectoryPath";
-static const char * const FLEXPLOREROPENDISKPATH = "OpenDiskPath";
-static const char * const FLEXPLOREROPENINJECTFILEPATH = "OpenInjectFilePath";
-static const char * const FLEXPLORERRECENTDIRECTORY = "RecentDirectoryPath";
-static const char * const FLEXPLORERRECENTDISKPATH = "RecentDiskPath";
-static const char * const FLEXPLORERTRACK0ONLYDIRSEC = "OnTrack0OnlyDirSectors";
-static const char * const FLEXPLORERVERSION = "Version";
+constexpr const char * const FLEXPLORERBOOTSECTORFILE = "BootSectorFile";
+constexpr const char * const FLEXPLOREREXTRACTCNV = "ExtractTextFileConvert";
+constexpr const char * const FLEXPLOREREXTRACTASK = "ExtractTextFileAskUser";
+constexpr const char * const FLEXPLORERFILESIZETYPE = "FileSizeType";
+constexpr const char * const FLEXPLORERFILETIMEACCESS = "FileTimeAccess";
+constexpr const char * const FLEXPLORERICONSIZE = "IconSize";
+constexpr const char * const FLEXPLORERINJECTASK = "InjectTextFileAskUser";
+constexpr const char * const FLEXPLORERINJECTCNV = "InjectTextFileConvert";
+constexpr const char * const FLEXPLOREROPENDIRECTORYPATH = "OpenDirectoryPath";
+constexpr const char * const FLEXPLOREROPENDISKPATH = "OpenDiskPath";
+constexpr const char * const FLEXPLOREROPENINJECTFILEPATH = "OpenInjectFilePath";
+constexpr const char * const FLEXPLORERRECENTDIRECTORY = "RecentDirectoryPath";
+constexpr const char * const FLEXPLORERRECENTDISKPATH = "RecentDiskPath";
+constexpr const char * const FLEXPLORERTRACK0ONLYDIRSEC = "OnTrack0OnlyDirSectors";
+constexpr const char * const FLEXPLORERVERSION = "Version";
 
 void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 {

@@ -288,7 +288,7 @@ void NCursesTerminalImpl::write_char_serial_safe(Byte value)
     {
         static const std::string ascii{"{|}[\\]~"};
         // utf-8 encoding of german umlauts
-        static const std::array<const char *, 7> umlaut{
+        constexpr const std::array<const char *, 7> umlaut{
             "\xC3\xA4", // ae
             "\xC3\xB6", // oe
             "\xC3\xBC", // ue
@@ -311,7 +311,7 @@ void NCursesTerminalImpl::write_char_serial_safe(Byte value)
     {
         if (value == 0x7FU)
         {
-            static const char *south_west_arrow{"\xE2\x86\x99"};
+            constexpr const char *south_west_arrow{"\xE2\x86\x99"};
             waddstr(win, south_west_arrow);
         }
         else

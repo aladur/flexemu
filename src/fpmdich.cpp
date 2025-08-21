@@ -791,7 +791,7 @@ QMimeData *FlexplorerMdiChild::GetMimeDataForSelected(int *count)
     {
         QByteArray itemData;
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-        static const int int_max = std::numeric_limits<int>::max();
+        constexpr const int int_max = std::numeric_limits<int>::max();
         if (files.GetFileSize() > static_cast<size_t>(int_max))
         {
             delete mimeData;
@@ -958,7 +958,7 @@ void FlexplorerMdiChild::UpdateDateDelegate()
 
 void FlexplorerMdiChild::OnFileSizeTypeHasChanged()
 {
-    static const int ssm4 = SECTOR_SIZE - 4;
+    constexpr const int ssm4 = SECTOR_SIZE - 4;
 
     model->UpdateFileSizeColumn();
     model->UpdateFileSizeHeaderName();

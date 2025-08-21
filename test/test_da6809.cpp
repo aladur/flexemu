@@ -25,8 +25,7 @@
 #include "misc1.h"
 #include "da6809.h"
 #include <string>
-#include <iomanip>
-#include <sstream>
+#include <array>
 #include "fmt/format.h"
 
 
@@ -39,7 +38,7 @@ TEST(test_da6809, dis_illegal)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    std::vector<Byte> memory{
+    constexpr const std::array<Byte, 49> memory{
         0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x0B, 0x00,
         0x14, 0x15, 0x18, 0x1B, 0x38,
         0x3E,
@@ -80,14 +79,14 @@ TEST(test_da6809, dis_inherent)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 35> memory{
         0x12, 0x13, 0x19, 0x1D, 0x39, 0x3A, 0x3B, 0x3D, 0x3F,
         0x40, 0x43, 0x44, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4C, 0x4D, 0x4F,
         0x50, 0x53, 0x54, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5C, 0x5D, 0x5F,
         0x10, 0x3F,
         0x11, 0x3F,
     };
-    static const std::vector<const char *> expected_mnemonics{
+    constexpr const std::array<const char *, 33> expected_mnemonics{
         "NOP", "SYNC", "DAA", "SEX", // 0X
         "RTS", "ABX", "RTI", "MUL", "SWI", // 3X
         "NEGA", "COMA", "LSRA", "RORA", "ASRA", "LSLA", // 4X
@@ -97,6 +96,8 @@ TEST(test_da6809, dis_inherent)
         "SWI2", // 10 3X
         "SWI3" // 11 3X
     };
+    // const auto *iexpected_mnemonic could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
 
     while (pc < static_cast<Word>(memory.size()))
@@ -152,7 +153,7 @@ TEST(test_da6809, dis_immediate)
     std::string mnemonic;
     std::string operands;
     // Remark: Instead of $CC00 use $CC10, $CC00 would print label TTYBS.
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 88> memory{
         0x1A, 0x55, 0x1C, 0xAA, // 1X
         0x3C, 0x55, // 3X
         0x80, 0x80, 0x81, 0x81, 0x82, 0x82, 0x83, 0x83, 0x00, 0x84, 0x84,
@@ -166,7 +167,7 @@ TEST(test_da6809, dis_immediate)
         0x10, 0xCE, 0xCE, 0x00, // 10 CX
         0x11, 0x83, 0x83, 0x00, 0x11, 0x8C, 0x8C, 0x00, // 11 8X
     };
-    static const std::vector<const char *> expected_mnemonics{
+    constexpr const std::array<const char *, 35> expected_mnemonics{
         "ORCC", "ANDCC",
         "CWAI",
         "SUBA", "CMPA", "SBCA", "SUBD", "ANDA", "BITA", // r89X
@@ -178,10 +179,12 @@ TEST(test_da6809, dis_immediate)
         "LDS", // 10 CX
         "CMPU", "CMPS", // 11 8X
     };
-    static const std::vector<Word> opcode_16bit{
+    constexpr const std::array<Word, 12> opcode_16bit{
         0x83, 0x8C, 0x8E, 0xC3, 0xCC, 0xCE, 0x1083, 0x108C, 0x108E,
         0x10CE, 0x1183, 0x118C,
     };
+    // const auto *iexpected_mnemonic could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
     da.SetFlexLabelFile("data/flexlabl.conf");
 
@@ -252,7 +255,7 @@ TEST(test_da6809, dis_direct)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 112> memory{
         0x00, 0x00, 0x03, 0x03, 0x04, 0x04, 0x06, 0x06, 0x07, 0x07, 0x08, 0x08,
         0x09, 0x09, 0x0A, 0x0A, 0x0C, 0x0C, 0x0D, 0x0D, 0x0E, 0x0E, 0x0F, 0x0F,
         0x90, 0x90, 0x91, 0x91, 0x92, 0x92, 0x93, 0x93, 0x94, 0x94, 0x95, 0x95,
@@ -266,7 +269,7 @@ TEST(test_da6809, dis_direct)
         0x11, 0x93, 0x93,
         0x11, 0x9C, 0x9C,
     };
-    static const std::vector<const char *> expected_mnemonics{
+    constexpr const std::array<const char *, 52> expected_mnemonics{
         "NEG", "COM", "LSR", "ROR", "ASR", "LSL",  // 0X
         "ROL", "DEC", "INC", "TST", "JMP", "CLR",
         "SUBA", "CMPA", "SBCA", "SUBD", "ANDA", "BITA", // 9X
@@ -279,6 +282,8 @@ TEST(test_da6809, dis_direct)
         "LDS", "STS", // 10 DX
         "CMPU", "CMPS" // 11 9X
     };
+    // const auto *iexpected_mnemonic could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
 
     while (pc < static_cast<Word>(memory.size()))
@@ -325,7 +330,7 @@ TEST(test_da6809, dis_branch_relative)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 38> memory{
         0x20, 0x00, 0x21, 0x00, 0x22, 0x00, 0x23, 0x00, 0x24, 0x00,
         0x25, 0x00, 0x26, 0x00, 0x27, 0x00, 0x28, 0x00, 0x29, 0x00,
         0x2A, 0x00, 0x2B, 0x00, 0x2C, 0x00, 0x2D, 0x00, 0x2E, 0x00,
@@ -333,7 +338,7 @@ TEST(test_da6809, dis_branch_relative)
         0x8D, 0x00,
         0x20, 0x7F, 0x20, 0x80,
     };
-    static const std::vector<const char *> expected_mnemonics{
+    constexpr const std::array<const char *, 19> expected_mnemonics{
         "BRA", "BRN", "BHI", "BLS", "BCC",
         "BCS", "BNE", "BEQ", "BVC", "BVS",
         "BPL", "BMI", "BGE", "BLT", "BGT",
@@ -342,6 +347,8 @@ TEST(test_da6809, dis_branch_relative)
         "BRA", "BRA",
 
     };
+    // const auto *iexpected_mnemonic could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
     da.SetFlexLabelFile("data/flexlabl.conf");
 
@@ -389,7 +396,7 @@ TEST(test_da6809, dis_long_branch_relative)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 66> memory{
         0x16, 0x00, 0x00, 0x17, 0x00, 0x00,
         0x10, 0x21, 0x00, 0x00, 0x10, 0x22, 0x00, 0x00,
         0x10, 0x23, 0x00, 0x00, 0x10, 0x24, 0x00, 0x00,
@@ -400,12 +407,14 @@ TEST(test_da6809, dis_long_branch_relative)
         0x10, 0x2D, 0x00, 0x00, 0x10, 0x2E, 0x00, 0x00,
         0x10, 0x2F, 0x00, 0x00,
     };
-    static const std::vector<const char *> expected_mnemonics{
+    constexpr const std::array<const char *, 17> expected_mnemonics{
         "LBRA", "LBSR",
         "LBRN", "LBHI", "LBLS", "LBCC", "LBCS",
         "LBNE", "LBEQ", "LBVC", "LBVS", "LBPL", "LBMI",
         "LBGE", "LBLT", "LBGT", "LBLE",
     };
+    // const auto *iexpected_mnemonic could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
     da.SetFlexLabelFile("data/flexlabl.conf");
 
@@ -453,7 +462,7 @@ TEST(test_da6809, dis_extended)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 164> memory{
         0x70, 0x01, 0x70, 0x73, 0x01, 0x73, 0x74, 0x01, 0x74, 0x76, 0x01, 0x76,
         0x77, 0x01, 0x77, 0x78, 0x01, 0x78, 0x79, 0x01, 0x79, 0x7A, 0x01, 0x7A,
         0x7C, 0x01, 0x7C, 0x7D, 0x01, 0x7D, 0x7E, 0x01, 0x7E, 0x7F, 0x01, 0x7F,
@@ -470,7 +479,7 @@ TEST(test_da6809, dis_extended)
         0x10, 0xFE, 0x01, 0xFE, 0x10, 0xFF, 0x01, 0xFF,
         0x11, 0xB3, 0x01, 0xB3, 0x11, 0xBC, 0x01, 0xBC,
     };
-    static const std::vector<const char *> expected_mnemonics{
+    constexpr const std::array<const char *, 128> expected_mnemonics{
         "NEG", "COM", "LSR", "ROR", "ASR", "LSL",  // 7X
         "ROL", "DEC", "INC", "TST", "JMP", "CLR",
         "SUBA", "CMPA", "SBCA", "SUBD", "ANDA", "BITA", // BX
@@ -482,6 +491,8 @@ TEST(test_da6809, dis_extended)
         "CMPD", "CMPY", "LDY", "STY", "LDS", "STS", // 10 BX
         "CMPU", "CMPS", // 11 BX
     };
+    // const auto *iexpected_mnemonic could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
     da.SetFlexLabelFile("data/flexlabl.conf");
 
@@ -535,7 +546,7 @@ TEST(test_da6809, dis_indexed)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 120> memory{
         0x30, 0x00, 0x31, 0x00, 0x32, 0x00, 0x33, 0x00, // 3X
         0x60, 0x00, 0x63, 0x00, 0x64, 0x00, 0x66, 0x00, 0x67, 0x00,
         0x68, 0x00, 0x69, 0x00, 0x6A, 0x00, 0x6C, 0x00, 0x6D, 0x00,
@@ -554,7 +565,7 @@ TEST(test_da6809, dis_indexed)
         0x11, 0xA3, 0x00, 0x11, 0xAC, 0x00, // 11 AX
 
     };
-    static const std::vector<const char *> expected_mnemonics{
+    constexpr const std::array<const char *, 100> expected_mnemonics{
         "LEAX", "LEAY", "LEAS", "LEAU",
         "NEG", "COM", "LSR", "ROR", "ASR", "LSL",  // 6X
         "ROL", "DEC", "INC", "TST", "JMP", "CLR",
@@ -568,6 +579,8 @@ TEST(test_da6809, dis_indexed)
         "LDS", "STS",
         "CMPU", "CMPS", // 11 AX
     };
+    // const auto *iexpected_mnemonic could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
 
     while (pc < static_cast<Word>(memory.size()))
@@ -613,7 +626,7 @@ TEST(test_da6809, dis_indexed_modes)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 108> memory{
         // Non indirect.
         0x60, 0x84, 0x60, 0xA4, 0x60, 0xC4, 0x60, 0xE4, // No offset
         0x60, 0x10, 0x60, 0x2F, 0x60, 0x50, 0x60, 0x6F, // 5-bit offset
@@ -635,7 +648,7 @@ TEST(test_da6809, dis_indexed_modes)
         0x60, 0x93, // pre decrement by 2
         0x60, 0x9F, 0x55, 0xAA, // extended indirect
     };
-    static const std::vector<const char *> expected_operands{
+    constexpr const std::array<const char *, 45> expected_operands{
         // Non indirect.
         ",X", ",Y", ",U", ",S", // No offset
         "-$10,X", "$0F,Y", "-$10,U", "$0F,S", // 5-bit offset
@@ -653,6 +666,8 @@ TEST(test_da6809, dis_indexed_modes)
         "[,--X]", // pre decrement by 2
         "[$55AA]", // extended indirect
     };
+    // const auto *iexpected_operand could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_operand = expected_operands.cbegin();
 
     while (pc < static_cast<Word>(memory.size()))
@@ -691,7 +706,7 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 112> memory{
         // Non indirect.
         0x60, 0x8C, 0x80, 0x60, 0xAC, 0x80, // PC relative 8-bit offset
         0x60, 0xCC, 0x80, 0x60, 0xEC, 0x80, // PC relative 8-bit offset
@@ -711,7 +726,7 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
         0x60, 0x9D, 0x3F, 0xFF, 0x60, 0xBD, 0x3F, 0xFF, // PC rel. 16-bit offs.
         0x60, 0xDD, 0x3F, 0xFF, 0x60, 0xFD, 0x3F, 0xFF, // PC rel. 16-bit offs.
     };
-    static const std::vector<const char *> expected_operands{
+    constexpr const std::array<const char *, 32> expected_operands{
         // Non indirect.
         "<$7F83,PCR", "<$7F86,PCR", // PC relative 8-bit offset
         "<$7F89,PCR", "<$7F8C,PCR",
@@ -731,6 +746,8 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
         "[>$C02B,PCR]", "[>$C02F,PCR]",
         "[>$C033,PCR]", "[>$C037,PCR]",
     };
+    // const auto *iexpected_operand could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_operand = expected_operands.cbegin();
 
     while (offset < static_cast<DWord>(memory.size()))
@@ -773,7 +790,7 @@ TEST(test_da6809, dis_indexed_modes_illegal)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 78> memory{
         // Non indirect.
         0x60, 0x8F, 0x60, 0xAF,
         0x60, 0x87, 0x60, 0xA7, 0x60, 0xC7, 0x60, 0xE7,
@@ -812,7 +829,7 @@ TEST(test_da6809, dis_indexed_modes_illegal)
 
 static std::string GetRegisterName(unsigned code)
 {
-    static const std::array<const char *, 16> registers{
+    constexpr const std::array<const char *, 16> registers{
         "D", "X", "Y", "U", "S", "PC", "??", "??",
         "A", "B", "CC", "DP", "??", "??", "??", "??"
     };
@@ -872,7 +889,7 @@ TEST(test_da6809, dis_exg_tfr)
 static std::string GetRegisterList(unsigned postbyte,
         const std::string &nonstack_reg)
 {
-    static const std::array<const char *, 8> reg_names{
+    constexpr const std::array<const char *, 8> reg_names{
         "CC", "A", "B", "DP", "X", "Y", "", "PC"
     };
     bool is_first = true;
@@ -911,7 +928,7 @@ TEST(test_da6809, dis_psh_pul)
     std::string mnemonic;
     std::string operands;
     std::array<Byte, 2> memory{};
-    std::array<const char *, 4> expected_mnemonics{
+    constexpr const std::array<const char *, 4> expected_mnemonics{
         "PSHS", "PULS", "PSHU", "PULU",
     };
 
@@ -955,7 +972,7 @@ TEST(test_da6809, dis_undocumented)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 39> memory{
         0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x0B, 0x00,
         0x3E,
         0x41, 0x42, 0x45, 0x4B, 0x4E,
@@ -964,22 +981,26 @@ TEST(test_da6809, dis_undocumented)
         0x71, 0x71, 0x00, 0x72, 0x72, 0x00, 0x75, 0x75, 0x00,
         0x7B, 0x7B, 0x00,
     };
-    static const std::vector<const char *> expected_mnemonics{
+    constexpr const std::array<const char *, 39> expected_mnemonics{
         "neg", "negcom", "lsr", "dec", "reset",
         "nega", "negcoma", "lsra", "deca", "clra",
         "negb", "negcomb", "lsrb", "decb", "clrb",
         "neg", "negcom", "lsr", "dec",
         "neg", "negcom", "lsr", "dec",
     };
-    static const std::vector<const char *> expected_operands{
+    constexpr const std::array<const char *, 39> expected_operands{
         "$00", "$00", "$00", "$00", "",
         "", "", "", "", "",
         "", "", "", "", "",
         "$00,X", "$00,X", "$00,X", "$00,X",
         "$7100", "$7200", "$7500", "$7B00",
     };
+    // const auto *iexpected_mnemonic or const auto *iexpected_operand
+    // could not be incremented.
+    // NOLINTBEGIN(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
     auto iexpected_operand = expected_operands.cbegin();
+    // NOLINTEND(readability-qualified-auto)
     da.SetFlexLabelFile("data/flexlabl.conf");
 
     da.set_use_undocumented(true);
@@ -1026,16 +1047,18 @@ TEST(test_da6809, dis_flex_labels)
     std::string code;
     std::string mnemonic;
     std::string operands;
-    static const std::vector<Byte> memory{
+    constexpr const std::array<Byte, 15> memory{
         0x7E, 0xCD, 0x03, 0xB6, 0xCC, 0x00,
         0xF7, 0xCC, 0x02, 0xBD, 0xD4, 0x06,
         0x8E, 0xC8, 0x40,
     };
-    static const std::vector<const char *> expected_operands{
+    constexpr const std::array<const char *, 5> expected_operands{
         "WARMS", "TTYBS",
         "TTYEOL", "FMS",
         "#FCB",
     };
+    // const auto *iexpected_operand could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_operand = expected_operands.cbegin();
     da.SetFlexLabelFile("data/flexlabl.conf");
     Word size = 3U;
@@ -1053,8 +1076,8 @@ TEST(test_da6809, fct_getByteSize_page1)
 {
     Da6809 da;
     unsigned pc = 0U;
-    static const Byte X = 1; // size of illegal instruction
-    static const std::vector<Byte> memory
+    constexpr const Byte X = 1; // size of illegal instruction
+    constexpr const std::array<Byte, 544> memory
     {
         // Check all valid opcodes (incl. undocumented instructions).
         0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x03, 0x00, 0x04, 0x00, 0x05, 0x00,
@@ -1115,7 +1138,7 @@ TEST(test_da6809, fct_getByteSize_page1)
         // Check all illegal opcodes.
         0x14, 0x15, 0x18, 0x1B, 0x38, 0x87, 0x8F, 0xC7, 0xCD, 0xCF,
     };
-    static const std::vector<unsigned> expected_bytes
+    constexpr const std::array<Byte, 263> expected_bytes
     {
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
         1, 1, 3, 3, 1, 2, 2, 1, 2, 2,
@@ -1142,6 +1165,8 @@ TEST(test_da6809, fct_getByteSize_page1)
         X, X, X, X, X, X, X, X, X, X,
 
     };
+    // const auto *iexpected_bytes could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_bytes = expected_bytes.cbegin();
 
     while (pc < memory.size())
@@ -1157,8 +1182,8 @@ TEST(test_da6809, fct_getByteSize_page2)
 {
     Da6809 da;
     unsigned pc = 0U;
-    static const Byte Y = 2; // size of illegal instruction
-    static const std::vector<Byte> memory
+    constexpr const Byte Y = 2; // size of illegal instruction
+    constexpr const std::array<Byte, 209> memory
     {
         // Check all valid opcodes.
         0x10, 0x21, 0x00, 0x00, 0x10, 0x22, 0x00, 0x00,
@@ -1191,7 +1216,7 @@ TEST(test_da6809, fct_getByteSize_page2)
 
 
     };
-    static const std::vector<unsigned> expected_bytes
+    constexpr const std::array<Byte, 62> expected_bytes
     {
         4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
         2,
@@ -1213,6 +1238,8 @@ TEST(test_da6809, fct_getByteSize_page2)
         Y, Y, Y, Y, Y, Y,
         Y, Y, Y,
     };
+    // const auto *iexpected_bytes could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_bytes = expected_bytes.cbegin();
 
     while (pc < memory.size())
@@ -1227,8 +1254,8 @@ TEST(test_da6809, fct_getByteSize_page3)
 {
     Da6809 da;
     unsigned pc = 0U;
-    static const Byte Y = 2; // illegal instruction
-    static const std::vector<Byte> memory
+    constexpr const Byte Y = 2; // illegal instruction
+    constexpr const std::array<Byte, 103> memory
     {
         // Check all valid opcodes.
         0x11, 0x3F,
@@ -1250,7 +1277,7 @@ TEST(test_da6809, fct_getByteSize_page3)
 
 
     };
-    static const std::vector<unsigned> expected_bytes
+    constexpr const std::array<Byte, 34> expected_bytes
     {
         2,
         4, 4,
@@ -1267,6 +1294,8 @@ TEST(test_da6809, fct_getByteSize_page3)
         Y, Y, Y, Y, Y, Y,
         Y, Y, Y, Y,
     };
+    // const auto *iexpected_bytes could not be incremented.
+    // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_bytes = expected_bytes.cbegin();
 
     while (pc < memory.size())

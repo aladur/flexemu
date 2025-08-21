@@ -1155,7 +1155,7 @@ void FlexDirectoryDiskBySector::check_for_extend(Word ds_idx,
 void FlexDirectoryDiskBySector::check_for_changed_file_attr(Word ds_idx,
         s_dir_sector &dir_sector)
 {
-    static const auto unsupported_attr =
+    constexpr const auto unsupported_attr =
         DELETE_PROTECT | CATALOG_PROTECT | READ_PROTECT;
     const auto &old_dir_sector = flex_directory[ds_idx];
 
