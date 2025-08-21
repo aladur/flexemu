@@ -102,8 +102,8 @@ public:
 
     void reset()
     {
-        minAddr = 0x0000;
-        maxAddr = 0xFFFF;
+        minAddr = static_cast<Word>(0x0000U);
+        maxAddr = static_cast<Word>(0xFFFFU);
         startAddr.reset();
         stopAddr.reset();
         logCycleCount = false;
@@ -146,8 +146,8 @@ public:
         return *this;
     }
 
-    OptionalWord minAddr{0x0000};
-    OptionalWord maxAddr{0xFFFF};
+    OptionalWord minAddr{static_cast<Word>(0x0000U)};
+    OptionalWord maxAddr{static_cast<Word>(0xFFFFU)};
     OptionalWord startAddr;
     OptionalWord stopAddr;
     bool logCycleCount{false};

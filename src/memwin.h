@@ -145,7 +145,7 @@ public slots:
 
 signals:
     void Closed(MemoryWindow *p_win);
-    void MemoryModified(const MemoryWindow *p_win, Word address,
+    void MemoryModified(const MemoryWindow *p_win, DWord address,
             const std::vector<Byte> &data) const;
 
 protected:

@@ -123,7 +123,7 @@ void flx::print_versions(std::ostream &os, const std::string &program_name)
 void flx::hex_dump(
         std::ostream &os,
         const Byte *data,
-        DWord size,
+        size_t size,
         DWord bytesPerLine,
         bool withAscii,
         bool isDisplayAddress,
@@ -336,7 +336,7 @@ flx::sHexDumpProperties flx::get_hex_dump_properties(
     const auto indent = isDisplayAddress ? 6U : 0U; // skip address columns
     const auto lastRow = (size + offset) / bytesPerLine;
     const auto firstRowBytes = bytesPerLine - offset;
-    const auto lastRowBytes = (size + offset) % bytesPerLine;
+    const auto lastRowBytes = static_cast<DWord>((size + offset) % bytesPerLine);
     const auto extraInOffset = isExtraSpc ? offset / extraSpace.value() : 0U;
     const auto extraInRow =
         isExtraSpc ? (bytesPerLine - 1U) / extraSpace.value() : 0U;

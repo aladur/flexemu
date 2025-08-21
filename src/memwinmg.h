@@ -75,7 +75,7 @@ public:
 
 protected slots:
     void OnMemoryWindowClosed(const MemoryWindow *memoryWindow);
-    void OnMemoryModified(const MemoryWindow *memoryWindow, Word address,
+    void OnMemoryModified(const MemoryWindow *memoryWindow, DWord address,
             const std::vector<Byte> &data);
 
 protected:

@@ -93,7 +93,7 @@ void MemorySettingsUi::SetData(const MemoryWindow::Config_t &config) const
     if (auto index = MemoryWindow::GetStyleValues().indexOf(config.style);
         index >= 0)
     {
-        cb_style->setCurrentIndex(index);
+        cb_style->setCurrentIndex(cast_from_qsizetype(index));
     }
 
     text = QString("%1").arg(config.addressRange.lower(), 4, 16, latin1Zero);

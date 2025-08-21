@@ -241,8 +241,8 @@ TEST_F(test_free, fct_hex_dump_1)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 71);
-    ASSERT_EQ(tokens.size(), 14);
+    ASSERT_EQ(linebuffer.size(), 71U);
+    ASSERT_EQ(tokens.size(), 14U);
     EXPECT_EQ(linebuffer[6], ' '); // first hex padding
     EXPECT_EQ(linebuffer[17], ' '); // last hex padding
     EXPECT_NE(linebuffer[18], ' '); // first hex digit
@@ -261,7 +261,7 @@ TEST_F(test_free, fct_hex_dump_1)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 71);
+    ASSERT_EQ(linebuffer.size(), 71U);
     ASSERT_EQ(tokens.size(), bpl + 2U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[52], ' '); // last hex digit
@@ -277,8 +277,8 @@ TEST_F(test_free, fct_hex_dump_1)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 59);
-    ASSERT_EQ(tokens.size(), 6);
+    ASSERT_EQ(linebuffer.size(), 59U);
+    ASSERT_EQ(tokens.size(), 6U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[16], ' '); // last hex digit
     EXPECT_EQ(linebuffer[18], ' '); // first hex padding
@@ -309,7 +309,7 @@ TEST_F(test_free, fct_hex_dump_2)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 71);
+    ASSERT_EQ(linebuffer.size(), 71U);
     ASSERT_EQ(tokens.size(), bpl + 2U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[52], ' '); // last hex digit
@@ -339,8 +339,8 @@ TEST_F(test_free, fct_hex_dump_3)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 37);
-    ASSERT_EQ(tokens.size(), 6);
+    ASSERT_EQ(linebuffer.size(), 37U);
+    ASSERT_EQ(tokens.size(), 6U);
     EXPECT_EQ(linebuffer[6], ' '); // first hex padding
     EXPECT_EQ(linebuffer[10], ' '); // last hex padding
     EXPECT_NE(linebuffer[12], ' '); // first hex digit
@@ -375,7 +375,7 @@ TEST_F(test_free, fct_hex_dump_4)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 29);
+    ASSERT_EQ(linebuffer.size(), 29U);
     ASSERT_EQ(tokens.size(), bpl + 1U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
@@ -402,7 +402,7 @@ TEST_F(test_free, fct_hex_dump_5)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 23);
+    ASSERT_EQ(linebuffer.size(), 23U);
     ASSERT_EQ(tokens.size(), bpl);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
@@ -428,8 +428,8 @@ TEST_F(test_free, fct_hex_dump_6)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 44);
-    ASSERT_EQ(tokens.size(), 5);
+    ASSERT_EQ(linebuffer.size(), 44U);
+    ASSERT_EQ(tokens.size(), 5U);
     EXPECT_EQ(linebuffer[6], ' '); // first hex padding
     EXPECT_EQ(linebuffer[31], ' '); // last hex padding
     EXPECT_NE(linebuffer[33], ' '); // first hex digit
@@ -443,7 +443,7 @@ TEST_F(test_free, fct_hex_dump_6)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 44);
+    ASSERT_EQ(linebuffer.size(), 44U);
     ASSERT_EQ(tokens.size(), bpl + 1);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
@@ -456,8 +456,8 @@ TEST_F(test_free, fct_hex_dump_6)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 14);
-    ASSERT_EQ(tokens.size(), 4);
+    ASSERT_EQ(linebuffer.size(), 14U);
+    ASSERT_EQ(tokens.size(), 4U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
     EXPECT_EQ(tokens[0], "0111"); // start addr
@@ -483,8 +483,8 @@ TEST_F(test_free, fct_hex_dump_7)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 59);
-    ASSERT_EQ(tokens.size(), 6);
+    ASSERT_EQ(linebuffer.size(), 59U);
+    ASSERT_EQ(tokens.size(), 6U);
     EXPECT_EQ(linebuffer[6], ' '); // first hex padding
     EXPECT_EQ(linebuffer[31], ' '); // last hex padding
     EXPECT_NE(linebuffer[33], ' '); // first hex digit
@@ -503,8 +503,8 @@ TEST_F(test_free, fct_hex_dump_7)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 59);
-    ASSERT_EQ(tokens.size(), bpl + 2);
+    ASSERT_EQ(linebuffer.size(), 59U);
+    ASSERT_EQ(tokens.size(), bpl + 2U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[43], ' '); // last hex digit
     EXPECT_NE(linebuffer[46], ' '); // first ascii
@@ -519,8 +519,8 @@ TEST_F(test_free, fct_hex_dump_7)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 49);
-    ASSERT_EQ(tokens.size(), 5);
+    ASSERT_EQ(linebuffer.size(), 49U);
+    ASSERT_EQ(tokens.size(), 5U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[13], ' '); // last hex digit
     EXPECT_EQ(linebuffer[15], ' '); // first hex padding
@@ -552,8 +552,8 @@ TEST_F(test_free, fct_hex_dump_8)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 63);
-    ASSERT_EQ(tokens.size(), 13);
+    ASSERT_EQ(linebuffer.size(), 63U);
+    ASSERT_EQ(tokens.size(), 13U);
     EXPECT_EQ(linebuffer[6], ' '); // first hex padding
     EXPECT_EQ(linebuffer[16], ' '); // last hex padding
     EXPECT_NE(linebuffer[18], ' '); // first hex digit
@@ -574,8 +574,8 @@ TEST_F(test_free, fct_hex_dump_8)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 63);
-    ASSERT_EQ(tokens.size(), 17);
+    ASSERT_EQ(linebuffer.size(), 63U);
+    ASSERT_EQ(tokens.size(), 17U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[45], ' '); // last hex digit
     EXPECT_NE(linebuffer[48], ' '); // first ascii
@@ -592,8 +592,8 @@ TEST_F(test_free, fct_hex_dump_8)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 53);
-    ASSERT_EQ(tokens.size(), 7);
+    ASSERT_EQ(linebuffer.size(), 53U);
+    ASSERT_EQ(tokens.size(), 7U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[19], ' '); // last hex digit
     EXPECT_EQ(linebuffer[23], ' '); // first hex padding
@@ -625,7 +625,7 @@ TEST_F(test_free, fct_hex_dump_9)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 40);
+    ASSERT_EQ(linebuffer.size(), 40U);
     ASSERT_EQ(tokens.size(), bpl);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
@@ -637,7 +637,7 @@ TEST_F(test_free, fct_hex_dump_9)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 40);
+    ASSERT_EQ(linebuffer.size(), 40U);
     ASSERT_EQ(tokens.size(), bpl);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
@@ -649,8 +649,8 @@ TEST_F(test_free, fct_hex_dump_9)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 18);
-    ASSERT_EQ(tokens.size(), 6);
+    ASSERT_EQ(linebuffer.size(), 18U);
+    ASSERT_EQ(tokens.size(), 6U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
     EXPECT_EQ(tokens[0], "1A"); // first byte
@@ -676,8 +676,8 @@ TEST_F(test_free, fct_hex_dump_10)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 65);
-    ASSERT_EQ(tokens.size(), 18);
+    ASSERT_EQ(linebuffer.size(), 65U);
+    ASSERT_EQ(tokens.size(), 18U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[45], ' '); // last hex digit
     EXPECT_NE(linebuffer[48], ' '); // first ascii
@@ -761,8 +761,8 @@ TEST_F(test_free, fct_hex_dump_14)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 57);
-    ASSERT_EQ(tokens.size(), 12);
+    ASSERT_EQ(linebuffer.size(), 57U);
+    ASSERT_EQ(tokens.size(), 12U);
     EXPECT_EQ(linebuffer[0], ' '); // first hex padding
     EXPECT_EQ(linebuffer[10], ' '); // last hex padding
     EXPECT_NE(linebuffer[12], ' '); // first hex digit
@@ -782,8 +782,8 @@ TEST_F(test_free, fct_hex_dump_14)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 57);
-    ASSERT_EQ(tokens.size(), 16);
+    ASSERT_EQ(linebuffer.size(), 57U);
+    ASSERT_EQ(tokens.size(), 16U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[39], ' '); // last hex digit
     EXPECT_NE(linebuffer[42], ' '); // first ascii
@@ -799,8 +799,8 @@ TEST_F(test_free, fct_hex_dump_14)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 47);
-    ASSERT_EQ(tokens.size(), 6);
+    ASSERT_EQ(linebuffer.size(), 47U);
+    ASSERT_EQ(tokens.size(), 6U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[13], ' '); // last hex digit
     EXPECT_EQ(linebuffer[17], ' '); // first hex padding
@@ -827,8 +827,8 @@ TEST_F(test_free, fct_hex_dump_scale_1)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 71);
-    ASSERT_EQ(tokens.size(), 2);
+    ASSERT_EQ(linebuffer.size(), 71U);
+    ASSERT_EQ(tokens.size(), 2U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[7], ' '); // last hex digit
     EXPECT_EQ(linebuffer[9], ' '); // first hex padding
@@ -842,7 +842,7 @@ TEST_F(test_free, fct_hex_dump_scale_1)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 71);
+    ASSERT_EQ(linebuffer.size(), 71U);
     ASSERT_EQ(tokens.size(), bpl + 1U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[52], ' '); // last hex digit
@@ -868,8 +868,8 @@ TEST_F(test_free, fct_hex_dump_scale_3)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 39);
-    ASSERT_EQ(tokens.size(), 2);
+    ASSERT_EQ(linebuffer.size(), 39U);
+    ASSERT_EQ(tokens.size(), 2U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[7], ' '); // last hex digit
     EXPECT_EQ(linebuffer[9], ' '); // first hex padding
@@ -883,7 +883,7 @@ TEST_F(test_free, fct_hex_dump_scale_3)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 39);
+    ASSERT_EQ(linebuffer.size(), 39U);
     ASSERT_EQ(tokens.size(), bpl + 1);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[28], ' '); // last hex digit
@@ -909,8 +909,8 @@ TEST_F(test_free, fct_hex_dump_scale_4)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 29);
-    ASSERT_EQ(tokens.size(), 1);
+    ASSERT_EQ(linebuffer.size(), 29U);
+    ASSERT_EQ(tokens.size(), 1U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[7], ' '); // last hex digit
     EXPECT_EQ(tokens[0], "00"); // first byte
@@ -920,7 +920,7 @@ TEST_F(test_free, fct_hex_dump_scale_4)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 29);
+    ASSERT_EQ(linebuffer.size(), 29U);
     ASSERT_EQ(tokens.size(), bpl);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
@@ -943,8 +943,8 @@ TEST_F(test_free, fct_hex_dump_scale_5)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 23);
-    ASSERT_EQ(tokens.size(), 1);
+    ASSERT_EQ(linebuffer.size(), 23U);
+    ASSERT_EQ(tokens.size(), 1U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[1], ' '); // last hex digit
     EXPECT_EQ(tokens[0], "00"); // first byte
@@ -954,7 +954,7 @@ TEST_F(test_free, fct_hex_dump_scale_5)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 23);
+    ASSERT_EQ(linebuffer.size(), 23U);
     ASSERT_EQ(tokens.size(), bpl);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
@@ -978,8 +978,8 @@ TEST_F(test_free, fct_hex_dump_scale_8)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 63);
-    ASSERT_EQ(tokens.size(), 2);
+    ASSERT_EQ(linebuffer.size(), 63U);
+    ASSERT_EQ(tokens.size(), 2U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[7], ' '); // last hex digit
     EXPECT_EQ(linebuffer[9], ' '); // first hex padding
@@ -992,8 +992,8 @@ TEST_F(test_free, fct_hex_dump_scale_8)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 63);
-    ASSERT_EQ(tokens.size(), bpl + 3);
+    ASSERT_EQ(linebuffer.size(), 63U);
+    ASSERT_EQ(tokens.size(), bpl + 3U);
     EXPECT_NE(linebuffer[6], ' '); // first hex digit
     EXPECT_NE(linebuffer[45], ' '); // last hex digit
     EXPECT_EQ(tokens[0], "00"); // first byte
@@ -1019,8 +1019,8 @@ TEST_F(test_free, fct_hex_dump_scale_9)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 40);
-    ASSERT_EQ(tokens.size(), 1);
+    ASSERT_EQ(linebuffer.size(), 40U);
+    ASSERT_EQ(tokens.size(), 1U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[1], ' '); // last hex digit
     EXPECT_EQ(tokens[0], "00"); // first byte
@@ -1030,7 +1030,7 @@ TEST_F(test_free, fct_hex_dump_scale_9)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 40);
+    ASSERT_EQ(linebuffer.size(), 40U);
     ASSERT_EQ(tokens.size(), bpl);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[linebuffer.size() - 1], ' '); // last hex digit
@@ -1054,8 +1054,8 @@ TEST_F(test_free, fct_hex_dump_scale_10)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 65);
-    ASSERT_EQ(tokens.size(), 2);
+    ASSERT_EQ(linebuffer.size(), 65U);
+    ASSERT_EQ(tokens.size(), 2U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[1], ' '); // last hex digit
     EXPECT_EQ(tokens[0], "00"); // first byte
@@ -1065,8 +1065,8 @@ TEST_F(test_free, fct_hex_dump_scale_10)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 65);
-    ASSERT_EQ(tokens.size(), 18);
+    ASSERT_EQ(linebuffer.size(), 65U);
+    ASSERT_EQ(tokens.size(), 18U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[45], ' '); // last hex digit
     EXPECT_NE(linebuffer[48], ' '); // first ascii
@@ -1094,8 +1094,8 @@ TEST_F(test_free, fct_hex_dump_scale_14)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     auto tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 57);
-    ASSERT_EQ(tokens.size(), 2);
+    ASSERT_EQ(linebuffer.size(), 57U);
+    ASSERT_EQ(tokens.size(), 2U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[1], ' '); // last hex digit
     EXPECT_EQ(linebuffer[3], ' '); // first hex padding
@@ -1108,8 +1108,8 @@ TEST_F(test_free, fct_hex_dump_scale_14)
     std::getline(stream, linebuffer);
     DebugOutput(1, linebuffer);
     tokens = split(linebuffer, ' ');
-    ASSERT_EQ(linebuffer.size(), 57);
-    ASSERT_EQ(tokens.size(), bpl + 3);
+    ASSERT_EQ(linebuffer.size(), 57U);
+    ASSERT_EQ(tokens.size(), bpl + 3U);
     EXPECT_NE(linebuffer[0], ' '); // first hex digit
     EXPECT_NE(linebuffer[39], ' '); // last hex digit
     EXPECT_EQ(tokens[0], "00"); // first byte
@@ -2461,9 +2461,9 @@ TEST_F(test_free, fct_convert_to_int)
     EXPECT_TRUE(flx::convert("-12345", int_val));
     EXPECT_EQ(int_val, -12345);
     EXPECT_TRUE(flx::convert("0", uint_val));
-    EXPECT_EQ(uint_val, 0);
+    EXPECT_EQ(uint_val, 0U);
     EXPECT_TRUE(flx::convert("12345", uint_val));
-    EXPECT_EQ(uint_val, 12345);
+    EXPECT_EQ(uint_val, 12345U);
     EXPECT_TRUE(flx::convert("4294967295", uint_val));
     const auto uint_expected = std::numeric_limits<decltype(uint_val)>::max();
     EXPECT_EQ(uint_val, uint_expected);
@@ -2549,74 +2549,74 @@ TEST_F(test_free, fct_countSetBits)
     unsigned short ushort_val;
     unsigned char uch_val;
 
-    EXPECT_EQ(flx::countSetBits(0U), 0);
-    EXPECT_EQ(flx::countSetBits(1U), 1);
-    EXPECT_EQ(flx::countSetBits(2U), 1);
-    EXPECT_EQ(flx::countSetBits(3U), 2);
-    EXPECT_EQ(flx::countSetBits(0xFFFFU), 16);
-    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFU), 32);
-    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFFULL), 64);
-    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFEULL), 63);
-    EXPECT_EQ(flx::countSetBits(0x7FFFFFFFFFFFFFFFULL), 63);
-    EXPECT_EQ(flx::countSetBits(0xF0F0F0F0F0F0F0F0ULL), 32);
-    EXPECT_EQ(flx::countSetBits(0x0F0F0F0F0F0F0F0FULL), 32);
-    EXPECT_EQ(flx::countSetBits(0xAAAAAAAAAAAAAAAAULL), 32);
-    EXPECT_EQ(flx::countSetBits(0x1111111111111111ULL), 16);
-    EXPECT_EQ(flx::countSetBits(0x8000000000000000ULL), 1);
-    EXPECT_EQ(flx::countSetBits(0), 0);
-    EXPECT_EQ(flx::countSetBits(1), 1);
-    EXPECT_EQ(flx::countSetBits(2), 1);
-    EXPECT_EQ(flx::countSetBits(3), 2);
-    EXPECT_EQ(flx::countSetBits(0xFFFF), 16);
-    EXPECT_EQ(flx::countSetBits(0xFFFFFFFF), 32);
-    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFFLL), 64);
-    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFELL), 63);
-    EXPECT_EQ(flx::countSetBits(0x7FFFFFFFFFFFFFFFLL), 63);
-    EXPECT_EQ(flx::countSetBits(0xF0F0F0F0F0F0F0F0LL), 32);
-    EXPECT_EQ(flx::countSetBits(0x0F0F0F0F0F0F0F0FLL), 32);
-    EXPECT_EQ(flx::countSetBits(0xAAAAAAAAAAAAAAAALL), 32);
-    EXPECT_EQ(flx::countSetBits(0x1111111111111111LL), 16);
-    EXPECT_EQ(flx::countSetBits(0x8000000000000000LL), 1);
+    EXPECT_EQ(flx::countSetBits(0U), 0U);
+    EXPECT_EQ(flx::countSetBits(1U), 1U);
+    EXPECT_EQ(flx::countSetBits(2U), 1U);
+    EXPECT_EQ(flx::countSetBits(3U), 2U);
+    EXPECT_EQ(flx::countSetBits(0xFFFFU), 16U);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFU), 32U);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFFULL), 64U);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFEULL), 63U);
+    EXPECT_EQ(flx::countSetBits(0x7FFFFFFFFFFFFFFFULL), 63U);
+    EXPECT_EQ(flx::countSetBits(0xF0F0F0F0F0F0F0F0ULL), 32U);
+    EXPECT_EQ(flx::countSetBits(0x0F0F0F0F0F0F0F0FULL), 32U);
+    EXPECT_EQ(flx::countSetBits(0xAAAAAAAAAAAAAAAAULL), 32U);
+    EXPECT_EQ(flx::countSetBits(0x1111111111111111ULL), 16U);
+    EXPECT_EQ(flx::countSetBits(0x8000000000000000ULL), 1U);
+    EXPECT_EQ(flx::countSetBits(0), 0U);
+    EXPECT_EQ(flx::countSetBits(1), 1U);
+    EXPECT_EQ(flx::countSetBits(2), 1U);
+    EXPECT_EQ(flx::countSetBits(3), 2U);
+    EXPECT_EQ(flx::countSetBits(0xFFFF), 16U);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFF), 32U);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFFLL), 64U);
+    EXPECT_EQ(flx::countSetBits(0xFFFFFFFFFFFFFFFELL), 63U);
+    EXPECT_EQ(flx::countSetBits(0x7FFFFFFFFFFFFFFFLL), 63U);
+    EXPECT_EQ(flx::countSetBits(0xF0F0F0F0F0F0F0F0LL), 32U);
+    EXPECT_EQ(flx::countSetBits(0x0F0F0F0F0F0F0F0FLL), 32U);
+    EXPECT_EQ(flx::countSetBits(0xAAAAAAAAAAAAAAAALL), 32U);
+    EXPECT_EQ(flx::countSetBits(0x1111111111111111LL), 16U);
+    EXPECT_EQ(flx::countSetBits(0x8000000000000000LL), 1U);
     ushort_val = 0U;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 0);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 0U);
     ushort_val = 1U;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 1);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 1U);
     ushort_val = 0x8000U;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 1);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 1U);
     ushort_val = 0xFFFFU;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 16);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 16U);
     ushort_val = 0xFFFEU;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 15);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 15U);
     ushort_val = 0x7FFFU;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 15);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 15U);
     ushort_val = 0xAAAAU;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 8);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 8U);
     ushort_val = 0xF0F0U;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 8);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 8U);
     ushort_val = 0x0F0FU;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 8);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 8U);
     ushort_val = 0x1111U;
-    EXPECT_EQ(flx::countSetBits(ushort_val), 4);
+    EXPECT_EQ(flx::countSetBits(ushort_val), 4U);
     uch_val = 0U;
-    EXPECT_EQ(flx::countSetBits(uch_val), 0);
+    EXPECT_EQ(flx::countSetBits(uch_val), 0U);
     uch_val = 1U;
-    EXPECT_EQ(flx::countSetBits(uch_val), 1);
+    EXPECT_EQ(flx::countSetBits(uch_val), 1U);
     uch_val = 0x80U;
-    EXPECT_EQ(flx::countSetBits(uch_val), 1);
+    EXPECT_EQ(flx::countSetBits(uch_val), 1U);
     uch_val = 0xFFU;
-    EXPECT_EQ(flx::countSetBits(uch_val), 8);
+    EXPECT_EQ(flx::countSetBits(uch_val), 8U);
     uch_val = 0xFEU;
-    EXPECT_EQ(flx::countSetBits(uch_val), 7);
+    EXPECT_EQ(flx::countSetBits(uch_val), 7U);
     uch_val = 0x7FU;
-    EXPECT_EQ(flx::countSetBits(uch_val), 7);
+    EXPECT_EQ(flx::countSetBits(uch_val), 7U);
     uch_val = 0xAAU;
-    EXPECT_EQ(flx::countSetBits(uch_val), 4);
+    EXPECT_EQ(flx::countSetBits(uch_val), 4U);
     uch_val = 0xF0U;
-    EXPECT_EQ(flx::countSetBits(uch_val), 4);
+    EXPECT_EQ(flx::countSetBits(uch_val), 4U);
     uch_val = 0x0FU;
-    EXPECT_EQ(flx::countSetBits(uch_val), 4);
+    EXPECT_EQ(flx::countSetBits(uch_val), 4U);
     uch_val = 0x11U;
-    EXPECT_EQ(flx::countSetBits(uch_val), 2);
+    EXPECT_EQ(flx::countSetBits(uch_val), 2U);
     // There is an issue with g++ 11.3.0, g++ 12.2.0: endless loop.
     // compiler option: -O2, with -O0 or -O1 it works.
     // Issue fixed on x86-64 with g++ >= 13.1
@@ -2625,11 +2625,12 @@ TEST_F(test_free, fct_countSetBits)
     // clang++ 14.0.6, clang++ 16.0.6, clang++ 19.1.4, clang++ 21.0.0
     //EXPECT_EQ(flx::countSetBits(static_cast<int>(0xFFFFFFFFFLL)), 32);
     std::cout << "mark5.1\n"; std::cout.flush();
-    EXPECT_EQ(flx::countSetBits(static_cast<short>(0xFFFFF)), 16);
-    EXPECT_EQ(flx::countSetBits(static_cast<char>(0xFFF)), 8);
-    EXPECT_EQ(flx::countSetBits(static_cast<unsigned int>(0xFFFFFFFFFULL)), 32);
-    EXPECT_EQ(flx::countSetBits(static_cast<unsigned short>(0xFFFFFU)), 16);
-    EXPECT_EQ(flx::countSetBits(static_cast<unsigned char>(0xFFFU)), 8);
+    EXPECT_EQ(flx::countSetBits(static_cast<short>(0xFFFFF)), 16U);
+    EXPECT_EQ(flx::countSetBits(static_cast<char>(0xFFF)), 8U);
+    EXPECT_EQ(flx::countSetBits(static_cast<unsigned int>(0xFFFFFFFFFULL)),
+        32U);
+    EXPECT_EQ(flx::countSetBits(static_cast<unsigned short>(0xFFFFFU)), 16U);
+    EXPECT_EQ(flx::countSetBits(static_cast<unsigned char>(0xFFFU)), 8U);
     std::cout.flush();
 }
 

@@ -101,7 +101,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4275;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\fmt\include;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;$(QTDIR)\$(Platform)\include\QtPrintSupport;$(QTDIR)\$(Platform)\include\QtConcurrent;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -128,7 +128,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4275;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\fmt\include;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;$(QTDIR)\$(Platform)\include\QtPrintSupport;$(QTDIR)\$(Platform)\include\QtConcurrent;</AdditionalIncludeDirectories>
@@ -157,7 +157,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4275;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\fmt\include;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;$(QTDIR)\$(Platform)\include\QtPrintSupport;$(QTDIR)\$(Platform)\include\QtConcurrent;</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -188,7 +188,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4275;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\fmt\include;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;$(QTDIR)\$(Platform)\include\QtPrintSupport;$(QTDIR)\$(Platform)\include\QtConcurrent;</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>

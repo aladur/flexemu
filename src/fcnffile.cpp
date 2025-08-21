@@ -150,7 +150,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
     return deviceMappings;
 }
 
-std::optional<int> FlexemuConfigFile::GetSerparAddress(
+std::optional<Word> FlexemuConfigFile::GetSerparAddress(
         const fs::path &monitorFilePath)
     const
 {
@@ -195,7 +195,7 @@ std::optional<int> FlexemuConfigFile::GetSerparAddress(
                                         iniFile.GetPath());
                 }
 
-                return {address};
+                return {static_cast<Word>(address)};
             }
 
             auto lineNumber = iniFile.GetLineNumber(section, iter.first);

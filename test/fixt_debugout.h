@@ -38,7 +38,8 @@ protected:
         if (auto size = GetEnvironmentVariableA(key, nullptr, 0U); size > 0U)
         {
             value.resize(size + 1U);
-            if (GetEnvironmentVariableA(key, value.data(), value.size()))
+            const auto value_size = static_cast<DWord>(value.size());
+            if (GetEnvironmentVariableA(key, value.data(), value_size))
             {
                 value.resize(size);
                 return true;

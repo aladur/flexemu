@@ -52,7 +52,7 @@ namespace flx
     extern void hex_dump(
             std::ostream &os,
             const Byte *data,
-            DWord size,
+            size_t size,
             DWord bytesPerLine,
             bool withAscii,
             bool isDisplayAddress,
@@ -130,7 +130,7 @@ namespace flx
         bool result = (res.ec == std::errc() && *res.ptr == '\0');
         if (result)
         {
-            const auto digits = res.ptr - buf.data();
+            const auto digits = static_cast<int>(res.ptr - buf.data());
             if (isUppercase)
             {
                 // MSVC does not allow auto *iter

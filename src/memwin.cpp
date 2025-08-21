@@ -582,7 +582,7 @@ void MemoryWindow::InitializeStyleWidget()
     if (auto index = GetStyleValues().indexOf(config.style); index >= 0)
     {
         styleComboBox->setCurrentText(GetStyleStrings()[index]);
-        UpdateStyleCheck(index);
+        UpdateStyleCheck(cast_from_qsizetype(index));
     }
 }
 
@@ -1423,7 +1423,8 @@ void MemoryWindow::ReplaceHexOrAsciiText(const QString &text) const
         auto savePosition = cursor.position();
         cursor.beginEditBlock();
         cursor.setPosition(position);
-        cursor.setPosition(position + text.size(), QTextCursor::KeepAnchor);
+        const auto size = cast_from_qsizetype(text.size());
+        cursor.setPosition(position + size, QTextCursor::KeepAnchor);
         cursor.insertText(text);
         cursor.endEditBlock();
         e_hexDump->setTextCursor(cursor);

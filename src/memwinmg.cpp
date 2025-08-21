@@ -70,17 +70,18 @@ void MemoryWindowManager::OnMemoryWindowClosed(
 }
 
 void MemoryWindowManager::OnMemoryModified(const MemoryWindow *memoryWindow,
-        Word address, const std::vector<Byte> &data)
+        DWord address, const std::vector<Byte> &data)
 {
     if (!data.empty())
     {
         const auto writeMemoryCommand =
-            std::make_shared<CWriteMemory>(memory, address, data);
+            std::make_shared<CWriteMemory>(memory, static_cast<Word>(address),
+                    data);
         scheduler.sync_exec(
             std::dynamic_pointer_cast<BCommand>(writeMemoryCommand));
 
         const BInterval<DWord> addressRange(address,
-            address + data.size() - 1U);
+            static_cast<DWord>(address + data.size() - 1U));
         RequestMemoryUpdate(addressRange, memoryWindow);
     }
 }
