@@ -114,7 +114,6 @@ public:
     static const QStringList &GetStyleShortStrings();
     static const QStringList &GetStyleStatusTips();
     static const QStringList &GetStyleHotKeys();
-    static DWord GetBytesPerLine(MemoryWindow::Style style);
     static QString GetDefaultWindowTitle();
     static QString CreateWindowTitle(
             const std::string &title,
