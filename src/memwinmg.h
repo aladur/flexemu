@@ -70,6 +70,7 @@ public:
     void SetIconSize(const QSize &iconSize) const;
     void CloseAllWindows(sOptions &options);
     void OpenAllWindows(bool isReadOnly, const sOptions &options);
+    void MoveAllWindows(const QPoint &diffPos);
     MemoryWindowSPtrs GetAllWindows() const;
     void SetReadOnly(bool isReadOnly) const;
 

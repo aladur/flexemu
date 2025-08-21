@@ -237,6 +237,14 @@ void MemoryWindowManager::OpenAllWindows(bool isReadOnly,
     }
 }
 
+void MemoryWindowManager::MoveAllWindows(const QPoint &diffPos)
+{
+    for (const auto &item : items)
+    {
+        item.window->move(item.window->pos() + diffPos);
+    }
+}
+
 MemoryWindowSPtrs MemoryWindowManager::GetAllWindows() const
 {
     MemoryWindowSPtrs result;

@@ -69,6 +69,7 @@ constexpr const char * const FLEXVERSION = "Version";
 constexpr const char * const FLEXSCREENFACTOR = "ScreenFactor";
 constexpr const char * const FLEXICONSIZE = "IconSize";
 constexpr const char * const FLEXISSTATUSBARVISIBLE = "IsStatusBarVisible";
+constexpr const char * const FLEXISMAGNETICMAINWINDOW = "IsMagneticMainWindow";
 constexpr const char * const FLEXFREQUENCY = "Frequency";
 constexpr const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
 constexpr const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
@@ -178,6 +179,7 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.directoryDiskSectors = 36;
     options.isDirectoryDiskActive = true;
     options.isStatusBarVisible = true;
+    options.isMagneticMainWindow = false;
 }
 
 void FlexemuOptions::GetCommandlineOptions(
@@ -650,6 +652,11 @@ void FlexemuOptions::WriteOptionsToRegistry(
                 options.isStatusBarVisible ? 1 : 0);
                 break;
 
+        case FlexemuOptionId::IsMagneticMainWindow:
+            reg.SetValue(FLEXISMAGNETICMAINWINDOW,
+                options.isMagneticMainWindow ? 1 : 0);
+                break;
+
         case FlexemuOptionId::IsDirectoryDiskActive:
             reg.SetValue(FLEXISDIRECTORYDISKACTIVE,
                 options.isDirectoryDiskActive ? 1 : 0);
@@ -895,6 +902,11 @@ void FlexemuOptions::WriteOptionsToFile(
                 previousOptions.isStatusBarVisible;
             break;
 
+        case FlexemuOptionId::IsMagneticMainWindow:
+            optionsToWrite.isMagneticMainWindow =
+                previousOptions.isMagneticMainWindow;
+            break;
+
         case FlexemuOptionId::MemoryWindowConfigs:
             optionsToWrite.memoryWindowConfigs =
                 previousOptions.memoryWindowConfigs;
@@ -958,6 +970,8 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isDirectoryDiskActive ? 1 : 0);
     rcFile.SetValue(FLEXISSTATUSBARVISIBLE,
             optionsToWrite.isStatusBarVisible ? 1 : 0);
+    rcFile.SetValue(FLEXISMAGNETICMAINWINDOW,
+            optionsToWrite.isMagneticMainWindow ? 1 : 0);
     rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont);
     rcFile.SetValue(FLEXPRINTPAGEBREAKDETECTED,
             optionsToWrite.isPrintPageBreakDetected ? 1 : 0);
@@ -1150,6 +1164,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!reg.GetValue(FLEXISSTATUSBARVISIBLE, int_result))
     {
         options.isStatusBarVisible = (int_result != 0);
+    }
+
+    if (!reg.GetValue(FLEXISMAGNETICMAINWINDOW, int_result))
+    {
+        options.isMagneticMainWindow = (int_result != 0);
     }
 
     reg.GetValue(FLEXPRINTFONT, options.printFont);
@@ -1350,6 +1369,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!rcFile.GetValue(FLEXISSTATUSBARVISIBLE, int_result))
     {
         options.isStatusBarVisible = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXISMAGNETICMAINWINDOW, int_result))
+    {
+        options.isMagneticMainWindow = (int_result != 0);
     }
 
     rcFile.GetValue(FLEXPRINTFONT, options.printFont);

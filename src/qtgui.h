@@ -80,6 +80,7 @@ class QKeyEvent;
 class QShowEvent;
 class QResizeEvent;
 class QCloseEvent;
+class QMoveEvent;
 class QLayout;
 class QVBoxLayout;
 class QHBoxLayout;
@@ -145,6 +146,7 @@ private slots:
     void OnFullScreen();
     void OnRepaintScreen();
     void OnStatusBar();
+    void OnMagneticMainWindow();
     void OnSmoothDisplay();
     void OnOpenMemoryWindow();
     void OnCpuRun();
@@ -202,6 +204,7 @@ private:
     void ToggleCpuUndocumented();
     void ToggleFullScreenMode();
     void ToggleStatusBarVisibility();
+    void ToggleMagneticMainWindow();
     void ToggleCpuRunStop();
     void SetStatusBarVisibility(bool isVisible);
     void SetFullScreenMode(bool isFullScreen);
@@ -209,6 +212,8 @@ private:
     void UpdateFullScreenCheck() const;
     void UpdateSmoothDisplayCheck() const;
     void UpdateStatusBarCheck() const;
+    void UpdateMagneticMainWindowCheck() const;
+    void UpdateMagneticMainWindow() const;
     void UpdateCpuFrequencyCheck() const;
     void UpdateCpuRunStopCheck() const;
     void UpdateCpuUndocumentedCheck() const;
@@ -249,6 +254,7 @@ private:
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
+    void moveEvent(QMoveEvent *event) override;
 
     std::vector<QIcon> icons;
     QTimer timer;
@@ -277,6 +283,7 @@ private:
     QAction *memoryWindowAction{};
     QAction *smoothAction{};
     QAction *statusBarAction{};
+    QAction *magneticMainWindowAction{};
     QAction *cpuRunAction{};
     QAction *cpuStopAction{};
     QAction *cpuResetAction{};

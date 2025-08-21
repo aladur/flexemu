@@ -499,6 +499,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::PrintConfigs:
             case FlexemuOptionId::IconSize:
             case FlexemuOptionId::IsStatusBarVisible:
+            case FlexemuOptionId::IsMagneticMainWindow:
             case FlexemuOptionId::IsConfirmExit:
             case FlexemuOptionId::MemoryWindowConfigs:
                 break;
@@ -603,6 +604,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::PrintConfigs:
                 case FlexemuOptionId::IconSize:
                 case FlexemuOptionId::IsStatusBarVisible:
+                case FlexemuOptionId::IsMagneticMainWindow:
                 case FlexemuOptionId::MemoryWindowConfigs:
                     break;
             }

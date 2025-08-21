@@ -182,6 +182,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::IsStatusBarVisible);
     }
 
+    if (opt1.isMagneticMainWindow != opt2.isMagneticMainWindow)
+    {
+        notEquals.push_back(FlexemuOptionId::IsMagneticMainWindow);
+    }
+
     if (opt1.isDirectoryDiskActive != opt2.isDirectoryDiskActive)
     {
         notEquals.push_back(FlexemuOptionId::IsDirectoryDiskActive);

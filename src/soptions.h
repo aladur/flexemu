@@ -80,6 +80,7 @@ enum class FlexemuOptionId : uint8_t
     DirectoryDiskTrkSec,
     IsDirectoryDiskActive,
     IsStatusBarVisible,
+    IsMagneticMainWindow,
     TerminalType,
     IsConfirmExit,
     MemoryWindowConfigs,
@@ -145,6 +146,8 @@ struct sOptions
     int directoryDiskSectors{}; // Default number of sectors for a directory disk
     bool isDirectoryDiskActive{}; // true if directory disk is active.
     bool isStatusBarVisible{}; // true if status bar is visible.
+    bool isMagneticMainWindow{}; // true if main window moves together with all
+                                 // open windows.
     fs::path cpuLogPath; // Path used for CPU instruction logging
 
     FlexemuOptionIds_t readOnlyOptionIds;// List of option ids which are

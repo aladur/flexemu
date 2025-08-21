@@ -93,6 +93,7 @@
 #include <QKeyEvent>
 #include <QResizeEvent>
 #include <QCloseEvent>
+#include <QMoveEvent>
 #include <QThread>
 #include <QTimer>
 #include <QHash>
@@ -221,6 +222,7 @@ QtGui::QtGui(
         SetStatusBarVisibility(false);
     }
     UpdateStatusBarCheck();
+    UpdateMagneticMainWindowCheck();
 
     ::UpdateWindowGeometry(*this, options.mainWindowGeometry, true);
 
@@ -423,6 +425,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::IconSize:
                 case FlexemuOptionId::TerminalType:
                 case FlexemuOptionId::IsStatusBarVisible:
+                case FlexemuOptionId::IsMagneticMainWindow:
                 case FlexemuOptionId::IsConfirmExit:
                 case FlexemuOptionId::MemoryWindowConfigs:
                     break;
@@ -461,6 +464,11 @@ void QtGui::OnFullScreen()
 void QtGui::OnStatusBar()
 {
     ToggleStatusBarVisibility();
+}
+
+void QtGui::OnMagneticMainWindow()
+{
+    ToggleMagneticMainWindow();
 }
 
 void QtGui::OnSmoothDisplay()
@@ -1080,6 +1088,13 @@ void QtGui::CreateViewActions(QToolBar &p_toolBar)
     connect(statusBarAction, &QAction::triggered, this, &QtGui::OnStatusBar);
     statusBarAction->setCheckable(true);
     statusBarAction->setStatusTip(tr("Show or hide Status Bar"));
+
+    magneticMainWindowAction = viewMenu->addAction(tr("&Magnetic Main Window"));
+    connect(magneticMainWindowAction, &QAction::triggered, this,
+            &QtGui::OnMagneticMainWindow);
+    magneticMainWindowAction->setCheckable(true);
+    magneticMainWindowAction->setStatusTip(
+            tr("Moving Main Window moves all open Windows"));
     viewMenu->addSeparator();
 
     auto *iconSizeMenu = viewMenu->addMenu(tr("&Icon Size"));
@@ -1641,6 +1656,14 @@ void QtGui::ToggleStatusBarVisibility()
     QTimer::singleShot(0, this, &QtGui::OnResize);
 }
 
+void QtGui::ToggleMagneticMainWindow()
+{
+    options.isMagneticMainWindow = !options.isMagneticMainWindow;
+    oldOptions.isMagneticMainWindow = options.isMagneticMainWindow;
+    UpdateMagneticMainWindowCheck();
+    WriteOneOption(options, FlexemuOptionId::IsMagneticMainWindow);
+}
+
 void QtGui::SetStatusBarVisibility(bool isVisible)
 {
     for (int index = 0; index < statusBarLayout->count(); ++index)
@@ -1693,6 +1716,11 @@ void QtGui::UpdateFullScreenCheck() const
 void QtGui::UpdateStatusBarCheck() const
 {
     statusBarAction->setChecked(statusBar->isVisible());
+}
+
+void QtGui::UpdateMagneticMainWindowCheck() const
+{
+    magneticMainWindowAction->setChecked(options.isMagneticMainWindow);
 }
 
 void QtGui::SetIconSize(const QSize &iconSize)
@@ -2283,6 +2311,24 @@ void QtGui::closeEvent(QCloseEvent *event)
     else
     {
         event->ignore();
+    }
+}
+
+void QtGui::moveEvent(QMoveEvent *event)
+{
+    if (options.isMagneticMainWindow)
+    {
+        const auto diffPos = event->pos() - event->oldPos();
+
+        memoryWindowMgr.MoveAllWindows(diffPos);
+        if (cpuDialog->isVisible())
+        {
+            cpuDialog->move(cpuDialog->pos() + diffPos);
+        }
+        if (printOutputWindow != nullptr && printOutputWindow->isVisible())
+        {
+            printOutputWindow->move(printOutputWindow->pos() + diffPos);
+        }
     }
 }
 
