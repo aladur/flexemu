@@ -485,15 +485,7 @@ template<size_t N> std::string getstr(const char (&array)[N])
     return result;
 }
 
-// Source: https://stackoverflow.com/questions/56788745/how-to-convert-stdfilesystemfile-time-type-to-a-string-using-gcc-9/58237530#58237530
-template <typename TP>
-std::time_t to_time_t(TP tp)
-{
-    using namespace std::chrono;
-    auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now()
-              + system_clock::now());
-    return system_clock::to_time_t(sctp);
-}
+std::time_t to_time_t(fs::file_time_type file_time);
 }
 #endif /* ifdef __cplusplus */
 #endif

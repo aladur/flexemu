@@ -806,3 +806,14 @@ std::string flx::updateFilename(std::string path,
     return path;
 }
 
+// Convert file time to time_t.
+std::time_t flx::to_time_t(fs::file_time_type file_time)
+{
+    using namespace std::chrono;
+
+    const auto duration =
+        file_time - fs::file_time_type::clock::now() + system_clock::now();
+    const auto sys_time = time_point_cast<system_clock::duration>(duration);
+
+    return system_clock::to_time_t(sys_time);
+}
