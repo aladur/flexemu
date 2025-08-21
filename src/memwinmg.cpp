@@ -93,7 +93,7 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
 {
      MemoryWindow::Config_t config{"", { 0xC100U, 0xC6FFU },
         MemoryWindow::Style::Bytes16, true, true, false, true};
-     auto *dialog = new QDialog;
+     auto *dialog = new QDialog(parent);
      MemorySettingsUi ui;
 
      if (items.size() >= sOptions::maxMemoryWindows)

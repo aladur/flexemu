@@ -118,7 +118,7 @@ FLEXplorer::~FLEXplorer()
 
 void FLEXplorer::OnNewFlexDisk()
 {
-    QDialog dialog;
+    QDialog dialog(this);
     FlexplorerNewUi ui;
     ui.setupUi(dialog);
     ui.SetDefaultPath(QString::fromStdString(options.openDiskPath.u8string()));
@@ -496,7 +496,7 @@ void FLEXplorer::OnAttributesSelected()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
-        QDialog dialog;
+        QDialog dialog(this);
         FileAttributesUi ui;
         ui.setupUi(dialog);
         auto supportedAttributes = child.GetSupportedAttributes();
@@ -526,7 +526,7 @@ void FLEXplorer::OnAttributesSelected()
 
 void FLEXplorer::OnOptions()
 {
-    QDialog dialog;
+    QDialog dialog(this);
     FlexplorerOptionsUi ui;
     ui.setupUi(dialog);
     ui.TransferDataToDialog(options);
@@ -567,7 +567,7 @@ void FLEXplorer::OnInfo()
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void FLEXplorer::OnAbout()
 {
-    QDialog dialog;
+    QDialog dialog(this);
     Ui_AboutDialog ui{};
 
     ui.setupUi(&dialog);

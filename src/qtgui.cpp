@@ -309,7 +309,7 @@ QIcon QtGui::GetPreferencesIcon(bool p_isRestartNeeded)
 
 void QtGui::OnPreferences()
 {
-    QDialog dialog;
+    QDialog dialog(this);
     FlexemuOptionsUi ui;
 
     if (!isRestartNeeded)
@@ -566,7 +566,7 @@ void QtGui::ConnectCpuUiSignalsWithSlots()
 void QtGui::OnCpuBreakpoints()
 {
     BPArray breakpoints = { cpu.get_bp(0), cpu.get_bp(1) };
-    auto *dialog = new QDialog;
+    auto *dialog = new QDialog(this);
     BreakpointSettingsUi ui;
 
     ui.setupUi(*dialog);
@@ -596,7 +596,7 @@ void QtGui::OnCpuBreakpoints()
 
 void QtGui::OnCpuLogging()
 {
-    auto *dialog = new QDialog;
+    auto *dialog = new QDialog(this);
     Mc6809LoggerConfigUi ui;
     ui.setupUi(*dialog);
     ui.SetData(cpuLoggerConfig);
@@ -632,7 +632,7 @@ void QtGui::OnIntroduction() const
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void QtGui::OnAbout()
 {
-    QDialog dialog;
+    QDialog dialog(this);
     Ui_AboutDialog ui{};
 
     ui.setupUi(&dialog);
