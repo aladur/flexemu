@@ -148,19 +148,19 @@ TEST(test_misc1, fct_hexstr_byte)
     result = flx::hexstr(static_cast<Byte>(0x01));
     EXPECT_EQ(result, "01");
     result = flx::hexstr(static_cast<Byte>(0xFF));
-    EXPECT_EQ(result, "ff");
+    EXPECT_EQ(result, "FF");
 }
 
 TEST(test_misc1, fct_hexstr_word)
 {
     auto result = flx::hexstr(static_cast<Word>(0x55AA));
-    EXPECT_EQ(result, "55aa");
+    EXPECT_EQ(result, "55AA");
     result = flx::hexstr(static_cast<Word>(0x0000));
     EXPECT_EQ(result, "0000");
     result = flx::hexstr(static_cast<Word>(0x0001));
     EXPECT_EQ(result, "0001");
     result = flx::hexstr(static_cast<Word>(0xFFFF));
-    EXPECT_EQ(result, "ffff");
+    EXPECT_EQ(result, "FFFF");
 }
 
 TEST(test_misc1, fct_ascchr)

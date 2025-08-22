@@ -157,7 +157,7 @@ std::string flx::binstr(Byte x)
 
 inline char flx::hex_digit(Byte x)
 {
-    constexpr const char *digits = "0123456789abcdef";
+    constexpr const char *digits = "0123456789ABCDEF";
 
     return digits[x & 0x0FU];
 }
