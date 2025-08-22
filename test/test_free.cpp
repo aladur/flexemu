@@ -2624,14 +2624,12 @@ TEST_F(test_free, fct_countSetBits)
     // Not reproducible on:
     // clang++ 14.0.6, clang++ 16.0.6, clang++ 19.1.4, clang++ 21.0.0
     //EXPECT_EQ(flx::countSetBits(static_cast<int>(0xFFFFFFFFFLL)), 32);
-    std::cout << "mark5.1\n"; std::cout.flush();
     EXPECT_EQ(flx::countSetBits(static_cast<short>(0xFFFFF)), 16U);
     EXPECT_EQ(flx::countSetBits(static_cast<char>(0xFFF)), 8U);
     EXPECT_EQ(flx::countSetBits(static_cast<unsigned int>(0xFFFFFFFFFULL)),
         32U);
     EXPECT_EQ(flx::countSetBits(static_cast<unsigned short>(0xFFFFFU)), 16U);
     EXPECT_EQ(flx::countSetBits(static_cast<unsigned char>(0xFFFU)), 8U);
-    std::cout.flush();
 }
 
 TEST_F(test_free, fct_convert_to_char)
