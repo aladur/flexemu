@@ -117,17 +117,20 @@ MemoryWindow::MemoryWindow(
     title = tr("Memory") + " - " + title;
     setWindowTitle(title);
 
-    mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
+    mainLayout->setObjectName("mainLayout");
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     setLayout(mainLayout);
 
+    menuBar->setObjectName("menuBar");
     mainLayout->addWidget(menuBar);
-    toolBarLayout->setObjectName(QString::fromUtf8("toolBarLayout"));
+
+    toolBarLayout->setObjectName("toolBarLayout");
     toolBarLayout->setContentsMargins(4, 2, 4, 2);
     toolBarLayout->setSpacing(2);
     mainLayout->addLayout(toolBarLayout);
 
+    e_hexDumpScale->setObjectName("e_hexDumpScale");
     e_hexDumpScale->setFocusPolicy(Qt::NoFocus);
     e_hexDumpScale->setLineWrapMode(QTextEdit::NoWrap);
     e_hexDumpScale->setAutoFillBackground(true);
@@ -139,6 +142,7 @@ MemoryWindow::MemoryWindow(
     e_hexDumpScale->setContextMenuPolicy(Qt::NoContextMenu);
     mainLayout->addWidget(e_hexDumpScale);
 
+    e_hexDump->setObjectName("e_hexDump");
     e_hexDump->setMinimumSize(64, 48);
     e_hexDump->setLineWrapMode(QTextEdit::NoWrap);
     e_hexDump->setAutoFillBackground(true);
@@ -147,9 +151,9 @@ MemoryWindow::MemoryWindow(
     e_hexDump->setReadOnly(isReadOnly);
     e_hexDump->setContextMenuPolicy(Qt::NoContextMenu);
     e_hexDump->setTabChangesFocus(true);
+    e_hexDump->setFocus(Qt::OtherFocusReason);
     mainLayout->addWidget(e_hexDump);
     mainLayout->setStretchFactor(e_hexDump, 1);
-    e_hexDump->setFocus(Qt::OtherFocusReason);
     ConnectHexDumpCursorPositionChanged(true);
     connect(e_hexDump->horizontalScrollBar(),
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
@@ -169,8 +173,7 @@ MemoryWindow::MemoryWindow(
         this, &MemoryWindow::OnEventTypeChanged);
 
     CreateActions(*toolBarLayout, iconSize);
-    const auto name = QString::fromUtf8("statusBarLayout");
-    statusBarLayout->setObjectName(name);
+    statusBarLayout->setObjectName("statusBarLayout");
     statusBarLayout->setContentsMargins(0, 0, 0, 0);
     statusBarLayout->setSpacing(2);
     mainLayout->addLayout(statusBarLayout);
