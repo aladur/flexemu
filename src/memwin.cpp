@@ -503,21 +503,30 @@ void MemoryWindow::CreateViewActions(QToolBar &p_toolBar)
 void MemoryWindow::CreateStatusBar(QBoxLayout &layout)
 {
     // Use QStackedWidget to be able to set a frame style.
-    statusBarFrame = new QStackedWidget();
-    statusBar = new QStatusBar();
+    statusBarFrame = new QStackedWidget(this);
+    statusBarFrame->setObjectName("statusBarFrame");
+    statusBarFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    statusBar = new QStatusBar(this);
+    statusBar->setObjectName("statusBar");
     statusBar->setSizeGripEnabled(false);
     statusBarFrame->addWidget(statusBar);
     layout.addWidget(statusBarFrame, 1);
-    statusBarFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    memoryTypeFrame = new QStackedWidget();
+
+    memoryTypeFrame = new QStackedWidget(this);
+    memoryTypeFrame->setObjectName("memoryTypeFrame");
+    memoryTypeFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     memoryTypeLabel = new QLabel(this);
+    memoryTypeLabel->setObjectName("memoryTypeLabel");
     memoryTypeLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     memoryTypeLabel->setToolTip(tr("Memory type under cursor"));
     memoryTypeFrame->addWidget(memoryTypeLabel);
-    memoryTypeFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     layout.addWidget(memoryTypeFrame);
-    addressFrame = new QStackedWidget();
+
+    addressFrame = new QStackedWidget(this);
+    addressFrame->setObjectName("addressFrame");
+    addressFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     addressLabel = new QLabel(this);
+    addressLabel->setObjectName("addressLabel");
     addressLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     addressLabel->setToolTip(tr("Address under cursor and content"));
     const auto pointSize = QApplication::font().pointSize();
@@ -525,7 +534,6 @@ void MemoryWindow::CreateStatusBar(QBoxLayout &layout)
     font.setWeight(QFont::Bold);
     addressLabel->setFont(font);
     addressFrame->addWidget(addressLabel);
-    addressFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     layout.addWidget(addressFrame);
 
     updateLedFrame = new QStackedWidget(this);
@@ -543,6 +551,7 @@ void MemoryWindow::CreateStatusBar(QBoxLayout &layout)
     layout.addWidget(updateLedFrame);
 
     dummyStatusBar = new QStatusBar(this);
+    dummyStatusBar->setObjectName("dummyStatusBar");
     dummyStatusBar->setMaximumWidth(14);
     dummyStatusBar->setSizeGripEnabled(true);
     layout.addWidget(dummyStatusBar);
