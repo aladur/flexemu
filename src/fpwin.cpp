@@ -74,6 +74,7 @@
 #include "warnon.h"
 #include <filesystem>
 #include <optional>
+#include <cassert>
 
 namespace fs = std::filesystem;
 
@@ -1058,16 +1059,18 @@ void FLEXplorer::OnContextMenuRequested(QPoint pos)
 
 void FLEXplorer::CreateStatusBar()
 {
-    auto *leftSpace = new QLabel(this);
-    l_selectedFilesCount = new QLabel(this);
-    l_selectedFilesByteSize = new QLabel(this);
-    l_selectedFilesCount->setContentsMargins(10, 0, 10, 0);
+    l_statusMessage = new QStatusBar(this);
+    l_statusMessage->setSizeGripEnabled(false);
+    statusBar()->addPermanentWidget(l_statusMessage, 1);
 
-    statusBar()->setStyleSheet(
-        "QStatusBar::item { border: 1px solid grey; border-radius: 2px; } ");
-    statusBar()->addWidget(leftSpace, 1);
-    statusBar()->addWidget(l_selectedFilesCount);
-    statusBar()->addWidget(l_selectedFilesByteSize);
+    l_selectedFilesCount = new QLabel(this);
+    l_selectedFilesCount->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    statusBar()->addPermanentWidget(l_selectedFilesCount);
+
+    l_selectedFilesByteSize = new QLabel(this);
+    l_selectedFilesByteSize->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    statusBar()->addPermanentWidget(l_selectedFilesByteSize);
+
     SetStatusMessage(tr("Ready"));
 }
 
@@ -1157,7 +1160,7 @@ void FLEXplorer::OnSelectionHasChanged()
 
 void FLEXplorer::SetStatusMessage(const QString &message)
 {
-    statusBar()->showMessage(message, 4000);
+    l_statusMessage->showMessage(message, 4000);
 }
 
 QStringList FLEXplorer::GetSupportedFiles(const QMimeData *mimeData)
@@ -1223,6 +1226,22 @@ void FLEXplorer::dropEvent(QDropEvent *event)
             }
         }
     }
+}
+
+bool FLEXplorer::event(QEvent *event)
+{
+    if (event->type() == QEvent::StatusTip)
+    {
+        // Redirect status messages.
+        auto *statusTipEvent = dynamic_cast<QStatusTipEvent *>(event);
+        assert(statusTipEvent != nullptr);
+        SetStatusMessage(statusTipEvent->tip());
+        statusTipEvent->accept();
+
+        return true;
+    }
+
+    return QMainWindow::event(event);
 }
 
 void FLEXplorer::SetFileTimeAccess(FileTimeAccess fileTimeAccess)

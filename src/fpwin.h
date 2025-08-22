@@ -153,6 +153,7 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dragLeaveEvent(QDragLeaveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
+    bool event(QEvent *event) override;
 
 
     QMdiArea *mdiArea{};
@@ -163,6 +164,7 @@ protected:
     QMenu *recentDirectoriesMenu{};
     QAction *recentDirectoriesClearAllAction{};
     QList<QAction *> recentDirectoryActions;
+    QStatusBar *l_statusMessage{};
     QLabel *l_selectedFilesCount{};
     QLabel *l_selectedFilesByteSize{};
     QToolBar *toolBar{};
