@@ -172,13 +172,13 @@ TEST(test_misc1, fct_ascchr)
     result = flx::ascchr('~');
     EXPECT_EQ(result, "~");
     result = flx::ascchr('\x7f');
-    EXPECT_EQ(result, ".");
+    EXPECT_EQ(result, "_");
     result = flx::ascchr(' ');
     EXPECT_EQ(result, " ");
     result = flx::ascchr('\x1f');
-    EXPECT_EQ(result, ".");
+    EXPECT_EQ(result, "_");
     result = flx::ascchr('\xa1');
-    EXPECT_EQ(result, ".");
+    EXPECT_EQ(result, "_");
     result = flx::ascchr('a', '_');
     EXPECT_EQ(result, "a");
     result = flx::ascchr('3', '_');

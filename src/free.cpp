@@ -211,7 +211,7 @@ void flx::hex_dump(
 
         if (withAscii)
         {
-            *(asciiIter++) = flx::ascchr(ch, '_')[0];
+            *(asciiIter++) = flx::ascchr(ch)[0];
 
             if (withExtraSpace && idx + 1U != size)
             {
