@@ -41,6 +41,7 @@
 
 class QAction;
 class QMenu;
+class QLineEdit;
 class FlexDiskAttributes;
 
 extern QFont GetFont(const QString &fontName);
@@ -57,6 +58,7 @@ extern int IconSizeToIndex(const QSize &iconSize);
 extern QString ConvertItemPairListToHtml(const ItemPairList_t &pairs);
 extern QString GetVersionsHtmlText(const QString &programName);
 extern QFont GetMonospaceFont(int pointSize);
+extern void UpdateRegexValidator(const QString &regexString, QLineEdit *edit);
 
 class UpdateWindowGeometryFtor
 {

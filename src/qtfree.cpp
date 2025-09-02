@@ -33,9 +33,12 @@
 #include <QFontDatabase>
 #include <QMenu>
 #include <QWidget>
+#include <QLineEdit>
 #include <QDialog>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include "fmt/format.h"
 #include <optional>
 #include "warnon.h"
@@ -400,4 +403,11 @@ QFont GetMonospaceFont(int pointSize)
     font.setFamily("courier");
 
     return font;
+}
+
+void UpdateRegexValidator(const QString &regexString, QLineEdit *edit)
+{
+    QRegularExpression regex(regexString);
+    auto *validator = new QRegularExpressionValidator(regex, edit);
+    edit->setValidator(validator);
 }
