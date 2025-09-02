@@ -109,6 +109,34 @@ void flx::print_versions(std::ostream &os, const std::string &program_name)
     os << program_name << " " << COPYRIGHT_MESSAGE;
 }
 
+// Get byte array from a hex-digits string.
+std::vector<Byte> flx::get_bytes_from_hex(const std::string &hex_values)
+{
+    std::vector<Byte> result;
+
+    if (hex_values.empty() || hex_values.size() % 2 == 1)
+    {
+        return { };
+    }
+
+    result.reserve(hex_values.size() / 2);
+    for (size_t idx = 0; idx < hex_values.size(); idx += 2)
+    {
+        Byte value{};
+
+        const auto [ptr, ec] = std::from_chars(
+                hex_values.data() + idx,
+                hex_values.data() + idx + 2U, value, 16);
+        if (ec != std::errc())
+        {
+            return { };
+        }
+        result.emplace_back(value);
+    }
+
+    return result;
+}
+
 // Write hex dump of a byte array to a stream.
 // Parameters:
 //    os:           Where the result is streamed to.
