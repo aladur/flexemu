@@ -29,6 +29,7 @@
 #include <QFont>
 #include <QWidget>
 #include <QToolBar>
+#include <QValidator>
 #include <optional>
 #include "warnon.h"
 #include "typedefs.h"
@@ -38,6 +39,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <regex>
 
 class QAction;
 class QMenu;
@@ -107,6 +109,48 @@ public:
 
         return sizeHint;
     }
+};
+
+
+// Create a validator class for std::regex.
+template<typename RegexType, typename FlagType = typename RegexType::flag_type>
+class RegexValidator : public QValidator
+{
+public:
+    explicit RegexValidator(FlagType p_flags = std::regex_constants::ECMAScript,
+            QObject *parent = nullptr)
+        : QValidator(parent)
+        , flags(p_flags)
+    {
+    }
+
+    State validate(QString &regexString, int &pos) const override
+    {
+        Q_UNUSED(pos);
+        try
+        {
+            RegexType regex(regexString.toStdString(), flags);
+            lastError.clear();
+            state = Acceptable;
+        }
+        catch(const std::exception &ex)
+        {
+            lastError = ex.what();
+            state = Intermediate;
+        }
+
+        return state;
+    }
+
+    std::pair<State, std::string> GetState() const
+    {
+        return { state, lastError };
+    }
+
+private:
+    mutable std::string lastError;
+    mutable State state{};
+    FlagType flags;
 };
 
 // Conditional cast from long long int or long int to int.
