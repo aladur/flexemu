@@ -127,7 +127,7 @@ std::vector<Byte> flx::get_bytes_from_hex(const std::string &hex_values)
         const auto [ptr, ec] = std::from_chars(
                 hex_values.data() + idx,
                 hex_values.data() + idx + 2U, value, 16);
-        if (ec != std::errc())
+        if (ec != std::errc() || ptr != hex_values.data() + idx + 2U)
         {
             return { };
         }

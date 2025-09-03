@@ -201,6 +201,51 @@ TEST_F(test_free, fct_find_regex_string)
     EXPECT_EQ(result, "ABC");
 }
 
+TEST_F(test_free, fct_get_bytes_from_hex)
+{
+    // Positive tests.
+    auto result = flx::get_bytes_from_hex("");
+    EXPECT_TRUE(result.empty());
+    result = flx::get_bytes_from_hex("00");
+    std::vector<Byte> expected{ 0x00 };
+    EXPECT_EQ(result, expected);
+    result = flx::get_bytes_from_hex("55");
+    expected = { 0x55 };
+    EXPECT_EQ(result, expected);
+    result = flx::get_bytes_from_hex("AA");
+    expected = { 0xAA };
+    EXPECT_EQ(result, expected);
+    result = flx::get_bytes_from_hex("FF");
+    expected = { 0xFF };
+    EXPECT_EQ(result, expected);
+    result = flx::get_bytes_from_hex("05AF16BF");
+    expected = { 0x05, 0xAF, 0x16, 0xBF };
+    EXPECT_EQ(result, expected);
+    result = flx::get_bytes_from_hex("abcdef");
+    expected = { 0xAB, 0xCD, 0xEF };
+    EXPECT_EQ(result, expected);
+    result = flx::get_bytes_from_hex("0123456789ABCDEF");
+    expected = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF };
+    EXPECT_EQ(result, expected);
+    // Negative tests.
+    result = flx::get_bytes_from_hex("0");
+    EXPECT_TRUE(result.empty());
+    result = flx::get_bytes_from_hex("000");
+    EXPECT_TRUE(result.empty());
+    result = flx::get_bytes_from_hex("55555");
+    EXPECT_TRUE(result.empty());
+    result = flx::get_bytes_from_hex("AAAAAAA");
+    EXPECT_TRUE(result.empty());
+    result = flx::get_bytes_from_hex("FFFFFFFFF");
+    EXPECT_TRUE(result.empty());
+    result = flx::get_bytes_from_hex("GF");
+    EXPECT_TRUE(result.empty());
+    result = flx::get_bytes_from_hex("FFF ");
+    EXPECT_TRUE(result.empty());
+    result = flx::get_bytes_from_hex("FFFFG");
+    EXPECT_TRUE(result.empty());
+}
+
 // 0 hex bytes, data pointer == nullptr or bytesPerLine == 0.
 TEST_F(test_free, fct_hex_dump_0)
 {
