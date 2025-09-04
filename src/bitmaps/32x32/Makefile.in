@@ -340,6 +340,7 @@ dist_icons = \
 	flexemu-ascii.png \
 	flexemu-autoupdate-winsize.png \
 	flexemu-breakpoints.png \
+	flexemu-check-failed.png \
 	flexemu-cpu-undocumented.png \
 	flexemu-cpu.png \
 	flexemu-detect-page-break.png \

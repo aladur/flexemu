@@ -75,6 +75,12 @@
     <ClCompile Include="fdoptman.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="finddata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="findui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="flblfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -388,6 +394,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fileread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="finddata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="findui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="flblfile.h">

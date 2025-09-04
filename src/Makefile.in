@@ -186,6 +186,7 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-drawnwid.$(OBJEXT) flexemu-drisel.$(OBJEXT) \
 	flexemu-e2floppy.$(OBJEXT) flexemu-e2screen.$(OBJEXT) \
 	flexemu-efslctle.$(OBJEXT) flexemu-fdoptman.$(OBJEXT) \
+	flexemu-finddata.$(OBJEXT) flexemu-findui.$(OBJEXT) \
 	flexemu-flblfile.$(OBJEXT) flexemu-foptman.$(OBJEXT) \
 	flexemu-fsetupui.$(OBJEXT) flexemu-fversion.$(OBJEXT) \
 	flexemu-inout.$(OBJEXT) flexemu-iodevdbg.$(OBJEXT) \
@@ -215,11 +216,11 @@ am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
 	flexemu-drawnwid_moc.$(OBJEXT) flexemu-e2screen_moc.$(OBJEXT) \
-	flexemu-efslctle_moc.$(OBJEXT) flexemu-fsetupui_moc.$(OBJEXT) \
-	flexemu-logfilui_moc.$(OBJEXT) flexemu-memsetui_moc.$(OBJEXT) \
-	flexemu-memwin_moc.$(OBJEXT) flexemu-memwinmg_moc.$(OBJEXT) \
-	flexemu-mwtedit_moc.$(OBJEXT) flexemu-qtgui_moc.$(OBJEXT) \
-	flexemu-poutwin_moc.$(OBJEXT)
+	flexemu-efslctle_moc.$(OBJEXT) flexemu-findui_moc.$(OBJEXT) \
+	flexemu-fsetupui_moc.$(OBJEXT) flexemu-logfilui_moc.$(OBJEXT) \
+	flexemu-memsetui_moc.$(OBJEXT) flexemu-memwin_moc.$(OBJEXT) \
+	flexemu-memwinmg_moc.$(OBJEXT) flexemu-mwtedit_moc.$(OBJEXT) \
+	flexemu-qtgui_moc.$(OBJEXT) flexemu-poutwin_moc.$(OBJEXT)
 am__objects_6 = $(am__objects_5)
 nodist_flexemu_OBJECTS = $(am__objects_2) $(am__objects_4) \
 	$(am__objects_6)
@@ -305,6 +306,8 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/flexemu-efslctle.Po \
 	./$(DEPDIR)/flexemu-efslctle_moc.Po \
 	./$(DEPDIR)/flexemu-fdoptman.Po \
+	./$(DEPDIR)/flexemu-finddata.Po ./$(DEPDIR)/flexemu-findui.Po \
+	./$(DEPDIR)/flexemu-findui_moc.Po \
 	./$(DEPDIR)/flexemu-flblfile.Po \
 	./$(DEPDIR)/flexemu-flexemu_qrc.Po \
 	./$(DEPDIR)/flexemu-foptman.Po ./$(DEPDIR)/flexemu-fsetupui.Po \
@@ -839,6 +842,7 @@ flexplorer_qrc_src = $(flexplorer_qrc:.qrc=_qrc.cpp)
 flexemu_ui = \
 	brkpt.ui \
 	cpustat.ui \
+	find.ui \
 	logfil.ui \
 	memset.ui \
 	fsetup.ui \
@@ -861,6 +865,7 @@ flexemu_moc_hdr = \
 	drawnwid.h \
 	e2screen.h \
 	efslctle.h \
+	findui.h \
 	fsetupui.h \
 	logfilui.h \
 	memsetui.h \
@@ -920,6 +925,8 @@ flexemu_SOURCES = \
 	e2screen.cpp \
 	efslctle.cpp \
 	fdoptman.cpp \
+	finddata.cpp \
+	findui.cpp \
 	flblfile.cpp \
 	foptman.cpp \
 	fsetupui.cpp \
@@ -1024,6 +1031,8 @@ flexemu_SOURCES = \
 	filecntb.h \
 	filecnts.h \
 	fileread.h \
+	finddata.h \
+	findui.h \
 	flblfile.h \
 	flexemu.h \
 	flexerr.h \
@@ -1559,6 +1568,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-efslctle.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-efslctle_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fdoptman.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-finddata.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-findui.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-findui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-flblfile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-flexemu_qrc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-foptman.Po@am__quote@ # am--include-marker
@@ -2629,6 +2641,34 @@ flexemu-fdoptman.obj: fdoptman.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fdoptman.obj `if test -f 'fdoptman.cpp'; then $(CYGPATH_W) 'fdoptman.cpp'; else $(CYGPATH_W) '$(srcdir)/fdoptman.cpp'; fi`
 
+flexemu-finddata.o: finddata.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-finddata.o -MD -MP -MF $(DEPDIR)/flexemu-finddata.Tpo -c -o flexemu-finddata.o `test -f 'finddata.cpp' || echo '$(srcdir)/'`finddata.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-finddata.Tpo $(DEPDIR)/flexemu-finddata.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='finddata.cpp' object='flexemu-finddata.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-finddata.o `test -f 'finddata.cpp' || echo '$(srcdir)/'`finddata.cpp
+
+flexemu-finddata.obj: finddata.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-finddata.obj -MD -MP -MF $(DEPDIR)/flexemu-finddata.Tpo -c -o flexemu-finddata.obj `if test -f 'finddata.cpp'; then $(CYGPATH_W) 'finddata.cpp'; else $(CYGPATH_W) '$(srcdir)/finddata.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-finddata.Tpo $(DEPDIR)/flexemu-finddata.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='finddata.cpp' object='flexemu-finddata.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-finddata.obj `if test -f 'finddata.cpp'; then $(CYGPATH_W) 'finddata.cpp'; else $(CYGPATH_W) '$(srcdir)/finddata.cpp'; fi`
+
+flexemu-findui.o: findui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-findui.o -MD -MP -MF $(DEPDIR)/flexemu-findui.Tpo -c -o flexemu-findui.o `test -f 'findui.cpp' || echo '$(srcdir)/'`findui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-findui.Tpo $(DEPDIR)/flexemu-findui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='findui.cpp' object='flexemu-findui.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-findui.o `test -f 'findui.cpp' || echo '$(srcdir)/'`findui.cpp
+
+flexemu-findui.obj: findui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-findui.obj -MD -MP -MF $(DEPDIR)/flexemu-findui.Tpo -c -o flexemu-findui.obj `if test -f 'findui.cpp'; then $(CYGPATH_W) 'findui.cpp'; else $(CYGPATH_W) '$(srcdir)/findui.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-findui.Tpo $(DEPDIR)/flexemu-findui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='findui.cpp' object='flexemu-findui.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-findui.obj `if test -f 'findui.cpp'; then $(CYGPATH_W) 'findui.cpp'; else $(CYGPATH_W) '$(srcdir)/findui.cpp'; fi`
+
 flexemu-flblfile.o: flblfile.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-flblfile.o -MD -MP -MF $(DEPDIR)/flexemu-flblfile.Tpo -c -o flexemu-flblfile.o `test -f 'flblfile.cpp' || echo '$(srcdir)/'`flblfile.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-flblfile.Tpo $(DEPDIR)/flexemu-flblfile.Po
@@ -3328,6 +3368,20 @@ flexemu-efslctle_moc.obj: efslctle_moc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='efslctle_moc.cpp' object='flexemu-efslctle_moc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-efslctle_moc.obj `if test -f 'efslctle_moc.cpp'; then $(CYGPATH_W) 'efslctle_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/efslctle_moc.cpp'; fi`
+
+flexemu-findui_moc.o: findui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-findui_moc.o -MD -MP -MF $(DEPDIR)/flexemu-findui_moc.Tpo -c -o flexemu-findui_moc.o `test -f 'findui_moc.cpp' || echo '$(srcdir)/'`findui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-findui_moc.Tpo $(DEPDIR)/flexemu-findui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='findui_moc.cpp' object='flexemu-findui_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-findui_moc.o `test -f 'findui_moc.cpp' || echo '$(srcdir)/'`findui_moc.cpp
+
+flexemu-findui_moc.obj: findui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-findui_moc.obj -MD -MP -MF $(DEPDIR)/flexemu-findui_moc.Tpo -c -o flexemu-findui_moc.obj `if test -f 'findui_moc.cpp'; then $(CYGPATH_W) 'findui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/findui_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-findui_moc.Tpo $(DEPDIR)/flexemu-findui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='findui_moc.cpp' object='flexemu-findui_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-findui_moc.obj `if test -f 'findui_moc.cpp'; then $(CYGPATH_W) 'findui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/findui_moc.cpp'; fi`
 
 flexemu-fsetupui_moc.o: fsetupui_moc.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fsetupui_moc.o -MD -MP -MF $(DEPDIR)/flexemu-fsetupui_moc.Tpo -c -o flexemu-fsetupui_moc.o `test -f 'fsetupui_moc.cpp' || echo '$(srcdir)/'`fsetupui_moc.cpp
@@ -4193,6 +4247,9 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-efslctle.Po
 	-rm -f ./$(DEPDIR)/flexemu-efslctle_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-fdoptman.Po
+	-rm -f ./$(DEPDIR)/flexemu-finddata.Po
+	-rm -f ./$(DEPDIR)/flexemu-findui.Po
+	-rm -f ./$(DEPDIR)/flexemu-findui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-flblfile.Po
 	-rm -f ./$(DEPDIR)/flexemu-flexemu_qrc.Po
 	-rm -f ./$(DEPDIR)/flexemu-foptman.Po
@@ -4392,6 +4449,9 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-efslctle.Po
 	-rm -f ./$(DEPDIR)/flexemu-efslctle_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-fdoptman.Po
+	-rm -f ./$(DEPDIR)/flexemu-finddata.Po
+	-rm -f ./$(DEPDIR)/flexemu-findui.Po
+	-rm -f ./$(DEPDIR)/flexemu-findui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-flblfile.Po
 	-rm -f ./$(DEPDIR)/flexemu-flexemu_qrc.Po
 	-rm -f ./$(DEPDIR)/flexemu-foptman.Po

@@ -27,6 +27,8 @@
 #include "bintervl.h"
 #include "free.h"
 #include "memtype.h"
+#include "finddata.h"
+#include "findui.h"
 #include "warnoff.h"
 #include <QObject>
 #include <QString>
@@ -96,6 +98,15 @@ public:
 
     using Config_t = struct sConfig;
 
+    struct sFindResult
+    {
+        bool isValid{};
+        DWord offset{};
+        DWord size{};
+    };
+
+    using FindResult_t = struct sFindResult;
+
     MemoryWindow() = delete;
     explicit MemoryWindow(
             bool p_isReadOnly,
@@ -140,6 +151,8 @@ public slots:
     void OnToggleHexAscii();
     void OnHorizontalScrollBarValueChanged(int value) const;
     void OnTextCursorPositionChanged();
+    void OnFind();
+    void OnFindNext();
     void OnNotifyKeyPressed(QKeyEvent *event);
     void OnEventTypeChanged(QEvent::Type type);
 
@@ -152,6 +165,7 @@ protected:
     void CreateActions(QBoxLayout &layout, const QSize &iconSize);
     void CreateFileActions(QToolBar &p_toolBar);
     void CreateViewActions(QToolBar &p_toolBar);
+    void CreateSearchActions(QToolBar &p_toolBar);
     void CreateStatusBar(QBoxLayout &layout);
     QToolBar *CreateToolBar(QWidget *parent, const QString &title,
                             const QString &objectName, const QSize &iconSize);
@@ -183,9 +197,11 @@ protected:
     void UpdateValidCharacters(DWord address, flx::HexDumpType type) const;
     void UpdateAddressStatus(DWord address);
     void UpdateToggleHexAsciiEnabled() const;
+    void UpdateFindActionsEnabled() const;
     void ReplaceHexOrAsciiText(const QString &text) const;
     void SetUpdateDataPixmap(const QPixmap &pixmap) const;
     void RecalculateDynamicBytesPerLine(const QSize &size);
+    void PositionCursor(DWord offset, bool isAscii);
 
     // Event handlers
     void changeEvent(QEvent *event) override;
@@ -205,6 +221,7 @@ private:
     QToolBar *toolBar{};
     QMenu *fileMenu{};
     QMenu *viewMenu{};
+    QMenu *searchMenu{};
     QStatusBar *statusBar{};
     QStatusBar *dummyStatusBar{};
     QStackedWidget *updateLedFrame{};
@@ -222,6 +239,8 @@ private:
     QAction *withExtraSpaceAction{};
     QAction *toggleHexAsciiAction{};
     QList<QAction *> styleActions;
+    QAction *findAction{};
+    QAction *findNextAction{};
     QFuture<QString> hexDumpFuture;
     QFutureWatcher<QString> hexDumpWatcher;
     const MemoryRanges_t availableMemoryRanges;
@@ -242,6 +261,8 @@ private:
     bool currentIsUpperNibble{true};
     bool isRequestResize{};
     std::vector<Byte> data;
+    FindSettingsUi::Config_t findConfig;
+    FindData findData;
 };
 
 using MemoryWindowSPtr = std::shared_ptr<MemoryWindow>;

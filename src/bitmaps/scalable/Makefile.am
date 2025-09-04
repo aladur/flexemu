@@ -13,6 +13,7 @@ dist_icons = \
 	flexemu-ascii.svg \
 	flexemu-autoupdate-winsize.svg \
 	flexemu-breakpoints.svg \
+	flexemu-check-failed.svg \
 	flexemu-cpu-undocumented.svg \
 	flexemu-cpu.svg \
 	flexemu-flexplorer-about.svg \

@@ -146,6 +146,7 @@ flexplorer_qrc_src = $(flexplorer_qrc:.qrc=_qrc.cpp)
 flexemu_ui = \
 	brkpt.ui \
 	cpustat.ui \
+	find.ui \
 	logfil.ui \
 	memset.ui \
 	fsetup.ui \
@@ -166,6 +167,7 @@ flexemu_moc_hdr = \
 	drawnwid.h \
 	e2screen.h \
 	efslctle.h \
+	findui.h \
 	fsetupui.h \
 	logfilui.h \
 	memsetui.h \
@@ -224,6 +226,8 @@ flexemu_SOURCES = \
 	e2screen.cpp \
 	efslctle.cpp \
 	fdoptman.cpp \
+	finddata.cpp \
+	findui.cpp \
 	flblfile.cpp \
 	foptman.cpp \
 	fsetupui.cpp \
@@ -328,6 +332,8 @@ flexemu_SOURCES = \
 	filecntb.h \
 	filecnts.h \
 	fileread.h \
+	finddata.h \
+	findui.h \
 	flblfile.h \
 	flexemu.h \
 	flexerr.h \

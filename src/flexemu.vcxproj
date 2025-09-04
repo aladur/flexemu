@@ -228,6 +228,8 @@
     <ClCompile Include="e2screen.cpp" />
     <ClCompile Include="efslctle.cpp" />
     <ClCompile Include="fdoptman.cpp" />
+    <ClCompile Include="finddata.cpp" />
+    <ClCompile Include="findui.cpp" />
     <ClCompile Include="flblfile.cpp" />
     <ClCompile Include="foptman.cpp" />
     <ClCompile Include="fsetupui.cpp" />
@@ -307,6 +309,14 @@
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
+    <CustomBuild Include="find.ui">
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Message>User interface compile %(Filename).ui</Message>
+      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClInclude</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
     <CustomBuild Include="logfil.ui">
       <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
@@ -372,6 +382,14 @@
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="efslctle.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="findui.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>
       <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
@@ -499,6 +517,7 @@
     <ClInclude Include="filecnts.h" />
     <ClInclude Include="filecont.h" />
     <ClInclude Include="fileread.h" />
+    <ClInclude Include="finddata.h" />
     <ClInclude Include="flblfile.h" />
     <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />

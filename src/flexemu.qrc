@@ -48,5 +48,6 @@
         <file alias="toggle.png">bitmaps/32x32/flexemu-toggle.png</file>
         <file alias="ledredon.png">bitmaps/16x16/flexemu-ledred-on.png</file>
         <file alias="ledredoff.png">bitmaps/16x16/flexemu-ledred-off.png</file>
+        <file alias="check-failed.png">bitmaps/32x32/flexemu-check-failed.png</file>
     </qresource>
 </RCC>

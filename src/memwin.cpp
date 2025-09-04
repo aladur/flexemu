@@ -27,6 +27,7 @@
 #include "bintervl.h"
 #include "free.h"
 #include "mwtedit.h"
+#include "findui.h"
 #include "warnoff.h"
 #include <QtGlobal>
 #include <QAbstractEventDispatcher>
@@ -61,6 +62,7 @@
 #include <QTextEdit>
 #include <QComboBox>
 #include <QScrollBar>
+#include <QMessageBox>
 #include <QTextCursor>
 #include <QEvent>
 #include <QResizeEvent>
@@ -82,6 +84,7 @@
 #include <sstream>
 #include <string>
 #include <chrono>
+#include <stdexcept>
 
 
 /****************************
@@ -179,6 +182,8 @@ MemoryWindow::MemoryWindow(
     mainLayout->addLayout(statusBarLayout);
     CreateStatusBar(*statusBarLayout);
     ConnectStyleComboBoxSignalSlots();
+    UpdateToggleHexAsciiEnabled();
+    SetReadOnly(isReadOnly);
 
     toolBarLayout->addStretch(1);
 
@@ -327,6 +332,121 @@ void MemoryWindow::OnTextCursorPositionChanged()
     currentIsUpperNibble = properties.isUpperNibble;
 }
 
+// Find starts to search at cursor position up to end of data, continues
+// from the begin of data up to excluding cursor position.
+void MemoryWindow::OnFind()
+{
+    auto *dialog = new QDialog(this);
+    FindSettingsUi ui;
+
+    ui.setupUi(*dialog);
+    ui.SetData(findConfig);
+
+    auto result = dialog->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        ui.GetData(findConfig);
+        const auto startOffset = currentAddress - config.addressRange.lower();
+        findData.Initialize(startOffset, findConfig);
+        UpdateFindActionsEnabled();
+        OnFindNext();
+    }
+}
+
+void MemoryWindow::OnFindNext()
+{
+    QString message;
+    bool isCritical = true;
+    auto result = findData.FindNext(data);
+
+    switch (result)
+    {
+        case FindData::Status::FoundItem:
+            {
+                const bool isAscii =
+                    (findConfig.searchType != FindSettingsUi::Find::HexBytes);
+                PositionCursor(findData.GetOffset(), isAscii);
+            }
+            break;
+
+        case FindData::Status::FindFinished:
+            // Find is finished, show final message.
+            message = findData.IsFindSuccess() ?
+                tr("No more occurences of \"%1\" found") :
+                tr("\"%1\" not found");
+            isCritical = false;
+            break;
+
+        case FindData::Status::NotInitialized:
+            throw std::logic_error("Initialize() has to be called first");
+
+        case FindData::Status::InvalidAsciiString:
+            message = tr("Invalid ASCII string \"%1\"");
+            break;
+
+        case FindData::Status::InvalidRegex:
+            {
+                message = tr("Invalid regular expression \"%1\".\n%2");
+                message = message
+                    .arg(QString::fromStdString(findConfig.searchFor))
+                    .arg(QString::fromStdString(findData.GetErrorMessage()));
+                QMessageBox::critical(this, PROGRAMNAME, message);
+                UpdateFindActionsEnabled();
+            }
+            return;
+
+        case FindData::Status::InvalidHexBytes:
+            message = tr("Invalid HEX bytes \"%1\"");
+            break;
+    }
+
+    if (!message.isEmpty())
+    {
+        message = message.arg(QString::fromStdString(findConfig.searchFor));
+        if (isCritical)
+        {
+            QMessageBox::critical(this, PROGRAMNAME " Error", message);
+        }
+        else
+        {
+            QMessageBox::information(this, PROGRAMNAME, message);
+        }
+    }
+    UpdateFindActionsEnabled();
+}
+
+// Position cursor to offset, either in HEX or ASCII block.
+//
+// Parameters:
+//   offset     The offset relative to the begin of data.
+//   isAscii    Preferably position cursor in ASCII block.
+void MemoryWindow::PositionCursor(DWord offset, bool isAscii)
+{
+    const auto address = config.addressRange.lower() + offset;
+    auto bytesPerLine = EstimateBytesPerLine();
+    const auto rowCol = flx::get_hex_dump_position_for_address(
+            address, data.size(), bytesPerLine, config.withAscii,
+            config.withAddress, isAscii,
+            true, config.addressRange.lower(),
+            CurrentExtraSpace());
+
+    if (rowCol.has_value())
+    {
+        currentRow = static_cast<int>(rowCol.value().first);
+        currentColumn = static_cast<int>(rowCol.value().second);
+        const auto position = static_cast<int>(
+                (columns + 1U) *
+                (rowCol.value().first ? rowCol.value().first : 0U) +
+                 rowCol.value().second);
+
+        auto cursor = e_hexDump->textCursor();
+        cursor.setPosition(position);
+        e_hexDump->setTextCursor(cursor);
+        e_hexDump->ensureCursorVisible();
+    }
+}
+
 // Adjust the current cursor position. The cursor is only allowed
 // to be positioned at a hex digit or ASCII value within the hex dump.
 // All other positions are adjusted. Incorrect cursor positions are
@@ -409,6 +529,7 @@ void MemoryWindow::CreateActions(QBoxLayout &layout, const QSize &iconSize)
 
     CreateFileActions(*toolBar);
     CreateViewActions(*toolBar);
+    CreateSearchActions(*toolBar);
 }
 
 void MemoryWindow::CreateFileActions(QToolBar &p_toolBar)
@@ -497,10 +618,26 @@ void MemoryWindow::CreateViewActions(QToolBar &p_toolBar)
     toggleHexAsciiAction->setShortcut(QKeySequence(tr("Ctrl+T")));
     toggleHexAsciiAction->setStatusTip(
             tr("Toggle Cursor between HEX and ASCII"));
-    UpdateToggleHexAsciiEnabled();
     p_toolBar.addAction(toggleHexAsciiAction);
     connect(toggleHexAsciiAction, &QAction::triggered, this,
             &MemoryWindow::OnToggleHexAscii);
+}
+
+void MemoryWindow::CreateSearchActions(QToolBar & /* p_toolBar */)
+{
+    searchMenu = menuBar->addMenu(tr("&Search"));
+
+    findAction = searchMenu->addAction(tr("&Find ..."));
+    findAction->setShortcut(QKeySequence::Find);
+    findAction->setStatusTip(tr("Search ASCII, HEX or regex pattern"));
+    connect(findAction, &QAction::triggered, this, &MemoryWindow::OnFind);
+
+    findNextAction = searchMenu->addAction(tr("Find Ne&xt"));
+    findNextAction->setShortcut(QKeySequence::FindNext);
+    findNextAction->setStatusTip(
+            tr("Continue search ASCII, HEX or regex pattern"));
+    connect(findNextAction, &QAction::triggered, this,
+            &MemoryWindow::OnFindNext);
 }
 
 void MemoryWindow::CreateStatusBar(QBoxLayout &layout)
@@ -743,6 +880,8 @@ void MemoryWindow::SetReadOnly(bool p_isReadOnly)
 {
     isReadOnly = p_isReadOnly;
     e_hexDump->setReadOnly(isReadOnly);
+    findData.Reset();
+    UpdateFindActionsEnabled();
     UpdateToggleHexAsciiEnabled();
 }
 
@@ -1404,6 +1543,12 @@ void MemoryWindow::UpdateAddressStatus(DWord address)
 void MemoryWindow::UpdateToggleHexAsciiEnabled() const
 {
     toggleHexAsciiAction->setEnabled(config.withAscii && !isReadOnly);
+}
+
+void MemoryWindow::UpdateFindActionsEnabled() const
+{
+    findAction->setEnabled(!isReadOnly);
+    findNextAction->setEnabled(!isReadOnly && findData.IsFindInProgress());
 }
 
 // After changing a HEX or ASCII value the corresponding ASCII or HEX

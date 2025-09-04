@@ -403,6 +403,7 @@ set(flexemu_gen_SOURCES
     about.ui
     brkpt.ui
     cpustat.ui
+    find.ui
     fsetup.ui
     logfil.ui
     memset.ui
@@ -431,6 +432,8 @@ set(flexemu_SOURCES
     e2screen.cpp
     efslctle.cpp
     fdoptman.cpp
+    finddata.cpp
+    findui.cpp
     flblfile.cpp
     foptman.cpp
     fsetupui.cpp
@@ -537,6 +540,8 @@ set(flexemu_HEADER
     filecntb.h
     filecnts.h
     fileread.h
+    finddata.h
+    findui.h
     flblfile.h
     flexemu.h
     flexerr.h

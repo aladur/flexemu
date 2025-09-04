@@ -973,6 +973,36 @@ other frequencies can be specified. See
  or non ASCII values are replaced by an underscore.
 </div>
 
+The Memory Window supports the following menu functions.<p>
+
+<table>
+ <tr>
+  <th>Menu</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td style="min-width: 16em">Search-&gt;Find</td>
+  <td>Start to find an ASCII string, a regular expression string
+   or one or multiple HEX bytes.<br>The search starts at the current cursor
+   position until end of data,<br>continues at start of data until current
+   cursor position minus one. [1]<br>
+   To guarantee consistent data the menu only is enabled if CPU is stopped.
+  </td>
+ </tr>
+ <tr>
+  <td>Search-&gt;Find Next</td>
+  <td>Continue to find next after starting find with Search-&gt;Find.<br>
+   To guarantee consistent data the menu only is enabled if CPU is stopped.
+  </td>
+ </tr>
+<table>
+<div>
+<p>
+ [1] Both ASCII string or regular expression search do not support escaped
+ control characters, like <code>\x04</code> to search for control character
+ <code>04</code>. Only HEX bytes search supports this.
+</div>
+
 <h3 id="flexemu_con">Flexemu configuration file</h3>
 <div class="justify">
  There is a system wide configuration file <b>flexemu.conf</b>. It's location
