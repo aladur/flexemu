@@ -132,7 +132,7 @@ FindData::Status FindData::FindNext(const std::vector<Byte> &data)
 
         if (findNext.has_value() && findNext.value() >= findStart)
         {
-            findNext = data.size();
+            findNext = static_cast<DWord>(data.size());
         }
 
         if (findStart != 0U &&
