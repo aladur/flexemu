@@ -983,9 +983,9 @@ void MemoryWindow::UpdateDataFinish()
         }
 
         const auto position = static_cast<int>(
-                (columns + 1U) *
-                (currentRowCol.value().first ? currentRowCol.value().first : 0U) +
-                 currentRowCol.value().second);
+            (columns + 1U) *
+            (currentRowCol.value().first ? currentRowCol.value().first : 0U) +
+             currentRowCol.value().second);
 
         auto cursor = e_hexDump->textCursor();
         cursor.setPosition(position);
