@@ -108,6 +108,7 @@ MemoryWindow::MemoryWindow(
     , availableMemoryRanges(std::move(p_availableMemoryRanges))
     , config(std::move(p_config))
     , dynamicBytesPerLine(16)
+    , currentAddress(config.addressRange.lower())
     , isReadOnly(p_isReadOnly)
     , isIgnoreResizeEvent(config.style == Style::Dynamic &&
             !positionAndSize.has_value())
@@ -958,7 +959,6 @@ void MemoryWindow::UpdateDataFinish()
     QString line;
     columns = 0;
     rows = 0;
-    bool isForceMoveCursor = false;
     while (stream.readLineInto(&line))
     {
         columns = std::max(columns, cast_from_qsizetype(line.size()));
@@ -973,8 +973,6 @@ void MemoryWindow::UpdateDataFinish()
 
     if (currentRowCol.has_value())
     {
-        isForceMoveCursor =
-            (currentRowCol.value() == std::pair(0U, 0U)) && !config.withAddress;
         currentRow = static_cast<int>(currentRowCol.value().first);
         currentColumn = static_cast<int>(currentRowCol.value().second);
         if (!config.withAscii)
@@ -986,7 +984,7 @@ void MemoryWindow::UpdateDataFinish()
         const auto position = static_cast<int>(
                 (columns + 1U) *
                 (currentRowCol.value().first ? currentRowCol.value().first : 0U) +
-                 currentRowCol.value().second + (isForceMoveCursor ? 1 : 0));
+                 currentRowCol.value().second);
 
         auto cursor = e_hexDump->textCursor();
         cursor.setPosition(position);
@@ -1008,21 +1006,6 @@ void MemoryWindow::UpdateDataFinish()
     e_hexDump->horizontalScrollBar()->setValue(value);
 
     ConnectHexDumpCursorPositionChanged(true);
-
-    // Force move cursor:
-    // If address is not displayed (config.withAddress == false) the default
-    // position is 0 when opening the window. This resulted in not calling
-    // UpdateAddressStatus (display current address, value and type).
-    // This isForceMoveCursor flag forces to call OnTextCursorPositionChanged()
-    // in this case. It initially sets cursor position to 1 and after
-    // activating cursorPositionChanged event move cursor back one position,
-    // which forces to call OnTextCursoPositionChange().
-    if (isForceMoveCursor)
-    {
-        auto cursor = e_hexDump->textCursor();
-        cursor.setPosition(0);
-        e_hexDump->setTextCursor(cursor);
-    }
 
     const auto timeDiff = std::chrono::system_clock::now() -
         updateDataStartTime;
