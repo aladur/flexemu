@@ -108,10 +108,11 @@ MemoryWindow::MemoryWindow(
     , availableMemoryRanges(std::move(p_availableMemoryRanges))
     , config(std::move(p_config))
     , dynamicBytesPerLine(16)
-    , currentAddress(config.addressRange.lower())
     , isReadOnly(p_isReadOnly)
     , isIgnoreResizeEvent(config.style == Style::Dynamic &&
             !positionAndSize.has_value())
+    , currentAddress(config.addressRange.lower())
+    , currentType(flx::HexDumpType::HexByte)
     , isRequestResize(!positionAndSize.has_value())
 {
     const QSize iconSize(16, 16);
@@ -1006,6 +1007,9 @@ void MemoryWindow::UpdateDataFinish()
     e_hexDump->horizontalScrollBar()->setValue(value);
 
     ConnectHexDumpCursorPositionChanged(true);
+
+    UpdateAddressStatus(currentAddress);
+    UpdateValidCharacters(currentAddress, currentType);
 
     const auto timeDiff = std::chrono::system_clock::now() -
         updateDataStartTime;
