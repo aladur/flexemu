@@ -71,7 +71,10 @@ void FindSettingsUi::setupUi(QDialog &p_dialog)
 
 void FindSettingsUi::InitializeWidgets() const
 {
+    const auto findIcon = QIcon(":/resource/find.png");
     const auto icon = QIcon(":/resource/check-failed.png");
+
+    dialog->setWindowIcon(findIcon);
     b_validationCheck->setIcon(icon);
 }
 

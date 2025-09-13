@@ -629,7 +629,8 @@ void MemoryWindow::CreateSearchActions(QToolBar & /* p_toolBar */)
 {
     searchMenu = menuBar->addMenu(tr("&Search"));
 
-    findAction = searchMenu->addAction(tr("&Find ..."));
+    auto icon = QIcon(":/resource/find.png");
+    findAction = searchMenu->addAction(icon, tr("&Find ..."));
     findAction->setShortcut(QKeySequence::Find);
     findAction->setStatusTip(tr("Search ASCII, HEX or regex pattern"));
     connect(findAction, &QAction::triggered, this, &MemoryWindow::OnFind);
