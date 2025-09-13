@@ -355,6 +355,7 @@ dist_icons = \
 	flexemu-flexplorer-exit.svg \
 	flexemu-flexplorer-extract.svg \
 	flexemu-flexplorer-find.svg \
+	flexemu-flexplorer-find-next.svg \
 	flexemu-flexplorer-info.svg \
 	flexemu-flexplorer-inject.svg \
 	flexemu-flexplorer-new.svg \

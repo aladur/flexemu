@@ -635,7 +635,8 @@ void MemoryWindow::CreateSearchActions(QToolBar & /* p_toolBar */)
     findAction->setStatusTip(tr("Search ASCII, HEX or regex pattern"));
     connect(findAction, &QAction::triggered, this, &MemoryWindow::OnFind);
 
-    findNextAction = searchMenu->addAction(tr("Find Ne&xt"));
+    icon = QIcon(":/resource/find-next.png");
+    findNextAction = searchMenu->addAction(icon, tr("Find Ne&xt"));
     findNextAction->setShortcut(QKeySequence::FindNext);
     findNextAction->setStatusTip(
             tr("Continue search ASCII, HEX or regex pattern"));

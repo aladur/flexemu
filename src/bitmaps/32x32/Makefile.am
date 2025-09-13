@@ -26,6 +26,7 @@ dist_icons = \
 	flexemu-flexplorer-exit.png \
 	flexemu-flexplorer-extract.png \
 	flexemu-flexplorer-find.png \
+	flexemu-flexplorer-find-next.png \
 	flexemu-flexplorer-info.png \
 	flexemu-flexplorer-inject.png \
 	flexemu-flexplorer-new.png \
