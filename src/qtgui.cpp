@@ -1089,7 +1089,9 @@ void QtGui::CreateViewActions(QToolBar &p_toolBar)
     statusBarAction->setCheckable(true);
     statusBarAction->setStatusTip(tr("Show or hide Status Bar"));
 
-    magneticMainWindowAction = viewMenu->addAction(tr("&Magnetic Main Window"));
+    const auto magneticIcon = QIcon(":/resource/magnet.png");
+    magneticMainWindowAction =
+        viewMenu->addAction(magneticIcon, tr("&Magnetic Main Window"));
     connect(magneticMainWindowAction, &QAction::triggered, this,
             &QtGui::OnMagneticMainWindow);
     magneticMainWindowAction->setCheckable(true);
