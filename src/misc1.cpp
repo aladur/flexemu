@@ -682,7 +682,7 @@ bool flx::askForInput(const std::string &question, const std::string &answers,
 }
 
 std::vector<std::string> flx::split(const std::string &str, char delimiter,
-        bool keepEmptyString)
+        bool keepEmptyString, size_t max)
 {
     std::vector<std::string> result;
     std::string::size_type start_pos = 0;
@@ -690,6 +690,12 @@ std::vector<std::string> flx::split(const std::string &str, char delimiter,
 
     while (next_pos != std::string::npos)
     {
+        if (result.size() >= max)
+        {
+            result.emplace_back(str.substr(next_pos));
+            break;
+        }
+
         next_pos = str.find(delimiter, start_pos);
         if (next_pos != std::string::npos)
         {

@@ -415,6 +415,37 @@ TEST(test_misc1, fct_split)
     EXPECT_TRUE(strings9[0].empty());
     const auto strings10 = flx::split("|||", '|', true);
     ASSERT_EQ(strings10.size(), 4U);
+    const auto strings11 = flx::split("abc;xyz;klm", ';', false, 2U);
+    ASSERT_EQ(strings11.size(), 3U);
+    EXPECT_EQ(strings11[0], "abc");
+    EXPECT_EQ(strings11[1], "xyz");
+    EXPECT_EQ(strings11[2], ";klm");
+    const auto strings12 = flx::split("abc;xyz;;klm", ';', true, 2U);
+    ASSERT_EQ(strings12.size(), 3U);
+    EXPECT_EQ(strings12[0], "abc");
+    EXPECT_EQ(strings12[1], "xyz");
+    EXPECT_EQ(strings12[2], ";;klm");
+    const auto strings13 = flx::split("abc;;xyz;klm", ';', true, 2U);
+    ASSERT_EQ(strings13.size(), 3U);
+    EXPECT_EQ(strings13[0], "abc");
+    EXPECT_EQ(strings13[1], "");
+    EXPECT_EQ(strings13[2], ";xyz;klm");
+    const auto strings14 = flx::split("abc;;xyz;klm", ';', false, 2U);
+    ASSERT_EQ(strings14.size(), 3U);
+    EXPECT_EQ(strings14[0], "abc");
+    EXPECT_EQ(strings14[1], "xyz");
+    EXPECT_EQ(strings14[2], ";klm");
+    const auto strings15 = flx::split("abc;xyz;klm;nop", ';', false, 4U);
+    ASSERT_EQ(strings15.size(), 4U);
+    EXPECT_EQ(strings15[0], "abc");
+    EXPECT_EQ(strings15[1], "xyz");
+    EXPECT_EQ(strings15[2], "klm");
+    EXPECT_EQ(strings15[3], "nop");
+    const auto strings16 = flx::split("**klm**nop**", '*', false, 2);
+    ASSERT_EQ(strings16.size(), 3U);
+    EXPECT_EQ(strings16[0], "klm");
+    EXPECT_EQ(strings16[1], "nop");
+    EXPECT_EQ(strings16[2], "**");
 }
 
 TEST(test_misc1, fct_isFlexFilename)

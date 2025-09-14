@@ -283,7 +283,7 @@ extern char hex_digit(Byte x);
 extern Byte hexval(char x, bool &isValid);
 
 extern std::vector<std::string> split(const std::string &str, char delimiter,
-        bool keepEmptyString);
+        bool keepEmptyString, size_t max = std::numeric_limits<size_t>::max());
 extern bool matches(const std::string &text, const std::string &pattern,
              bool ignorecase);
 extern bool multimatches(const std::string &text,
