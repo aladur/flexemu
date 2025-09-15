@@ -51,5 +51,6 @@
         <file alias="check-failed.png">bitmaps/32x32/flexemu-check-failed.png</file>
         <file alias="find.png">bitmaps/32x32/flexemu-flexplorer-find.png</file>
         <file alias="find-next.png">bitmaps/32x32/flexemu-flexplorer-find-next.png</file>
+        <file alias="magnet.png">bitmaps/32x32/flexemu-magnet.png</file>
     </qresource>
 </RCC>

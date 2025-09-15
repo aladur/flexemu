@@ -50,6 +50,7 @@ dist_icons = \
 	flexemu-ledred-off.svg \
 	flexemu-ledred-on.svg \
 	flexemu-logging.svg \
+	flexemu-magnet.svg \
 	flexemu-memory.svg \
 	flexemu-original-frequency.svg \
 	flexemu-run.svg \

@@ -47,6 +47,7 @@ dist_icons = \
 	flexemu-irq-red.png \
 	flexemu-irq-yellow.png \
 	flexemu-logging.png \
+	flexemu-magnet.png \
 	flexemu-memory.png \
 	flexemu-original-frequency.png \
 	flexemu-print-clear.png \
