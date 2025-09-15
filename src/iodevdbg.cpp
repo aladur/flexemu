@@ -101,6 +101,26 @@ const char *IoDeviceDebug::getName()
     return device.getName();
 }
 
+const char *IoDeviceDebug::getDescription()
+{
+    return device.getDescription();
+}
+
+const char *IoDeviceDebug::getClassName()
+{
+    return device.getClassName();
+}
+
+const char *IoDeviceDebug::getClassDescription()
+{
+    return device.getClassDescription();
+}
+
+const char *IoDeviceDebug::getVendor()
+{
+    return device.getVendor();
+}
+
 Word IoDeviceDebug::sizeOfIo()
 {
     return device.sizeOfIo();

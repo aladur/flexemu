@@ -58,6 +58,11 @@ public:
     {
         return "acia1";
     };
+    const char *getDescription() override
+    {
+        return "Serial Interface 1";
+    }
+
 
 public:
     Acia1() = delete;

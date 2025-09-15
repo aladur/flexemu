@@ -69,6 +69,10 @@ public:
     {
         return "vico1";
     }
+    const char *getDescription() override
+    {
+        return "Video Control Register 1";
+    }
 
     Byte get_value() const
     {

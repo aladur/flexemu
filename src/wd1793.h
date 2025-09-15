@@ -205,6 +205,22 @@ public:
     {
         return "wd1793";
     };
+    const char *getDescription() override
+    {
+        return "";
+    }
+    const char *getClassName() override
+    {
+        return "WD1793";
+    }
+    const char *getClassDescription() override
+    {
+        return "Floppy Disk Controller, FDC";
+    }
+    const char *getVendor() override
+    {
+        return "Western Digital";
+    }
     Word sizeOfIo() override
     {
        return 4;

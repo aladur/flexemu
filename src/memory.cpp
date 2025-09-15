@@ -255,6 +255,10 @@ bool Memory::add_io_device(
 
     struct ioDeviceProperties properties{
             device.getName(),
+            device.getDescription(),
+            device.getClassName(),
+            device.getClassDescription(),
+            device.getVendor(),
             {
                 base_address,
                 static_cast<Word>(base_address + size.value() - 1U)

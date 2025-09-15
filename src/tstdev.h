@@ -46,6 +46,22 @@ public:
     {
         return "tstdev";
     };
+    const char *getDescription() override
+    {
+        return "Test Device with RAM";
+    }
+    const char *getClassName() override
+    {
+        return "TSTDEV";
+    }
+    const char *getClassDescription() override
+    {
+        return "";
+    }
+    const char *getVendor() override
+    {
+        return "";
+    }
     Word sizeOfIo() override;
 
     explicit TestDevice(Word byte_size = 1U);

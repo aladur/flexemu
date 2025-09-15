@@ -53,6 +53,18 @@ public:
     {
         return "mc6850";
     };
+    const char *getClassName() override
+    {
+        return "MC6850";
+    }
+    const char *getClassDescription() override
+    {
+        return "Asynchronous Communications Interface Adapter, ACIA";
+    }
+    const char *getVendor() override
+    {
+        return "Motorola";
+    }
     Word sizeOfIo() override
     {
         return 2;

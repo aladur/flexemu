@@ -51,6 +51,22 @@ public:
     {
         return "mmu";
     };
+    const char *getDescription() override
+    {
+        return "Memory Management Unit, MMU";
+    }
+    const char *getClassName() override
+    {
+        return "MMU";
+    }
+    const char *getClassDescription() override
+    {
+        return "";
+    }
+    const char *getVendor() override
+    {
+        return "";
+    }
     Word sizeOfIo() override
     {
         return 16;

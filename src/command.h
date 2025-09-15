@@ -80,6 +80,22 @@ public:
     {
         return "command";
     };
+    const char *getDescription() override
+    {
+        return "";
+    }
+    const char *getClassName() override
+    {
+        return "COMMAND";
+    }
+    const char *getClassDescription() override
+    {
+        return "Command Interface between guest and host";
+    }
+    const char *getVendor() override
+    {
+        return "";
+    }
     Word sizeOfIo() override
     {
         return 1;

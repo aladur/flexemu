@@ -47,6 +47,10 @@ public:
     void writeIo(Word offset, Byte value) override;
     void resetIo() override;
     const char *getName() override;
+    const char *getDescription() override;
+    const char *getClassName() override;
+    const char *getClassDescription() override;
+    const char *getVendor() override;
     Word sizeOfIo() override;
 
 private:

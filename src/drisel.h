@@ -79,6 +79,10 @@ public:
     {
         return "drisel";
     }
+    const char *getDescription() override
+    {
+        return "Drive Select Register";
+    }
 };
 
 #endif

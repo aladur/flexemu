@@ -66,7 +66,23 @@ public:
     void resetIo() override;
     const char *getName() override
     {
-        return "mc6821";
+        return "";
+    }
+    const char *getDescription() override
+    {
+        return "";
+    }
+    const char *getClassName() override
+    {
+        return "MC6821";
+    }
+    const char *getClassDescription() override
+    {
+        return "Peripheral Interface Controller, PIA";
+    }
+    const char *getVendor() override
+    {
+        return "Motorola";
     }
     Word sizeOfIo() override
     {

@@ -34,7 +34,16 @@ public:
     virtual Byte readIo(Word offset) = 0;
     virtual void writeIo(Word offset, Byte value) = 0;
     virtual void resetIo() = 0;
+    // Unique name of device instance.
     virtual const char *getName() = 0;
+    // Description of device instance.
+    virtual const char *getDescription() = 0;
+    // Name of the device class.
+    virtual const char *getClassName() = 0;
+    // Description of device class.
+    virtual const char *getClassDescription() = 0;
+    // Vendor of device.
+    virtual const char *getVendor() = 0;
     virtual Word sizeOfIo() = 0;
     virtual ~IoDevice() = default;
 };

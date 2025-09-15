@@ -49,6 +49,18 @@ public:
     {
         return "bytereg";
     };
+    const char *getClassName() override
+    {
+        return "SN74LS377";
+    }
+    const char *getClassDescription() override
+    {
+        return "Octal Flip-Flops with Clock Enable";
+    }
+    const char *getVendor() override
+    {
+        return "";
+    }
     Word sizeOfIo() override
     {
         return 1;

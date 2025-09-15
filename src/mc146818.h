@@ -64,6 +64,22 @@ public:
     {
         return "rtc";
     };
+    const char *getDescription() override
+    {
+        return "";
+    }
+    const char *getClassName() override
+    {
+        return "MC146818";
+    }
+    const char *getVendor() override
+    {
+        return "Motorola";
+    }
+    const char *getClassDescription() override
+    {
+        return "Realtime clock plus RAM, RTC";
+    }
     Word sizeOfIo() override
     {
         return 64;

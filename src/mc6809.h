@@ -915,7 +915,7 @@ public:
     // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     std::string get_name()
     {
-        return "Mc6809";
+        return "MC6809";
     }
 
     // Scheduler Interface implemenation

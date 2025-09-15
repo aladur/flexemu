@@ -60,6 +60,10 @@ struct ioDeviceAccess
 struct ioDeviceProperties
 {
     std::string name;
+    std::string description;
+    std::string className;
+    std::string classDescription;
+    std::string vendor;
     BInterval<Word> addressRange;
 };
 
