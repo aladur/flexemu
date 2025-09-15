@@ -61,6 +61,7 @@ extern QString ConvertItemPairListToHtml(const ItemPairList_t &pairs);
 extern QString GetVersionsHtmlText(const QString &programName);
 extern QFont GetMonospaceFont(int pointSize);
 extern void UpdateRegexValidator(const QString &regexString, QLineEdit *edit);
+extern QWidget *GetParentWidget(QWidget *p_widget, const QString &objectName);
 
 class UpdateWindowGeometryFtor
 {

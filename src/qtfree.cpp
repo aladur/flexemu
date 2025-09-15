@@ -341,12 +341,12 @@ QString ConvertItemPairListToHtml(const ItemPairList_t &pairs)
         }
         else
         {
-            stream << "<tr><td>&#x2022;</td><td colspan=\"2\">" <<
+            stream << "<tr><td>&#x2022;</td><td colspan=\"3\">" <<
                 pair.first << "</td></tr>";
             stream << "<tr><td></td><td></td><td><table>";
             for (const auto &value : pair.second)
             {
-                const auto items = flx::split(value, ' ', true);
+                const auto items = flx::split(value, ' ', true, 2);
 
                 stream << "<tr>";
                 for (const auto &item : items)
@@ -410,4 +410,21 @@ void UpdateRegexValidator(const QString &regexString, QLineEdit *edit)
     QRegularExpression regex(regexString);
     auto *validator = new QRegularExpressionValidator(regex, edit);
     edit->setValidator(validator);
+}
+
+QWidget *GetParentWidget(QWidget *p_widget, const QString &objectName)
+{
+    QWidget *widget = p_widget;
+
+    while (widget != nullptr)
+    {
+        if (widget->objectName() == objectName)
+        {
+            return widget;
+        }
+
+        widget = widget->parentWidget();
+    }
+
+    return nullptr;
 }

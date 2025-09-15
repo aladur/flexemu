@@ -38,7 +38,7 @@ public:
     virtual const char *getName() = 0;
     // Description of device instance.
     virtual const char *getDescription() = 0;
-    // Name of the device class.
+    // Name of the device class, e.g. name of integrated circuit.
     virtual const char *getClassName() = 0;
     // Description of device class.
     virtual const char *getClassDescription() = 0;

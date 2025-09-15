@@ -646,6 +646,7 @@ void QtGui::OnAbout()
     ui.setupUi(&dialog);
     const auto aboutIcon = QIcon(":/resource/about.png");
     dialog.setWindowIcon(aboutIcon);
+    //dialog.resize({720, 480});
     dialog.resize({0, 0});
     dialog.setModal(true);
     dialog.setSizeGripEnabled(true);
@@ -692,6 +693,14 @@ void QtGui::AboutTabChanged(QTextBrowser *browser) const
     else if (browser->objectName() == "e_configuration")
     {
         browser->setHtml(GetConfigurationHtmlText());
+
+        auto *dialog = GetParentWidget(browser,
+                QString::fromStdString("AboutDialog"));
+
+        if (dialog != nullptr)
+        {
+            dialog->resize({680, dialog->height()});
+        }
     }
 }
 
@@ -2529,7 +2538,11 @@ ItemPairList_t QtGui::GetConfiguration() const
             strdevice << "-" << std::setw(4) << std::hex <<
                 device_props.addressRange.upper();
         }
-        strdevice << " " << device_props.name;
+        strdevice <<
+            " " << device_props.name <<
+            " " << device_props.className <<
+            ", " << (device_props.description.empty() ?
+                    device_props.classDescription : device_props.description);
         values.emplace_back(strdevice.str());
     }
     result.emplace_back("Devices", values);

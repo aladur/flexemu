@@ -53,6 +53,10 @@ public:
     {
         return "mc6850";
     };
+    const char *getDescription() override
+    {
+        return "";
+    }
     const char *getClassName() override
     {
         return "MC6850";
