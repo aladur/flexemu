@@ -35,8 +35,8 @@
      inkscape:zoom="3.7890624"
      inkscape:cx="138.68866"
      inkscape:cy="151.48866"
-     inkscape:window-x="523"
-     inkscape:window-y="128"
+     inkscape:window-x="250"
+     inkscape:window-y="176"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg8"
      inkscape:showpageshadow="2"
@@ -155,6 +155,20 @@
        xlink:href="#linearGradient9914"
        inkscape:collect="always"
        gradientTransform="translate(-3.1749997,-1.5874999)" />
+    <marker
+       inkscape:stockid="TriangleOutS"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutS-3"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path3059-6"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.2)" />
+    </marker>
   </defs>
   <metadata
      id="metadata5">
@@ -205,34 +219,8 @@
      id="neck"
      d="m 18.556703,44.923006 4.609756,-5.277157"
      style="fill:none;stroke:#000000;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-  <g
-     id="g2">
-    <path
-       id="grip-6"
-       d="M 62.059677,54.079639 32.807374,53.970552"
-       style="fill:none;stroke:#ff0101;stroke-width:5.61;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       id="grip-6-5"
-       d="M 64.928336,54.079644 57.158411,43.802104"
-       style="fill:#1a1a1a;stroke:#fe0000;stroke-width:5.60999;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       id="grip-6-5-1"
-       d="m 64.928336,54.079644 -7.769925,10.27754"
-       style="fill:#1a1a1a;stroke:#ff0202;stroke-width:5.60999;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       style="fill:#f9f9f9;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-       d="m 30.754881,52.018131 28.040994,0.147377"
-       id="path1" />
-    <path
-       style="fill:#f9f9f9;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-       d="m 54.977183,64.079295 4.307492,-6.055"
-       id="path1-7" />
-    <ellipse
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.99999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-       id="path2"
-       cx="56.275761"
-       cy="43.014153"
-       rx="2.2985795"
-       ry="2.3072159" />
-  </g>
+  <path
+     style="fill:none;stroke:#ff0000;stroke-width:11.9505;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS-3)"
+     d="m 25.676277,53.002699 25.082218,0.02818"
+     id="arrow" />
 </svg>
