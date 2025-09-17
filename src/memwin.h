@@ -141,7 +141,6 @@ public:
 public slots:
     void OnClose();
     void OnFontChanged(const QFont &newFont);
-    void OnUpdateFont();
     void OnStyleChanged(int index);
     void OnStyleHighlighted(int index) const;
     void OnToggleDisplayAddresses();
@@ -187,8 +186,8 @@ protected:
     void UpdateStyleCheck(int index) const;
     void UpdateStyleValue(int index) const;
     void RequestResize();
-    void DoResize(bool condition);
-    void Resize();
+    void DoResize();
+    bool Resize();
     void AdjustTextCursorPosition(
             const flx::sHexDumpProperties &properties, int previousRow) const;
     void DetectAndExecuteChangedValue();
@@ -202,6 +201,7 @@ protected:
     void SetUpdateDataPixmap(const QPixmap &pixmap) const;
     void RecalculateDynamicBytesPerLine(const QSize &size);
     void PositionCursor(DWord offset, bool isAscii);
+    void UpdateFont();
 
     // Event handlers
     void changeEvent(QEvent *event) override;

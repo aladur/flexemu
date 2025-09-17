@@ -186,10 +186,10 @@ MemoryWindow::MemoryWindow(
     ConnectStyleComboBoxSignalSlots();
     UpdateToggleHexAsciiEnabled();
     SetReadOnly(isReadOnly);
+    UpdateFont();
 
     toolBarLayout->addStretch(1);
 
-    QTimer::singleShot(0, this, &MemoryWindow::OnUpdateFont);
 
     const auto memoryIcon = QIcon(":/resource/memory.png");
     setWindowIcon(memoryIcon);
@@ -211,7 +211,7 @@ void MemoryWindow::OnFontChanged(const QFont &newFont)
     SetTextBrowserFont(newFont);
 }
 
-void MemoryWindow::OnUpdateFont()
+void MemoryWindow::UpdateFont()
 {
     const auto pointSize = QApplication::font().pointSize();
     auto font = GetMonospaceFont(pointSize);
@@ -779,9 +779,6 @@ void MemoryWindow::SetTextBrowserFont(const QFont &font)
     e_hexDump->document()->setDefaultFont(font);
     QFontMetrics metrics(e_hexDump->document()->defaultFont());
     e_hexDump->setCursorWidth(metrics.averageCharWidth());
-
-    RequestResize();
-    DoResize(true);
 }
 
 /*******************
@@ -793,7 +790,8 @@ void MemoryWindow::changeEvent(QEvent *event)
     if (event->type() == QEvent::ApplicationFontChange ||
         event->type() == QEvent::FontChange)
     {
-        OnUpdateFont();
+        UpdateFont();
+        DoResize();
     }
 }
 
@@ -1029,19 +1027,21 @@ void MemoryWindow::UpdateDataFinish()
             }
     });
 
-    DoResize(isRequestResize);
+    if (isRequestResize)
+    {
+        DoResize();
+    }
 }
 
-void MemoryWindow::DoResize(bool condition)
+void MemoryWindow::DoResize()
 {
-    if (condition && !data.empty())
+    if (!data.empty())
     {
         QPointer<MemoryWindow> safeThis(this);
         const auto fctResize = [safeThis](){
                 if (safeThis)
                 {
-                    safeThis->Resize();
-                    safeThis->isRequestResize = false;
+                    safeThis->isRequestResize = !safeThis->Resize();
                 };
             };
 
@@ -1096,8 +1096,15 @@ void MemoryWindow::RequestResize()
 // Prerequisites for resize (See DoResize() ):
 // - Data is available
 // The Resize is always executed in the event loop.
-void MemoryWindow::Resize()
+bool MemoryWindow::Resize()
 {
+    // If columns equals 0 e_hexDump->document->size() contains no valid
+    // data, resize has to be aborted and repeated next time.
+    if (columns == 0)
+    {
+        return false;
+    }
+
     int screenWidth = 640;
     int screenHeight = 800;
     if (!QGuiApplication::screens().isEmpty())
@@ -1108,6 +1115,7 @@ void MemoryWindow::Resize()
             QGuiApplication::screens().first()->geometry().height();
     }
 
+    // Use document size, document estimates the size for the whole text.
     auto size = e_hexDump->document()->size().toSize();
     // Make sure to always display the whole hex dump scale even if
     // the first row contains less than the max. byte number per line.
@@ -1130,11 +1138,12 @@ void MemoryWindow::Resize()
     {
         e_hexDump->setFixedWidth(e_hexDump->width() + 1);
     }
-    e_hexDump->setFixedWidth(e_hexDump->width() + 3);
 
     adjustSize();
     e_hexDump->setMinimumSize(64, 48);
     e_hexDump->setMaximumSize(0xFFFFFF, 0xFFFFFF);
+
+    return true;
 }
 
 void MemoryWindow::SetStatusMessage(const QString &message) const
