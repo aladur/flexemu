@@ -1668,8 +1668,19 @@ void MemoryWindow::SetUpdateDataPixmap(const QPixmap &pixmap) const
 void MemoryWindow::RecalculateDynamicBytesPerLine(const QSize &size)
 {
     QFontMetrics metrics(e_hexDump->document()->defaultFont());
-    const auto width = size.width();
-    const auto cols = width / metrics.averageCharWidth();
+    auto cols = size.width() / metrics.averageCharWidth();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+    // horizontalAdvance() gives better results than averageCharWidth()
+    // this is used to optimize cols value.
+    cols -= 6; // correction to be on the safe side with algorithm.
+    auto text = QString(cols, ' ');
+    while (size.width() > metrics.horizontalAdvance(text))
+    {
+        ++cols;
+        text.append(' ');
+    }
+    cols -= 2; // empirically estimated correction.
+#endif
     const auto dividend = config.withAscii ? 4U : 3U;
     const auto offset1 = (config.withAscii ? 1U : 0U) +
         (config.withAddress ? 6U : 0U);
