@@ -140,7 +140,6 @@ public:
 
 public slots:
     void OnClose();
-    void OnFontChanged(const QFont &newFont);
     void OnStyleChanged(int index);
     void OnStyleHighlighted(int index) const;
     void OnToggleDisplayAddresses();

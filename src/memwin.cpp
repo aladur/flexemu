@@ -204,13 +204,6 @@ MemoryWindow::MemoryWindow(
 ** Public Slots **
 *****************/
 
-// Implementation may change in future.
-// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-void MemoryWindow::OnFontChanged(const QFont &newFont)
-{
-    SetTextBrowserFont(newFont);
-}
-
 void MemoryWindow::UpdateFont()
 {
     const auto pointSize = QApplication::font().pointSize();
