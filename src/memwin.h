@@ -172,7 +172,7 @@ protected:
             const QString &hotKey = "");
     void InitializeStyleWidget();
     void ConnectStyleComboBoxSignalSlots() const;
-    void SetTextBrowserFont(const QFont &font);
+    void SetFont(const QFont &font) const;
     void ConnectHexDumpCursorPositionChanged(bool isConnect) const;
     void SetStatusMessage(const QString &message) const;
     DWord EstimateBytesPerLine() const;

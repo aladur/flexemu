@@ -208,7 +208,7 @@ void MemoryWindow::UpdateFont()
 {
     const auto pointSize = QApplication::font().pointSize();
     auto font = GetMonospaceFont(pointSize);
-    SetTextBrowserFont(font);
+    SetFont(font);
 }
 
 void MemoryWindow::OnStyleChanged(int index)
@@ -757,7 +757,7 @@ void MemoryWindow::SetIconSize(const QSize &iconSize)
     toolBar->setIconSize(iconSize);
 }
 
-void MemoryWindow::SetTextBrowserFont(const QFont &font)
+void MemoryWindow::SetFont(const QFont &font) const
 {
     e_hexDumpScale->document()->setDefaultFont(font);
     UpdateHexDumpScaleHeight();
