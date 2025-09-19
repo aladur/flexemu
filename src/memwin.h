@@ -201,6 +201,7 @@ protected:
     void RecalculateDynamicBytesPerLine(const QSize &size);
     void PositionCursor(DWord offset, bool isAscii);
     void UpdateFont();
+    void UpdateHexDumpScaleHeight() const;
 
     // Event handlers
     void changeEvent(QEvent *event) override;

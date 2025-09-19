@@ -760,18 +760,25 @@ void MemoryWindow::SetIconSize(const QSize &iconSize)
 void MemoryWindow::SetTextBrowserFont(const QFont &font)
 {
     e_hexDumpScale->document()->setDefaultFont(font);
-    const auto height =
-        static_cast<int>(ceil(e_hexDumpScale->document()->size().height()));
-    e_hexDumpScale->setFixedHeight(height);
-    while(e_hexDumpScale->verticalScrollBar()->isVisible())
-    {
-        e_hexDumpScale->setFixedHeight(e_hexDumpScale->height() + 1);
-    }
+    UpdateHexDumpScaleHeight();
 
     // Show overwrite cursor.
     e_hexDump->document()->setDefaultFont(font);
     QFontMetrics metrics(e_hexDump->document()->defaultFont());
     e_hexDump->setCursorWidth(metrics.averageCharWidth());
+}
+
+void MemoryWindow::UpdateHexDumpScaleHeight() const
+{
+    auto repeat = 0;
+    const auto height =
+        static_cast<int>(ceil(e_hexDumpScale->document()->size().height()));
+    e_hexDumpScale->setFixedHeight(height);
+    while(repeat < 20 && e_hexDumpScale->verticalScrollBar()->isVisible())
+    {
+        e_hexDumpScale->setFixedHeight(e_hexDumpScale->height() + 1);
+        ++repeat;
+    }
 }
 
 /*******************
@@ -899,6 +906,7 @@ void MemoryWindow::UpdateData()
     flx::hex_dump_scale(scaleStream, bytesPerLine, config.withAscii,
             config.withAddress, CurrentExtraSpace());
     e_hexDumpScale->setPlainText(QString::fromStdString(scaleStream.str()));
+    UpdateHexDumpScaleHeight();
 
     if (hexDumpFuture.isRunning())
     {
