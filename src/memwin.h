@@ -127,7 +127,7 @@ public:
     static const QStringList &GetStyleHotKeys();
     static QString GetDefaultWindowTitle();
     static QString CreateWindowTitle(
-            const std::string &title,
+            const std::string &p_title,
             const BInterval<DWord> &addressRange);
     static void ConvertConfigString(const std::string &configString,
             Config_t &config, QRect &positionAndSize);
@@ -165,7 +165,7 @@ protected:
     void CreateViewActions(QToolBar &p_toolBar);
     void CreateSearchActions(QToolBar &p_toolBar);
     void CreateStatusBar(QBoxLayout &layout);
-    QToolBar *CreateToolBar(QWidget *parent, const QString &title,
+    QToolBar *CreateToolBar(QWidget *parent, const QString &p_title,
                             const QString &objectName, const QSize &iconSize);
     QAction *CreateAction(QIcon *icon, QMenu &menu, const QString &text,
             int index, const QString &statusTip = "",

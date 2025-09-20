@@ -694,11 +694,11 @@ void MemoryWindow::CreateStatusBar(QBoxLayout &layout)
 // Implementation may change in future.
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 QToolBar *MemoryWindow::CreateToolBar(QWidget *parent,
-                                      const QString &title,
+                                      const QString &p_title,
                                       const QString &objectName,
                                       const QSize &iconSize)
 {
-    auto *newToolBar = new QToolBar(title, parent);
+    auto *newToolBar = new QToolBar(p_title, parent);
     assert(newToolBar != nullptr);
     newToolBar->setObjectName(objectName);
     newToolBar->setFloatable(false);
@@ -1280,30 +1280,30 @@ QString MemoryWindow::GetDefaultWindowTitle()
 }
 
 QString MemoryWindow::CreateWindowTitle(
-        const std::string &sTitle,
+        const std::string &p_title,
         const BInterval<DWord> &addressRange)
 {
-    auto title = QString::fromStdString(sTitle);
-    if (title.isEmpty())
+    auto result = QString::fromStdString(p_title);
+    if (result.isEmpty())
     {
-        title = GetDefaultWindowTitle();
+        result = GetDefaultWindowTitle();
     }
 
-    if (auto index = title.indexOf(GetStartAddrLiteral()); index >= 0)
+    if (auto index = result.indexOf(GetStartAddrLiteral()); index >= 0)
     {
         const auto startAddr = QString("%1").arg(addressRange.lower(), 4, 16,
             QLatin1Char('0')).toUpper();
-        title.replace(GetStartAddrLiteral(), startAddr);
+        result.replace(GetStartAddrLiteral(), startAddr);
     }
 
-    if (auto index = title.indexOf(GetEndAddrLiteral()); index >= 0)
+    if (auto index = result.indexOf(GetEndAddrLiteral()); index >= 0)
     {
         const auto endAddr = QString("%1").arg(addressRange.upper(), 4, 16,
             QLatin1Char('0')).toUpper();
-        title.replace(GetEndAddrLiteral(), endAddr);
+        result.replace(GetEndAddrLiteral(), endAddr);
     }
 
-    return title;
+    return result;
 }
 
 // Specification of configString:
