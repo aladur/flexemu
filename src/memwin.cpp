@@ -118,9 +118,8 @@ MemoryWindow::MemoryWindow(
     const QSize iconSize(16, 16);
 
     setObjectName("MemoryWindow");
-    auto title = CreateWindowTitle(config.windowTitle, config.addressRange);
+    title = CreateWindowTitle(config.windowTitle, config.addressRange);
     title = tr("Memory") + " - " + title;
-    setWindowTitle(title);
 
     mainLayout->setObjectName("mainLayout");
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -142,6 +141,7 @@ MemoryWindow::MemoryWindow(
     e_hexDumpScale->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     e_hexDumpScale->horizontalScrollBar()->setMaximum(0);
     e_hexDumpScale->setContextMenuPolicy(Qt::NoContextMenu);
+
     mainLayout->addWidget(e_hexDumpScale);
 
     e_hexDump->setObjectName("e_hexDump");
@@ -776,6 +776,11 @@ void MemoryWindow::UpdateHexDumpScaleHeight() const
     }
 }
 
+void MemoryWindow::UpdateWindowTitle()
+{
+    setWindowTitle(title + (isReadOnly ? tr(" [read-only]") : ""));
+}
+
 /*******************
 ** Event handlers **
 *******************/
@@ -880,6 +885,7 @@ void MemoryWindow::SetReadOnly(bool p_isReadOnly)
     findData.Reset();
     UpdateFindActionsEnabled();
     UpdateToggleHexAsciiEnabled();
+    UpdateWindowTitle();
 }
 
 void MemoryWindow::UpdateData()

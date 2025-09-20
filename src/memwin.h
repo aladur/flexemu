@@ -202,6 +202,7 @@ protected:
     void PositionCursor(DWord offset, bool isAscii);
     void UpdateFont();
     void UpdateHexDumpScaleHeight() const;
+    void UpdateWindowTitle();
 
     // Event handlers
     void changeEvent(QEvent *event) override;
@@ -243,6 +244,7 @@ private:
     QAction *findNextAction{};
     QFuture<QString> hexDumpFuture;
     QFutureWatcher<QString> hexDumpWatcher;
+    QString title;
     const MemoryRanges_t availableMemoryRanges;
     Config_t config;
     DWord dynamicBytesPerLine{};
