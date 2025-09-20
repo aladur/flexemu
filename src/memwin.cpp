@@ -138,20 +138,15 @@ MemoryWindow::MemoryWindow(
     e_hexDumpScale->setObjectName("e_hexDumpScale");
     e_hexDumpScale->setFocusPolicy(Qt::NoFocus);
     e_hexDumpScale->setLineWrapMode(QTextEdit::NoWrap);
-    e_hexDumpScale->setAutoFillBackground(true);
-    e_hexDumpScale->setBackgroundRole(QPalette::Base);
     e_hexDumpScale->setReadOnly(true);
     e_hexDumpScale->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     e_hexDumpScale->horizontalScrollBar()->setMaximum(0);
-    e_hexDumpScale->setText("\n");
     e_hexDumpScale->setContextMenuPolicy(Qt::NoContextMenu);
     mainLayout->addWidget(e_hexDumpScale);
 
     e_hexDump->setObjectName("e_hexDump");
     e_hexDump->setMinimumSize(64, 48);
     e_hexDump->setLineWrapMode(QTextEdit::NoWrap);
-    e_hexDump->setAutoFillBackground(true);
-    e_hexDump->setBackgroundRole(QPalette::Base);
     e_hexDump->setOverwriteMode(true);
     e_hexDump->setReadOnly(isReadOnly);
     e_hexDump->setContextMenuPolicy(Qt::NoContextMenu);
