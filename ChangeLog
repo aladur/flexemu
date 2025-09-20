@@ -1188,3 +1188,385 @@ New Features:
 Bug Fixes:
 6f2e516 Unix bugfix flexemu: Flexemu desktop launcher does not work.
 Code Maintenance:
+
+V3.30 (20250920)
+Feature Summary:
+* flexemu, display and modify CPU memory (#11)
+  * Support multiple Memory Windows.
+  * Save and restore window size, position and settings.
+  * Find and Find Next for ASCII string, regex or HEX bytes.
+  * Add Windows menu.
+* flexemu: Avoid startup crash when boot ROM path does not exist (#14)
+  * If boot ROM file does not exist, can not be read or is no well-formed
+    hex-file now a dialog pops up.
+  * In the dialog there is a hint with the config file path on Unix like
+    os or Windows Registry path on Windows.
+  * If technically feasible the dialog provides a button to fix this
+    automatically by setting the default boot ROM file.
+  * Do not support non existing files as disk drives, even if "Formatting
+    disk" is enabled.
+    Reason: Feature makes on sense and is unreliable.
+  * Empty files are still supported as unformatted disks.
+  * Improve boot ROM neumon54.hex
+    * When reading boot sector, abort on any of these error states:
+      not ready, record not found, crc error, lost data.
+    * This avoids an endless loop when trying to boot, when boot disk is
+      unformatted.
+  * Same issue is reproducible with boot ROM files mon53.s19, mon54.s19
+    and monu54-6.s19. They will not be fixed.
+* flexemu, support memory mapped I/O in whole address range (#15)
+* flexemu, About Dialog a new Tab "Configuration" shows the guest configuration.
+* flexemu, magnetic Main Window: When moving Main Window all other flexemu
+  windows are moved too.
+* On Windows the command line executables for dsktool, mdcrtool and flex2hex
+  have file properties.
+* Unicode file path support
+New Features:
+ b0dc314 flexemu: Support I/O devices in whole addr. range.
+ b7cd7a6 flexemu: Add test device for test purposes.
+ 20860e6 For diskname creation be aware of unicode characters.
+ 3f5b7be Windows command line tools: Support unicode.
+ f2da124 Windows: Unicode support for function stat()
+ 77947e9 Windows: Unicode support for function access()
+ de5a533 Windows: Unicode support for function utime()
+ bd123f0 Add Windows resource file to dsktool, mdcrtool and flex2hex.
+ ce55138 flexemu Preferences: Add button to select directory disk.
+ 3c231c1 Add identifier string to coltab boot ROM.
+ bdeebff flexemu: Parse name of boot ROM and OS name.
+ 8a5b2f0 flexemu about dialog: Add new Tab for guest configuration.
+ ace395f Reuse GetVersionsHtmlText() in flexplorer.
+ a86cf73 Reuse GetVersionsHtmlText() in flexplorer.
+ 03fb0ce flexemu: Support memory display (read-only), #11 part 1
+ e99a956 Update documentation for hex_dump functions.
+ 55c943f flexemu: Show frequency in main window.
+ b805450 flexemu: Support memory display (read-write), #11 part 2
+ 05369c3 Memory Window: Use start and end address in title
+ bb0fe7e Update documentation for memory window.
+ 7d17a38 MemoryWindow: Save and restore memory windows.
+ eb4b73f flexemu: Add Window menu
+ 3611301 flexemu: Save and restore geometry of main window.
+ c08f6b2 flexemu, add more RAM/ROM details in about dialog.
+ c202615 flexemu: Save and restore geometry of CPU Dialog.
+ 0390bec About dialog: Avoid visible frame around flexemu icon.
+ 84fa702 Memory Window: Add memory update indicator LED.
+ 92c588b Memory Window: Use concurrency to update data.
+ 2a0af73 Memory Window: Disable Auto Resize for Style Dynamic.
+ a9e8227 flexplorer: In About Dialog hide Configuration tab.
+ 6244007 flexemu: Add "Magnetic Main Window" feature.
+ cf84fc0 flexemu: For hex_dump always use same replacement char.
+ 38f2a77 flexemu: Use uppercase hex digits in CPU Dialog.
+ aab85a4 Update window-close icon.
+ 11ae263 Memory Window: Add Find / Find Next Menu, #11 part 3.
+ 88e5700 Memory Window Find: Add clear button.
+ 79547f7 Memory Window: Add find icon to Find menu.
+ b50a946 Memory Window: Add find-next icon to Find Next menu.
+ a2e16ea flexemu: Add magnet icon to Magnetic Main Window menu.
+ cea867a flexemu: Add more metadata in About dialog device config.
+ 7e30344 Memory Window: Display read-only state in windows title.
+Bug Fixes:
+ 1b859b2 Bugfix tools when compiling with -std=C99
+ 529300e Bugfix clang compile error in src/tools.
+ 0c10ed0 Bugfix Unix like OS: Use flexplorer icon for FLEX disk images.
+ 155006b Bugfix flexemu, flexplorer: Correctly show path.
+ 7ac702d flexemu: Correctly display path in disk info.
+ 24fb5a1 Bugfix neumon54: Support NUL key (hex 00)
+ 0b82a69 Use real RAM extension size as 384 KByte (was 288 KByte).
+ 08aeb83 flexemu: Get right memory size of one RAM ext. card.
+ 9d6cf65 Bugfix flexemu preferences dialog.
+ b5cb88c CpuView bugfix: Correctly display illegal instruction.
+ af6f5a0 Bugfix flexemu illegal instruction reaction.
+ b8f44d7 Bugfix #14, part 1.
+ c89a869 Bugfix #14, part 2/1.
+ 1fb7451 Bugfix #14, part 2/2.
+ 62189d8 Fix typo in neumon54.asm
+ 95b51ac Optimize code in neumon54.asm to reduce binary size.
+ ac97ded Bugfix flexemu: Boot correctly first time starting flexemu.
+ e22cbaa Bugfix flexemu Print output window.
+ 3619c8a Bugfix flexplorer: Use right default running first time.
+ ee6dfc9 Bugfix hex_dump() correct alignment of first ASCII column.
+ 9536fe0 Bugfix hex_dump() avoid extra space as last char. in line
+ e6904c7 Bugfix flexemu: Always show right content in Memory Window.
+ d2622ea Fix typo in text documentation.
+ 1164f66 Bugfix to build flexemu on Windows.
+ c9b863a Bugfix Memory Window: Always display whole scale.
+ 547fa5e Fix typo in documentation.
+ 90865b3 Bugfix Memory Window, use default title.
+ 910f0f4 Bugfix Memory Window: Update right address range.
+ 68a0ae2 Bugfix Memory Window: Always store geometry in same format.
+ 43795a8 Bugfix Print Output Window: Always store geometry.
+ 194c11c Bugfix flexemu: Store right windows geometry.
+ 5ba6e7e Bugfix flexemu: Store right windows geometry.
+ fbc69a8 Bugfix Print Output Window.
+ f73b24b Bugfix MemoryWindow on Windows.
+ 067379d Bugfix flexemu: Do not set parent for new top level windows.
+ 4487cce Bugfix flexemu Memory Window: Use logical and.
+ 12545a0 Bugfix flexemu: frequency display in status bar.
+ 320f2cc Bugfix flexplorer status bar.
+ acff621 Bugfix Memory Window: Right cursor pos. opening window.
+ fbc535d Bugfix Memory Window: Update current address and value
+ 87fa29e Bugfix flexemu: Integrate magnet icon into *.qrc file.
+ af5a4c4 Bugfix flexemu: Avoid restore Memory Windows with wrong size.
+ d4b842f Bugfix Memory Window: Avoid vert. scrollbar in hex dump scale.
+ 2fed062 Bugfix CPU view: Avoid displaying control character.
+Code Maintenance:
+ fb77a56 Change Qt resource name for cmake compatibility.
+ c4f0773 Use compiler predefined macro for Linux.
+ e269061 Use compiler predefined macro for BSD.
+ 449e73f Use compiler predefined macro for MacOS.
+ 93e8caa autotools: Remove cygwin and mingw support.
+ 7b979d8 autoconf: Use build_os (instead of host_os).
+ e0e4504 Test: Add file flexlabl.conf to test/data
+ 0747a93 metadata: Support concurrent execution of updatemd.
+ 1dcb96d automake: test uses it's own pch.h file.
+ 0fb15fc Avoid clang compiler warning about redefining _XOPEN_SOURCE.
+ 0aa4cd1 Avoid relative paths when including header files.
+ 0354250 ncurses: Support more ncurses headers.
+ c6e198c automake: Add missing file for flexplorer build.
+ 9dc6c70 cmake: Define macros when using cmake.
+ 1033bea cmake: When building with cmake display version.
+ d531a31 cmake: Support generated ui files.
+ 9027066 unittests: Test files support clang-tidy checks.
+ e7203eb clang-tidy: Extend header exclude regular expression.
+ aad549d Improve Qt6 compatibility.
+ c898bb2 Add copyright message to test files.
+ 89821ee clang-tidy config: Define file extensions.
+ b960de8 gccasm test supports clang-tidy checks.
+ 44af29a Update documentation.
+ b92d0e2 Unix like OS: Add cmake support.
+ 5692fcc cmake: Performance optimize fast-clang-tidy-check target.
+ f9d4b63 CI: Add MacOS as runner for clang-tidy checks.
+ 53ab532 cmake clang-tidy: Minimize dependencies.
+ f069dfc bugfix CI: Support cmake for FreeBSD build.
+ b75abdf cmake: Correct warning message (clang-tidy).
+ 7f108c4 CI: Use cmake for MacOS build and test.
+ 9677bdb CI: clang-tidy build, remove duplicate cmake call.
+ 6536776 cmake: Update message about clang-tidy or run-clang-tidy.
+ 4480b95 cmake: Upate compile and install documentation.
+ 0edce6c Windows build: Update Qt download and build script.
+ 065e84b Include misc1.h where needed.
+ 96175e8 Include what you use.
+ a3123b6 Windows: Add cmake support.
+ d719f67 Windows: Refactor flexemu build script.
+ acc3bb1 Bugfix Windows installer: Cleanup ImHex directory.
+ ab7e922 Bugfix cmake on Windows: Add *.rc file.
+ b57e044 cmake on Windows: Update flexemu build script.
+ a369886 CI appveyor, output detailed unittests results.
+ 286ad44 cmake on Windows: Add unittests target.
+ f83e74f Bugfix cmake: Make sure to always find test files.
+ 3e7fbff Fix typo.
+ 3b77372 Use std::optional for optional value.
+ c4720e8 Reduce noise when adding or removing a valid device.
+ ac0ca56 Use global const variable instead of string literal.
+ acd269d unittests: Use more std::filesystem for modern c++.
+ be526b7 Use std::filesystem::path for free functions.
+ 8f1c6e7 Use std::filesystem::path for flexemu config files.
+ 6e68b88 Replace FlexException with std::filesystem::path param.
+ 8d18d98 flexemu config file classes: Renaming.
+ b0795dc Use std::filesystem::path for rc-files.
+ aa8e0a0 FlexemuConfigFile add unittest for GetSerparAddress.
+ 5b5c994 FlexemuConfigFile add unittest for GetBootCharacter.
+ 1df6da5 Use std::filesystem::path in struct sFPOptions.
+ 63f584c Use std::filesystem::path in struct sOptions.
+ 41328d3 Use std::filesystem::path in class Pia2V5.
+ 9d20b53 Use std::filesystem::path in class E2floppy.
+ 222b8d5 Use std::filesystem::path in class Mc6809LoggerConfig.
+ edc3e3a Use std::filesystem::path in class FlexemuOptionsUi.
+ 2833bc9 Use std::filesystem::path in class MiniDcrTape.
+ 7473461 Use std::filesystem::path in fileread free functions.
+ a084369 mdcrtool: use std::filesystem::path.
+ 06a98ea Use std::filesystem::path in class MdcrFileSystem.
+ f5769ce flex2hex: use std::filesystem::path.
+ a21e3f0 Add unittests for std::filesystem.
+ b67c541 Replace flx::getTempPath() by std::filesystem fct.
+ 906266e Replace flx::asAbsolutePath() by std::filesystem fct.
+ 814cda6 Replace flx::getParentPath() by std::filesystem fct.
+ 6b47ce0 Replace flx::getFileStem() by std::filesystem fct.
+ a354437 Use more std::filesystem.
+ e536ec5 Use std::filesystem in class FlexplorerMdiChild.
+ edd2c90 Replace BDirectory::Create() by std::filesystem fct.
+ 6139ff5 Replace BDirectory::Exists() by std::filesystem fct.
+ 0aa006c Remove BDirectory::Remove() functions.
+ 43e99c6 Use do-while loop for better readability.
+ a13f0d8 Use std::filesystem::path in class FlexDirectoryDiskBySector.
+ ee04cff Use std::filesystem::path in class FlexDirectoryDiskByFile.
+ 8e184b6 Support std::filesystem::path in class FlexException.
+ f7aae80 Use std::filesystem::path in class FlexDisk.
+ 48bf827 Use std::filesystem::path for GetPath() disk ifc.
+ c906f93 Use std::filesystem::path for disk image construction.
+ aa0b0e3 Use std::filesystem::path in class FlexplorerTableModel.
+ e430af4 Add unittests for disk image files and disk dir.
+ 87423bd Add unittests for class RandomFileCheck.
+ 4d0cb0a Use std::filesystem::path in class RandomFileCheck.
+ e127b61 Use std::filesystem::path in class FlexDirectoryDiskOptions.
+ 6768e2e Remove superfluous conversions.
+ c7cc1dd Use std::filesystem::path in class FlexFileBuffer.
+ 0b90480 Define variable with right class.
+ 239aadd Rename parameter name.
+ 60b32b2 Rename member variable.
+ 9303ce7 Make boot sector file parameter an optional file path.
+ 39d7968 dsktool: Use std::filesystem::path.
+ 671d136 Replace flx::getFileExtension() by std::filesystem.
+ e0d1d28 Replace flx::getFileName() by std::filesystem.
+ be55966 Use std::filesystem::path in class BDirectory.
+ a13aa32 Add unittests for class BDirectory.
+ ef59387 Reduce use of PATHSEPARATORSTRING.
+ 9692528 Improve unittests for class FlexemuConfigFile.
+ 9b7d9c6 Improve unittests for class FlexemuConfigFile (2).
+ f1c9210 Remove extra output from unittests.
+ 9ef870d Rename function parameter name.
+ 8251071 Replace const char ptr parameter by QString.
+ ad17be9 Remove unused code.
+ d748b22 Replace const char ptr parameter by std::string ref.
+ f42e6a4 Refactoring in class FlexDisk.
+ 6b2c04d Rename variables.
+ 87dd328 Remove unused exception ids.
+ 94b5e25 Rename public interface member function.
+ fcbfb31 Avoid direct access to instance variable.
+ 7f398d0 Remove unused code.
+ c6bc382 Replace magic numbers by std::optional.
+ ec4e8ed Use QString::fromStdString() converting from std::string.
+ 4e0d2c8 Remove superfluous code.
+ 04b373a Replace const char ptr by std::string.
+ 1d46ed5 Move Windows specific path conversion.
+ 36b29e6 Bugfix Windows: Make unittests run.
+ d51af9d CI: On Windows execute unittests.
+ 178f6ab unittests: Uncomment helper function.
+ 679e2d2 Use std::filesystem::path in class FlexDirectoryDiskBySector.
+ 93a2bd9 Avoid utf-8/utf-16 string conversions.
+ 7e392bd Remove unused code.
+ a5c468c Remove unused code.
+ aa52486 Use std::filesystem::path in class BProcess.
+ ec89783 Remove unused code.
+ 0aa3bb7 test BDirectory: compare list content.
+ 3ce38b7 Windows: Update build Qt script.
+ 2fc140a Use std::filesystem::path in class FlexDirectoryDiskBySector.
+ c41e04d Reduce compiler warnings on Windows.
+ bc3acce Reduce compiler warnings on Windows (2).
+ 78b6991 Reduce compiler warnings on Windows (3).
+ e2b538f unittests on Windows: Output current ANSI code page.
+ c3a4b6c CI: Windows test, abort if exit code is non zero.
+ 86c1e8d CI: MacOS test, abort if exit code is non zero.
+ 534502f CI: FreeBSD test, abort if exit code is non zero.
+ 4e1206f CI: Linux (old) test, abort if exit code is non zero.
+ fa92652 CI: MacOS, remove pipe.
+ 2fd1cc1 gcc/clang compiler: Add more warnings.
+ 77a7251 Add timeout and retry count downloading envar plugin.
+ 9f7fcfd flexemu preferences dialog: Renaming.
+ 3d12720 flexemu, flexplorer: Update Windows resource file.
+ c920f34 flexemu refactoring.
+ 6d30a8e Update metadata.
+ 54fcd36 Replace FALLTHROUGH macro by c++17 attribute.
+ adfdbdb Get CPU vendor and name from class Mc6809.
+ 2371f80 Add interfaces to get memory size in class Memory.
+ ffd1a57 Add interface to get device properties to class Memory.
+ 3f99185 flexemu: Update strings in preferences dialog.
+ ccd4ce0 Add free functions in free.cpp/.h
+ 3bacfba flexemu: Use std::shared_ptr for commands.
+ 933c402 Add MemorySource interface to class Memory.
+ c89f08b Use class BInterval to define address range of device.
+ 9458441 Update indentation in CMakeLists.txt
+ 6f46a37 Use one-liner in GetConfiguration() if possible.
+ e7c0659 Refactoring.
+ d5b2647 Include what you use.
+ 77693b8 Update documentation.
+ cc4e5f8 Refactoring class QtGui.
+ fe887c0 Refactoring class FlexemuOptions.
+ 2dd486f Add new member functions to class FlexemuOptions.
+ 9a9ef52 Add unittests for unformatted disk.
+ b3a2bf5 Move hex_dump() to free functions.
+ 066c554 Improve hex_dump().
+ 4072428 Use std::quoted().
+ 9d187a7 Replace endsWithPathSeparator().
+ 9582fac Replace isPathsEqual() by std::filesystem.
+ 3f3f8bb Remove unused code.
+ 5256342 Move GetMonospaceFont() to Qt free functions.
+ d6b8062 BRcFile and BRegistry: Support std::filesystem values.
+ 43d41d9 Add test cases to class BRcFile.
+ 4614bf4 Use new functions GetValue/SetValue with std::filesystem::path
+ e0c6fb9 Avoid redundant conversions.
+ 0377422 class BRegistry GetValues has same behaviour as BRcFile.
+ 5dae5b1 Avoid using magic numbers.
+ 25ba4a5 Further improve hex_dump().
+ bf7bcd3 Add more unittest to hex_dump().
+ 0ba34d2 Add hex_dump_scale() to get a scale for hex_dump().
+ a80d79a Improve hex_dump() and hex_dump_scale() tests.
+ 231e40f Update documentation for hex_dump() and hex_dump_scale().
+ 36d0887 unittests: Support debug output.
+ 63b4fac unittests: Add debug output to test_free.cpp
+ ba9eed8 unittests: Add debug output to test_ffilebuf.cpp
+ 64cd3ac Remove unused code.
+ 7fb2a9b Improve hex_dump() and hex_dump_scale().
+ 1e7dba2 Avoid last new line in hex_dump() output.
+ 65c9168 Rename widgets in class MemoryWindow.
+ b919f30 Add function hexval() to get hex digit value for char.
+ 455a8a7 Add free function get_hex_dump_properties()
+ 2dfdc91 CI: Update github action for Windows build
+ adc9877 CI: Update Appveyor to build on Windows only.
+ a4a9ce5 Update comments in test for free.cpp
+ 8791eec Rename class and member variables.
+ ecba033 Use flx::ascchr() in hex_dump()
+ 0744484 hex_dump() always use same address indent.
+ 8e9cd37 Use default member initializer in class MemoryWindow.
+ a9e927f Add flx::get_hex_dump_position_for_address() free fct.
+ e2dc429 Add stream output operator for enum class HexDumpType.
+ 2cb23a6 class CReadMemory: Use addressRange.
+ cb92808 Reformat hex_dump functions.
+ f41b12c Minimize default arguments for hex_dump functions.
+ b6345e1 Add stream output operator for enum CpuState.
+ c03d105 Include what you use.
+ e8ea741 Add member function for optional object creation.
+ ee52f96 class Memory: Add new interface to get all memory ranges.
+ 079705e Add command class to write memory.
+ 14bb874 Memory Window Setup: Make window title the first param.
+ 744f28c Swap parameters in ctor of class MemoryWindow.
+ b070697 MemoryWindow: Declare and use config object in ctor.
+ 0b71deb MemoryWindow: Use new config object as member variable.
+ 46e9d5b Use new config object in class MemorySettingsUi.
+ 3a6b654 Add convert function from std::string to integer.
+ b948db3 Add function to get number of bits set for integer.
+ 73cf99d Remove superfluous code.
+ 18acfc3 Fix typo.
+ c696b78 flexemu: Set parent for MemoryWindow.
+ 76a8817 flexemu, Set Parent for PrintOutputWindow.
+ 1440781 Replace return type from QString to std::string.
+ 2fd680f Replace parameter type from QString to std::string.
+ 1568515 Avoid superfluous conversion.
+ 73fa618 Add convert function from integer to std::string.
+ 19fd0bf Avoid warnings from 3rd party header.
+ d6cda70 Remove unused code.
+ 7f7d521 Avoid shadowing local variables.
+ 51dfd51 flexemu: Prepare build to use module QtConcurrent.
+ 6a8c1b4 class MemoryWindow refactoring.
+ 5c81980 Remove from AUTHORS, code is not used any more.
+ fbccc28 Make object constexpr.
+ 8480ff9 Move comment to the right place.
+ a5c769c Remove unused code.
+ 905f0e4 Memory Window: Put all static member fcts together.
+ 35d5320 Add parent to all dialogs.
+ be9bca1 Change interface to use constexpr.
+ 9707b61 Use constexpr when possible.
+ ed08290 Reduce compiler warnings.
+ f217f59 Replace to_time_t() function.
+ 86d303c Remove temporary output from unittest.
+ 336bac8 CreateStatusBar() cleanup in class MemoryWindow
+ 9624a17 Set object name for all widgets in class MemoryWindow.
+ cd7135e Add missing svg image.
+ 4c3cda7 Add free fct. to convert hex-digit string to vector of bytes.
+ fb92798 Add free Qt function.
+ 7fc9cbb Add new QValidator subclass to validate std::regex
+ 985cac2 Add unittest for flx::get_bytes_from_hex()
+ ba7fba4 Reduce compiler warnings.
+ d684e44 Update build script to change version.
+ d7b8b01 CI: CirrusCI, build on FreeBSD 14.3
+ 0b2d6d0 Update build script to change version (2).
+ 9dda236 Update source code format.
+ 63cf889 Rename local variable.
+ 3e9eb92 Improve free function split().
+ 412bea8 flexemu: Add more metadata methods to class IoDevice.
+ 504e39c flexemu: Update Find Next icon.
+ 7632d03 Memory Window: Optimize hex-dump for style Dynamic.
+ f48a8fe Remove unused code.
+ 0dc9b82 Remove superfluous code.
+ a72017f flexemu, optimize size of CPU Dialog.
+ f50dd45 Reduce warnings.
+ b64ee25 Update Version to V3.30
