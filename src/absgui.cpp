@@ -162,7 +162,6 @@ void AbstractGui::clear_cpuview()
     const std::string delim("\n");
 
     cpustring.resize(CPU_LINES * CPU_LINE_WIDTH + 1, ' ');
-    cpustring[cpustring.size() - 1] = '\0';
     auto size = static_cast<int>(delim.size());
 
     for (int y = 0; y < CPU_LINES; ++y)
