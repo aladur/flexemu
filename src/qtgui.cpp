@@ -1473,7 +1473,8 @@ void QtGui::redraw_cpuview_impl(const Mc6809CpuStatus &/*status*/)
 {
     assert(cpuDialog != nullptr);
 
-    cpuUi.e_status->setText(QString::fromStdString(cpustring));
+    const auto str = cpustring.substr(0, cpustring.size() - 1);
+    cpuUi.e_status->setText(QString::fromStdString(str));
 }
 
 void QtGui::PopupMessage(const QString &message)
