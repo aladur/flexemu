@@ -428,7 +428,7 @@ TEST_F(test_IFlexDiskByFile, fct_ReadToBuffer)
 
 TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
 {
-    std::string filename{"test.txt"};
+    std::string filename{"testfdsk.txt"};
     auto ft = FileTimeAccess::Get | FileTimeAccess::Set;
     auto path = createFile(temp_dir, filename, true, 22);
     setDateTime(path.u8string(), BDate(11, 8, 2024), BTime(22, 1), ft);
