@@ -115,7 +115,8 @@ TEST(test_mc6809logger, fct_doLogging)
     EXPECT_FALSE(logger.doLogging(0x8000));
     EXPECT_FALSE(logger.doLogging(0xFFFF));
     Mc6809LoggerConfig config;
-    config.logFilePath = fs::u8path(u8"test.log");
+    const auto path = fs::temp_directory_path() / (u8"mc6809_0.log");
+    config.logFilePath = path;
     config.isEnabled = true;
     logger.setLoggerConfig(config);
     EXPECT_TRUE(logger.doLogging(0x0000));
@@ -148,13 +149,13 @@ TEST(test_mc6809logger, fct_doLogging)
     config.isEnabled = false;
     logger.setLoggerConfig(config);
 
-    fs::remove(config.logFilePath);
+    fs::remove(path);
 }
 
 TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
 {
     Mc6809LoggerConfig config;
-    config.logFilePath = fs::u8path(u8"test1.log");
+    config.logFilePath = fs::temp_directory_path() / (u8"mc6809_1.log");
     config.isEnabled = true;
     config.isLoopOptimization = true;
     {
@@ -187,7 +188,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     fs::remove(config.logFilePath);
 
     {
-        config.logFilePath = fs::u8path(u8"test2.log");
+        config.logFilePath = fs::temp_directory_path() / (u8"mc6809_2.log");
         // Testcase:
         // 0100 LDA #6
         // 0102 DECA
@@ -219,7 +220,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     fs::remove(config.logFilePath);
 
     {
-        config.logFilePath = fs::u8path(u8"test3.log");
+        config.logFilePath = fs::temp_directory_path() / (u8"mc6809_3.log");
         // Testcase:
         // 0100 LDA #2
         // 0102 DECA
@@ -249,7 +250,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
     fs::remove(config.logFilePath);
 
     {
-        config.logFilePath = fs::u8path(u8"test4.log");
+        config.logFilePath = fs::temp_directory_path() / (u8"mc6809_4.log");
         // Testcase:
         // 0100 LDA #8
         // 0102 LDX #$FFFC
@@ -300,7 +301,7 @@ TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
 TEST(test_mc6809logger, fct_logCpuState_selfModifyCode)
 {
     Mc6809LoggerConfig config;
-    config.logFilePath = fs::u8path(u8"test5.log");
+    config.logFilePath = fs::temp_directory_path() / (u8"mc6809_5.log");
     config.isEnabled = true;
     config.isLoopOptimization = true;
     {
@@ -363,4 +364,3 @@ TEST(test_mc6809logger, fct_asCCString)
     EXPECT_EQ(Mc6809Logger::asCCString(0x55), "-F-I-Z-C");
     EXPECT_EQ(Mc6809Logger::asCCString(0xAA), "E-H-N-V-");
 }
-
