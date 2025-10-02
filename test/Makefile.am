@@ -28,7 +28,8 @@ BUILT_SOURCES = $(PCH_H_GCH)
 
 DIRFLAGS = \
 	-DF_DATADIR=\"$(pkgdatadir)\" \
-	-DF_SYSCONFDIR=\"$(sysconfdir)\"
+	-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+	-DF_TESTDATADIR=\"$(top_srcdir)/test/data\"
 
 ALL_TARGETS_CXXFLAGS = \
 	--std=c++17 -pipe -D_REENTRANT -pthread -fPIC \

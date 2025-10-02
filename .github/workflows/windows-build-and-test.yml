@@ -91,11 +91,9 @@ jobs:
           COPY /Y buildx64\fmt\bin\Release\fmt*.dll result\x64\Release
           COPY /Y buildx64\bin\Release\gtest.dll result\x64\Release
           COPY /Y buildx64\bin\Release\unittests.exe result\x64\Release
-          XCOPY buildx64\test\data result\x64\Release\data /SVEI
           COPY /Y buildx64\fmt\bin\Debug\fmt*.dll result\x64\Debug
           COPY /Y buildx64\bin\Debug\gtest.dll result\x64\Debug
           COPY /Y buildx64\bin\Debug\unittests.exe result\x64\Debug
-          XCOPY buildx64\test\data result\x64\Debug\data /SVEI
 
       - name: Test x64
         shell: cmd

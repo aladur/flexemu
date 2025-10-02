@@ -129,7 +129,7 @@ protected:
                 else
                 {
                     auto ext = diskPath.extension().u8string();
-                    const auto srcFile = fs::current_path() / "data" /
+                    const auto srcFile = fs::path(F_TESTDATADIR) /
                         (std::string("testdisk") + ext);
                     ASSERT_TRUE(fs::copy_file(srcFile, diskPath));
                     fs::permissions(diskPath, write_perms,

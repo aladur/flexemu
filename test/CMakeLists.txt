@@ -42,9 +42,8 @@ endif()
 #################################
 
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
-
-# Copy test files to binary dir. They are needed when executing unittests.
-file(COPY data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# Set variable to the absolute path for testfiles.
+set(TEST_FULL_DATADIR ${CMAKE_CURRENT_SOURCE_DIR}/data)
 
 set(unittests_SOURCES
     test_benv.cpp
@@ -154,6 +153,7 @@ target_compile_definitions(unittests PRIVATE
     USE_CMAKE
     F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
     F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
+    F_TESTDATADIR=\"${TEST_FULL_DATADIR}\"
 )
 target_link_libraries(unittests PRIVATE
     flexemu::libflex
@@ -240,6 +240,7 @@ if(UNIX)
         USE_CMAKE
         F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
         F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
+        F_TESTDATADIR=\"${TEST_FULL_DATADIR}\"
     )
     target_link_libraries(test_gccasm PRIVATE
         flexemu::libflex

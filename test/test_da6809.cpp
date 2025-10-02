@@ -186,7 +186,8 @@ TEST(test_da6809, dis_immediate)
     // const auto *iexpected_mnemonic could not be incremented.
     // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
-    da.SetFlexLabelFile("data/flexlabl.conf");
+    const auto labelFile = fs::path(F_TESTDATADIR) / "flexlabl.conf";
+    da.SetFlexLabelFile(labelFile);
 
     while (pc < static_cast<Word>(memory.size()))
     {
@@ -350,7 +351,8 @@ TEST(test_da6809, dis_branch_relative)
     // const auto *iexpected_mnemonic could not be incremented.
     // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
-    da.SetFlexLabelFile("data/flexlabl.conf");
+    const auto labelFile = fs::path(F_TESTDATADIR) / "flexlabl.conf";
+    da.SetFlexLabelFile(labelFile);
 
     while (pc < static_cast<DWord>(memory.size()))
     {
@@ -416,7 +418,8 @@ TEST(test_da6809, dis_long_branch_relative)
     // const auto *iexpected_mnemonic could not be incremented.
     // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
-    da.SetFlexLabelFile("data/flexlabl.conf");
+    const auto labelFile = fs::path(F_TESTDATADIR) / "flexlabl.conf";
+    da.SetFlexLabelFile(labelFile);
 
     while (pc < static_cast<Word>(memory.size()))
     {
@@ -494,7 +497,8 @@ TEST(test_da6809, dis_extended)
     // const auto *iexpected_mnemonic could not be incremented.
     // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
-    da.SetFlexLabelFile("data/flexlabl.conf");
+    const auto labelFile = fs::path(F_TESTDATADIR) / "flexlabl.conf";
+    da.SetFlexLabelFile(labelFile);
 
     while (pc < static_cast<Word>(memory.size()))
     {
@@ -1001,7 +1005,8 @@ TEST(test_da6809, dis_undocumented)
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
     auto iexpected_operand = expected_operands.cbegin();
     // NOLINTEND(readability-qualified-auto)
-    da.SetFlexLabelFile("data/flexlabl.conf");
+    const auto labelFile = fs::path(F_TESTDATADIR) / "flexlabl.conf";
+    da.SetFlexLabelFile(labelFile);
 
     da.set_use_undocumented(true);
     while (pc < static_cast<Word>(memory.size()))
@@ -1060,7 +1065,8 @@ TEST(test_da6809, dis_flex_labels)
     // const auto *iexpected_operand could not be incremented.
     // NOLINTNEXTLINE(readability-qualified-auto)
     auto iexpected_operand = expected_operands.cbegin();
-    da.SetFlexLabelFile("data/flexlabl.conf");
+    const auto labelFile = fs::path(F_TESTDATADIR) / "flexlabl.conf";
+    da.SetFlexLabelFile(labelFile);
     Word size = 3U;
 
     while (pc < static_cast<Word>(memory.size()))

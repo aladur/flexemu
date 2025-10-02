@@ -653,7 +653,7 @@ TEST_F(test_ffilebuf, fct_ConvertToDumpFile)
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
     fs::remove(path);
 
-    path = fs::current_path() / u8"data" / u8"cat.cmd";
+    path = fs::path(F_TESTDATADIR) / u8"cat.cmd";
     // Check cat.cmd file.
     ASSERT_TRUE(ffb.ReadFromFile(path, FileTimeAccess::NONE));
     EXPECT_EQ(ffb.GetFileSize(), 756U);
@@ -676,7 +676,7 @@ TEST_F(test_ffilebuf, fct_ConvertToDumpFile)
     EXPECT_TRUE(ffb.IsFlexTextFile());
     EXPECT_FALSE(ffb.IsFlexExecutableFile());
     fs::remove(path);
-    fs::remove(fs::current_path() / u8"data" / RANDOM_FILE_LIST_NEW);
+    fs::remove(fs::path(F_TESTDATADIR) / RANDOM_FILE_LIST_NEW);
 }
 
 TEST_F(test_ffilebuf, fct_bin_file)

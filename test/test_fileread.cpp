@@ -97,7 +97,7 @@ TEST(test_fileread, fct_load_hexfile)
     {
         TestMemory memory{};
         DWord start_addr = 0U;
-        const auto path = fs::current_path() / u8"data" / test_file;
+        const auto path = fs::path(F_TESTDATADIR) / test_file;
         auto result = load_hexfile(path, memory, start_addr);
         ASSERT_EQ(result, 0);
         if (test_file.find("hex") == std::string::npos)
