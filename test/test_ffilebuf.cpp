@@ -76,7 +76,8 @@ TEST_F(test_ffilebuf, fct_default_ctor)
 
 TEST_F(test_ffilebuf, fct_move_ctor)
 {
-    std::string test_file("test.txt");
+    // Filename must follow 8.3 for FLEX compatibility.
+    std::string test_file("testfil1.txt");
     auto path = fs::temp_directory_path() / test_file;
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
 
@@ -125,7 +126,8 @@ TEST_F(test_ffilebuf, fct_move_ctor)
 
 TEST_F(test_ffilebuf, fct_copy_ctor)
 {
-    std::string test_file("test.txt");
+    // Filename must follow 8.3 for FLEX compatibility.
+    std::string test_file("testfil2.txt");
     auto path = fs::temp_directory_path() / test_file;
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
 
@@ -173,7 +175,8 @@ TEST_F(test_ffilebuf, fct_copy_ctor)
 
 TEST_F(test_ffilebuf, fct_ReadFromFile)
 {
-    std::string test_file("test.txt");
+    // Filename must follow 8.3 for FLEX compatibility.
+    std::string test_file("testfil3.txt");
     auto path = fs::temp_directory_path() / test_file;
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
 
@@ -250,7 +253,7 @@ TEST_F(test_ffilebuf, fct_ReadFromFile)
 
 TEST_F(test_ffilebuf, fct_WriteToFile)
 {
-    std::string test_file("test.txt");
+    std::string test_file("test_ffilebuf4.txt");
     auto path = fs::temp_directory_path() / test_file;
     std::string content("testfile content WriteToFile");
     FlexFileBuffer ffb;
@@ -331,7 +334,7 @@ TEST_F(test_ffilebuf, fct_WriteToFile)
 
 #ifndef _WIN32
     // Try to write file to a directory with read-only access.
-    path = fs::temp_directory_path() / u8"testdir";
+    path = fs::temp_directory_path() / u8"testdir_ffilebuf";
     fs::create_directory(path);
     ASSERT_TRUE(fs::exists(path));
     fs::permissions(path, fs::perms::owner_write, fs::perm_options::remove);
@@ -346,7 +349,7 @@ TEST_F(test_ffilebuf, fct_WriteToFile)
 
 TEST_F(test_ffilebuf, fct_get_set)
 {
-    std::string test_file("test.txt");
+    std::string file_name("test.txt");
     FlexFileBuffer ffb;
     EXPECT_TRUE(ffb.IsEmpty());
     EXPECT_FALSE(ffb.IsRandom());
@@ -358,7 +361,7 @@ TEST_F(test_ffilebuf, fct_get_set)
     EXPECT_EQ(ffb.GetFilename().empty(), true);
 
     ffb.Realloc(33U);
-    ffb.SetFilename(test_file);
+    ffb.SetFilename(file_name);
     BDate date(15, 12, 1984);
     BTime time(13, 28, 59);
     ffb.SetDateTime(date, time);
@@ -391,8 +394,8 @@ TEST_F(test_ffilebuf, fct_header_get_set)
     header_src.year = flx::toBigEndian(static_cast<Word>(1999U));
     header_src.hour = flx::toBigEndian(static_cast<Word>(19U));
     header_src.minute = flx::toBigEndian(static_cast<Word>(27U));
-    std::string test_file("test.txt");
-    std::copy(test_file.cbegin(), test_file.cend(),
+    std::string file_name("test.txt");
+    std::copy(file_name.cbegin(), file_name.cend(),
               std::begin(header_src.fileName));
 
     ffb.CopyHeaderBigEndianFrom(header_src);
@@ -407,7 +410,7 @@ TEST_F(test_ffilebuf, fct_header_get_set)
     EXPECT_EQ(header_tgt.year, flx::toBigEndian(static_cast<Word>(1999U)));
     EXPECT_EQ(header_tgt.hour, flx::toBigEndian(static_cast<Word>(19U)));
     EXPECT_EQ(header_tgt.minute, flx::toBigEndian(static_cast<Word>(27U)));
-    EXPECT_EQ(test_file.compare(header_tgt.fileName), 0);
+    EXPECT_EQ(file_name.compare(header_tgt.fileName), 0);
 
     header_src.magicNumber[0] = '\x44';
     EXPECT_THAT([&](){ ffb.CopyHeaderBigEndianFrom(header_src); },
@@ -487,7 +490,7 @@ TEST_F(test_ffilebuf, fct_buffer_CopyTo)
     std::string data;
     data.resize(16);
     std::iota(data.begin(), data.end(), '\0');
-    auto path = fs::temp_directory_path() / u8"test";
+    auto path = fs::temp_directory_path() / u8"test_ffilebuf5.bin";
     std::fstream ofs(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     ofs << data;
@@ -533,7 +536,7 @@ TEST_F(test_ffilebuf, fct_buffer_CopyTo)
 TEST_F(test_ffilebuf, fct_ConvertToFlexTextFile)
 {
     FlexFileBuffer ffb;
-    auto path = fs::temp_directory_path() / u8"test.txt";
+    auto path = fs::temp_directory_path() / u8"test_ffilebuf6.txt";
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
     EXPECT_TRUE(ofs.is_open());
     ofs << "This    is\tline1\nline3\nAnd this is the last line\n";
@@ -621,7 +624,7 @@ TEST_F(test_ffilebuf, fct_ConvertToFlexTextFile)
 TEST_F(test_ffilebuf, fct_ConvertToDumpFile)
 {
     FlexFileBuffer ffb;
-    std::string test_file(u8"test");
+    std::string test_file(u8"test_ffilebuf7.bin");
     auto path = fs::temp_directory_path() / test_file;
     std::fstream ofs(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
@@ -658,7 +661,7 @@ TEST_F(test_ffilebuf, fct_ConvertToDumpFile)
     EXPECT_FALSE(ffb.IsFlexTextFile());
     EXPECT_TRUE(ffb.IsFlexExecutableFile());
 
-    test_file = "test";
+    test_file = "test_ffilebuf8.cmd";
     path = fs::temp_directory_path() / test_file;
     // Check conversion of cat.cmd to dump file.
     ffb.ConvertToDumpFile(16U);
@@ -679,7 +682,7 @@ TEST_F(test_ffilebuf, fct_ConvertToDumpFile)
 TEST_F(test_ffilebuf, fct_bin_file)
 {
     FlexFileBuffer ffb;
-    auto path = fs::temp_directory_path() / u8"test";
+    auto path = fs::temp_directory_path() / u8"test_ffilebuf9.bin";
     std::fstream ofs(path, std::ios::out | std::ios::trunc | std::ios::binary);
     EXPECT_TRUE(ofs.is_open());
     ofs << '\x05' << '\x44' << '\x02' << '\x43' <<
