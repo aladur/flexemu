@@ -332,12 +332,13 @@ EXTRA_DIST = $(app_icons) $(mimetype_icons)
 app_icons = \
 	flexemu.png \
 	flexemu-flexplorer.png \
-	flexemu-fsetup.png
+	flexemu-fsetup.png \
+	application-x-flex-diskimage.png
 
 appicondir = $(datadir)/icons/hicolor/48x48/apps
 appicon_DATA = $(app_icons)
 mimetype_icons = \
-	flexemu-flexplorer.png
+	application-x-flex-diskimage.png
 
 mimetypeicondir = $(datadir)/icons/hicolor/48x48/mimetypes
 mimetypeicon_DATA = $(mimetype_icons)
@@ -518,8 +519,7 @@ info: info-am
 info-am:
 
 install-data-am: install-appiconDATA install-mimetypeiconDATA
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
+
 install-dvi: install-dvi-am
 
 install-dvi-am:
@@ -563,34 +563,25 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-appiconDATA uninstall-mimetypeiconDATA
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
-.MAKE: install-am install-data-am install-strip uninstall-am
+
+.MAKE: install-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	cscopelist-am ctags-am distclean distclean-generic \
 	distclean-libtool distdir dvi dvi-am html html-am info info-am \
 	install install-am install-appiconDATA install-data \
-	install-data-am install-data-hook install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man \
-	install-mimetypeiconDATA install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am tags-am uninstall uninstall-am uninstall-appiconDATA \
-	uninstall-hook uninstall-mimetypeiconDATA
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-mimetypeiconDATA \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags-am uninstall uninstall-am uninstall-appiconDATA \
+	uninstall-mimetypeiconDATA
 
 .PRECIOUS: Makefile
 
-
-install-data-hook:
-	cd $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes; \
-	mv flexemu-flexplorer.png application-x-flex-diskimage.png
-
-uninstall-hook:
-	cd $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes; \
-	rm -f application-x-flex-diskimage.png
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

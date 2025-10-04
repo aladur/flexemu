@@ -3,7 +3,8 @@ EXTRA_DIST=$(app_icons) $(dist_icons) $(mimetype_icons)
 app_icons = \
 	flexemu.svg \
 	flexemu-flexplorer.svg \
-	flexemu-fsetup.svg
+	flexemu-fsetup.svg \
+	application-x-flex-diskimage.svg
 
 appicondir = $(datadir)/icons/hicolor/scalable/apps
 appicon_DATA = $(app_icons)
@@ -66,15 +67,7 @@ dist_icons = \
 	flexemu-update-winsize.svg
 
 mimetype_icons = \
-	flexemu-flexplorer.svg
+	application-x-flex-diskimage.svg
 
 mimetypeicondir = $(datadir)/icons/hicolor/scalable/mimetypes
 mimetypeicon_DATA = $(mimetype_icons)
-
-install-data-hook:
-	cd $(DESTDIR)$(datadir)/icons/hicolor/scalable/mimetypes; \
-	mv flexemu-flexplorer.svg application-x-flex-diskimage.svg
-
-uninstall-hook:
-	cd $(DESTDIR)$(datadir)/icons/hicolor/scalable/mimetypes; \
-	rm -f application-x-flex-diskimage.svg

@@ -16,6 +16,7 @@ install(FILES
     48x48/flexemu.png
     48x48/flexemu-flexplorer.png
     48x48/flexemu-fsetup.png
+    48x48/application-x-flex-diskimage.png
     DESTINATION share/icons/hicolor/48x48/apps
 )
 
@@ -44,21 +45,6 @@ install(FILES
     scalable/flexemu.svg
     scalable/flexemu-flexplorer.svg
     scalable/flexemu-fsetup.svg
+    scalable/application-x-flex-diskimage.svg
     DESTINATION share/icons/hicolor/scalable/apps
-)
-
-# Icon for FLEX disk image mimetype.
-# See also file src/flexemu.xml referencing the icon name.
-# Store as *.png file, this is the default format.
-install(FILES
-    48x48/flexemu-flexplorer.png
-    DESTINATION share/icons/hicolor/48x48/mimetypes
-    RENAME application-x-flex-diskimage.png
-)
-
-# Store as *.svg file, this is optional.
-install(FILES
-    scalable/flexemu-flexplorer.svg
-    DESTINATION share/icons/hicolor/scalable/mimetypes
-    RENAME application-x-flex-diskimage.svg
 )
