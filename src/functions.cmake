@@ -110,7 +110,7 @@ function(CREATE_CONFIG_FILE inFile outFile)
     check_include_files("sys/statvfs.h" HAVE_SYS_STATVFS_H)
     check_include_files("sys/time.h" HAVE_SYS_TIME_H)
     check_include_files("sys/termios.h" HAVE_TERMIOS_H)
-    check_include_files("sys/unistd.h" HAVE_UNISTD_H)
+    check_include_files("unistd.h" HAVE_UNISTD_H)
     check_include_files("linux/joystick.h" LINUX_JOYSTICK_IS_PRESENT)
 
     check_type_size("int" SIZEOF_INT)
