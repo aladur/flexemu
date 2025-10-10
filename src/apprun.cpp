@@ -25,7 +25,6 @@
 #else
 #include "confignt.h"
 #endif
-#include "misc1.h"
 #include <new>
 #include <sstream>
 #include <iostream>

@@ -26,7 +26,6 @@
 #else
 #include "confignt.h"
 #endif
-#include "misc1.h"
 #include "termimps.h"
 #include "soptions.h"
 #include "asciictl.h"

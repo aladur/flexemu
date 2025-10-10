@@ -25,7 +25,6 @@
 #else
 #include "confignt.h"
 #endif
-#include "misc1.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <ctime>

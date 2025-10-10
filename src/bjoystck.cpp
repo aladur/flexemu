@@ -25,7 +25,6 @@
 #else
 #include "confignt.h"
 #endif
-#include "misc1.h"
 #ifdef LINUX_JOYSTICK_IS_PRESENT
 #include <sys/stat.h>
 #ifdef HAVE_FCNTL_H

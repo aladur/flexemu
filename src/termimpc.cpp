@@ -27,7 +27,6 @@
 #include "confignt.h"
 #endif
 #include "e2.h"
-#include "misc1.h"
 #include "soptions.h"
 #include "termimpc.h"
 #include "asciictl.h"
