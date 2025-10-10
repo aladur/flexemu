@@ -21,6 +21,11 @@
 */
 
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "misc1.h"
 #include <cctype>
 #include <string>
@@ -46,6 +51,9 @@
 #include <cstring>
 #include <ctime>
 #include <filesystem>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 
 namespace fs = std::filesystem;

@@ -20,6 +20,11 @@
 */
 
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "free.h"
 #include "misc1.h"
 #include <iostream>
@@ -50,6 +55,9 @@
 #include "warnon.h"
 #include <filesystem>
 #include <optional>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 namespace fs = std::filesystem;
 

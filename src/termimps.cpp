@@ -21,6 +21,11 @@
 */
 
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "misc1.h"
 #include "termimps.h"
 #include "soptions.h"
@@ -28,6 +33,9 @@
 #include <csignal>
 #include <cstring>
 #include <iostream>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 
 ScrollingTerminalImpl::ScrollingTerminalImpl(const sOptions &p_options)

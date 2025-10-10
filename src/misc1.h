@@ -87,14 +87,6 @@ constexpr const char *COPYRIGHT_MESSAGE = \
 
 /* adaptions for autoconf to use with/without ANSI C headers */
 
-/* adaptions for autoconf for POSIX.1 compatibility */
-#if HAVE_UNISTD_H
-    #include <sys/types.h>
-    #ifdef __GNUC__
-        #include <unistd.h>
-    #endif
-#endif
-
 /* dirent structure: */
 #ifdef UNIX
     #ifdef HAVE_DIRENT_H

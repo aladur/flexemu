@@ -21,6 +21,11 @@
 */
 
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "e2.h"
 #include "misc1.h"
 #include "soptions.h"
@@ -31,8 +36,7 @@
 #include <cstdlib>
 #include <csignal>
 #include <unordered_map>
-#ifdef UNIX
-#include "config.h"
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 

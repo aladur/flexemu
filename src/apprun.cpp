@@ -20,6 +20,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "misc1.h"
 #include <new>
 #include <sstream>
@@ -31,8 +36,8 @@
     #include <sched.h>
 #endif
 #include <sys/types.h>
-#ifndef _MSC_VER
-    #include <unistd.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
 #endif
 
 #include "e2.h"

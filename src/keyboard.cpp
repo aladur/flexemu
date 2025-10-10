@@ -21,9 +21,17 @@
 */
 
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "typedefs.h"
 #include "keyboard.h"
 #include <iterator>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 
 KeyboardIO::KeyboardIO()

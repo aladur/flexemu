@@ -20,9 +20,12 @@
 */
 
 
-
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "misc1.h"
-
 #ifdef LINUX_JOYSTICK_IS_PRESENT
 #include <sys/stat.h>
 #ifdef HAVE_FCNTL_H
@@ -30,6 +33,9 @@
 #endif
 #include <linux/joystick.h>
 #include "bjoystck.h"
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 
 BJoystick::BJoystick(int which)

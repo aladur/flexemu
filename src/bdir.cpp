@@ -21,9 +21,14 @@
 */
 
 #include "misc1.h"
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include <sys/stat.h>
 #ifdef HAVE_UNISTD_H
-    #include <unistd.h>
+#include <unistd.h>
 #endif
 #ifdef HAVE_DIRENT_H
     #include <dirent.h>

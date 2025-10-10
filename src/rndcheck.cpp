@@ -20,6 +20,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "misc1.h"
 #include "rndcheck.h"
 #include "cvtwchar.h"
@@ -30,6 +35,9 @@
 #include <filesystem>
 #include <iostream>
 #include <algorithm>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 namespace fs = std::filesystem;
 
