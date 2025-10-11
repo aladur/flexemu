@@ -1,5 +1,5 @@
 /*
-    absgui.cc: abstract graphical user interface
+    absgui.cpp: abstract graphical user interface
 
 
     flexemu, an MC6809 emulator running FLEX
@@ -20,11 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <sstream>
-#include <iomanip>
 #include <cassert>
 #include "misc1.h"
-#include "pia1.h"
 #include "absgui.h"
 #include "mc6809.h"
 #include "memory.h"

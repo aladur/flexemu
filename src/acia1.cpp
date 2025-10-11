@@ -25,7 +25,6 @@
 #include "acia1.h"
 #include "terminal.h"
 #include "inout.h"
-#include "mc6809.h"
 
 Acia1::Acia1(TerminalIO &p_terminalIO, Inout &p_inout) :
              terminalIO(p_terminalIO)

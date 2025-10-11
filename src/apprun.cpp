@@ -25,37 +25,22 @@
 #else
 #include "confignt.h"
 #endif
-#include <new>
 #include <sstream>
-#include <iostream>
-#ifdef _MSC_VER
-    #include <new.h>
-#endif
-#ifndef _WIN32
-    #include <sched.h>
-#endif
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-#include "e2.h"
 #include "apprun.h"
 #include "foptman.h"
-#include "flexerr.h"
 #include "fileread.h"
 #include "fcnffile.h"
-#include "iodevdbg.h"
 #include "soptions.h"
 #include "qtgui.h"
 #include "scpulog.h"
-#include "cvtwchar.h"
-#include "termimpi.h"
 #include "warnoff.h"
 #include <QObject>
 #include <QMessageBox>
 #include "warnon.h"
-#include <optional>
 
 
 ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
