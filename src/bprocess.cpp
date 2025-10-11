@@ -25,10 +25,8 @@
 #else
 #include "confignt.h"
 #endif
-#include "misc1.h"
 #ifdef UNIX
     #include <csignal>
-    #include <sys/types.h>
     #include <sys/wait.h>
     #include <string>
     #include <vector>
