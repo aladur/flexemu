@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
 			count = write (fd, err, strlen(err));
 	} while (chksum != buffer[0]);
 	if (strlen(filename) == 0)
-		strcpy((char *)filename, "default.flx");
+		strncpy((char *)filename, "default.flx", sizeof(filename));
 
 	/* open target file */
 	fp = fopen(filename, "w");

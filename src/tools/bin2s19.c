@@ -53,6 +53,7 @@ int writeS19(char *srcFileName, int startAddress, int max)
 	unsigned int	count;
 	int	byte;
 	int	checkSum;
+	size_t	size;
 
 	/* first open source file */
 	fps = fopen(srcFileName, "r");
@@ -61,8 +62,9 @@ int writeS19(char *srcFileName, int startAddress, int max)
 		return 0;
 	}
 	/* replace file extension with "s19" */
-	tgtFileName = malloc(strlen(srcFileName) + 5);
-	strcpy(tgtFileName, srcFileName);
+	size = strlen(srcFileName) + 5;
+	tgtFileName = malloc(size);
+	strncpy(tgtFileName, srcFileName, size);
 	i = strlen(tgtFileName) - 1;
 	while (i) {
 		if (tgtFileName[i] == '.') {

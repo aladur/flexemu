@@ -102,8 +102,8 @@ static Mc6809CpuStatus setState(const std::vector<Byte> &instruction, Word pc,
             instruction.cbegin() + static_cast<Word>(instruction.size()),
             std::begin(state.instruction));
     state.insn_size = static_cast<Word>(instruction.size());
-    strcpy(state.mnemonic, mnemonic);
-    strcpy(state.operands, operands);
+    strncpy(state.mnemonic, mnemonic, sizeof(state.mnemonic));
+    strncpy(state.operands, operands, sizeof(state.operands));
     return state;
 }
 
