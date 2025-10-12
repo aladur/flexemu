@@ -23,6 +23,8 @@
 
 #include "typedefs.h"
 #include "acia1.h"
+#include "mc6850.h"
+#include "bobshelp.h"
 #include "terminal.h"
 #include "inout.h"
 

@@ -20,13 +20,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
+#include "misc1.h"
+#include "command.h"
 #if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
 #else
 #include "confignt.h"
 #endif
 #include <sstream>
-#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -38,9 +40,12 @@
 #include "qtgui.h"
 #include "scpulog.h"
 #include "warnoff.h"
+#include <Qt>
 #include <QObject>
+#include <QCoreApplication>
 #include <QMessageBox>
 #include "warnon.h"
+#include <stdexcept>
 
 
 ApplicationRunner::ApplicationRunner(struct sOptions &p_options,

@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <cassert>
+#include "typedefs.h"
 #include "misc1.h"
 #include "absgui.h"
 #include "mc6809.h"
@@ -32,6 +32,8 @@
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <string>
+#include <cassert>
 
 
 void AbstractGui::update_cpuview(const Mc6809CpuStatus &status)

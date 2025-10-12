@@ -25,6 +25,7 @@
 #ifndef ACIA1_INCLUDED
 #define ACIA1_INCLUDED
 
+#include "typedefs.h"
 #include "mc6850.h"
 #include "bobservd.h"
 

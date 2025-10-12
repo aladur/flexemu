@@ -24,13 +24,8 @@
 #ifndef ABSGUI_INCLUDED
 #define ABSGUI_INCLUDED
 
-#include "misc1.h"
-
-#include "e2.h"
-#include "flexemu.h"
-#include "cpustate.h"
+#include "typedefs.h"
 #include <string>
-#include <memory>
 
 
 class Mc6809;

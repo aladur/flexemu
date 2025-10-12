@@ -21,7 +21,6 @@
 */
 
 
-
 #ifndef APPRUN_INCLUDED
 #define APPRUN_INCLUDED
 
@@ -49,8 +48,10 @@
 #include "tstdev.h"
 #include "iodevdbg.h"
 #include <string>
+#include <vector>
 #include <map>
 #include <thread>
+#include <memory>
 
 class QApplication;
 
