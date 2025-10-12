@@ -25,15 +25,19 @@
 #else
 #include "confignt.h"
 #endif
-#ifdef UNIX
-    #include <csignal>
-    #include <sys/wait.h>
-    #include <string>
-    #include <vector>
-    #include <filesystem>
-#endif
 #include "bprocess.h"
+#ifdef _WIN32
 #include "cvtwchar.h"
+#endif
+#ifdef UNIX
+#include <sys/wait.h>
+#endif
+#include <utility>
+#include <string>
+#include <vector>
+#include <system_error>
+#include <filesystem>
+#include <csignal>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif

@@ -20,6 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
 #include "misc1.h"
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>

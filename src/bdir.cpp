@@ -42,7 +42,9 @@
 #endif
 
 #include "bdir.h"
-#include "cvtwchar.h"
+#ifdef _WIN32
+#include <cvtwchar.h>
+#endif
 #include <filesystem>
 
 

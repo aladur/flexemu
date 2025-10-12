@@ -22,7 +22,9 @@
 
 #include "bobservd.h"
 #include "bobserv.h"
+#include "bobshelp.h"
 #include <algorithm>
+#include <functional>
 
 void BObserved::Attach(BObserver &p_observer)
 {

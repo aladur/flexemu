@@ -21,14 +21,16 @@
 */
 
 
+#include "typedefs.h"
 #include "bui.h"
 #include "brkptui.h"
-#include "efslctle.h"
-#include <stdexcept>
-#include <cassert>
 #include "warnoff.h"
+#include <QObject>
 #include <QAbstractButton>
 #include "warnon.h"
+#include <stdexcept>
+#include <cassert>
+#include <optional>
 
 using OptionalWord = std::optional<Word>;
 

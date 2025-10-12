@@ -20,12 +20,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+
 #include "misc1.h"
 #include "benv.h"
 #ifdef _WIN32
 #include "cvtwchar.h"
 #endif
+#include <string>
 #include <sstream>
+#include <cstdlib>
 
 
 bool BEnvironment::RemoveKey(const char *key)

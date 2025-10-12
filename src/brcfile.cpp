@@ -28,6 +28,7 @@
 #include "warnoff.h"
 #include <optional>
 #include "warnon.h"
+#include <string>
 #include <filesystem>
 
 namespace fs = std::filesystem;

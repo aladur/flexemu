@@ -23,10 +23,10 @@
 #ifndef BOBSERVED_INCLUDED
 #define BOBSERVED_INCLUDED
 
-#include <vector>
-#include <functional>
 #include "bobshelp.h"
 #include "bobserv.h"
+#include <vector>
+#include <functional>
 
 /*------------------------------------------------------
  BObserved

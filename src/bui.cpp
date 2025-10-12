@@ -23,7 +23,10 @@
 
 #include "bui.h"
 #include "efslctle.h"
+#include "warnoff.h"
+#include <QObject>
 #include <QLineEdit>
+#include "warnon.h"
 
 void InstallSelectionEventFilter(QLineEdit &lineEdit, QObject *parent)
 {

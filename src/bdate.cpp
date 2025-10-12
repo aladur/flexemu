@@ -25,6 +25,7 @@
 #include <array>
 #include <sstream>
 #include <ctime>
+#include <string>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"

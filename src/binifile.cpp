@@ -26,7 +26,10 @@
 #include <fstream>
 #include <sstream>
 #include <set>
+#include <string>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 
 BIniFile::BIniFile(fs::path p_path)
     : path(std::move(p_path))
