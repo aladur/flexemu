@@ -25,17 +25,9 @@
 #else
 #include "confignt.h"
 #endif
+#include "misc1.h"
+#include "ffilecnt.h"
 #include "free.h"
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <fstream>
-#include <vector>
-#include <tuple>
-#include <string>
-#include <regex>
-#include "bdir.h"
-#include "benv.h"
 #include "flexerr.h"
 #include "efiletim.h"
 #include "fdirent.h"
@@ -52,6 +44,16 @@
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <cstddef>
+#include <cstdint>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <fstream>
+#include <tuple>
+#include <string>
+#include <regex>
+#include <vector>
 #include <filesystem>
 #include <optional>
 #ifdef HAVE_UNISTD_H

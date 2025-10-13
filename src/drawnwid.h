@@ -24,7 +24,6 @@
 #define DRAWNWID_INCLUDED
 
 #include "fcinfo.h"
-#include <memory>
 #include "warnoff.h"
 #include <QSize>
 #include <QWidget>

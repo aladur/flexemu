@@ -21,11 +21,13 @@
 */
 
 
-#include "bdate.h"
 #include "drawnwid.h"
-#include <cassert>
+#include "fcinfo.h"
 #include "warnoff.h"
+#include <QObject>
 #include <QString>
+#include <QPalette>
+#include <QBrush>
 #include <QPainter>
 #include <QPixmap>
 #include <QPaintEvent>
@@ -33,7 +35,10 @@
 #include <QFont>
 #include <QDate>
 #include <QLocale>
+#include <QWidget>
+//#include <QDateTime>
 #include "warnon.h"
+#include <cassert>
 
 
 DrawnWidget::DrawnWidget(QWidget *parent)

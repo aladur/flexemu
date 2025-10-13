@@ -26,16 +26,10 @@
 #else
 #include "confignt.h"
 #endif
-#include <cctype>
-#include <string>
-#include <algorithm>
-#include <locale>
-#ifdef HAVE_SYS_STATVFS_H
-    #include <sys/statvfs.h>
-#endif
-#include <sys/types.h>
-#include <sys/stat.h>
-#include "bdir.h"
+#include "typedefs.h"
+#include "efiletim.h"
+#include "filecntb.h"
+#include "btime.h"
 #include "bdate.h"
 #include "fattrib.h"
 #include "fcinfo.h"
@@ -46,8 +40,19 @@
 #include "ffilebuf.h"
 #include "ifilecnt.h"
 #include "idircnt.h"
-#include "cvtwchar.h"
+#ifdef _WIN32
+#include <sys/utime.h>
+#else
+#include <utime.h>
+#endif
+#ifdef HAVE_SYS_STATVFS_H
+#include <sys/statvfs.h>
+#endif
+#include <sys/stat.h>
+#include <system_error>
+#include <cctype>
 #include <cstring>
+#include <string>
 #include <ctime>
 #include <filesystem>
 #ifdef HAVE_UNISTD_H

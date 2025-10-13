@@ -23,12 +23,11 @@
 #ifndef DIRCONT_INCLUDED
 #define DIRCONT_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "efiletim.h"
 #include "filecntb.h"
 #include "filecont.h"
 #include "fdirent.h"
-#include "flexerr.h"
 #include "rndcheck.h"
 #include <string>
 #include <filesystem>

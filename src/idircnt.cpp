@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
 #include "misc1.h"
-#include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cerrno>
@@ -29,9 +29,11 @@
 #include "dircont.h"
 #include "idircnt.h"
 #include "filecnts.h"
+#include "flexerr.h"
+#ifdef _WIN32
 #include "cvtwchar.h"
+#endif
 #include <ctime>
-#include <fstream>
 #include <filesystem>
 
 
