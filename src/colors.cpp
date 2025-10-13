@@ -21,7 +21,9 @@
 */
 
 
+#include "typedefs.h"
 #include "colors.h"
+#include <cstddef>
 #include <string>
 
 

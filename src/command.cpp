@@ -21,14 +21,14 @@
 */
 
 
-#include "misc1.h"
-#include <new>
 
-#include "e2.h"
-#include "command.h"
 #include "typedefs.h"
+#include "command.h"
+#include "asciictl.h"
+#include "cpustate.h"
+#include "bobshelp.h"
+#include "filecnts.h"
 #include "absgui.h"
-#include "flexerr.h"
 #include "filecntb.h"
 #include "e2floppy.h"
 #include "inout.h"
@@ -37,7 +37,10 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <string>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 
 Command::Command(
         Inout &p_inout,

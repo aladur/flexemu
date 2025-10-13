@@ -24,6 +24,7 @@
 #define COLORS_INCLUDED
 
 #include "typedefs.h"
+#include <cstddef>
 #include <string>
 
 

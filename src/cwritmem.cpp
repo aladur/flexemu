@@ -21,8 +21,10 @@
 */
 
 
+#include "typedefs.h"
 #include "cwritmem.h"
 #include "memory.h"
+#include <mutex>
 #include <vector>
 
 

@@ -21,7 +21,9 @@
 */
 
 
+#include "typedefs.h"
 #include "ccopymem.h"
+#include "bintervl.h"
 #include "memory.h"
 #include <atomic>
 #include <mutex>

@@ -23,9 +23,9 @@
 #ifndef CCOPYMEM_INCLUDED
 #define CCOPYMEM_INCLUDED
 
+#include "typedefs.h"
 #include "bcommand.h"
 #include "bintervl.h"
-#include "typedefs.h"
 #include <atomic>
 #include <mutex>
 #include <vector>

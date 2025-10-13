@@ -23,10 +23,10 @@
 #ifndef CWRITEMEMORY_INCLUDED
 #define CWRITEMEMORY_INCLUDED
 
-#include "bcommand.h"
 #include "typedefs.h"
-#include <vector>
+#include "bcommand.h"
 #include <mutex>
+#include <vector>
 
 
 class Memory;

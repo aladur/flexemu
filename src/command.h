@@ -24,10 +24,9 @@
 #ifndef COMMAND_INCLUDED
 #define COMMAND_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "iodevice.h"
 #include "bobservd.h"
-#include "asciictl.h"
 #include "soptions.h"
 #include <string>
 #include <array>

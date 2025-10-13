@@ -22,6 +22,8 @@
 
 
 #include "clogfile.h"
+#include "mc6809.h"
+#include "scpulog.h"
 
 // Command pattern to set CPU logger config.
 CmdSetMc6809LoggerConfig::CmdSetMc6809LoggerConfig(Mc6809 &p_cpu,

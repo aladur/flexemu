@@ -23,7 +23,6 @@
 #ifndef CLOGFILE_INCLUDED
 #define CLOGFILE_INCLUDED
 
-#include "misc1.h"
 #include "mc6809.h"
 #include "bcommand.h"
 #include "scpulog.h"
