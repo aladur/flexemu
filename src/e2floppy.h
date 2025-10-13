@@ -24,27 +24,18 @@
 #ifndef E2FLOPPY_INCLUDED
 #define E2FLOPPY_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
+#include "flexemu.h"
+#include "wd1793.h"
+#include "filecnts.h"
+#include "e2.h"
+#include "fcinfo.h"
+#include <mutex>
+#include <string>
 #include <array>
-
-#ifndef __fromflex__
-
-    #include "flexemu.h"
-    #include "wd1793.h"
-    #include "filecnts.h"
-    #include "e2.h"
-    #include "fcinfo.h"
-    #include <string>
-    #include <mutex>
-    #include <filesystem>
+#include <filesystem>
 
 namespace fs = std::filesystem;
-
-#else
-    #include "typedefs.h"
-#endif /* #ifndef __fromflex__ */
-
-#ifndef __fromflex__
 
 struct sOptions;
 
@@ -155,6 +146,5 @@ private:
     static std::string to_ascii_path(const fs::path &path);
 };
 
-#endif /* #ifndef __fromflex__ */
 #endif /* E2FLOPPY_INCLUDED */
 

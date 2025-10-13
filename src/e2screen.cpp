@@ -21,25 +21,44 @@
 */
 
 
+#include "typedefs.h"
+#include "misc1.h"
 #include "e2screen.h"
+#include "bcommand.h"
+#include "bobshelp.h"
 #include "e2.h"
-#include "mc6809.h"
 #include "schedule.h"
 #include "joystick.h"
 #include "keyboard.h"
 #include "pia1.h"
 #include "cacttrns.h"
-#include "bobservd.h"
+#include "soptions.h"
 #include "warnoff.h"
 #include <QtGlobal>
 #include <QPainter>
+#include <QColor>
 #include <QPixmap>
+#include <QCursor>
 #include <QByteArray>
+#include <QEvent>
+#include <QKeyEvent>
 #include <QPaintEvent>
+#include <QMouseEvent>
 #include <QResizeEvent>
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <QEnterEvent>
+#endif
 #include <QApplication>
 #include <QGuiApplication>
+#include <QWidget>
+#include <cassert>
+#include <qevent.h>
+#include <qpaintdevice.h>
+#include <qhashfunctions.h>
+#include <cstdint>
 #include "warnon.h"
+#include <array>
+#include <string>
 #if defined(UNIX) && !defined(X_DISPLAY_MISSING)
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0)) && !defined(__APPLE__)
 #include <QX11Info>
@@ -47,8 +66,6 @@
     // Qt < 6.0.0
 #include <X11/XKBlib.h>
 #endif // #if defined(UNIX) && !defined(X_DISPLAY_MISSING)
-
-class JoystickIO;
 
 
 E2Screen::E2Screen(Scheduler &p_scheduler,

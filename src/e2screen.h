@@ -23,9 +23,10 @@
 #ifndef E2SCREEN_INCLUDED
 #define E2SCREEN_INCLUDED
 
+#include "typedefs.h"
 #include "soptions.h"
-#include "misc1.h"
-#include <memory>
+#include "blinxsys.h"
+#include "bobservd.h"
 #include "warnoff.h"
 #include <QVector>
 #include <QSize>
@@ -33,8 +34,6 @@
 #include <QWidget>
 #include <QPixmap>
 #include "warnon.h"
-#include "blinxsys.h"
-#include "bobservd.h"
 
 class VideoControl2;
 class QPaintEvent;
