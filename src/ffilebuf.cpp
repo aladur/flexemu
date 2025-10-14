@@ -25,25 +25,40 @@
 #else
 #include "confignt.h"
 #endif
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <ctime>
+#include "typedefs.h"
+#include "misc1.h"
+#include "efiletim.h"
+#include "filecnts.h"
 #include "bdate.h"
 #include "ffilebuf.h"
 #include "flexerr.h"
 #include "fdirent.h"
 #include "filecntb.h"
 #include "rndcheck.h"
-#include <algorithm>
-#include <vector>
-#include <fstream>
-#include <filesystem>
+#include <sys/stat.h>
+#ifdef _WIN32
+#include <sys/utime.h>
+#else
+#include <utime.h>
+#endif
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <ios>
+#include <ctime>
+#include <cstring>
+#include <utility>
+#include <functional>
+#include <optional>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <algorithm>
+#include <vector>
+#include <filesystem>
 
 namespace fs = std::filesystem;
 

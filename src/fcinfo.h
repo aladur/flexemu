@@ -23,7 +23,7 @@
 #ifndef FCINFO_INCLUDED
 #define FCINFO_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "filecntb.h"
 #include <string>
 #include <vector>

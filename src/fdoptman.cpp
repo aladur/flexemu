@@ -22,6 +22,7 @@
 
 #include "fdoptman.h"
 #include "brcfile.h"
+#include <string>
 #include <filesystem>
 
 namespace fs = std::filesystem;

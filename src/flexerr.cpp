@@ -21,14 +21,14 @@
 */
 
 #include "misc1.h"
-#include <exception>
-#include <sstream>
 #include "flexerr.h"
-#include "cvtwchar.h"
-#include <array>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#ifdef _WIN32
+#include "cvtwchar.h"
+#endif
+#include <array>
 #include <filesystem>
 
 namespace fs = std::filesystem;

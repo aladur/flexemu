@@ -23,7 +23,6 @@
 #ifndef FDOPTMAN_INCLUDED
 #define FDOPTMAN_INCLUDED
 
-#include "misc1.h"
 #include <string>
 #include <filesystem>
 

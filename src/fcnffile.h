@@ -24,10 +24,10 @@
 #define FCNFFILE_INCLUDED
 
 #include "typedefs.h"
-#include <vector>
-#include <string>
-#include <set>
 #include <optional>
+#include <string>
+#include <vector>
+#include <set>
 #include <filesystem>
 
 namespace fs = std::filesystem;

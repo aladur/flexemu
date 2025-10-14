@@ -25,15 +25,16 @@
 #include "finddata.h"
 #include "free.h"
 #include "findui.h"
-#include <algorithm>
+#include <cctype>
 #include <cassert>
+#include <functional>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <optional>
 #include <regex>
 #include <exception>
-#include <cctype>
+#include <algorithm>
 
 
 // Initialize for a new Find.

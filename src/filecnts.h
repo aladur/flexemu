@@ -24,11 +24,11 @@
 
 #ifndef __fromflex__
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "filecntb.h"
 #include <memory>
-#include <ostream>
 #include <array>
+#include <ostream>
 
 /* number of Kilo Byte at least available for each directory sector */
 const int DIRSECTOR_PER_KB = 12800;

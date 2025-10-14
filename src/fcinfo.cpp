@@ -23,6 +23,7 @@
 
 #include "fcinfo.h"
 #include "filecntb.h"
+#include <string>
 
 
 std::string FlexDiskAttributes::GetTypeString() const

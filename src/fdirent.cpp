@@ -21,14 +21,13 @@
 */
 
 #include "typedefs.h"
-#include <string>
-#include <algorithm>
-#include <iterator>
-#include <locale>
 #include "bdate.h"
 #include "fdirent.h"
-#include <iostream>
 #include <cstring>
+#include <string>
+#include <utility>
+#include <algorithm>
+#include <iterator>
 
 
 FlexDirEntry::FlexDirEntry(FlexDirEntry &&src) noexcept

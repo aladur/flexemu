@@ -21,14 +21,10 @@
 */
 
 
+#include "typedefs.h"
 #include "misc1.h"
-#include <string>
-#include <sstream>
-#include <array>
-#include <vector>
-#include <cctype>
-#include <ctime>
-#include <cassert>
+#include "filecnts.h"
+#include "efiletim.h"
 #include "filecntb.h"
 #include "fcinfo.h"
 #include "fattrib.h"
@@ -42,9 +38,20 @@
 #include "ifilecnt.h"
 #include "ifilcnti.h"
 #include "iffilcnt.h"
+#include <cstdint>
+#include <cctype>
 #include <cstring>
+#include <ctime>
+#include <cassert>
+#include <ios>
+#include <type_traits>
 #include <utility>
 #include <algorithm>
+#include <optional>
+#include <string>
+#include <array>
+#include <vector>
+#include <sstream>
 #include <filesystem>
 
 namespace fs = std::filesystem;

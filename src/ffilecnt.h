@@ -28,13 +28,13 @@
 #include "filecntb.h"
 #include "filecnts.h"
 #include "fdirent.h"
+#include <ios>
+#include <optional>
 #include <string>
 #include <vector>
-#include <array>
 #include <unordered_map>
 #include <fstream>
 #include <filesystem>
-#include <optional>
 
 namespace fs = std::filesystem;
 

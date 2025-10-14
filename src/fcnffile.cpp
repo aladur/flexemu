@@ -20,13 +20,19 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
 #include "misc1.h"
 #include "fcnffile.h"
 #include "flexerr.h"
 #include "binifile.h"
-#include "e2.h"
+#include <ios>
+#include <utility>
+#include <optional>
+#include <string>
+#include <vector>
+#include <set>
 #include <sstream>
-#include <algorithm>
+#include <filesystem>
 
 
 static const std::set<std::string> &GetValidDevices()

@@ -27,22 +27,24 @@
 #else
 #include "confignt.h"
 #endif
-#include "free.h"
+#include "typedefs.h"
 #include "misc1.h"
+#include "free.h"
 #include "bmembuf.h"
 #include "fileread.h"
-#include "flexerr.h"
 #include "wmain.h"
-#include <cctype>
-#include <limits>
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <map>
-#include <filesystem>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <cctype>
+#include <cstdint>
+#include <limits>
+#include <utility>
+#include <string>
+#include <vector>
+#include <map>
+#include <iostream>
+#include <filesystem>
 
 namespace fs = std::filesystem;
 

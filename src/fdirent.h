@@ -24,12 +24,12 @@
 #define FDIRENT_INCLUDED
 
 
-#include "misc1.h"
-#include <cstdint>
-#include <string>
+#include "typedefs.h"
 #include "bdate.h"
 #include "btime.h"
 #include "filecntb.h"
+#include <cstdint>
+#include <string>
 
 enum flexFileAttributes : uint8_t
 {

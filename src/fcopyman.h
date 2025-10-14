@@ -23,8 +23,7 @@
 #ifndef FCOPYMAN_INCLUDED
 #define FCOPYMAN_INCLUDED
 
-#include "misc1.h"
-#include "flexerr.h"
+#include <string>
 
 class IFlexDiskByFile;
 
@@ -36,7 +35,7 @@ public:
                          const std::string &destName,
                          IFlexDiskByFile &src, IFlexDiskByFile &dst);
     static bool autoTextConversion;
-}; // class FlexCopyManager
+};
 
 #endif // FCOPYMAN_INCLUDED
 

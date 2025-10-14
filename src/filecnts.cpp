@@ -19,10 +19,17 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
+#include "filecntb.h"
 #include "filecnts.h"
+#include <cstdint>
+#include <cstddef>
+#include <cctype>
+#include <locale>
+#include <algorithm>
+#include <string>
 #include <ostream>
 #include <codecvt>
-#include <locale>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"

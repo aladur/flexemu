@@ -22,9 +22,13 @@
 
 #include "flblfile.h"
 #include "binifile.h"
+#include <ios>
+#include <string>
+#include <map>
 #include <ostream>
 #include <sstream>
 #include <regex>
+#include <filesystem>
 
 
 std::map<unsigned, std::string> FlexLabelFile::ReadFile(

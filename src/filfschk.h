@@ -19,15 +19,17 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <vector>
-#include <set>
-#include <map>
-#include <string>
-#include <iostream>
 #include "typedefs.h"
 #include "efiletim.h"
 #include "filecnts.h"
 #include "fcinfo.h"
+#include <string>
+#include <memory>
+#include <utility>
+#include <vector>
+#include <set>
+#include <map>
+#include <iostream>
 
 
 struct FlexDiskCheckResultItem

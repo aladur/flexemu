@@ -20,12 +20,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef flexerr_h
-#define flexerr_h
+#ifndef FLEXERR_INCLUDED
+#define FLEXERR_INCLUDED
 
-#include <string>
-#include <exception>
 #include <cstdint>
+#include <exception>
+#include <string>
 #include <array>
 #include <filesystem>
 
@@ -132,6 +132,5 @@ public:
         return errorCode;
     };
 };
-
 
 #endif // FLEXERR_INCLUDED

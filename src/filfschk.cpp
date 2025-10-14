@@ -20,12 +20,21 @@
 */
 
 #include "typedefs.h"
+#include "misc1.h"
+#include "efiletim.h"
+#include "filecntb.h"
+#include "filecnts.h"
 #include "filfschk.h"
 #include "flexerr.h"
-#include <set>
+#include <cstddef>
 #include <string>
-#include <sstream>
+#include <algorithm>
 #include <array>
+#include <set>
+#include <vector>
+#include <iterator>
+#include <sstream>
+#include <ostream>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"

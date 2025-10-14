@@ -20,12 +20,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "filecntb.h"
 #include "filecont.h"
 #include "fcopyman.h"
-#include "fdirent.h"
 #include "flexerr.h"
 #include "fcinfo.h"
 #include "ffilebuf.h"
+#include <string>
 
 bool FlexCopyManager::autoTextConversion = false;
 

@@ -23,10 +23,9 @@
 #ifndef FLBLFILE_INCLUDED
 #define FLBLFILE_INCLUDED
 
-#include "typedefs.h"
-#include <ostream>
 #include <string>
 #include <map>
+#include <ostream>
 #include <filesystem>
 
 namespace fs = std::filesystem;
