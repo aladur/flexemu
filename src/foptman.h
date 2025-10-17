@@ -23,8 +23,10 @@
 #ifndef FOPTMAN_INCLUDED
 #define FOPTMAN_INCLUDED
 
-#include "misc1.h"
 #include "soptions.h"
+#include <string>
+#include <array>
+#include <vector>
 #include <iostream>
 #include <filesystem>
 

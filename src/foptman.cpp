@@ -25,22 +25,29 @@
 #else
 #include "confignt.h"
 #endif
-#include <stdexcept>
-#include <string>
-#include <new>
-
+#include "misc1.h"
+#include "foptman.h"
+#ifdef _WIN32
+#include "bregistr.h"
+#endif
+#include "efiletim.h"
 #include "free.h"
 #include "e2.h"
-#include "flexemu.h"
 #include "soptions.h"
-#include "foptman.h"
-#include "bregistr.h"
 #include "brcfile.h"
-#include <cstring>
-#include <filesystem>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <cstdlib>
+#include <cstring>
+#include <ios>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <sstream>
+#include <iostream>
+#include <ostream>
+#include <filesystem>
 
 
 namespace fs = std::filesystem;

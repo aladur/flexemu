@@ -20,11 +20,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
 #include "misc1.h"
 #include "fpdnd.h"
 #include "flexerr.h"
 #include "ffilebuf.h"
 #include <cstring>
+#include <utility>
+#include <string>
 
 
 FlexDnDFiles::FlexDnDFiles(std::string p_Path, std::string p_DnsHostName) :

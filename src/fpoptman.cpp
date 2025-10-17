@@ -21,14 +21,18 @@
 */
 
 #include "misc1.h"
-#include <string>
-#include <sstream>
+#include "efiletim.h"
+#include "efilesiz.h"
 #include "sfpopts.h"
 #include "filecntb.h"
 #include "fpoptman.h"
+#ifdef _WIN32
 #include "bregistr.h"
+#endif
 #include "brcfile.h"
-#include <sys/stat.h>
+#include <string>
+#include <sstream>
+#include <algorithm>
 #include <filesystem>
 
 

@@ -27,7 +27,8 @@
 #include "confignt.h"
 #endif
 #include "fversion.h"
-#include <string>
+#include "free.h"
+#include <fmt/base.h>
 #ifdef QT_CORE_LIB
 #include <QObject>
 #endif
@@ -40,6 +41,8 @@
 #if defined(UNIX) && defined(HAVE_NCURSES_H) && defined(ADD_NCURSES_VERSION)
 #include <ncurses.h>
 #endif
+#include <string>
+#include <vector>
 
 
 ItemPairList_t FlexemuVersions::CreateVersions()

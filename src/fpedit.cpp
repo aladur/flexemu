@@ -21,11 +21,21 @@
 */
 
 
+#include "fpedit.h"
+#include "fpmodel.h"
+#include "efiletim.h"
 #include "flexerr.h"
 #include "qtfree.h"
+#include <cassert>
+#include <utility>
 #include "warnoff.h"
+#include <QObject>
+#include <QValidator>
+#include <QVariant>
+#include <QLocale>
 #include <QWidget>
 #include <QDateEdit>
+#include <QDateTimeEdit>
 #include <QLineEdit>
 #include <QString>
 #include <QStringList>
@@ -34,10 +44,6 @@
 #include <QStyleOptionViewItem>
 #include <QMessageBox>
 #include "warnon.h"
-#include <algorithm>
-#include <cassert>
-#include "fpmodel.h"
-#include "fpedit.h"
 
 
 FlexRegularExpressionValidator::FlexRegularExpressionValidator(

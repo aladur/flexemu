@@ -23,17 +23,24 @@
 
 #include "free.h"
 #include "fpwin.h"
-#include "warnoff.h"
-#include <QApplication>
-#include <QResource>
-#include <QMessageBox>
-#include <QTimer>
-#include "warnon.h"
 #include "winmain.h"
+#ifdef _WIN32
 #include "winctxt.h"
+#endif
 #include "sfpopts.h"
 #include "fpoptman.h"
 #include "ffilecnt.h"
+#include "warnoff.h"
+#include <QObject>
+#include <QResource>
+#include <QTimer>
+#include <QApplication>
+#include <QIcon>
+#include <QMessageBox>
+#include "warnon.h"
+#include <cstdlib>
+#include <exception>
+#include <string>
 #include <iostream>
 
 

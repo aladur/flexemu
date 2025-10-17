@@ -25,7 +25,6 @@
 #define FPNEWUI_INCLUDED
 
 
-#include "misc1.h"
 #include "filecntb.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
@@ -37,6 +36,7 @@
 #include <QString>
 #include "warnon.h"
 
+class QDialog;
 class QLineEdit;
 
 class FlexplorerNewUi : public QObject, protected Ui_FlexplorerNew

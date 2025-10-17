@@ -23,6 +23,7 @@
 
 
 #include "misc1.h"
+#include "efiletim.h"
 #include "e2.h"
 #include "mdcrtape.h"
 #include "fpwin.h"
@@ -31,13 +32,10 @@
 #include "fpattrui.h"
 #include "fpmdich.h"
 #include "filecntb.h"
-#include "bregistr.h"
-#include "brcfile.h"
 #include "flexerr.h"
 #include "ffilecnt.h"
-#include "fcopyman.h"
 #include "qtfree.h"
-#include "fversion.h"
+#include "sfpopts.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
 #include "ui_about.h"
@@ -48,7 +46,17 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QSize>
+#include <QPoint>
+#include <QString>
+#include <QStringLiteral>
+#include <QKeySequence>
+#include <QIcon>
+#include <QImage>
+#include <QPixmap>
 #include <QMessageBox>
+#include <QFrame>
+#include <QMainWindow>
+#include <QDialog>
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -61,7 +69,6 @@
 #include <QStatusBar>
 #include <QEvent>
 #include <QLabel>
-#include <QString>
 #include <QStringList>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
@@ -72,9 +79,12 @@
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include "warnon.h"
-#include <filesystem>
-#include <optional>
 #include <cassert>
+#include <cstdint>
+#include <optional>
+#include <functional>
+#include <algorithm>
+#include <filesystem>
 
 namespace fs = std::filesystem;
 

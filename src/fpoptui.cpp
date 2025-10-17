@@ -23,14 +23,25 @@
 
 #include "fpoptui.h"
 #include "efilesiz.h"
-#include <stdexcept>
+#include "sfpopts.h"
+#include "efiletim.h"
+#ifdef USE_CMAKE
+#include <ui_fpopt.h>
+#else
+#include <fpopt_ui.h>
+#endif
 #include "warnoff.h"
+#include <QObject>
 #include <QDir>
-#include <QLineEdit>
+#include <QString>
 #include <QFileInfo>
+#include <QAbstractButton>
+#include <QDialogButtonBox>
+#include <QDialog>
 #include <QFileDialog>
 #include <QMessageBox>
 #include "warnon.h"
+#include <stdexcept>
 
 FlexplorerOptionsUi::FlexplorerOptionsUi() :
     Ui_FlexplorerOptions()

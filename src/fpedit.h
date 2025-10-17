@@ -25,12 +25,15 @@
 
 #include "efiletim.h"
 #include "warnoff.h"
+#include <QValidator>
 #include <QString>
 #include <QStringList>
 #include <QStyledItemDelegate>
+#include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include "warnon.h"
 
+class QObject;
 class QWidget;
 class QModelIndex;
 class QAbstractItemModel;

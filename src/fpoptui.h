@@ -25,8 +25,6 @@
 #define FPOPTUI_INCLUDED
 
 
-#include "misc1.h"
-#include "efiletim.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
 #include "ui_fpopt.h"
@@ -34,11 +32,11 @@
 #include "fpopt_ui.h"
 #endif
 #include <QObject>
-#include <QString>
 #include "warnon.h"
 #include "sfpopts.h"
 
 class QLineEdit;
+class QDialog;
 
 class FlexplorerOptionsUi : public QObject, protected Ui_FlexplorerOptions
 {

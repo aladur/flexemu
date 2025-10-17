@@ -23,19 +23,16 @@
 #ifndef FPMDICH_INCLUDED
 #define FPMDICH_INCLUDED
 
-#include "misc1.h"
-#include "efiletim.h"
-#include "warnoff.h"
-#include <QPair>
-#include <QPoint>
-#include <QVector>
-#include <QString>
-#include <QStringList>
-#include <QTableView>
-#include "warnon.h"
 #include "filecntb.h"
 #include "fpmodel.h"
 #include "fpedit.h"
+#include "warnoff.h"
+#include <QPoint>
+#include <QString>
+#include <QVector>
+#include <QStringList>
+#include <QTableView>
+#include "warnon.h"
 #include <memory>
 
 class FlexDnDFiles;

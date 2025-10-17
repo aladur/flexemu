@@ -27,14 +27,14 @@
 #include "typedefs.h"
 #include "bintervl.h"
 #include "memsrc.h"
+#include <utility>
+#include <charconv>
+#include <optional>
 #include <string>
 #include <array>
 #include <vector>
-#include <utility>
-#include <regex>
-#include <optional>
 #include <iostream>
-#include <charconv>
+#include <regex>
 
 
 using ItemPairList_t = std::vector<std::pair<

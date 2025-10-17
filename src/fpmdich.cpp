@@ -21,41 +21,52 @@
 */
 
 
+#include "typedefs.h"
 #include "misc1.h"
+#include "efiletim.h"
+#include "efilesiz.h"
+#include "sfpopts.h"
 #include "fcinfo.h"
 #include "fdirent.h"
 #include "filecntb.h"
+#include "qtfree.h"
 #include "flexerr.h"
-#include "cvtwchar.h"
-#include "bdir.h"
 #include "bprocess.h"
-#include "warnoff.h"
-#include <QFileInfo>
-#include <QFile>
-#include <QDate>
-#include <QDrag>
-#include <QMouseEvent>
-#include <QMessageBox>
-#include <QMimeData>
-#include <QHeaderView>
-#include <QItemSelectionModel>
-#include <QClipboard>
-#include <QApplication>
-#include <QDir>
-#include <QProgressDialog>
-#include "warnon.h"
-#include <cassert>
-#include <string>
-#include <limits>
-#include <memory>
-#include "fcopyman.h"
 #include "fpdnd.h"
 #include "fpmodel.h"
 #include "fpedit.h"
 #include "fpmdich.h"
-#include "sfpopts.h"
 #include "fpcnvui.h"
-#include "qtfree.h"
+#include "warnoff.h"
+#include <QFile>
+#include <QDate>
+#include <QDrag>
+#include <QIcon>
+#include <QDir>
+#include <QString>
+#include <QVector>
+#include <QMouseEvent>
+#include <QMessageBox>
+#include <QFontMetrics>
+#include <QDialog>
+#include <QMimeData>
+#include <QHeaderView>
+#include <QTableView>
+#include <QStyleOptionViewItem>
+#include <QItemSelectionModel>
+#include <QClipboard>
+#include <QAbstractItemView>
+#include <QApplication>
+#include <QProgressDialog>
+#include "warnon.h"
+#include <cstddef>
+#include <cassert>
+#include <limits>
+#include <memory>
+#include <system_error>
+#include <algorithm>
+#include <string>
+#include <filesystem>
 
 const QString &FlexplorerMdiChild::GetMimeTypeFlexDiskImageFile()
 {

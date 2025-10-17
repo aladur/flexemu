@@ -21,19 +21,28 @@
 */
 
 
-#include "misc1.h"
 #include "typedefs.h"
+#include "misc1.h"
+#include "bintervl.h"
+#include "memsrc.h"
 #include "asciictl.h"
 #include "free.h"
 #include "fversion.h"
 #include "flexerr.h"
-#include <cstring>
-#include <regex>
-#include <optional>
-#include <utility>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <cstring>
+#include <utility>
+#include <charconv>
+#include <optional>
+#include <system_error>
+#include <string>
+#include <vector>
+#include <ostream>
+#include <iterator>
+#include <regex>
+#include <algorithm>
 
 
 std::string flx::find_regex_string(const std::regex &regex,

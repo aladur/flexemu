@@ -23,8 +23,10 @@
 #ifndef FDDND_INCLUDED
 #define FDDND_INCLUDED
 
-#include <vector>
+#include "typedefs.h"
 #include "ffilebuf.h"
+#include <string>
+#include <vector>
 
 class IFlexDiskByFile;
 class FlexDiskListCtrl;

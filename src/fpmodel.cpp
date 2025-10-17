@@ -21,7 +21,13 @@
 */
 
 
-#include "misc1.h"
+#include "typedefs.h"
+#include "fpmodel.h"
+#include "filecntb.h"
+#include "sfpopts.h"
+#include "efilesiz.h"
+#include "efiletim.h"
+#include "filecnts.h"
 #include "fdirent.h"
 #include "flexerr.h"
 #include "fattrib.h"
@@ -38,8 +44,10 @@
 #include <QLocale>
 #include <QString>
 #include <QDate>
+#include <QDateTime>
 #include <QVector>
 #include <QSet>
+#include <QAbstractTableModel>
 #include <QModelIndex>
 #include <QModelIndexList>
 #include <QTextStream>
@@ -51,9 +59,13 @@
 #include <QRegExp>
 #endif
 #include "warnon.h"
-#include "fpmodel.h"
-#include <unordered_map>
+#include <stdexcept>
+#include <functional>
 #include <utility>
+#include <ios>
+#include <string>
+#include <unordered_map>
+#include <algorithm>
 #include <memory>
 #include <filesystem>
 

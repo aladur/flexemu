@@ -25,7 +25,6 @@
 #define FPCNVUI_INCLUDED
 
 
-#include "misc1.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
 #include "ui_fpcnv.h"
@@ -33,8 +32,10 @@
 #include "fpcnv_ui.h"
 #endif
 #include <QObject>
-#include <QString>
 #include "warnon.h"
+
+class QString;
+class QDialog;
 
 class FlexplorerConvertUi : public QObject, protected Ui_FlexplorerConvert
 {

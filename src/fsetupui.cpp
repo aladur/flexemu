@@ -21,33 +21,49 @@
 */
 
 
+#include "typedefs.h"
 #include "misc1.h"
+#include "fsetupui.h"
+#include "efiletim.h"
 #include "e2.h"
 #include "soptions.h"
 #include "filecnts.h"
 #include "termimpf.h"
 #include "colors.h"
 #include "flexerr.h"
-#include <string>
-#include <memory>
-#include <stdexcept>
+#ifdef USE_CMAKE
+#include <ui_fsetup.h>
+#else
+#include <fsetup_ui.h>
+#endif
 #include "warnoff.h"
-#include <QtGlobal>
-#include <QAbstractButton>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QFontMetrics>
+#include <QUrl>
+#include <QColor>
 #include <QDir>
 #include <QIcon>
+#include <QPixmap>
+#include <QAbstractButton>
+#include <QCheckBox>
+#include <QSpinBox>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QMessageBox>
+#include <QFileInfo>
+#include <QFileDialog>
+#include <QFontMetrics>
 #include "warnon.h"
 #include <cassert>
+#include <cstddef>
+#include <string>
 #include <array>
+#include <vector>
+#include <iterator>
+#include <algorithm>
 
 #ifdef _MSC_VER
     #include <direct.h>
 #endif
 
-#include "fsetupui.h"
 #include <filesystem>
 
 namespace fs = std::filesystem;

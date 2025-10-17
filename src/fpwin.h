@@ -24,8 +24,8 @@
 #define FPWIN_INCLUDED
 
 #include "e2.h"
-#include "misc1.h"
 #include "efiletim.h"
+#include "sfpopts.h"
 #include "warnoff.h"
 #include <QPoint>
 #include <QSize>
@@ -35,7 +35,6 @@
 #include <QList>
 #include "warnon.h"
 #include <functional>
-#include "sfpopts.h"
 
 
 class FlexplorerMdiChild;

@@ -23,7 +23,6 @@
 #ifndef FPOPTMAN_INCLUDED
 #define FPOPTMAN_INCLUDED
 
-#include "misc1.h"
 #include "sfpopts.h"
 
 

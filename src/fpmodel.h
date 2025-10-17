@@ -23,7 +23,7 @@
 #ifndef FPMODEL_INCLUDED
 #define FPMODEL_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "fcinfo.h"
 #include "efiletim.h"
 #include "ffilebuf.h"
@@ -40,8 +40,8 @@
 #include <QStringList>
 #include "warnon.h"
 #include <memory>
-#include <array>
 #include <string>
+#include <array>
 #include <filesystem>
 
 namespace fs = std::filesystem;

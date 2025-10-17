@@ -51,12 +51,9 @@
 #include <QApplication>
 #include <QGuiApplication>
 #include <QWidget>
-#include <cassert>
-#include <qevent.h>
-#include <qpaintdevice.h>
-#include <qhashfunctions.h>
-#include <cstdint>
 #include "warnon.h"
+#include <cassert>
+#include <cstdint>
 #include <array>
 #include <string>
 #if defined(UNIX) && !defined(X_DISPLAY_MISSING)

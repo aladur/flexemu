@@ -22,10 +22,16 @@
 
 
 #include "fpcnvui.h"
-#include "qstyle.h"
 #include "warnoff.h"
-#include <QPainter>
+#ifdef USE_CMAKE
+#include <ui_fpcnv.h>
+#else
+#include <fpcnv_ui.h>
+#endif
+#include <QString>
+#include <QDialog>
 #include "warnon.h"
+#include <stdexcept>
 
 FlexplorerConvertUi::FlexplorerConvertUi() :
     Ui_FlexplorerConvert()

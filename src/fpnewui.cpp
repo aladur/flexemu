@@ -22,15 +22,24 @@
 
 
 #include "fpnewui.h"
-#include "mdcrtape.h"
 #include "filecnts.h"
+#include "filecntb.h"
 #include "warnoff.h"
 #include <QDir>
 #include <QLineEdit>
 #include <QFileInfo>
+#include <QAbstractButton>
+#include <QDialogButtonBox>
+#include <QDialog>
 #include <QFileDialog>
 #include <QMessageBox>
 #include "warnon.h"
+#ifdef USE_CMAKE
+#include <ui_fpnew.h>
+#else
+#include <fpnew_ui.h>
+#endif
+#include <stdexcept>
 
 FlexplorerNewUi::FlexplorerNewUi() :
     Ui_FlexplorerNew()
