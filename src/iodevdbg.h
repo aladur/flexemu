@@ -26,7 +26,7 @@
 #define IODEVDBG_INCLUDED
 
 #include "iodevice.h"
-#include <functional>
+#include <string>
 
 class IoDeviceDebug : public IoDevice
 {

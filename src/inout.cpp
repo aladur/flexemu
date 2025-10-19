@@ -21,10 +21,10 @@
 */
 
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "inout.h"
+#include "bobshelp.h"
 #include "e2floppy.h"
-#include "mc6821.h"
 #include "mc146818.h"
 #include "absgui.h"
 #include "memory.h"

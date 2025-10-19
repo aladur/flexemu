@@ -22,10 +22,14 @@
 #ifndef IFFILCNT_INCLUDED
 #define IFFILCNT_INCLUDED
 
+#include "typedefs.h"
 #include "ifilcnti.h"
 #include "filecont.h"
 #include "filecnts.h"
+#include "bdate.h"
+#include <string>
 
+class FlexDirEntry;
 class FlexDisk;
 
 // Implementation of IFlexDiskIteratorImp interface for FlexDisk.

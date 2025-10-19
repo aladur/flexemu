@@ -19,10 +19,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "filecont.h"
+#include "typedefs.h"
 #include "ifilecnt.h"
+#include "bdate.h"
+#include "filecont.h"
 #include "ifilcnti.h"
 #include "flexerr.h"
+#include <utility>
+#include <string>
 
 /* iterator class for file container
    Can be used to iterate over the files in a container.

@@ -19,15 +19,19 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
+#include "misc1.h"
 #include "iffilcnt.h"
 #include "ffilecnt.h"
+#include "filecnts.h"
+#include "filecont.h"
+#include "filecntb.h"
 #include "flexerr.h"
+#include <cstring>
 #include <string>
+#include <iterator>
 #include <sstream>
 #include <algorithm>
-#include <iterator>
-#include <array>
-#include <cstring>
 
 FlexDiskIteratorImp::FlexDiskIteratorImp(FlexDisk *p_base)
     : base(p_base), dirIndex(-1), dirTrackSector{0, 0}

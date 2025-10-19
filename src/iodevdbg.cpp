@@ -22,10 +22,14 @@
 
 #include "typedefs.h"
 #include "iodevdbg.h"
-#include <fstream>
+#include "iodevice.h"
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <ios>
+#include <utility>
+#include <string>
+#include <fstream>
 
 
 IoDeviceDebug::IoDeviceDebug(IoDevice &p_device, std::string p_logFilePath)

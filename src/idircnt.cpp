@@ -21,19 +21,28 @@
 
 #include "typedefs.h"
 #include "misc1.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <cerrno>
+#include "idircnt.h"
+#include "filecntb.h"
+#include "efiletim.h"
 #include "fattrib.h"
 #include "filecont.h"
 #include "dircont.h"
-#include "idircnt.h"
 #include "filecnts.h"
 #include "flexerr.h"
 #ifdef _WIN32
 #include "cvtwchar.h"
+#include <sys/utime.h>
+#else
+#include <utime.h>
 #endif
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+#endif
+#include <sys/stat.h>
 #include <ctime>
+#include <cerrno>
+#include <system_error>
+#include <string>
 #include <filesystem>
 
 

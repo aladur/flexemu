@@ -24,6 +24,8 @@
 
 #include "ifilcnti.h"
 #include "filecont.h"
+#include "bdate.h"
+#include <string>
 
 #ifdef _WIN32
     using DIRHANDLE = HANDLE;

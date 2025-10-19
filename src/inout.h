@@ -25,12 +25,9 @@
 #ifndef INOUT_INCLUDED
 #define INOUT_INCLUDED
 
-#include "misc1.h"
-#include "flexemu.h"
+#include "typedefs.h"
 #include "bobserv.h"
 #include "soptions.h"
-#include <string>
-#include <memory>
 #include <optional>
 
 

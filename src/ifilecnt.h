@@ -22,13 +22,13 @@
 #ifndef IFILECNT_INCLUDED
 #define IFILECNT_INCLUDED
 
-#include "fdirent.h"
+#include "typedefs.h"
 #include "ifilcnti.h"
 #include <string>
 
 
+class FlexDirEntry;
 class IFlexDiskByFile;
-class IFlexDiskIteratorImp;
 
 // class FlexDiskIterator allows to iterate over directory entries
 // of a FLEX disk. Depending on the Flex disk type it uses a different
