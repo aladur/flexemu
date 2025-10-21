@@ -21,20 +21,30 @@
 */
 
 
+#include "typedefs.h"
 #include "misc1.h"
 #include "logfilui.h"
 #include "efslctle.h"
 #include "scpulog.h"
 #include "bui.h"
-#include <stdexcept>
-#include <cassert>
 #include "warnoff.h"
-#include <QAbstractButton>
+#ifdef USE_CMAKE
+#include "ui_logfil.h"
+#else
+#include "logfil_ui.h"
+#endif
+#include <QDir>
 #include <QLineEdit>
 #include <QFileInfo>
+#include <QAbstractButton>
+#include <QDialogButtonBox>
+#include <QDialog>
 #include <QFileDialog>
-#include <optional>
 #include "warnon.h"
+#include <cassert>
+#include <stdexcept>
+#include <optional>
+#include <filesystem>
 
 using OptionalWord = std::optional<Word>;
 

@@ -24,6 +24,7 @@
 #ifndef LOGFILUI_INCLUDED
 #define LOGFILUI_INCLUDED
 
+#include "scpulog.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
 #include "ui_logfil.h"
@@ -31,8 +32,8 @@
 #include "logfil_ui.h"
 #endif
 #include <QObject>
-#include <array>
 #include "warnon.h"
+#include <array>
 
 class QDialog;
 class QAbstractButton;
