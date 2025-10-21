@@ -22,6 +22,7 @@
 
 
 #include "joystick.h"
+#include <mutex>
 
 
 JoystickIO::JoystickIO()
