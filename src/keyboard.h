@@ -25,14 +25,11 @@
 #ifndef KEYBOARD_INCLUDED
 #define KEYBOARD_INCLUDED
 
-#include "misc1.h"
-#include "flexemu.h"
-#include "asciictl.h"
+#include "typedefs.h"
+#include <mutex>
+#include <optional>
 #include <string>
 #include <deque>
-#include <mutex>
-#include <memory>
-#include <optional>
 
 // key mask for shift, control key
 enum : uint8_t {

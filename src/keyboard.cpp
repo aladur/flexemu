@@ -27,11 +27,17 @@
 #include "confignt.h"
 #endif
 #include "typedefs.h"
+#include "misc1.h"
 #include "keyboard.h"
-#include <iterator>
+#include "asciictl.h"
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <mutex>
+#include <optional>
+#include <iterator>
+#include <string>
+#include <algorithm>
 
 
 KeyboardIO::KeyboardIO()
