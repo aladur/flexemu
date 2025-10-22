@@ -22,8 +22,7 @@
 
 
 
-#include "misc1.h"
-#include "iodevice.h"
+#include "typedefs.h"
 #include "mc6850.h"
 
 

@@ -21,12 +21,18 @@
 */
 
 
+#include "typedefs.h"
 #include "mdcrtape.h"
 #include "flexerr.h"
-#include <fstream>
-#include <iostream>
-#include <algorithm>
+#include <cstdint>
+#include <cstddef>
+#include <ios>
 #include <memory>
+#include <array>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
 #include <filesystem>
 
 

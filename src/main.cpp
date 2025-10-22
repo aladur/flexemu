@@ -21,8 +21,6 @@
 */
 
 #include "misc1.h"
-#include <new>
-#include <sstream>
 #ifdef _MSC_VER
     #include <new.h>
 #endif
@@ -30,13 +28,19 @@
 #include "apprun.h"
 #include "soptions.h"
 #include "termimpf.h"
+#ifdef _WIN32
 #include "winctxt.h"
+#endif
 #include "winmain.h"
 #include "ffilecnt.h"
 #include "warnoff.h"
 #include <QApplication>
 #include <QMessageBox>
 #include "warnon.h"
+#include <new>
+#include <exception>
+#include <utility>
+#include <sstream>
 
 
 #ifdef _WIN32

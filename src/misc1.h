@@ -46,16 +46,19 @@
 #include <windows.h>
 #endif
 #include "typedefs.h"
+#include <cassert>
+#include <ctime>
+#include <limits>
+#include <locale>
+#include <utility>
 #include <string>
 #include <array>
 #include <vector>
-#include <algorithm>
 #include <sstream>
-#include <tuple>
 #include <ostream>
-#include <cassert>
+#include <iterator>
+#include <algorithm>
 #include <filesystem>
-#include <chrono>
 
 namespace fs = std::filesystem;
 

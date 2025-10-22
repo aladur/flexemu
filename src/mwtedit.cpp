@@ -26,6 +26,7 @@
 #include <QString>
 #include <QWidget>
 #include <QTextEdit>
+#include <QEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QInputMethodEvent>

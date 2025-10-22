@@ -23,7 +23,8 @@
 #ifndef MDCRTAPE_INCLUDED
 #define MDCRTAPE_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
+#include <ios>
 #include <memory>
 #include <array>
 #include <vector>

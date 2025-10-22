@@ -21,7 +21,10 @@
 */
 
 
+#include "typedefs.h"
 #include "memwinmg.h"
+#include "bcommand.h"
+#include "free.h"
 #include "memwin.h"
 #include "memsetui.h"
 #include "bintervl.h"
@@ -32,6 +35,7 @@
 #include "soptions.h"
 #include "warnoff.h"
 #include <QSize>
+#include <QPoint>
 #include <QString>
 #include <QWidget>
 #include <QDialog>
@@ -39,8 +43,9 @@
 #include <QMessageBox>
 #include <fmt/format.h>
 #include "warnon.h"
-#include <memory>
 #include <cassert>
+#include <memory>
+#include <optional>
 #include <sstream>
 #include <algorithm>
 

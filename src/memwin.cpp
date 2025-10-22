@@ -24,10 +24,12 @@
 #include "typedefs.h"
 #include "misc1.h"
 #include "memwin.h"
+#include "memtype.h"
 #include "bintervl.h"
 #include "free.h"
 #include "mwtedit.h"
 #include "findui.h"
+#include "qtfree.h"
 #include "warnoff.h"
 #include <QtGlobal>
 #include <QAbstractEventDispatcher>
@@ -42,6 +44,7 @@
 #include <QTimer>
 #include <QScreen>
 #include <QAction>
+#include <QFutureWatcher>
 #include <QKeySequence>
 #include <QBoxLayout>
 #include <QHBoxLayout>
@@ -76,15 +79,16 @@
 #include <QtConcurrent>
 #include <fmt/format.h>
 #include "warnon.h"
-#include "qtfree.h"
-#include <algorithm>
-#include <optional>
-#include <cmath>
 #include <cassert>
-#include <sstream>
-#include <string>
-#include <chrono>
+#include <cstdint>
+#include <cmath>
+#include <ios>
 #include <stdexcept>
+#include <optional>
+#include <string>
+#include <sstream>
+#include <chrono>
+#include <algorithm>
 
 
 /****************************

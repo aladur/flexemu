@@ -26,34 +26,40 @@
 #else
 #include "confignt.h"
 #endif
+#include "typedefs.h"
 #include "misc1.h"
 #include "cistring.h"
-#include <cctype>
-#include <iostream>
-#include <sstream>
-#include <functional>
-#include <limits>
+#include "flexerr.h"
+#include "benv.h"
 #ifdef UNIX
 #include <netdb.h>
 #include <pwd.h>
 #endif
-#include "cvtwchar.h"
-#include "flexerr.h"
-#include "benv.h"
-#include "fversion.h"
-#include <array>
-#include <string>
-#include <fstream>
-#include <filesystem>
-#include <algorithm>
-#include <utility>
-#include <regex>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef _WIN32
+#include "cvtwchar.h"
+#endif
+#include <cctype>
+#include <cerrno>
+#include <cstdint>
+#include <cstddef>
+#include <ctime>
+#include <limits>
+#include <utility>
+#include <regex>
+#include <string>
+#include <array>
+#include <vector>
+#include <iostream>
+#include <iterator>
+#include <chrono>
+#include <algorithm>
+#include <filesystem>
 
 namespace fs = std::filesystem;
 

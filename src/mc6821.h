@@ -25,9 +25,10 @@
 #ifndef MC6821_INCLUDED
 #define MC6821_INCLUDED
 
+#include "typedefs.h"
+#include "iodevice.h"
 #include <cstdint>
 #include <type_traits>
-#include "iodevice.h"
 
 
 class Mc6821 : public IoDevice

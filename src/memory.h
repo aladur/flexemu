@@ -25,22 +25,19 @@
 #ifndef MEMORY_INCLUDED
 #define MEMORY_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
+#include "e2.h"
 #include "memtype.h"
-#include "warnoff.h"
-#include "warnon.h"
-#include <functional>
-#include <memory>
-#include <vector>
 #include "iodevice.h"
 #include "memsrc.h"
 #include "memtgt.h"
-#include "e2.h"
 #include "bobserv.h"
 #include "bintervl.h"
-#include <array>
-#include <iostream>
 #include <optional>
+#include <functional>
+#include <array>
+#include <vector>
+#include <ostream>
 
 // Maximum number of video RAM pointers supported.
 // Each video RAM page has as size of 16KByte.

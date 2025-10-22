@@ -9,11 +9,15 @@
 */
 
 
+#include "typedefs.h"
 #include "misc1.h"
-#include "flexerr.h"
 #include "mc6809.h"
+#include "bobshelp.h"
+#include "flexerr.h"
 #include "da6809.h"
 #include "inout.h"
+#include "scpulog.h"
+#include "schedcpu.h"
 #include <cstring>
 
 #ifdef FASTFLEX

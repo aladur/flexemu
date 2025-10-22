@@ -38,10 +38,11 @@
 #include <QStringList>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <memory>
 #include "warnon.h"
-#include <vector>
+#include <memory>
 #include <optional>
+#include <string>
+#include <vector>
 #include <chrono>
 
 

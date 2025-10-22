@@ -21,11 +21,11 @@
 */
 
 
+#include "typedefs.h"
 #include "memsetui.h"
 #include "bui.h"
-#include "efslctle.h"
 #include "qtfree.h"
-#include <cassert>
+#include "memwin.h"
 #include "warnoff.h"
 #include <QLatin1Char>
 #include <QString>
@@ -33,9 +33,11 @@
 #include <QDialogButtonBox>
 #include <QAbstractButton>
 #include <QMessageBox>
+#include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include "warnon.h"
-#include "memwin.h"
+#include <cassert>
+#include <stdexcept>
 
 
 MemorySettingsUi::MemorySettingsUi() :

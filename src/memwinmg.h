@@ -24,18 +24,21 @@
 #define MEMORYWINDOWMANAGER_INCLUDED
 
 #include "typedefs.h"
-#include "warnoff.h"
-#include <QObject>
-#include "warnon.h"
 #include "bintervl.h"
 #include "memwin.h"
+#include "warnoff.h"
+#include <QObject>
+#include <QRect>
+#include "warnon.h"
 #include <memory>
+#include <optional>
 #include <vector>
 
 
 class Memory;
 class Scheduler;
 class QSize;
+class QPoint;
 class QWidget;
 class CReadMemory;
 class CWriteMemory;

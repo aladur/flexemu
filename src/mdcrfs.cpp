@@ -21,14 +21,21 @@
 */
 
 
+#include "typedefs.h"
+#include "misc1.h"
 #include "mdcrfs.h"
 #include "mdcrtape.h"
 #include "bmembuf.h"
-#include <limits>
-#include <algorithm>
+#include <cstdint>
+#include <cstddef>
 #include <cctype>
+#include <functional>
+#include <limits>
+#include <string>
 #include <array>
+#include <vector>
 #include <filesystem>
+#include <algorithm>
 
 namespace fs = std::filesystem;
 

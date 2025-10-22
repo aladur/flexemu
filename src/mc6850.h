@@ -25,7 +25,7 @@
 #ifndef MC6850_INCLUDED
 #define MC6850_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "iodevice.h"
 
 class Mc6850 : public IoDevice

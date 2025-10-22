@@ -20,12 +20,17 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
 #include "misc1.h"
 #include "mc146818.h"
-#include <array>
-#include <fstream>
+#include "bobshelp.h"
 #include <ctime>
 #include <cstring>
+#include <ios>
+#include <string>
+#include <array>
+#include <fstream>
+#include <algorithm>
 #include <filesystem>
 
 

@@ -26,6 +26,8 @@
 #else
 #include "confignt.h"
 #endif
+#include "typedefs.h"
+#include "misc1.h"
 #include "free.h"
 #include "mdcrtape.h"
 #include "mdcrfs.h"
@@ -33,13 +35,13 @@
 #include "fileread.h"
 #include "flexerr.h"
 #include "wmain.h"
-#include "bdir.h"
-#include <cctype>
-#include <iostream>
-#include <vector>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <cctype>
+#include <type_traits>
+#include <vector>
+#include <iostream>
 #include <filesystem>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

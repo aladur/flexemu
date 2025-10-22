@@ -13,21 +13,22 @@
 #ifndef MC6809_INCLUDED
 #define MC6809_INCLUDED
 
-#include "misc1.h"
 #include "typedefs.h"
+#include "misc1.h"
 #include "memory.h"
 #include "schedcpu.h"
 #include "scpulog.h"
 #include "cpustate.h"
-#include "flexemu.h"
 #include "absdisas.h"
 #include "bobserv.h"
 #include "mc6809lg.h"
-#include <atomic>
-#include <array>
 #include "warnoff.h"
 #include <optional>
 #include "warnon.h"
+#include <type_traits>
+#include <atomic>
+#include <string>
+#include <array>
 
 using OptionalWord = std::optional<Word>;
 

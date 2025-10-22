@@ -25,9 +25,10 @@
 #ifndef MC146818_INCLUDED
 #define MC146818_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "iodevice.h"
 #include "bobservd.h"
+#include <cstdint>
 #include <string>
 #include <array>
 

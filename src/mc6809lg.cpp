@@ -21,15 +21,22 @@
 */
 
 
+#include "typedefs.h"
 #include "mc6809lg.h"
 #include "mc6809st.h"
 #include "mc6809.h"
 #include "scpulog.h"
-#include <algorithm>
-#include <cassert>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <cassert>
+#include <cstddef>
+#include <ios>
+#include <string>
+#include <array>
+#include <deque>
+#include <iterator>
+#include <algorithm>
 
 
 Mc6809Logger::~Mc6809Logger()

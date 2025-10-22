@@ -21,18 +21,29 @@
 */
 
 
-#include <sstream>
+#include "typedefs.h"
+#include "misc1.h"
 #include "memory.h"
+#include "e2.h"
 #include "bintervl.h"
+#include "bobshelp.h"
 #include "fcnffile.h"
+#include "memtype.h"
+#include "iodevice.h"
+#include "memsrc.h"
 #include "soptions.h"
 #include "free.h"
-#include <cstring>
-#include <cassert>
-#include <algorithm>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <cstring>
+#include <cassert>
+#include <stdexcept>
+#include <optional>
+#include <functional>
+#include <array>
+#include <ostream>
+#include <algorithm>
 
 std::array<Byte, 8> Memory::initial_content =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
