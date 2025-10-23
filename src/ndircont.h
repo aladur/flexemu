@@ -24,19 +24,18 @@
 #define NDIRCONT_INCLUDED
 
 
-#include "misc1.h"
-
+#include "typedefs.h"
 #include "efiletim.h"
 #include "filecntb.h"
 #include "filecnts.h"
 #include "rndcheck.h"
-#include "flexemu.h"
+#include <cstdint>
+#include <ctime>
 #include <string>
-#include <vector>
 #include <array>
+#include <vector>
 #include <unordered_map>
 #include <filesystem>
-#include <ctime>
 
 namespace fs = std::filesystem;
 
@@ -174,7 +173,7 @@ private:
     static std::string get_unix_filename(const s_dir_entry &dir_entry);
     bool add_to_link_table(
         SDWord dir_idx,
-        uintmax_t size,
+        std::uintmax_t size,
         bool is_random,
         st_t &begin,
         st_t &end);
@@ -184,7 +183,7 @@ private:
         SDWord dir_idx,
         bool is_random,
         std::time_t mtime,
-        uintmax_t file_size,
+        std::uintmax_t file_size,
         const st_t &begin,
         const st_t &end,
         bool is_file_wp);

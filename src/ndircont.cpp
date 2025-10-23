@@ -26,38 +26,50 @@
 #else
 #include "confignt.h"
 #endif
+#include "typedefs.h"
 #include "misc1.h"
-#include <iterator>
-#include <sstream>
-#include <iomanip>
-#include <algorithm>
-#include <locale>
-#include <cstring>
-#include <vector>
-#include <set>
-#include <unordered_set>
-#include <fstream>
-#include <limits>
-#include <cassert>
-#include <iostream>
-#include <filesystem>
-#include <chrono>
-#include <sys/stat.h>
-#include "filecntb.h"
-#include "fattrib.h"
 #include "ndircont.h"
-#include "fdirent.h"
+#include "efiletim.h"
+#include "fattrib.h"
 #include "fcinfo.h"
 #include "flexerr.h"
-#include "cvtwchar.h"
+#include "filecnts.h"
+#include "filecntb.h"
 #include "fdoptman.h"
-#include <ctime>
-#include "warnoff.h"
-#include <fmt/format.h>
-#include "warnon.h"
+#include <sys/stat.h>
+#ifdef _WIN32
+#include "cvtwchar.h"
+#include <sys/utime.h>
+#else
+#include <utime.h>
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+#endif
+#include "warnoff.h"
+#include <fmt/format.h>
+#include "warnon.h"
+#include <cstdint>
+#include <cassert>
+#include <cstring>
+#include <ctime>
+#include <type_traits>
+#include <ios>
+#include <limits>
+#include <system_error>
+#include <string>
+#include <vector>
+#include <set>
+#include <unordered_set>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <iterator>
+#include <algorithm>
+#include <filesystem>
 
 namespace fs = std::filesystem;
 
@@ -677,7 +689,7 @@ void FlexDirectoryDiskBySector::close_new_files()
 // On success return its first and last track/sector.
 bool FlexDirectoryDiskBySector::add_to_link_table(
     SDWord dir_idx,
-    uintmax_t size,
+    std::uintmax_t size,
     bool is_random,
     st_t &begin,
     st_t &end)
@@ -764,7 +776,7 @@ void FlexDirectoryDiskBySector::add_to_directory(
     SDWord dir_idx,
     bool is_random,
     std::time_t mtime,
-    uintmax_t file_size,
+    std::uintmax_t file_size,
     const st_t &begin,
     const st_t &end,
     bool is_file_wp)
