@@ -23,7 +23,8 @@
 #ifndef PRINTOUTPUTWINDOW_INCLUDED
 #define PRINTOUTPUTWINDOW_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
+#include "poverhlp.h"
 #include "warnoff.h"
 #include <QString>
 #include <QTimer>
@@ -33,10 +34,9 @@
 #include <QPrinter>
 #include <QMarginsF>
 #include "warnon.h"
+#include <mutex>
 #include <vector>
 #include <deque>
-#include <mutex>
-#include "poverhlp.h"
 
 
 class QStackedWidget;

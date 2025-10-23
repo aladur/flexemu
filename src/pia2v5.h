@@ -25,11 +25,10 @@
 #ifndef PIA2V5_INCLUDED
 #define PIA2V5_INCLUDED
 
-#include "misc1.h"
-#include "e2.h"
+#include "typedefs.h"
 #include "mc6821.h"
+#include "e2.h"
 #include "mdcrtape.h"
-#include <memory>
 #include <array>
 #include <vector>
 #include <fstream>

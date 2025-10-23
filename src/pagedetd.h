@@ -23,11 +23,11 @@
 #ifndef PAGEDETECTORDATA_INCLUDED
 #define PAGEDETECTORDATA_INCLUDED
 
+#include "poverhlp.h"
 #include <cstdint>
 #include <string>
 #include <vector>
 #include <map>
-#include "poverhlp.h"
 
 
 struct PageDetectorData

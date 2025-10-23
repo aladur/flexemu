@@ -21,15 +21,21 @@
 */
 
 #include "typedefs.h"
+#include "misc1.h"
 #include "pia2v5.h"
+#include "e2.h"
+#include "mc6821.h"
 #include "mc6809.h"
 #include "mdcrtape.h"
 #include "flexerr.h"
-#include <sstream>
-#include <iostream>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <cstddef>
+#include <string>
+#include <array>
+#include <vector>
+#include <iostream>
 #include <filesystem>
 
 namespace fs = std::filesystem;

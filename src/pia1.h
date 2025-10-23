@@ -24,7 +24,6 @@
 #ifndef PIA1_INCLUDED
 #define PIA1_INCLUDED
 
-#include "misc1.h"
 #include "mc6821.h"
 #include "bobservd.h"
 #include "soptions.h"

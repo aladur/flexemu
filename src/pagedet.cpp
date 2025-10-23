@@ -20,12 +20,20 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <algorithm>
-#include <numeric>
-#include <cmath>
-#include <iostream>
 #include "misc1.h"
 #include "pagedet.h"
+#include "pagedetd.h"
+#include "poverhlp.h"
+#include <cstdint>
+#include <cmath>
+#include <utility>
+#include <numeric>
+#include <string>
+#include <vector>
+#include <map>
+#include <iostream>
+#include <iterator>
+#include <algorithm>
 
 
 PageDetector::PageDetector(const RichLines &p_lines)

@@ -21,7 +21,12 @@
 */
 
 
+#include "typedefs.h"
 #include "poutwin.h"
+#include "qtfree.h"
+#include "pagedet.h"
+#include "soptions.h"
+#include "poverhlp.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
 #include "ui_pprev.h"
@@ -30,6 +35,7 @@
 #endif
 #include <QtGlobal>
 #include <QObject>
+#include <QSize>
 #include <QString>
 #include <QStringList>
 #include <QMarginsF>
@@ -41,6 +47,7 @@
 #include <QPrinter>
 #include <QTextStream>
 #include <QTextDocument>
+#include <QApplication>
 #include <QWidget>
 #include <QStackedWidget>
 #include <QMenu>
@@ -48,6 +55,7 @@
 #include <QToolBar>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QSpinBox>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QTextEdit>
@@ -83,17 +91,16 @@
 #include <QTextCharFormat>
 #include <QTextFormat>
 #include "warnon.h"
-#include <algorithm>
-#include <iostream>
-#include <cmath>
 #include <cctype>
+#include <cstddef>
+#include <cassert>
+#include <cmath>
 #include <locale>
+#include <mutex>
 #include <set>
 #include <sstream>
-#include <cassert>
-#include "qtfree.h"
-#include "pagedet.h"
-#include "soptions.h"
+#include <iostream>
+#include <algorithm>
 
 // The orientation keys should not be translated (Unique key).
 static const QStringList &GetOrientationKeys()

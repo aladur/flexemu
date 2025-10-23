@@ -23,10 +23,9 @@
 #ifndef PRINTOVERLAYHELPER_INCLUDED
 #define PRINTOVERLAYHELPER_INCLUDED
 
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <cstdint>
 
 
 enum class CharProperty : uint16_t

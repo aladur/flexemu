@@ -25,29 +25,29 @@
 #define PCH_INCLUDED
 
 #include "misc1.h"
+#include <cctype>
+#include <cassert>
 #include <limits>
 #include <memory>
 #include <mutex>
 #include <functional>
 #include <utility>
-#include <cctype>
-#include <cassert>
 #include <locale>
 #include <iomanip>
 #include <exception>
 #include <stdexcept>
 #include <new>
 #include <string>
+#include <array>
 #include <vector>
 #include <set>
 #include <map>
-#include <array>
-#include <algorithm>
-#include <iterator>
 #include <sstream>
 #include <ostream>
-#include <fstream>
 #include <iostream>
+#include <fstream>
+#include <iterator>
+#include <algorithm>
 
 #endif
 

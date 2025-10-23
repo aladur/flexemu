@@ -21,11 +21,14 @@
 */
 
 
-#include <set>
-#include <functional>
 #include "poverhlp.h"
 #include "asciictl.h"
 #include "bscopeex.h"
+#include <cstddef>
+#include <functional>
+#include <string>
+#include <set>
+#include <algorithm>
 
 std::string toString(const RichLine &richLine)
 {

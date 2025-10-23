@@ -21,9 +21,12 @@
 */
 
 
-#include <cmath>
-#include <iostream>
 #include "pagedetd.h"
+#include "poverhlp.h"
+#include <cmath>
+#include <cstdint>
+#include <string>
+#include <iostream>
 
 PageDetectorData::PageDetectorData(const RichLines &p_lines)
     : lines(p_lines)

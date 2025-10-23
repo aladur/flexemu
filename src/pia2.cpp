@@ -20,13 +20,17 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
 #include "misc1.h"
 #include "pia2.h"
+#include "mc6821.h"
 #include "mc6809.h"
 #include "bjoystck.h"
 #include "joystick.h"
 #include "keyboard.h"
+#include <limits>
 #include <array>
+#include <algorithm>
 
 
 Pia2::Pia2(Mc6809 &p_cpu, KeyboardIO &p_keyboardIO, JoystickIO &p_joystickIO) :

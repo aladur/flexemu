@@ -21,11 +21,16 @@
 */
 
 
+#include "typedefs.h"
 #include "pia1.h"
+#include "mc6821.h"
+#include "bobshelp.h"
+#include "bcommand.h"
 #include "schedule.h"
 #include "keyboard.h"
 #include "cacttrns.h"
-#include "bobserv.h"
+#include "soptions.h"
+#include <utility>
 
 
 Pia1::Pia1(Scheduler &p_scheduler, KeyboardIO &p_keyboardIO,

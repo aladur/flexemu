@@ -28,7 +28,6 @@
 #include "misc1.h"
 #include "mc6821.h"
 #include "bjoystck.h"
-#include <memory>
 
 
 class Mc6809;
