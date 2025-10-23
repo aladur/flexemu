@@ -20,9 +20,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
 #include "rfilecnt.h"
+#include "efiletim.h"
+#include "ffilecnt.h"
+#include "filecntb.h"
 #include "flexerr.h"
 #include <cstring>
+#include <ios>
 #include <filesystem>
 
 namespace fs = std::filesystem;

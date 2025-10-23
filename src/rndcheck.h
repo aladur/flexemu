@@ -26,8 +26,12 @@
 #define RNDCHECK_INCLUDED
 
 #include "filecnts.h"
+#include <cstdint>
 #include <string>
 #include <vector>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 class RandomFileCheck
 {

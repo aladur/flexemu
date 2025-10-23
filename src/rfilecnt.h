@@ -23,6 +23,7 @@
 #ifndef RFILECNT_INCLUDED
 #define RFILECNT_INCLUDED
 
+#include "typedefs.h"
 #include "efiletim.h"
 #include "ffilecnt.h"
 #include <vector>

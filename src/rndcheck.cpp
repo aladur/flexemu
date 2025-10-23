@@ -25,19 +25,28 @@
 #else
 #include "confignt.h"
 #endif
+#include "typedefs.h"
 #include "misc1.h"
 #include "rndcheck.h"
-#include "cvtwchar.h"
-#include <string>
-#include <vector>
-#include <utility>
-#include <fstream>
-#include <filesystem>
-#include <iostream>
-#include <algorithm>
+#include "filecnts.h"
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef _WIN32
+#include "cvtwchar.h"
+#endif
+#include <cstdint>
+#include <system_error>
+#include <utility>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <iostream>
+#include <algorithm>
+#include <filesystem>
 
 namespace fs = std::filesystem;
 
