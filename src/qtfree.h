@@ -23,6 +23,9 @@
 #ifndef QTFREE_INCLUDED
 #define QTFREE_INCLUDED
 
+#include "typedefs.h"
+#include "e2.h"
+#include "free.h"
 #include "warnoff.h"
 #include <QSize>
 #include <QString>
@@ -32,14 +35,11 @@
 #include <QValidator>
 #include <optional>
 #include "warnon.h"
-#include "typedefs.h"
-#include "free.h"
-#include "e2.h"
-#include <string>
-#include <vector>
+#include <exception>
 #include <utility>
-#include <algorithm>
+#include <string>
 #include <regex>
+#include <algorithm>
 
 class QAction;
 class QMenu;

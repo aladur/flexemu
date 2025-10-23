@@ -21,10 +21,22 @@
 */
 
 
+#include "typedefs.h"
 #include "misc1.h"
 #include "qtgui.h"
+#include "free.h"
+#include "qtfree.h"
+#include "cpustate.h"
+#include "bcommand.h"
+#include "flexemu.h"
+#include "e2.h"
+#include "memwin.h"
+#include "bobshelp.h"
+#include "memtype.h"
 #include "inout.h"
 #include "e2floppy.h"
+#include "soptions.h"
+#include "schedcpu.h"
 #include "vico1.h"
 #include "vico2.h"
 #include "schedule.h"
@@ -48,9 +60,6 @@
 #include "fsetupui.h"
 #include "colors.h"
 #include "poutwin.h"
-#include "fversion.h"
-#include "free.h"
-#include "qtfree.h"
 #include "bintervl.h"
 #include "warnoff.h"
 #ifdef USE_CMAKE
@@ -58,6 +67,8 @@
 #else
 #include "about_ui.h"
 #endif
+#include <QtGlobal>
+#include <QRgb>
 #include <QString>
 #include <QStringList>
 #include <QPixmap>
@@ -66,6 +77,7 @@
 #include <QTextStream>
 #include <QFrame>
 #include <QLabel>
+#include <QBrush>
 #include <QWidget>
 #include <QScreen>
 #include <QToolBar>
@@ -74,6 +86,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QUrl>
+#include <QIcon>
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
@@ -85,6 +98,7 @@
 #include <QStatusTipEvent>
 #include <QStackedWidget>
 #include <QComboBox>
+#include <QStandardItem>
 #include <QStandardItemModel>
 #include <QDate>
 #include <QLocale>
@@ -94,20 +108,34 @@
 #include <QResizeEvent>
 #include <QCloseEvent>
 #include <QMoveEvent>
+#include <QKeySequence>
 #include <QThread>
 #include <QTimer>
 #include <QHash>
 #include <QFont>
+#include <QFontInfo>
+#include <QFontMetrics>
 #include <QFontDatabase>
 #include <QTextBrowser>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include <fmt/format.h>
 #include "warnon.h"
-#include <cmath>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
 #include <cassert>
+#include <cmath>
+#include <ios>
+#include <iomanip>
+#include <utility>
+#include <mutex>
+#include <memory>
+#include <functional>
+#include <string>
 #include <array>
 #include <vector>
+#include <sstream>
 #include <regex>
 #include <algorithm>
 

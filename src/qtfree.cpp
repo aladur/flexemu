@@ -21,15 +21,28 @@
 */
 
 
+#include "typedefs.h"
 #include "misc1.h"
+#include "qtfree.h"
+#include "e2.h"
+#include "free.h"
+#include "propsui.h"
+#include "fcinfo.h"
+#include "fversion.h"
+#include "filecntb.h"
 #include "warnoff.h"
+#include <QtGlobal>
 #include <QObject>
 #include <QLatin1Char>
 #include <QString>
 #include <QStringList>
 #include <QLocale>
+#include <QSize>
+#include <QPoint>
 #include <QDate>
 #include <QPixmap>
+#include <QFont>
+#include <QFontInfo>
 #include <QFontDatabase>
 #include <QMenu>
 #include <QWidget>
@@ -40,17 +53,13 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include "fmt/format.h"
-#include <optional>
 #include "warnon.h"
-#include "typedefs.h"
-#include "free.h"
-#include "qtfree.h"
-#include "propsui.h"
-#include "fcinfo.h"
-#include "fversion.h"
-#include "e2.h"
+#include <cstdint>
+#include <cassert>
 #include <cmath>
+#include <optional>
 #include <string>
+#include <sstream>
 
 
 QFont GetFont(const QString &fontName)

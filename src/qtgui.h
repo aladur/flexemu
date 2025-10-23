@@ -23,7 +23,7 @@
 #ifndef QTGUI_INCLUDED
 #define QTGUI_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "flexemu.h"
 #include "absgui.h"
 #include "schedcpu.h"
@@ -34,10 +34,6 @@
 #include "ccopymem.h"
 #include "qtfree.h"
 #include "memwinmg.h"
-#include <vector>
-#include <string>
-#include <memory>
-#include <mutex>
 #include "warnoff.h"
 #ifdef USE_CMAKE
 #include "ui_cpustat.h"
@@ -52,6 +48,9 @@
 #include <QMap>
 #include <optional>
 #include "warnon.h"
+#include <mutex>
+#include <string>
+#include <vector>
 
 class Mc6809;
 class Memory;
