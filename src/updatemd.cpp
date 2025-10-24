@@ -20,21 +20,30 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <json/reader.h>
-#include <json/writer.h>
-#include <json/value.h>
-#include "free.h"
 #include "misc1.h"
 #include "bprocess.h"
 #include "benv.h"
+#include "free.h"
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+#include <json/reader.h>
+#include <json/writer.h>
+#include <json/value.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <memory>
 #include <exception>
+#include <optional>
+#include <utility>
+#include <string>
+#include <vector>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <regex>
-#include <cstdio>
 #include <filesystem>
-#include <optional>
 
 
 namespace fs = std::filesystem;
