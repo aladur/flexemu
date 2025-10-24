@@ -28,12 +28,12 @@
 #include "termimpi.h"
 #include "bobservd.h"
 #include "soptions.h"
-#include <string>
-#include <deque>
-#include <mutex>
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
 #endif
+#include <mutex>
+#include <string>
+#include <deque>
 
 struct sOptions;
 class TerminalIO;

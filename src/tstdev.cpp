@@ -21,6 +21,7 @@
 */
 
 
+#include "typedefs.h"
 #include "tstdev.h"
 
 TestDevice::TestDevice(Word byte_size) :

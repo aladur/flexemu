@@ -24,7 +24,7 @@
 #ifndef TERMINAL_INCLUDED
 #define TERMINAL_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "termimpi.h"
 #include "bobservd.h"
 #include <csignal>

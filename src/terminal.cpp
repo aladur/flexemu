@@ -21,12 +21,18 @@
 */
 
 
+#include "typedefs.h"
 #include "terminal.h"
+#include "bobshelp.h"
+#include "cpustate.h"
 #include "schedule.h"
-#include <iostream>
+#include "termimpi.h"
+#include <cassert>
+#include <csignal>
+#include <cstdlib>
 #include <utility>
 #include <string>
-#include <cassert>
+#include <iostream>
 
 TerminalIO *TerminalIO::instance = nullptr;
 #ifdef UNIX

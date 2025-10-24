@@ -24,7 +24,7 @@
 #ifndef TSTDEV_INCLUDED
 #define TSTDEV_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "iodevice.h"
 #include <vector>
 

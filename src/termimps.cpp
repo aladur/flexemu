@@ -26,15 +26,26 @@
 #else
 #include "confignt.h"
 #endif
+#include "typedefs.h"
+#include "termimpi.h"
+#include "bobshelp.h"
 #include "termimps.h"
 #include "soptions.h"
 #include "asciictl.h"
-#include <csignal>
-#include <cstring>
-#include <iostream>
+#ifdef HAVE_TERMIOS_H
+#include <termios.h>
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <csignal>
+#include <cstring>
+#include <cstdio>
+#include <mutex>
+#include <string>
+#include <iostream>
+#include <iterator>
+#include <algorithm>
 
 
 ScrollingTerminalImpl::ScrollingTerminalImpl(const sOptions &p_options)

@@ -27,10 +27,6 @@
 #include "typedefs.h"
 #include "termimpi.h"
 #include "bobservd.h"
-#include <string>
-#include <deque>
-#include <vector>
-#include <mutex>
 #ifdef UNIX
 #include "config.h"
 #ifdef HAVE_NCURSESW_NCURSES_H
@@ -47,6 +43,10 @@
 #  error "SysV or X/Open-compatible Curses header file required"
 #endif
 #endif
+#include <mutex>
+#include <string>
+#include <vector>
+#include <deque>
 
 
 struct sOptions;

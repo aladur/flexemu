@@ -28,6 +28,7 @@
 #include "termimpd.h"
 #include "termimps.h"
 #include <memory>
+#include <type_traits>
 
 
 ITerminalImplPtr TerminalImplFactory::Create(TerminalType type,

@@ -22,9 +22,10 @@
 
 
 #include "typedefs.h"
+#include "termimpi.h"
 #include "termimpd.h"
-#include <string>
 #include <csignal>
+#include <string>
 
 struct sOptions;
 

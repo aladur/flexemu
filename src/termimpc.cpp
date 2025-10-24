@@ -26,18 +26,26 @@
 #else
 #include "confignt.h"
 #endif
-#include "e2.h"
-#include "soptions.h"
+#include "typedefs.h"
+#include "termimpi.h"
 #include "termimpc.h"
+#include "soptions.h"
 #include "asciictl.h"
-#include <cstring>
-#include <cassert>
-#include <cstdlib>
-#include <csignal>
-#include <unordered_map>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <csignal>
+#include <clocale>
+#include <cstring>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <mutex>
+#include <string>
+#include <array>
+#include <unordered_map>
+#include <iterator>
+#include <algorithm>
 
 #ifdef UNIX
 WINDOW *NCursesTerminalImpl::win = nullptr;
