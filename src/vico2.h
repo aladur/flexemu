@@ -24,7 +24,7 @@
 #ifndef VICO2_INCLUDED
 #define VICO2_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "bytereg.h"
 #include "bobservd.h"
 

@@ -23,6 +23,7 @@
 
 #include "typedefs.h"
 #include "vico2.h"
+#include "bobshelp.h"
 
 
 void VideoControl2::requestWriteValue(Byte new_value)
