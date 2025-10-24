@@ -25,14 +25,13 @@
 #ifndef SOPTIONS_INCLUDED
 #define SOPTIONS_INCLUDED
 
+#include "efiletim.h"
+#include "e2.h"
+#include <filesystem>
 #include <string>
 #include <array>
 #include <vector>
 #include <map>
-#include <algorithm>
-#include "efiletim.h"
-#include "e2.h"
-#include <filesystem>
 
 namespace fs = std::filesystem;
 

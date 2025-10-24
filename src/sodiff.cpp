@@ -22,6 +22,7 @@
 
 
 #include "sodiff.h"
+#include "soptions.h"
 #include <algorithm>
 
 FlexemuOptionsDifference::FlexemuOptionsDifference(

@@ -25,14 +25,14 @@
 #ifndef SCHEDULE_INCLUDED
 #define SCHEDULE_INCLUDED
 
-#include "misc1.h"
-#include <mutex>
-#include <vector>
-#include <memory>
-#include <condition_variable>
+#include "typedefs.h"
 #include "cpustate.h"
 #include "schedcpu.h"
 #include "bcommand.h"
+#include <type_traits>
+#include <mutex>
+#include <vector>
+#include <condition_variable>
 
 
 

@@ -23,22 +23,23 @@
 // Uncomment the following line for cycle count debugging.
 //#define DEBUG_FILE "cycle_time.txt"
 
-#include <limits>
-#include <cinttypes>
-#ifndef _WIN32
-    #include <sched.h>
-#endif
+#include "typedefs.h"
 #include "misc1.h"
 #include "schedule.h"
-#include "mc6809.h"
+#include "schedcpu.h"
+#include "cpustate.h"
+#include "bcommand.h"
 #include "inout.h"
 #include "breltime.h"
 #include <cstring>
+#include <limits>
+#include <mutex>
+#include <utility>
 #ifdef DEBUG_FILE
-#include <fstream>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <fstream>
 #endif
 
 
