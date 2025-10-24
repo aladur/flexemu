@@ -24,9 +24,8 @@
 #ifndef WD1793_INCLUDED
 #define WD1793_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "iodevice.h"
-#include "filecntb.h"   // needed only for SECTOR_SIZE
 
 
 class Wd1793 : public IoDevice

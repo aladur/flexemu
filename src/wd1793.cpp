@@ -21,8 +21,7 @@
 */
 
 
-#include "misc1.h"
-
+#include "typedefs.h"
 #include "wd1793.h"
 
 
