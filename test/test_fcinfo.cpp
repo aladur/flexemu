@@ -22,9 +22,11 @@
 
 
 #include "gtest/gtest.h"
+#include "typedefs.h"
 #include "fcinfo.h"
 #include "filecntb.h"
-#include <iostream>
+#include <utility>
+#include <vector>
 #include <filesystem>
 
 namespace fs = std::filesystem;

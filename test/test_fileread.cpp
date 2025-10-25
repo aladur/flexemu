@@ -23,17 +23,20 @@
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include <filesystem>
+#include "typedefs.h"
+#include "fileread.h"
+#include "memsrc.h"
+#include "memtgt.h"
+#include <cassert>
+#include <stdexcept>
+#include <ios>
+#include <string>
 #include <array>
 #include <vector>
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include <cassert>
-#include <locale>
-#include "fileread.h"
-#include "memsrc.h"
-#include "memtgt.h"
+#include <filesystem>
 
 
 using ::testing::StartsWith;

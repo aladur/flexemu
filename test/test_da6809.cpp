@@ -22,11 +22,13 @@
 
 
 #include "gtest/gtest.h"
+#include "typedefs.h"
 #include "misc1.h"
 #include "da6809.h"
+#include "fmt/format.h"
+#include <cstdint>
 #include <string>
 #include <array>
-#include "fmt/format.h"
 
 
 TEST(test_da6809, dis_illegal)

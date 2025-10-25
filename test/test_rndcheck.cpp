@@ -22,16 +22,21 @@
 
 
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 #include "misc1.h"
 #include "filecnts.h"
 #include "rndcheck.h"
+#ifdef _WIN32
 #include "cvtwchar.h"
+#endif
+#include <fmt/format.h>
+#include <cstddef>
+#include <ios>
 #include <numeric>
+#include <string>
 #include <array>
+#include <vector>
 #include <fstream>
 #include <filesystem>
-#include <fmt/format.h>
 
 
 namespace fs = std::filesystem;

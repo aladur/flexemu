@@ -21,16 +21,17 @@
 */
 
 
-#include <iostream>
-#include <iomanip>
-#include <functional>
+#include "test_gccasm.h"
+#include "typedefs.h"
 #include "misc1.h"
 #include "mc6809.h"
 #include "mc6809st.h"
-#include "memory.h"
 #include "soptions.h"
 #include "foptman.h"
-#include "test_gccasm.h"
+#include <iomanip>
+#include <functional>
+#include <string>
+#include <iostream>
 
 
 // LINT suppression for global variable.

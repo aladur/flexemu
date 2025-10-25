@@ -25,6 +25,8 @@
 #include "gmock/gmock.h"
 #include "binifile.h"
 #include "flexerr.h"
+#include <string>
+#include <ostream>
 #include <fstream>
 #include <filesystem>
 

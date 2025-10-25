@@ -23,7 +23,6 @@
 
 #include "gtest/gtest.h"
 #include "blinxsys.h"
-#include <string>
 
 
 #ifdef __linux__

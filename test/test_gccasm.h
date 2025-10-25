@@ -24,8 +24,6 @@
 #ifndef TEST_GCCASM_INCLUDED
 #define TEST_GCCASM_INCLUDED
 
-#include "misc1.h"
-
 
 /* Parameter comes from main(). */
 /* NOLINTNEXTLINE(modernize-avoid-c-arrays) */

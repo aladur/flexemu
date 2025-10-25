@@ -27,6 +27,7 @@
 #include "flexerr.h"
 #include <fstream>
 #include <filesystem>
+#include <ios>
 #include <optional>
 
 namespace fs = std::filesystem;

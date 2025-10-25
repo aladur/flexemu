@@ -22,10 +22,9 @@
 
 
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
-#include "misc1.h"
 #include "fattrib.h"
 #include "fdirent.h"
+#include <utility>
 
 
 TEST(test_fdirent, default_ctor)

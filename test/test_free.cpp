@@ -33,12 +33,16 @@
 #include "free.h"
 #include "fixt_debugout.h"
 #include "flexerr.h"
-#include <vector>
-#include <regex>
+#include <cstddef>
 #include <numeric>
 #include <utility>
-#include <sstream>
 #include <limits>
+#include <optional>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <iostream>
+#include <regex>
 
 class test_free : public test_DebugOutputFixture
 {

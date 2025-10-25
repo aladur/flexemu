@@ -23,6 +23,7 @@
 
 #include <gtest/gtest.h>
 #include "cistring.h"
+#include <string>
 
 TEST(test_ci_string, class_ci_string)
 {

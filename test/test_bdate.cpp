@@ -23,6 +23,7 @@
 
 #include "gtest/gtest.h"
 #include "bdate.h"
+#include <string>
 
 
 TEST(test_bdate, default_ctor)

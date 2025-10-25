@@ -25,14 +25,18 @@
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include "typedefs.h"
 #include "misc1.h"
 #include "ffilecnt.h"
 #include "rfilecnt.h"
 #include "ndircont.h"
 #include "filfschk.h"
 #include "fixt_filecont.h"
+#include <ios>
+#include <string>
 #include <array>
 #include <fstream>
+#include <algorithm>
 #include <filesystem>
 
 

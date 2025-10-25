@@ -23,20 +23,24 @@
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include "typedefs.h"
 #include "misc1.h"
 #include "ffilebuf.h"
 #include "fdirent.h"
 #include "flexerr.h"
 #include "fixt_debugout.h"
-#include <filesystem>
+#include <fmt/format.h>
+#include <sys/stat.h>
+#include <ctime>
+#include <numeric>
+#include <utility>
+#include <functional>
+#include <string>
+#include <vector>
 #include <iostream>
 #include <fstream>
-#include <numeric>
 #include <algorithm>
-#include <ctime>
-#include <functional>
-#include <sys/stat.h>
-#include <fmt/format.h>
+#include <filesystem>
 
 
 namespace fs = std::filesystem;

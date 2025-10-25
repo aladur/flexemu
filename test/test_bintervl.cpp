@@ -23,10 +23,11 @@
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "bintervl.h"
-#include "flexerr.h"
 #include "typedefs.h"
-#include  <vector>
+#include "bintervl.h"
+#include <stdexcept>
+#include <vector>
+#include <sstream>
 
 
 using BWInterval = BInterval<Word>;

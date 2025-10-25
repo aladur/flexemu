@@ -25,6 +25,8 @@
 #include "gmock/gmock.h"
 #include "bmembuf.h"
 #include "typedefs.h"
+#include <stdexcept>
+#include <utility>
 #include <array>
 #include <vector>
 

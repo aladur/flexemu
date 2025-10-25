@@ -35,9 +35,11 @@
 #include "fcopyman.h"
 #include "ffilebuf.h"
 #include "fixt_filecont.h"
-#include <fmt/format.h>
-#include <array>
+#include <ios>
 #include <memory>
+#include <string>
+#include <array>
+#include <vector>
 #include <filesystem>
 
 

@@ -24,9 +24,15 @@
 #include "gtest/gtest.h"
 #include "mc6809lg.h"
 #include "scpulog.h"
+#include <cassert>
 #include <cstring>
+#include <ios>
+#include <string>
 #include <vector>
 #include <map>
+#include <sstream>
+#include <fstream>
+#include <algorithm>
 #include <filesystem>
 
 

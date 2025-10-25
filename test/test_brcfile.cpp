@@ -24,6 +24,7 @@
 #include "gtest/gtest.h"
 #include "misc1.h"
 #include "brcfile.h"
+#include <iomanip>
 #include <string>
 #include <map>
 #include <sstream>

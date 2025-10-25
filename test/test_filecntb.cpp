@@ -29,7 +29,12 @@
 #include "ffilecnt.h"
 #include "dircont.h"
 #include "ndircont.h"
+#include <ios>
 #include <memory>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <algorithm>
 #include <filesystem>
 
 
