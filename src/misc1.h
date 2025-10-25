@@ -34,9 +34,6 @@
     #if !defined(_UNICODE) && !defined(UNICODE)
         #error This program can only be compiled with Unicode support.
     #endif
-    #ifndef NOMINMAX
-        #define NOMINMAX
-    #endif
     #ifndef _CRT_SECURE_NO_WARNINGS
         #define _CRT_SECURE_NO_WARNINGS 1
     #endif

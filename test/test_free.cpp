@@ -21,12 +21,6 @@
 */
 
 
-// This is needed compiling on Windows and using
-// std::numeric_limits<decltype(value)>::max();
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "typedefs.h"
