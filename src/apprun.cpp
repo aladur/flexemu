@@ -45,6 +45,7 @@
 #include <QCoreApplication>
 #include <QMessageBox>
 #include "warnon.h"
+#include <cstdlib>
 #include <stdexcept>
 
 

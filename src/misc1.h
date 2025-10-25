@@ -155,13 +155,6 @@ constexpr const char PATHSEPARATOR = '/';
 constexpr const char *PATHSEPARATORSTRING = "/";
 #endif
 
-#ifndef EXIT_SUCCESS
-    #define EXIT_SUCCESS 0
-#endif
-#ifndef EXIT_FAILURE
-    #define EXIT_FAILURE 1
-#endif
-
 enum {
 EXIT_RESTART = 25262728 // (pseudo) Exit code to restart flexemu
 };

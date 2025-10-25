@@ -123,6 +123,7 @@
 #include "warnon.h"
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <cassert>
 #include <cmath>
