@@ -22,10 +22,12 @@
 #ifndef IFILCNTI_INCLUDED
 #define IFILCNTI_INCLUDED
 
-#include "fdirent.h"
+#include "typedefs.h"
 #include <memory>
+#include <string>
 
 
+class BDate;
 class FlexDiskIterator;
 class IFlexDiskByFile;
 class FlexDirEntry;

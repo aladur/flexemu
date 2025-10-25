@@ -22,9 +22,14 @@
 #ifndef IDIRCNT_INCLUDED
 #define IDIRCNT_INCLUDED
 
+#include "misc1.h"
+#include "fdirent.h"
 #include "ifilcnti.h"
 #include "filecont.h"
 #include "bdate.h"
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+#endif
 #include <string>
 
 #ifdef _WIN32

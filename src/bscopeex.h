@@ -23,6 +23,8 @@
 #ifndef BSCOPEEXIT_INCLUDED
 #define BSCOPEEXIT_INCLUDED
 
+#include <utility>
+
 /* Call function before scope exit */
 template<typename T>
 class BScopeExit

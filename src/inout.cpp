@@ -60,6 +60,8 @@ bool Inout::is_gui_present()
     return gui != nullptr;
 }
 
+// false positive on Windows
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 bool Inout::output_to_terminal()
 {
 #ifdef HAVE_TERMIOS_H

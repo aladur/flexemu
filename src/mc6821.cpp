@@ -22,6 +22,7 @@
 
 
 #include "typedefs.h"
+#include "misc1.h"
 #include "mc6821.h"
 
 

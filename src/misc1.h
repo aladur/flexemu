@@ -56,6 +56,9 @@
 #include <vector>
 #include <sstream>
 #include <ostream>
+#if defined(UNIX) && !defined(NO_DEBUGPRINT)
+#include <iostream>
+#endif
 #include <iterator>
 #include <algorithm>
 #include <filesystem>

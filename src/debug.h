@@ -25,10 +25,10 @@
 #ifndef DEBUG_INCLUDED
 #define DEBUG_INCLUDED
 
-#include <fstream>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
+#include <fstream>
 
 #define LOG_TEMPLATE(print_line)\
     {\

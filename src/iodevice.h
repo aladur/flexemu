@@ -25,7 +25,7 @@
 #ifndef IODEVICE_INCLUDED
 #define IODEVICE_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 
 class IoDevice
 {

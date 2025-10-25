@@ -22,10 +22,9 @@
 #ifndef FILECONT_INCLUDED
 #define FILECONT_INCLUDED
 
-#include "misc1.h"
-#include <string>
-#include "filecntb.h"
 #include "ifilcnti.h"
+#include "filecntb.h"
+#include <string>
 
 
 class FlexCopyManager;

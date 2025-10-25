@@ -32,7 +32,7 @@
 #ifndef FLEXEMU_INCLUDED
 #define FLEXEMU_INCLUDED
 
-#include "typedefs.h"
+#include <cstdint>
 
 
 enum class DiskStatus : uint8_t

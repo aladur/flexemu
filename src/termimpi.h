@@ -25,9 +25,9 @@
 #define ITERMINALIMPL_INCLUDED
 
 #include "typedefs.h"
-#include <string>
-#include <memory>
 #include <csignal>
+#include <memory>
+#include <string>
 
 
 class TerminalIO;

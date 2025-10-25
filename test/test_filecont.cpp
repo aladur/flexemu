@@ -25,6 +25,7 @@
 //
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "misc1.h"
 #include "fdirent.h"
 #include "ffilecnt.h"
 #include "rfilecnt.h"
@@ -34,12 +35,10 @@
 #include "fcopyman.h"
 #include "ffilebuf.h"
 #include "fixt_filecont.h"
+#include <fmt/format.h>
 #include <array>
 #include <memory>
-#include <fstream>
 #include <filesystem>
-#include <numeric>
-#include <fmt/format.h>
 
 
 using ::testing::StartsWith;

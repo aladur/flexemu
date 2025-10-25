@@ -22,9 +22,15 @@
 
 
 #include "gtest/gtest.h"
-#include "misc1.h"
+#include "typedefs.h"
 #include "ffilecnt.h"
 #include "dircont.h"
+#include <sys/stat.h>
+#ifdef _WIN32
+#include <sys/utime.h>
+#else
+#include <utime.h>
+#endif
 #include <array>
 #include <fstream>
 #include <filesystem>

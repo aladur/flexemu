@@ -21,6 +21,7 @@
 */
 
 
+#include "misc1.h"
 #include "fpnewui.h"
 #include "filecnts.h"
 #include "filecntb.h"

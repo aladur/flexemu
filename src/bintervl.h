@@ -23,10 +23,10 @@
 #ifndef BINTERVAL_INCLUDED
 #define BINTERVAL_INCLUDED
 
-#include <algorithm>
-#include <vector>
 #include <utility>
+#include <vector>
 #include <ostream>
+#include <algorithm>
 
 
 template <typename T>

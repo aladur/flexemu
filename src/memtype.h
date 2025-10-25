@@ -27,8 +27,8 @@
 #include "typedefs.h"
 #include "bintervl.h"
 #include <cstdint>
-#include <iostream>
 #include <vector>
+#include <ostream>
 
 enum class MemoryType : uint8_t
 {

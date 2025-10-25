@@ -22,7 +22,8 @@
 #ifndef FILECNTB_INCLUDED
 #define FILECNTB_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
+#include <cstdint>
 #include <filesystem>
 
 namespace fs = std::filesystem;

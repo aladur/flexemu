@@ -27,6 +27,7 @@
 #include "confignt.h"
 #endif
 #include "typedefs.h"
+#include "misc1.h"
 #include "efiletim.h"
 #include "filecntb.h"
 #include "btime.h"

@@ -25,10 +25,10 @@
 #ifndef SFPOPTS_INCLUDED
 #define SFPOPTS_INCLUDED
 
-#include <string>
-#include <vector>
 #include "efiletim.h"
 #include "efilesiz.h"
+#include <string>
+#include <vector>
 #include <filesystem>
 
 namespace fs = std::filesystem;

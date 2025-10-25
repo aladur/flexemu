@@ -24,6 +24,8 @@
 #ifndef PROPSUI_H
 #define PROPSUI_H
 
+#include "drawnwid.h"
+#include "qtfree.h"
 #include "warnoff.h"
 #include <QtGlobal>
 #include <QApplication>
@@ -36,8 +38,7 @@
 #include <QHeaderView>
 #include "warnon.h"
 #include <numeric>
-#include "drawnwid.h"
-#include "qtfree.h"
+#include <algorithm>
 
 class Ui_Properties
 {

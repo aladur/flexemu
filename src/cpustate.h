@@ -25,8 +25,9 @@
 #ifndef CPUSTATE_INCLUDED
 #define CPUSTATE_INCLUDED
 
+#include <cstdint>
 #include <memory>
-#include <iostream>
+#include <ostream>
 
 enum class CpuState : uint8_t
 {

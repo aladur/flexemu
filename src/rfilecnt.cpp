@@ -21,6 +21,7 @@
 */
 
 #include "typedefs.h"
+#include "misc1.h"
 #include "rfilecnt.h"
 #include "efiletim.h"
 #include "ffilecnt.h"
