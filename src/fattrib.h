@@ -22,9 +22,8 @@
 #ifndef FATTRIB_INCLUDED
 #define FATTRIB_INCLUDED
 
-#include "typedefs.h"
-#include <array>
 #include <utility>
+#include <array>
 
 
 // Supported file attributes.
