@@ -547,6 +547,7 @@
     <ClInclude Include="misc1.h" />
     <ClInclude Include="mmu.h" />
     <ClInclude Include="ndircont.h" />
+    <ClInclude Include="ostype.h" />
     <ClInclude Include="pagedet.h" />
     <ClInclude Include="pagedetd.h" />
     <ClInclude Include="pch.h" />

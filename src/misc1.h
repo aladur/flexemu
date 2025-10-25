@@ -158,39 +158,6 @@ constexpr const char PATHSEPARATOR = '/';
 constexpr const char *PATHSEPARATORSTRING = "/";
 #endif
 
-/* Keep macro to be used within string literal. */
-/* NOLINTBEGIN(cppcoreguidelines-macro-usage) */
-#ifdef __linux__
-#define OSTYPE "Linux"
-#else
-#ifdef __FreeBSD__
-#define OSTYPE "FreeBSD"
-#else
-#ifdef __OpenBSD__
-#define OSTYPE "OpenBSD"
-#else
-#ifdef __NetBSD__
-#define OSTYPE "NetBSD"
-#else
-#ifdef __BSD__
-#define OSTYPE "BSD"
-#else
-#ifdef _WIN32
-#define OSTYPE "Windows"
-#else
-#ifdef __APPLE__
-#define OSTYPE "MacOS"
-#else
-#define OSTYPE "unknown"
-#endif
-#endif
-#endif
-#endif
-#endif
-#endif
-#endif
-/* NOLINTEND(cppcoreguidelines-macro-usage) */
-
 #ifndef EXIT_SUCCESS
     #define EXIT_SUCCESS 0
 #endif

@@ -24,6 +24,7 @@
 #include "typedefs.h"
 #include "misc1.h"
 #include "qtfree.h"
+#include "ostype.h"
 #include "e2.h"
 #include "free.h"
 #include "propsui.h"

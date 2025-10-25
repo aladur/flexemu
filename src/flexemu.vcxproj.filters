@@ -492,6 +492,9 @@
     <ClInclude Include="ndircont.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ostype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="pia1.h">
       <Filter>Header Files</Filter>
     </ClInclude>

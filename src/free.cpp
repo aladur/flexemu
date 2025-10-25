@@ -23,6 +23,7 @@
 
 #include "typedefs.h"
 #include "misc1.h"
+#include "ostype.h"
 #include "bintervl.h"
 #include "memsrc.h"
 #include "asciictl.h"
