@@ -49,6 +49,7 @@
     <ClInclude Include="ifilcnti.h" />
     <ClInclude Include="ifilecnt.h" />
     <ClInclude Include="misc1.h" />
+    <ClInclude Include="ostype.h" />
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="wmain.h" />

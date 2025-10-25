@@ -293,6 +293,7 @@
     <ClInclude Include="memory.h" />
     <ClInclude Include="memtype.h" />
     <ClInclude Include="misc1.h" />
+    <ClInclude Include="ostype.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="rndcheck.h" />

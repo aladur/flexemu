@@ -36,6 +36,7 @@
     <ClInclude Include="flexerr.h" />
     <ClInclude Include="free.h" />
     <ClInclude Include="fversion.h" />
+    <ClInclude Include="ostype.h" />
     <ClInclude Include="wmain.h" />
   </ItemGroup>
   <ItemGroup>

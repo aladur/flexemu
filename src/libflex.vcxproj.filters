@@ -137,6 +137,9 @@
     <ClInclude Include="misc1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ostype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="rfilecnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>

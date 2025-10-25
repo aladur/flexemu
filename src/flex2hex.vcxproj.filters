@@ -55,6 +55,9 @@
     <ClInclude Include="fversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ostype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="wmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>

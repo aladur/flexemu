@@ -151,6 +151,7 @@ set(flex_HEADER
     memory.h
     memtype.h
     misc1.h
+    ostype.h
     rfilecnt.h
     rndcheck.h
     typedefs.h
@@ -187,6 +188,7 @@ set(updatemd_HEADER
     bprocess.h
     free.h
     fversion.h
+    ostype.h
     misc1.h
 )
 add_executable(updatemd ${updatemd_SOURCES} ${updatemd_HEADER})
@@ -233,6 +235,7 @@ set(flex2hex_HEADER
     memsrc.h
     memtgt.h
     misc1.h
+    ostype.h
     typedefs.h
     wmain.h
 )
@@ -283,6 +286,7 @@ set(mdcrtool_HEADER
     memsrc.h
     memtgt.h
     misc1.h
+    ostype.h
     typedefs.h
     wmain.h
 )
@@ -345,6 +349,7 @@ set(dsktool_HEADER
     ifilcnti.h
     ifilecnt.h
     misc1.h
+    ostype.h
     rfilecnt.h
     typedefs.h
     wmain.h
@@ -575,6 +580,7 @@ set(flexemu_HEADER
     misc1.h
     mmu.h
     ndircont.h
+    ostype.h
     pagedet.h
     pagedetd.h
     pia1.h
@@ -769,6 +775,7 @@ set(flexplorer_HEADER
     memsrc.h
     memtgt.h
     misc1.h
+    ostype.h
     propsui.h
     qtfree.h
     rndcheck.h

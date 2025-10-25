@@ -367,6 +367,7 @@ flexemu_SOURCES = \
 	mmu.h \
 	mwtedit.h \
 	ndircont.h \
+	ostype.h \
 	pagedet.h \
 	pagedetd.h \
 	pia1.h \
@@ -462,6 +463,7 @@ flexplorer_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
+	ostype.h \
 	propsui.h \
 	qtfree.h \
 	rndcheck.h \
@@ -488,6 +490,7 @@ mdcrtool_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
+	ostype.h \
 	typedefs.h \
 	wmain.h
 
@@ -506,6 +509,7 @@ flex2hex_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
+	ostype.h \
 	typedefs.h \
 	wmain.h
 
@@ -539,6 +543,7 @@ dsktool_SOURCES = \
 	ifilcnti.h \
 	ifilecnt.h \
 	misc1.h \
+	ostype.h \
 	rfilecnt.h \
 	typedefs.h \
 	wmain.h
@@ -620,6 +625,7 @@ libflex_a_SOURCES = \
 	memory.h \
 	memtype.h \
 	misc1.h \
+	ostype.h \
 	rfilecnt.h \
 	rndcheck.h \
 	typedefs.h
@@ -640,6 +646,7 @@ updatemd_SOURCES = \
 	bprocess.h \
 	free.h \
 	fversion.h \
+	ostype.h \
 	misc1.h
 
 # Execute updatemd to update file metadata.json.

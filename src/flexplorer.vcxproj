@@ -375,6 +375,7 @@
     <ClInclude Include="ifilecnt.h" />
     <ClInclude Include="mdcrtape.h" />
     <ClInclude Include="misc1.h" />
+    <ClInclude Include="ostype.h" />
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="rndcheck.h" />
     <ClInclude Include="sfpopts.h" />
