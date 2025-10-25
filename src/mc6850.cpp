@@ -23,8 +23,8 @@
 
 
 #include "typedefs.h"
-#include "misc1.h"
 #include "mc6850.h"
+#include "bitops.h"
 
 
 void Mc6850::resetIo()

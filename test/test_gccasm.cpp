@@ -23,7 +23,7 @@
 
 #include "test_gccasm.h"
 #include "typedefs.h"
-#include "misc1.h"
+#include "bitops.h"
 #include "mc6809.h"
 #include "mc6809st.h"
 #include "soptions.h"

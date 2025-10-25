@@ -48,6 +48,7 @@ set(TEST_FULL_DATADIR ${CMAKE_CURRENT_SOURCE_DIR}/data)
 set(unittests_SOURCES
     test_benv.cpp
     test_binifile.cpp
+    test_bitops.cpp
     test_blinxsys.cpp
     test_bobserv.cpp
     test_brcfile.cpp
@@ -93,6 +94,7 @@ set(unittests_HEADER
     ../src/bdir.h
     ../src/benv.h
     ../src/binifile.h
+    ../src/bitops.h
     ../src/blinxsys.h
     ../src/bintervl.h
     ../src/bobserv.h
@@ -187,6 +189,7 @@ if(UNIX)
     )
     set(test_gccasm_HEADER
         ../src/bdate.h
+        ../src/bitops.h
         ../src/bobserv.h
         ../src/bobservd.h
         ../src/bobshelp.h

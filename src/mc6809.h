@@ -15,6 +15,7 @@
 
 #include "typedefs.h"
 #include "misc1.h"
+#include "bitops.h"
 #include "memory.h"
 #include "schedcpu.h"
 #include "scpulog.h"

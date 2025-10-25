@@ -497,6 +497,7 @@ set(flexemu_HEADER
     benv.h
     binifile.h
     bintervl.h
+    bitops.h
     blinxsys.h
     bjoystck.h
     bmembuf.h

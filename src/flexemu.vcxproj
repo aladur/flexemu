@@ -474,6 +474,7 @@
     <ClInclude Include="benv.h" />
     <ClInclude Include="binifile.h" />
     <ClInclude Include="bintervl.h" />
+    <ClInclude Include="bitops.h" />
     <ClInclude Include="bjoystck.h" />
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="bmp.h" />

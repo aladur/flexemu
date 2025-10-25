@@ -267,6 +267,9 @@
     <ClInclude Include="bintervl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="bitops.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="bjoystck.h">
       <Filter>Header Files</Filter>
     </ClInclude>

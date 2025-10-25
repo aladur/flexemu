@@ -196,29 +196,6 @@ using cycles_t = QWord;
 extern const char * const RANDOM_FILE_LIST;
 extern const char * const RANDOM_FILE_LIST_NEW;
 
-template<typename T> bool BTST(T value, unsigned bitpos)
-{
-    assert((bitpos >> 3U) < sizeof(T));
-    return (value & static_cast<T>(static_cast<T>(1U) << bitpos)) != 0;
-}
-
-template<typename T> void BSET(T &value, unsigned bitpos)
-{
-    assert((bitpos >> 3U) < sizeof(T));
-    value |= static_cast<T>(static_cast<T>(1U) << bitpos);
-}
-
-template<typename T> void BCLR(T &value, unsigned bitpos)
-{
-    assert((bitpos >> 3U) < sizeof(T));
-    value &= static_cast<T>(~static_cast<T>(static_cast<T>(1U) << bitpos));
-}
-
-inline Word EXTEND8(Byte value)
-{
-    return static_cast<Word>(static_cast<SWord>(static_cast<SByte>(value)));
-}
-
 #ifdef _WIN32
     extern int getopt(int argc, char *const argv[], const char *optstr);
     extern int optind;

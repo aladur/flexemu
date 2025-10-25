@@ -284,6 +284,7 @@ flexemu_SOURCES = \
 	benv.h \
 	binifile.h \
 	bintervl.h \
+	bitops.h \
 	blinxsys.h \
 	bjoystck.h \
 	bmembuf.h \

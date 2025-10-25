@@ -50,6 +50,7 @@ noinst_DATA = metadata.json
 unittests_SOURCES = \
 	test_benv.cpp \
 	test_binifile.cpp \
+	test_bitops.cpp \
 	test_blinxsys.cpp \
 	test_bobserv.cpp \
 	test_brcfile.cpp \
@@ -91,6 +92,7 @@ unittests_SOURCES = \
 	../src/bdir.h \
 	../src/benv.h \
 	../src/binifile.h \
+	../src/bitops.h \
 	../src/blinxsys.h \
 	../src/bintervl.h \
 	../src/bobserv.h \
@@ -163,6 +165,7 @@ test_gccasm_SOURCES = \
 	test_gccasm.cpp \
 	testmain.cpp \
 	../src/bdate.h \
+	../src/bitops.h \
 	../src/bobserv.h \
 	../src/bobservd.h \
 	../src/bobshelp.h \

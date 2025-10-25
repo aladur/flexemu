@@ -22,8 +22,8 @@
 
 
 #include "typedefs.h"
-#include "misc1.h"
 #include "mc6821.h"
+#include "bitops.h"
 
 
 void Mc6821::resetIo()

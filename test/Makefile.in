@@ -159,6 +159,7 @@ test_gccasm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(test_gccasm_LDFLAGS) $(LDFLAGS) -o $@
 am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
 	unittests-test_binifile.$(OBJEXT) \
+	unittests-test_bitops.$(OBJEXT) \
 	unittests-test_blinxsys.$(OBJEXT) \
 	unittests-test_bobserv.$(OBJEXT) \
 	unittests-test_brcfile.$(OBJEXT) \
@@ -248,6 +249,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	./$(DEPDIR)/unittests-test_benv.Po \
 	./$(DEPDIR)/unittests-test_binifile.Po \
 	./$(DEPDIR)/unittests-test_bintervl.Po \
+	./$(DEPDIR)/unittests-test_bitops.Po \
 	./$(DEPDIR)/unittests-test_blinxsys.Po \
 	./$(DEPDIR)/unittests-test_bmembuf.Po \
 	./$(DEPDIR)/unittests-test_bobserv.Po \
@@ -754,6 +756,7 @@ noinst_DATA = metadata.json
 unittests_SOURCES = \
 	test_benv.cpp \
 	test_binifile.cpp \
+	test_bitops.cpp \
 	test_blinxsys.cpp \
 	test_bobserv.cpp \
 	test_brcfile.cpp \
@@ -795,6 +798,7 @@ unittests_SOURCES = \
 	../src/bdir.h \
 	../src/benv.h \
 	../src/binifile.h \
+	../src/bitops.h \
 	../src/blinxsys.h \
 	../src/bintervl.h \
 	../src/bobserv.h \
@@ -864,6 +868,7 @@ test_gccasm_SOURCES = \
 	test_gccasm.cpp \
 	testmain.cpp \
 	../src/bdate.h \
+	../src/bitops.h \
 	../src/bobserv.h \
 	../src/bobservd.h \
 	../src/bobshelp.h \
@@ -1110,6 +1115,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_benv.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_binifile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bintervl.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bitops.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_blinxsys.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bmembuf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bobserv.Po@am__quote@ # am--include-marker
@@ -1430,6 +1436,20 @@ unittests-test_binifile.obj: test_binifile.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_binifile.cpp' object='unittests-test_binifile.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_binifile.obj `if test -f 'test_binifile.cpp'; then $(CYGPATH_W) 'test_binifile.cpp'; else $(CYGPATH_W) '$(srcdir)/test_binifile.cpp'; fi`
+
+unittests-test_bitops.o: test_bitops.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_bitops.o -MD -MP -MF $(DEPDIR)/unittests-test_bitops.Tpo -c -o unittests-test_bitops.o `test -f 'test_bitops.cpp' || echo '$(srcdir)/'`test_bitops.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_bitops.Tpo $(DEPDIR)/unittests-test_bitops.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_bitops.cpp' object='unittests-test_bitops.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_bitops.o `test -f 'test_bitops.cpp' || echo '$(srcdir)/'`test_bitops.cpp
+
+unittests-test_bitops.obj: test_bitops.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_bitops.obj -MD -MP -MF $(DEPDIR)/unittests-test_bitops.Tpo -c -o unittests-test_bitops.obj `if test -f 'test_bitops.cpp'; then $(CYGPATH_W) 'test_bitops.cpp'; else $(CYGPATH_W) '$(srcdir)/test_bitops.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_bitops.Tpo $(DEPDIR)/unittests-test_bitops.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_bitops.cpp' object='unittests-test_bitops.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_bitops.obj `if test -f 'test_bitops.cpp'; then $(CYGPATH_W) 'test_bitops.cpp'; else $(CYGPATH_W) '$(srcdir)/test_bitops.cpp'; fi`
 
 unittests-test_blinxsys.o: test_blinxsys.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_blinxsys.o -MD -MP -MF $(DEPDIR)/unittests-test_blinxsys.Tpo -c -o unittests-test_blinxsys.o `test -f 'test_blinxsys.cpp' || echo '$(srcdir)/'`test_blinxsys.cpp
@@ -2317,6 +2337,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/unittests-test_benv.Po
 	-rm -f ./$(DEPDIR)/unittests-test_binifile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po
+	-rm -f ./$(DEPDIR)/unittests-test_bitops.Po
 	-rm -f ./$(DEPDIR)/unittests-test_blinxsys.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bmembuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bobserv.Po
@@ -2419,6 +2440,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/unittests-test_benv.Po
 	-rm -f ./$(DEPDIR)/unittests-test_binifile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po
+	-rm -f ./$(DEPDIR)/unittests-test_bitops.Po
 	-rm -f ./$(DEPDIR)/unittests-test_blinxsys.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bmembuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bobserv.Po

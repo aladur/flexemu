@@ -19,6 +19,7 @@
 
 #include "typedefs.h"
 #include "misc1.h"
+#include "bitops.h"
 #include "absdisas.h"
 #include "da6809.h"
 #include "flblfile.h"

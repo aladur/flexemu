@@ -10,8 +10,8 @@
 
 
 #include "typedefs.h"
-#include "misc1.h"
 #include "mc6809.h"
+#include "bitops.h"
 #include "bobshelp.h"
 #include "flexerr.h"
 #include "da6809.h"

@@ -23,6 +23,7 @@
 #include "typedefs.h"
 #include "misc1.h"
 #include "mc146818.h"
+#include "bitops.h"
 #include "bobshelp.h"
 #include <ctime>
 #include <cstring>
