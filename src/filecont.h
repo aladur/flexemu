@@ -26,6 +26,13 @@
 #include "filecntb.h"
 #include <string>
 
+// On Windows avoid link error LNK2019 due to macro expansion from
+// DeleteFile to DeleteFileW.
+#ifdef _WIN32
+#ifdef DeleteFile
+#undef DeleteFile
+#endif
+#endif
 
 class FlexCopyManager;
 class FlexDirEntry;

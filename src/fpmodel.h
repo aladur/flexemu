@@ -46,6 +46,16 @@
 
 namespace fs = std::filesystem;
 
+// On Windows avoid link error LNK2019 due to macro expansion
+// from DeleteFile to DeleteFileW or from CopyFile to CopyFileW.
+#ifdef _WIN32
+#ifdef DeleteFile
+#undef DeleteFile
+#endif
+#ifdef CopyFile
+#undef CopyFile
+#endif
+#endif
 
 class FlexDirEntry;
 class FlexFileBuffer;

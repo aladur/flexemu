@@ -27,7 +27,6 @@
 #include "confignt.h"
 #endif
 #include "typedefs.h"
-#include "misc1.h"
 #include "fpmodel.h"
 #include "ostype.h"
 #include "filecntb.h"
