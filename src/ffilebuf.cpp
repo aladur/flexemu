@@ -27,6 +27,7 @@
 #endif
 #include "typedefs.h"
 #include "misc1.h"
+#include "asciictl.h"
 #include "efiletim.h"
 #include "filecnts.h"
 #include "bdate.h"
@@ -173,16 +174,16 @@ void FlexFileBuffer::TraverseForTextFileConversion(
         {
             fct(c);
         }
-        else if (c == 0x0d)
+        else if (c == CR)
         {
             // Convert ASCII CR, the FLEX text file end of line character
             // into a new line (depending on the operating system).
 #ifdef _WIN32
-            fct(0x0d);
+            fct(CR);
 #endif
-            fct(0x0a);
+            fct(LF);
         }
-        else if (c == 0x09)
+        else if (c == HT)
         {
             Byte spaces = 0;
 
@@ -201,7 +202,7 @@ void FlexFileBuffer::TraverseForTextFileConversion(
                 fct(' ');
             }
         }
-        else if (c == 0x1a)
+        else if (c == SUB)
         {
             break; // ASCII SUB is end of file marker
         }
@@ -271,7 +272,7 @@ void FlexFileBuffer::TraverseForFlexTextFileConversion(
             else
             {
                 // Do space compression.
-                fct(0x09);
+                fct(HT);
                 fct(spaces);
             }
             spaces = 0;
@@ -297,18 +298,18 @@ void FlexFileBuffer::TraverseForFlexTextFileConversion(
             {
                 fct(c);
             }
-            else if (c == 0x0a)
+            else if (c == LF)
             {
                 // For ASCII LF write ASCII CR indicating end of line
                 // in a FLEX text file.
                 // If ASCII CR is ignored this works for both Unix/Linux
                 // and DOS/Windows text files.
-                fct(0x0d);
+                fct(CR);
             }
-            else if (c == 0x09)
+            else if (c == HT)
             {
                 // ASCII TAB is converted to 8 spaces.
-                fct(0x09);
+                fct(HT);
                 fct(8);
             }
 
@@ -372,7 +373,7 @@ bool FlexFileBuffer::IsTextFile() const
 
         // Allowed characters of a host operating system text file are:
         // ASCII LF, ASCII CR, ASCII TAB and any character >= ASCII Space
-        if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x09)
+        if (c >= ' ' || c == LF || c == CR || c == HT)
         {
             continue;
         }
@@ -393,13 +394,13 @@ bool FlexFileBuffer::IsFlexTextFile() const
         // Allowed characters of a FLEX text file are:
         // ASCII LF, ASCII CR, ASCII NUL, ASCII CANCEL, ASCII FF, ASCII SUB and
         // any character >= ASCII Space.
-        if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x00 || c == 0x18 ||
-            c == 0x0c || c == 0x1a)
+        if (c >= ' ' || c == LF || c == CR || c == NUL || c == CAN ||
+            c == FF || c == SUB)
         {
             continue;
         }
 
-        if (c == 0x09)
+        if (c == HT)
         {
             // ASCII TAB is followed by one space count byte.
             i++;
@@ -466,7 +467,7 @@ void FlexFileBuffer::TraverseForDumpFileConversion(
         {
             auto c = buffer[offset + index];
 
-            if (c < ' ' || c >= '\x7F')
+            if (c < ' ' || c >= DEL)
             {
                 c = '_';
             }
@@ -474,9 +475,9 @@ void FlexFileBuffer::TraverseForDumpFileConversion(
         }
 
 #ifdef _WIN32
-        fct(0x0d);
+        fct(CR);
 #endif
-        fct(0x0a);
+        fct(LF);
     }
 }
 
