@@ -21,6 +21,11 @@
 */
 
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "typedefs.h"
 #include "misc1.h"
 #include "qtgui.h"
@@ -679,7 +684,7 @@ void QtGui::OnAbout()
     dialog.resize({0, 0});
     dialog.setModal(true);
     dialog.setSizeGripEnabled(true);
-    auto title = tr("About %1").arg(PROGRAMNAME);
+    auto title = tr("About %1").arg(PACKAGE_NAME);
     dialog.setWindowTitle(title);
     auto *scene = new QGraphicsScene(ui.w_icon);
     scene->setSceneRect(0, 0, 32, 32);
@@ -717,7 +722,7 @@ void QtGui::AboutTabChanged(QTextBrowser *browser) const
     }
     else if (browser->objectName() == "e_versions")
     {
-        browser->setHtml(GetVersionsHtmlText(PROGRAMNAME));
+        browser->setHtml(GetVersionsHtmlText(PACKAGE_NAME));
     }
     else if (browser->objectName() == "e_configuration")
     {
@@ -754,13 +759,13 @@ QString QtGui::GetAboutHtmlText() const
        "Wolfgang Schwotzer</a><p>"
        "<a href=\"http://flexemu.neocities.org\">"
        "http://flexemu.neocities.org</a>")
-    .arg(PROGRAMNAME).arg(VERSION);
+    .arg(PACKAGE_NAME).arg(VERSION);
 }
 
 QString QtGui::GetConfigurationHtmlText() const
 {
     auto result = tr("<b>%1 V%2</b><p>Guest Configuration:\n")
-        .arg(PROGRAMNAME).arg(VERSION);
+        .arg(PACKAGE_NAME).arg(VERSION);
 
     result.append(ConvertItemPairListToHtml(GetConfiguration()));
 
@@ -1489,7 +1494,7 @@ bool QtGui::IsClosingConfirmed()
         auto message = isRestartNeeded ?
             tr("Do you want to restart %1 now?") :
             tr("Do you want to close %1?");
-        message = message.arg(PROGRAMNAME);
+        message = message.arg(PACKAGE_NAME);
         auto result = QMessageBox::question(this, tr("Flexemu"), message,
                           QMessageBox::Yes | QMessageBox::No);
         return (result == QMessageBox::Yes);

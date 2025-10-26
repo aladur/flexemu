@@ -69,11 +69,6 @@ namespace fs = std::filesystem;
 
 /* #define FASTFLEX */
 
-// Don't use PACKAGE. It has been changed by automake to be all lowercase.
-// For compatibility the program name should begin with a capital F.
-// Use PACKAGE_NAME instead.
-#define PROGRAMNAME PACKAGE_NAME
-#define PROGRAM_VERSION VERSION
 constexpr const char *COPYRIGHT_MESSAGE = \
     "comes with ABSOLUTELY NO WARRANTY. This is free software,\n" \
     "and You are welcome to redistribute it under certain conditions.\n" \
@@ -100,11 +95,11 @@ EXIT_RESTART = 25262728 // (pseudo) Exit code to restart flexemu
 };
 
 #if defined(WIN32) && !defined(NO_DEBUGPRINT)
-#define DEBUGPRINT(msg) OutputDebugString((LPCTSTR)("[" PROGRAMNAME "] " msg))
+#define DEBUGPRINT(msg) OutputDebugString((LPCTSTR)("[" PACKAGE_NAME "] " msg))
 #endif
 
 #if defined(UNIX) && !defined(NO_DEBUGPRINT)
-    #define DEBUGPRINT(msg) std::cout << "[" PROGRAMNAME "] " msg
+    #define DEBUGPRINT(msg) std::cout << "[" PACKAGE_NAME "] " msg
 #endif
 
 #if defined(NO_DEBUGPRINT)

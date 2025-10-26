@@ -20,6 +20,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "misc1.h"
 #ifdef _MSC_VER
     #include <new.h>
@@ -58,7 +63,7 @@ int flexemu_new_handler(size_t /* [[maybe_unused]] size_t n */)
 static void flexemu_new_handler()
 #endif
 {
-    if (QMessageBox::warning(nullptr, PROGRAMNAME " warning",
+    if (QMessageBox::warning(nullptr, PACKAGE_NAME " warning",
         "<b>Memory allocation failed.</b><br>\n"
         "Increasing available memory by e.g.<br>\n"
         "closing other applications may<br>\n"
@@ -126,7 +131,7 @@ int main(int argc, char *argv[])
 
             msg << "<b>An exception has occured.</b><br>" << ex.what();
 
-            QMessageBox::critical(nullptr, PROGRAMNAME " critical",
+            QMessageBox::critical(nullptr, PACKAGE_NAME " critical",
                 QString::fromStdString(msg.str()),
                 QMessageBox::Abort, QMessageBox::Abort);
 

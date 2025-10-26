@@ -21,6 +21,11 @@
 */
 
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "typedefs.h"
 #include "misc1.h"
 #include "memwin.h"
@@ -385,7 +390,7 @@ void MemoryWindow::OnFindNext()
                 message = message
                     .arg(QString::fromStdString(findConfig.searchFor))
                     .arg(QString::fromStdString(findData.GetErrorMessage()));
-                QMessageBox::critical(this, PROGRAMNAME, message);
+                QMessageBox::critical(this, PACKAGE_NAME, message);
                 UpdateFindActionsEnabled();
             }
             return;
@@ -400,11 +405,11 @@ void MemoryWindow::OnFindNext()
         message = message.arg(QString::fromStdString(findConfig.searchFor));
         if (isCritical)
         {
-            QMessageBox::critical(this, PROGRAMNAME " Error", message);
+            QMessageBox::critical(this, PACKAGE_NAME " Error", message);
         }
         else
         {
-            QMessageBox::information(this, PROGRAMNAME, message);
+            QMessageBox::information(this, PACKAGE_NAME, message);
         }
     }
     UpdateFindActionsEnabled();

@@ -21,6 +21,11 @@
 */
 
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "typedefs.h"
 #include "misc1.h"
 #include "e2screen.h"
@@ -371,11 +376,11 @@ QString E2Screen::GetTitle()
 {
     if (cursorType == CursorType::Default)
     {
-        return QString(PROGRAMNAME " V" PROGRAM_VERSION " - ") +
+        return QString(PACKAGE_NAME " V" VERSION " - ") +
                tr("Press CTRL F10 to capture mouse");
     }
 
-    return QString(PROGRAMNAME " V" PROGRAM_VERSION " - ") +
+    return QString(PACKAGE_NAME " V" VERSION " - ") +
            tr("Press CTRL F10 to release mouse");
 }
 

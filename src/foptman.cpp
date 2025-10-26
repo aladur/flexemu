@@ -431,7 +431,7 @@ void FlexemuOptions::GetCommandlineOptions(
                 break;
 
             case 'V':
-                flx::print_versions(std::cout, PROGRAMNAME);
+                flx::print_versions(std::cout, PACKAGE_NAME);
                 exit(EXIT_SUCCESS);
 
             case '?':

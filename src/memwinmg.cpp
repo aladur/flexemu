@@ -21,6 +21,11 @@
 */
 
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "typedefs.h"
 #include "misc1.h"
 #include "memwinmg.h"
@@ -109,7 +114,7 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
                 "A maximum of %1 Memory Windows are open.\n"
                 "No more Memory Windows can be opened.")
                  .arg(sOptions::maxMemoryWindows);
-         QMessageBox::warning(nullptr, PROGRAMNAME " warning", msg);
+         QMessageBox::warning(nullptr, PACKAGE_NAME " warning", msg);
          return;
      }
 

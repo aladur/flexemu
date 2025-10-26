@@ -675,7 +675,7 @@ void FlexDirectoryDiskBySector::close_new_files()
     if (!msg.empty())
     {
 #ifdef _WIN32
-        std::string title(PROGRAMNAME " warning");
+        std::string title(PACKAGE_NAME " warning");
         MessageBox(nullptr, ConvertToUtf16String(msg).c_str(),
             ConvertToUtf16String(title).c_str(),
             MB_OK | MB_ICONEXCLAMATION);
