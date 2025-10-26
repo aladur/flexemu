@@ -63,8 +63,6 @@
 
 namespace fs = std::filesystem;
 
-const char * const RANDOM_FILE_LIST = u8"random";
-const char * const RANDOM_FILE_LIST_NEW = u8".random";
 const char * const flx::white_space = " \t\n\r\f\v";
 
 char flx::tolower_value(char ch)

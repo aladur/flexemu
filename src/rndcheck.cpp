@@ -53,6 +53,8 @@
 
 namespace fs = std::filesystem;
 
+const char * const RANDOM_FILE_LIST = u8"random";
+const char * const RANDOM_FILE_LIST_NEW = u8".random";
 
 RandomFileCheck::RandomFileCheck(fs::path p_directory)
     : directory(std::move(p_directory))

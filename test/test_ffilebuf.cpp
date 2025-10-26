@@ -28,6 +28,7 @@
 #include "ffilebuf.h"
 #include "fdirent.h"
 #include "flexerr.h"
+#include "rndcheck.h"
 #include "fixt_debugout.h"
 #include <fmt/format.h>
 #include <sys/stat.h>

@@ -33,6 +33,12 @@
 
 namespace fs = std::filesystem;
 
+// This macro defines the name of a file. It contains a list of files
+// which have to be handled as random files. It is used in directory containers
+// to identify random files.
+extern const char * const RANDOM_FILE_LIST;
+extern const char * const RANDOM_FILE_LIST_NEW;
+
 class RandomFileCheck
 {
 public:

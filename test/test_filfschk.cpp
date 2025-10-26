@@ -24,10 +24,10 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "typedefs.h"
-#include "misc1.h"
 #include "ffilecnt.h"
 #include "ffilebuf.h"
 #include "filfschk.h"
+#include "rndcheck.h"
 #include <memory>
 #include <string>
 #include <array>
