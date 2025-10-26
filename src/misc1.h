@@ -69,14 +69,6 @@ namespace fs = std::filesystem;
 
 /* #define FASTFLEX */
 
-constexpr const char *COPYRIGHT_MESSAGE = \
-    "comes with ABSOLUTELY NO WARRANTY. This is free software,\n" \
-    "and You are welcome to redistribute it under certain conditions.\n" \
-    "Please notice that this project was developed under the terms of the\n" \
-    "GNU GENERAL PUBLIC LICENCE V2.\n" \
-    "Copyright (C) 1998-2025 Wolfgang Schwotzer\n" \
-    "http://flexemu.neocities.org\n";
-
 /* adapt platform specifics: */
 
 /* PATHSEPARATORSTRING shoud be a define to do */
