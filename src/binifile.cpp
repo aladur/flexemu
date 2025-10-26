@@ -23,6 +23,7 @@
 #include "misc1.h"
 #include "binifile.h"
 #include "flexerr.h"
+#include <cctype>
 #include <fstream>
 #include <sstream>
 #include <set>
@@ -68,12 +69,11 @@ BIniFile::Type BIniFile::ReadLine(int line_number,
                                   std::string &value,
                                   bool isSectionOnly = false) const
 {
-    static const std::string whiteSpace{flx::white_space};
     std::string line;
 
     if (std::getline(istream, line))
     {
-        if (line.empty() || whiteSpace.find(line[0]) != std::string::npos)
+        if (line.empty() || std::isspace(line[0]))
         {
             throw FlexException(FERR_INVALID_LINE_IN_FILE, line_number,
                     line, GetPath());
