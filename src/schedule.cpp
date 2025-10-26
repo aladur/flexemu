@@ -231,7 +231,6 @@ CpuState Scheduler::statemachine(CpuState initial_state)
             case CpuState::_count:
                 // This case should never happen
                 // Set the state to CpuState::Run to avoid an endless loop
-                DEBUGPRINT("Error in Statemachine: Set state to CpuState::Run\n");
                 state = CpuState::Run;
                 break;
 

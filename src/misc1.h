@@ -47,9 +47,6 @@
 #include <vector>
 #include <sstream>
 #include <ostream>
-#if defined(UNIX) && !defined(NO_DEBUGPRINT)
-#include <iostream>
-#endif
 #include <iterator>
 #include <algorithm>
 #include <filesystem>
@@ -85,18 +82,6 @@ constexpr const char *PATHSEPARATORSTRING = "/";
 enum {
 EXIT_RESTART = 25262728 // (pseudo) Exit code to restart flexemu
 };
-
-#if defined(WIN32) && !defined(NO_DEBUGPRINT)
-#define DEBUGPRINT(msg) OutputDebugString((LPCTSTR)("[" PACKAGE_NAME "] " msg))
-#endif
-
-#if defined(UNIX) && !defined(NO_DEBUGPRINT)
-    #define DEBUGPRINT(msg) std::cout << "[" PACKAGE_NAME "] " msg
-#endif
-
-#if defined(NO_DEBUGPRINT)
-    #define DEBUGPRINT(fmt)
-#endif
 
 #ifdef __cplusplus
 namespace flx
