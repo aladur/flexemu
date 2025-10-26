@@ -22,6 +22,7 @@
     <ClCompile Include="fversion.cpp" />
     <ClCompile Include="mdcrtool.cpp" />
     <ClCompile Include="mdcrfs.cpp" />
+    <ClCompile Include="wingtopt.cpp" />
     <ClCompile Include="wmain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +42,7 @@
     <ClInclude Include="misc1.h" />
     <ClInclude Include="ostype.h" />
     <ClInclude Include="typedefs.h" />
+    <ClInclude Include="wingtopt.h" />
     <ClInclude Include="wmain.h" />
   </ItemGroup>
   <ItemGroup>

@@ -29,6 +29,7 @@
 #include "foptman.h"
 #ifdef _WIN32
 #include "bregistr.h"
+#include "wingtopt.h"
 #endif
 #include "efiletim.h"
 #include "free.h"

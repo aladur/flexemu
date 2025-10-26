@@ -33,6 +33,9 @@
 #include "bmembuf.h"
 #include "fileread.h"
 #include "wmain.h"
+#ifdef _WIN32
+#include "wingtopt.h"
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif

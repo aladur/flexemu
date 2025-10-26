@@ -222,6 +222,7 @@ endif()
 set(flex2hex_SOURCES
     flex2hex.cpp
     fversion.cpp
+    wingtopt.cpp
     wmain.cpp
 )
 set(flex2hex_HEADER
@@ -238,6 +239,7 @@ set(flex2hex_HEADER
     misc1.h
     ostype.h
     typedefs.h
+    wingtopt.h
     wmain.h
 )
 add_executable(flex2hex ${flex2hex_SOURCES} ${flex2hex_HEADER})
@@ -271,6 +273,7 @@ set(mdcrtool_SOURCES
     fversion.cpp
     mdcrfs.cpp
     mdcrtool.cpp
+    wingtopt.cpp
     wmain.cpp
 )
 set(mdcrtool_HEADER
@@ -289,6 +292,7 @@ set(mdcrtool_HEADER
     misc1.h
     ostype.h
     typedefs.h
+    wingtopt.h
     wmain.h
 )
 add_executable(mdcrtool ${mdcrtool_SOURCES} ${mdcrtool_HEADER})
@@ -321,6 +325,7 @@ target_link_libraries(mdcrtool PRIVATE
 set(dsktool_SOURCES
     dsktool.cpp
     fversion.cpp
+    wingtopt.cpp
     wmain.cpp
 )
 set(dsktool_HEADER
@@ -353,6 +358,7 @@ set(dsktool_HEADER
     ostype.h
     rfilecnt.h
     typedefs.h
+    wingtopt.h
     wmain.h
 )
 add_executable(dsktool ${dsktool_SOURCES} ${dsktool_HEADER})
@@ -484,6 +490,7 @@ set(flexemu_SOURCES
     vico1.cpp
     vico2.cpp
     wd1793.cpp
+    wingtopt.cpp
     winmain.cpp
 )
 set(flexemu_HEADER
@@ -615,6 +622,7 @@ set(flexemu_HEADER
     wd1793.h
     winctxt.h
     windefs.h
+    wingtopt.h
     winmain.h
 )
 add_executable(flexemu WIN32 ${flexemu_gen_SOURCES} ${flexemu_SOURCES} ${flexemu_HEADER})

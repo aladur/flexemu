@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="dsktool.cpp" />
     <ClCompile Include="fversion.cpp" />
+    <ClCompile Include="wingtopt.cpp" />
     <ClCompile Include="wmain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +53,7 @@
     <ClInclude Include="ostype.h" />
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="typedefs.h" />
+    <ClInclude Include="wingtopt.h" />
     <ClInclude Include="wmain.h" />
   </ItemGroup>
   <ItemGroup>

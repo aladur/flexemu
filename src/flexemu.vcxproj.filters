@@ -177,6 +177,9 @@
     <ClCompile Include="wd1793.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wingtopt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="winmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -577,6 +580,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="windefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wingtopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="winmain.h">

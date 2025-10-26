@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="flex2hex.cpp" />
     <ClCompile Include="fversion.cpp" />
+    <ClCompile Include="wingtopt.cpp" />
     <ClCompile Include="wmain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +38,7 @@
     <ClInclude Include="free.h" />
     <ClInclude Include="fversion.h" />
     <ClInclude Include="ostype.h" />
+    <ClInclude Include="wingtopt.h" />
     <ClInclude Include="wmain.h" />
   </ItemGroup>
   <ItemGroup>

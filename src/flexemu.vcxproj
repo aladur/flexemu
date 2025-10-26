@@ -280,6 +280,7 @@
     <ClCompile Include="vico1.cpp" />
     <ClCompile Include="vico2.cpp" />
     <ClCompile Include="wd1793.cpp" />
+    <ClCompile Include="wingtopt.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -581,6 +582,7 @@
     <ClInclude Include="wd1793.h" />
     <ClInclude Include="winctxt.h" />
     <ClInclude Include="windefs.h" />
+    <ClInclude Include="wingtopt.h" />
     <ClInclude Include="winmain.h" />
   </ItemGroup>
   <ItemGroup>

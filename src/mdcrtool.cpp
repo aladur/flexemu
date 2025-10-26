@@ -35,6 +35,9 @@
 #include "fileread.h"
 #include "flexerr.h"
 #include "wmain.h"
+#ifdef _WIN32
+#include "wingtopt.h"
+#endif
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"

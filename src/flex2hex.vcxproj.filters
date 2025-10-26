@@ -17,6 +17,9 @@
     <ClCompile Include="fversion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wingtopt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="wmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -56,6 +59,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ostype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wingtopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wmain.h">
