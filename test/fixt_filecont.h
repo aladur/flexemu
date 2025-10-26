@@ -36,6 +36,9 @@
 #include <filesystem>
 #include <numeric>
 #include <fmt/format.h>
+#ifdef _WIN32
+#include "windefs.h"
+#endif
 
 
 namespace fs = std::filesystem;

@@ -59,6 +59,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef _WIN32
+#include "windefs.h"
+#endif
 
 
 namespace fs = std::filesystem;

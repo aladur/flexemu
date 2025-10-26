@@ -134,6 +134,7 @@ set(unittests_HEADER
     ../src/rfilecnt.h
     ../src/rndcheck.h
     ../src/scpulog.h
+    ../src/windefs.h
 )
 add_executable(unittests ${unittests_SOURCES} ${unittests_HEADER})
 target_include_directories(unittests PRIVATE

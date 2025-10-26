@@ -191,6 +191,9 @@
     <ClInclude Include="fpmodel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="windefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="winmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>

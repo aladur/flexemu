@@ -580,6 +580,7 @@
     <ClInclude Include="warnon.h" />
     <ClInclude Include="wd1793.h" />
     <ClInclude Include="winctxt.h" />
+    <ClInclude Include="windefs.h" />
     <ClInclude Include="winmain.h" />
   </ItemGroup>
   <ItemGroup>

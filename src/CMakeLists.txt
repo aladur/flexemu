@@ -155,6 +155,7 @@ set(flex_HEADER
     rfilecnt.h
     rndcheck.h
     typedefs.h
+    windefs.h
 )
 add_library(flex STATIC ${flex_SOURCES} ${flex_HEADER})
 add_library(flexemu::libflex ALIAS flex)
@@ -613,6 +614,7 @@ set(flexemu_HEADER
     warnon.h
     wd1793.h
     winctxt.h
+    windefs.h
     winmain.h
 )
 add_executable(flexemu WIN32 ${flexemu_gen_SOURCES} ${flexemu_SOURCES} ${flexemu_HEADER})
@@ -784,6 +786,7 @@ set(flexplorer_HEADER
     sfpopts.h
     warnoff.h
     warnon.h
+    windefs.h
 )
 add_executable(flexplorer WIN32 ${flexplorer_gen_SOURCES} ${flexplorer_SOURCES} ${flexplorer_HEADER})
 if(WIN32)

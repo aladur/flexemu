@@ -149,6 +149,9 @@
     <ClInclude Include="typefefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="windefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>

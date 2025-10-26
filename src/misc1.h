@@ -102,19 +102,9 @@ constexpr const char *COPYRIGHT_MESSAGE = \
     #endif
 #endif
 
-/* utime */
-#ifdef _WIN32
-    #include <sys/utime.h>
-#endif
-#ifdef UNIX
-    #include <utime.h>
-#endif
-
 /* adapt platform specifics: */
 
 #ifdef _MSC_VER
-    #define stat _stat64i32
-    #define utimbuf _utimbuf
     #define access _access
     #include <io.h>
 #endif

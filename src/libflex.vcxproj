@@ -298,6 +298,7 @@
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="rndcheck.h" />
     <ClInclude Include="typefefs.h" />
+    <ClInclude Include="windefs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

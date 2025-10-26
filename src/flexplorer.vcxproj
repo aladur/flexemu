@@ -381,6 +381,7 @@
     <ClInclude Include="sfpopts.h" />
     <ClInclude Include="warnoff.h" />
     <ClInclude Include="warnon.h" />
+    <ClInclude Include="windefs.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="libflex.vcxproj">
