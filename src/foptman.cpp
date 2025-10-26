@@ -52,6 +52,10 @@
 
 namespace fs = std::filesystem;
 
+#ifdef _WIN32
+constexpr const char * const FLEXEMUREG = u8"SOFTWARE\\Gnu\\Flexemu";
+#endif
+
 constexpr const char * const OLDFLEXEMURC = u8".flexemurc";
 constexpr const auto * const FLEXEMURC = u8"flexemurc";
 

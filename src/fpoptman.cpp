@@ -38,6 +38,10 @@
 
 namespace fs = std::filesystem;
 
+#ifdef _WIN32
+constexpr const char * const FLEXPLOREREG = u8"SOFTWARE\\Gnu\\FLEXplorer";
+#endif
+
 constexpr const auto * const OLDFLEXPLORERRC = u8".flexplorerrc";
 constexpr const auto * const FLEXPLORERRC = u8"flexplorerrc";
 
