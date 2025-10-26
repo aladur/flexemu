@@ -82,26 +82,6 @@ constexpr const char *COPYRIGHT_MESSAGE = \
     "Copyright (C) 1998-2025 Wolfgang Schwotzer\n" \
     "http://flexemu.neocities.org\n";
 
-/* adaptions for autoconf to use with/without ANSI C headers */
-
-/* dirent structure: */
-#ifdef UNIX
-    #ifdef HAVE_DIRENT_H
-        #include <dirent.h>
-    #else
-        #define dirent direct
-        #ifdef HAVE_SYS_NDIR_H
-            #include <sys/ndir.h>
-        #endif
-        #ifdef HAVE_SYS_DIR_H
-            #include <sys/dir.h>
-        #endif
-        #ifdef HAVE_NDIR_H
-            #include <ndir.h>
-        #endif
-    #endif
-#endif
-
 /* adapt platform specifics: */
 
 /* PATHSEPARATORSTRING shoud be a define to do */
