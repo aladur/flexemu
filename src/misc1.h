@@ -104,11 +104,6 @@ constexpr const char *COPYRIGHT_MESSAGE = \
 
 /* adapt platform specifics: */
 
-#ifdef _MSC_VER
-    #define W_OK            (2) /* write permission */
-    #define S_ISREG(x)      (x & S_IFREG)
-#endif
-
 /* PATHSEPARATORSTRING shoud be a define to do */
 /* implicit concatenation by the compiler!     */
 #ifdef _WIN32

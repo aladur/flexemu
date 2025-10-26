@@ -47,6 +47,9 @@
 #include <iostream>
 #include <algorithm>
 #include <filesystem>
+#ifdef _WIN32
+#include "windefs.h"
+#endif
 
 namespace fs = std::filesystem;
 

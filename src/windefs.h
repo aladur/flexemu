@@ -28,6 +28,9 @@
 #ifdef _MSC_VER
 #define stat _stat64i32
 #define utimbuf _utimbuf
+
+#define W_OK (2) /* write permission */
+#define S_ISREG(x) (x & S_IFREG)
 #endif
 
 #endif
