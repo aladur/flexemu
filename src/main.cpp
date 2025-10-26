@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     bool isRestarted = false;
 
 #ifdef _MSC_VER
-    set_new_handler(flexemu_new_handler);
+    _set_new_handler(flexemu_new_handler);
 #else
     std::set_new_handler(flexemu_new_handler);
 #endif

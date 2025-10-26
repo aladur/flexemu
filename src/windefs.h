@@ -28,11 +28,6 @@
 #ifdef _MSC_VER
 #define stat _stat64i32
 #define utimbuf _utimbuf
-#define access _access
-#include <io.h>
-
-#define stat _stat64i32
-#define utimbuf _utimbuf
 #endif
 
 #endif

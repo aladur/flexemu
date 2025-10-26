@@ -105,27 +105,8 @@ constexpr const char *COPYRIGHT_MESSAGE = \
 /* adapt platform specifics: */
 
 #ifdef _MSC_VER
-    #define access _access
-    #include <io.h>
-#endif
-
-#ifdef _MSC_VER
     #define W_OK            (2) /* write permission */
-    #define S_ISDIR(x)      (x & S_IFDIR)
     #define S_ISREG(x)      (x & S_IFREG)
-    #define set_new_handler _set_new_handler
-#endif
-
-#ifndef _WIN32
-    #define CALLBACK
-#endif
-
-#ifndef PATH_MAX
-    #ifdef _WIN32
-        #ifdef _MSC_VER
-            #define PATH_MAX _MAX_PATH
-        #endif
-    #endif
 #endif
 
 /* PATHSEPARATORSTRING shoud be a define to do */
