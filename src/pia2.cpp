@@ -21,7 +21,6 @@
 */
 
 #include "typedefs.h"
-#include "misc1.h"
 #include "pia2.h"
 #include "mc6821.h"
 #include "mc6809.h"

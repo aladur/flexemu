@@ -23,6 +23,7 @@
 
 
 #include "typedefs.h"
+#include "misc1.h"
 #include "command.h"
 #include "asciictl.h"
 #include "cpustate.h"

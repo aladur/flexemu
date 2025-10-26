@@ -34,6 +34,7 @@ using DWord = uint32_t;
 using SDWord = int32_t;
 using QWord = uint64_t;
 using SQWord = int64_t;
+using cycles_t = uint64_t;
 
 #endif /* TYPEDEFS_INCLUDED */
 

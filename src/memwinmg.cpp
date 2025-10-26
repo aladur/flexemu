@@ -22,6 +22,7 @@
 
 
 #include "typedefs.h"
+#include "misc1.h"
 #include "memwinmg.h"
 #include "bcommand.h"
 #include "free.h"

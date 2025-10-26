@@ -111,8 +111,6 @@ EXIT_RESTART = 25262728 // (pseudo) Exit code to restart flexemu
     #define DEBUGPRINT(fmt)
 #endif
 
-using cycles_t = QWord;
-
 // This macro defines the name of a file. It contains a list of files
 // which have to be handled as random files. It is used in directory containers
 // to identify random files.

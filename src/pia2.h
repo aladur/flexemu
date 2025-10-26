@@ -25,7 +25,12 @@
 #ifndef PIA2_INCLUDED
 #define PIA2_INCLUDED
 
-#include "misc1.h"
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
+#include "typedefs.h"
 #include "mc6821.h"
 #include "bjoystck.h"
 
