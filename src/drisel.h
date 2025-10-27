@@ -24,7 +24,7 @@
 #ifndef DRISEL_INCLUDED
 #define DRISEL_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "bytereg.h"
 
 class E2floppy;

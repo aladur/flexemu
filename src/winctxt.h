@@ -25,7 +25,8 @@
 #define WINCTXT_INCLUDED
 
 #ifdef _WIN32
-#include "misc1.h"
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 struct WinApiContext
 {

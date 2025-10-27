@@ -24,9 +24,8 @@
 #ifndef FPATTRUI_H
 #define FPATTRUI_H
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "fattrib.h"
-#include "filecntb.h"
 #include "warnoff.h"
 #include <QApplication>
 #include <QCheckBox>

@@ -23,7 +23,6 @@
 #ifndef CACTTRNS_INCLUDED
 #define CACTTRNS_INCLUDED
 
-#include "misc1.h"
 #include "mc6821.h"
 #include "bcommand.h"
 

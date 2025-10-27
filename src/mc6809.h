@@ -13,8 +13,12 @@
 #ifndef MC6809_INCLUDED
 #define MC6809_INCLUDED
 
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "typedefs.h"
-#include "misc1.h"
 #include "bitops.h"
 #include "memory.h"
 #include "schedcpu.h"

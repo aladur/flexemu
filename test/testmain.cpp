@@ -21,7 +21,6 @@
 */
 
 
-#include "misc1.h"
 #include "test_gccasm.h"
 
 

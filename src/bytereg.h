@@ -24,7 +24,7 @@
 #ifndef BYTEREG_INCLUDED
 #define BYTEREG_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "iodevice.h"
 
 // ByteRegister is a single byte general purpose

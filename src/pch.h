@@ -24,7 +24,6 @@
 #ifndef PCH_INCLUDED
 #define PCH_INCLUDED
 
-#include "misc1.h"
 #include <cctype>
 #include <cassert>
 #include <limits>

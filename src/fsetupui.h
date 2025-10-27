@@ -25,12 +25,8 @@
 #define FSETUPUI_INCLUDED
 
 
-#include "misc1.h"
-#include "brcfile.h"
-#include "bregistr.h"
 #include "soptions.h"
 #include "termimpf.h"
-#include <string>
 #include <vector>
 #include "warnoff.h"
 #ifdef USE_CMAKE

@@ -25,8 +25,7 @@
 #ifndef MMU_INCLUDED
 #define MMU_INCLUDED
 
-#include "misc1.h"
-
+#include "typedefs.h"
 #include "iodevice.h"
 
 class Memory;
