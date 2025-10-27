@@ -23,8 +23,11 @@
 // Uncomment the following line for cycle count debugging.
 //#define DEBUG_FILE "cycle_time.txt"
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 #include "typedefs.h"
-#include "misc1.h"
 #include "schedule.h"
 #include "schedcpu.h"
 #include "cpustate.h"

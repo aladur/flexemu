@@ -34,7 +34,6 @@
     #if !defined(_UNICODE) && !defined(UNICODE)
         #error This program can only be compiled with Unicode support.
     #endif
-#include <windows.h>
 #endif
 #include "typedefs.h"
 #include <cassert>

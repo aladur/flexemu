@@ -20,8 +20,16 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
 #include "typedefs.h"
-#include "misc1.h"
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif

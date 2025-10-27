@@ -21,6 +21,9 @@
 */
 
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include "typedefs.h"
 #include "misc1.h"
 #include "efiletim.h"

@@ -21,7 +21,8 @@
 */
 
 #ifdef _WIN32
-#include "misc1.h"
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 extern void scanCmdLine(LPSTR lpCmdLine, int* argc, char** argv, size_t max_count);
 extern int main(int argc, char* argv[]);

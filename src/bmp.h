@@ -83,15 +83,15 @@ static_assert(sizeof(sRGBQUAD) == 4, "sRGBQUAD is padded");
 /* The following macros have to be compatible to Windows. */
 /* NOLINTBEGIN(cppcoreguidelines-macro-usage) */
 #ifndef BI_RGB
-#define BI_RGB 0U
+#define BI_RGB 0
 #endif
 
 #ifndef BI_RLE8
-#define BI_RLE8 1U
+#define BI_RLE8 1
 #endif
 
 #ifndef BI_RLE4
-#define BI_RLE4 2U
+#define BI_RLE4 2
 #endif
 /* NOLINTEND(cppcoreguidelines-macro-usage) */
 

@@ -21,13 +21,16 @@
 */
 
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 #if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
 #else
 #include "confignt.h"
 #endif
 #include "typedefs.h"
-#include "misc1.h"
 #include "keyboard.h"
 #include "asciictl.h"
 #ifdef HAVE_UNISTD_H

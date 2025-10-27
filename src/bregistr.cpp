@@ -22,6 +22,8 @@
 
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include "misc1.h"
 #include "bregistr.h"
 #include "cvtwchar.h"

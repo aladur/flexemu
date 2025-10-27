@@ -21,8 +21,11 @@
 */
 
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 #include "gtest/gtest.h"
-#include "misc1.h"
 #include "filecnts.h"
 #include "rndcheck.h"
 #ifdef _WIN32

@@ -21,7 +21,8 @@
 */
 
 #ifdef _WIN32
-#include "misc1.h"
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include "winctxt.h"
 #include "winmain.h"
 

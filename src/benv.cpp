@@ -21,11 +21,17 @@
 */
 
 
-#include "misc1.h"
-#include "benv.h"
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include "cvtwchar.h"
 #endif
+#if defined(UNIX) || defined(USE_CMAKE)
+#include "config.h"
+#else
+#include "confignt.h"
+#endif
+#include "benv.h"
 #include <string>
 #include <sstream>
 #include <cstdlib>
