@@ -47,7 +47,7 @@ void Mc6809::reset()
     events = events & Event::FrequencyControl;
     reset_bp(2); // remove next-breakpoint
 
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
     ipcreg = memory.read_word(0xfffe);
     idpreg = 0x00; /* Direct page register = 0x00 */
     iccreg = 0x50; /* set i and f bit */
@@ -96,7 +96,7 @@ QWord Mc6809::get_cycles(bool reset /* = false */)
 {
     if (reset)
     {
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
         total_cycles += cycles / 10;
 #else
         total_cycles += cycles;
@@ -105,7 +105,7 @@ QWord Mc6809::get_cycles(bool reset /* = false */)
         return total_cycles;
     }
 
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
     return total_cycles + (cycles / 10);
 #else
     return total_cycles +  cycles;
@@ -122,7 +122,7 @@ void Mc6809::get_status(CpuStatus *cpu_status)
     auto *stat = dynamic_cast<Mc6809CpuStatus *>(cpu_status);
     assert(stat != nullptr);
 
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
     stat->a = iareg;
     stat->b = ibreg;
     stat->cc = iccreg;
@@ -184,7 +184,7 @@ void Mc6809::set_status(CpuStatus *cpu_status)
     const auto *stat = dynamic_cast<Mc6809CpuStatus *>(cpu_status);
     assert(stat != nullptr);
 
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
     iareg = stat->a;
     ibreg = stat->b;
     iccreg = stat->cc;
@@ -425,7 +425,7 @@ CpuState Mc6809::runloop()
         }
 
         // execute one CPU instruction
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
 #include "engine.cpi"
 #else
 #include "mc6809ex.cpi"
@@ -458,7 +458,7 @@ void Mc6809::exit_run()
 
 void Mc6809::set_required_cyclecount(cycles_t p_cycles)
 {
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
     required_cyclecount = p_cycles * 10;
 #else
     required_cyclecount = p_cycles;

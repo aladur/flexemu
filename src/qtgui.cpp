@@ -229,9 +229,11 @@ QtGui::QtGui(
 
     // Initialize the non-modal CPU Dialog but don't open it.
     cpuUi.setupUi(cpuDialog);
-    const QString title = QString("%1 %2")
+    const std::string alternate = p_cpu.is_alternate() ? " (alternate)" : "";
+    const QString title = QString("%1 %2%3")
         .arg(QString::fromStdString(p_cpu.get_vendor()))
-        .arg(QString::fromStdString(p_cpu.get_name()));
+        .arg(QString::fromStdString(p_cpu.get_name()))
+        .arg(QString::fromStdString(alternate));
     cpuDialog->setWindowTitle(title);
     cpuDialog->setModal(false);
     cpuDialog->setSizeGripEnabled(true);
@@ -2524,7 +2526,8 @@ ItemPairList_t QtGui::GetConfiguration() const
     std::vector<std::string> values;
 
     result.emplace_back("Mainboard", std::vector(1U, GetMainboardName()));
-    values = { cpu.get_vendor() + " " + cpu.get_name() };
+    values = { cpu.get_vendor() + " " + cpu.get_name() +
+        ((cpu.is_alternate()) ? " (alternate)" : "") };
     result.emplace_back("CPU", values);
     const auto ranges = memory.GetMemoryRanges();
     auto iter = std::find_if(ranges.cbegin(), ranges.cend(), [](auto &item){

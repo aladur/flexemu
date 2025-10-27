@@ -20,19 +20,19 @@
 #include "schedcpu.h"
 #include <cstring>
 
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
     #define PC ipcreg
 #else
     #define PC pc
 #endif
 
 Mc6809::Mc6809(Memory &p_memory) : events(Event::NONE),
-#ifndef FASTFLEX
+#ifndef ALTERNATE_MC6809
     a(acc.byte.a), b(acc.byte.b), d(acc.d), dp(dpreg.byte.h),
 #endif
      memory(p_memory)
 {
-#ifndef FASTFLEX
+#ifndef ALTERNATE_MC6809
     dpreg.byte.l = 0;
 #endif
     std::memset(&interrupt_status, 0, sizeof(interrupt_status));
@@ -209,7 +209,7 @@ void Mc6809::set_irq()
     events |= Event::Irq;
 }
 
-#ifndef FASTFLEX
+#ifndef ALTERNATE_MC6809
 cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
 {
     switch (static_cast<Byte>(what & 0xF0U))
@@ -929,7 +929,7 @@ void Mc6809::invalid(const char * /*msg*/)
     events |= Event::Invalid;
 }
 
-#ifndef FASTFLEX
+#ifndef ALTERNATE_MC6809
 Word Mc6809::do_effective_address(Byte post)
 {
     Word addr = 0;
@@ -1410,7 +1410,7 @@ void Mc6809::EXEC_FIRQ(bool save_state)
     firq(save_state);
 }
 #endif
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
 void Mc6809::EXEC_NMI(bool save_state)
 {
     if (save_state)

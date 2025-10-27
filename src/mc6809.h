@@ -37,6 +37,12 @@
 
 using OptionalWord = std::optional<Word>;
 
+/**
+ * This Mc6809 class can be compiled using an alternative CPU
+ * implementation. It is activated by defining the macro ALTERNATE_MC6809
+ * (Previously it was the macro FASTFLEX), for details see INSTALL.unix.
+ */
+
 /* Keep macro to be controlable from command line */
 /* NOLINTNEXTLINE(cppcoreguidelines-macro-usage) */
 #define USE_ASM 1
@@ -46,7 +52,7 @@ using OptionalWord = std::optional<Word>;
     #define IX86
 #endif
 #if defined(__GNUC__) && defined (USE_ASM) && defined(IX86) && \
-    defined(__LP64__) && !defined(FASTFLEX)
+    defined(__LP64__) && !defined(ALTERNATE_MC6809)
     #define USE_GCCASM
 #endif
 
@@ -75,7 +81,7 @@ constexpr auto CC_BITS_NZVC{CC_BIT_N | CC_BIT_Z | CC_BIT_V | CC_BIT_C};
 constexpr auto CC_BITS_NZV{CC_BIT_N | CC_BIT_Z | CC_BIT_V};
 constexpr auto CC_BITS_NZC{CC_BIT_N | CC_BIT_Z | CC_BIT_C};
 
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
     #define PC ipcreg
     #define CC_BITI (iccreg & 0x10)
     #define CC_BITF (iccreg & 0x40)
@@ -226,7 +232,7 @@ protected:
     // interrupts
     atomic_event events{Event::NONE}; // event status flags (atomic access)
     tInterruptStatus interrupt_status{};
-#ifdef FASTFLEX
+#ifdef ALTERNATE_MC6809
     std::atomic<Word> ipcreg{0};
     Word iureg{0};
     Word isreg{0};
@@ -256,7 +262,7 @@ protected:
     Word &d;
     Byte &dp;
     union ucc cc{0};
-#endif // #ifndef FASTFLEX
+#endif // #ifndef ALTERNATE_MC6809
 
 protected:
 
@@ -271,7 +277,7 @@ private:
     void init_psh_pul_cycles();
     void illegal();
 
-#ifndef FASTFLEX
+#ifndef ALTERNATE_MC6809
     //***********************************
     // Addressing mode fetch Instructions
     //***********************************
@@ -961,6 +967,16 @@ public:
     OptionalWord get_bp(int which);
     bool is_bp_set(int which);
     void reset_bp(int which);
+    // Implementation may change in future.
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    bool is_alternate() const
+    {
+#ifdef ALTERNATE_MC6809
+        return true;
+#else
+        return false;
+#endif
+    }
 
     // interface to other classes
 public:
@@ -992,7 +1008,7 @@ public:
 // Instruction execution
 //*******************************************************************
 
-#ifndef FASTFLEX
+#ifndef ALTERNATE_MC6809
 
 #ifdef USE_GCCASM
 inline void Mc6809::add(Byte &reg, Byte operand)
@@ -1571,7 +1587,7 @@ inline void Mc6809::swi3()
 }
 
 
-#endif // ifndef FASTFLEX
+#endif // ifndef ALTERNATE_MC6809
 
 inline Mc6809::Event operator| (Mc6809::Event lhs, Mc6809::Event rhs)
 {

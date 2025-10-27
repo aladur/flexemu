@@ -669,6 +669,13 @@ target_compile_definitions(flexemu PRIVATE
     F_DATADIR=\"${FLEXEMU_FULL_DATADIR}\"
     F_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"
 )
+if (ALTERNATE_MC6809)
+    target_compile_definitions(flexemu PRIVATE -DALTERNATE_MC6809)
+    message("-- Using Mc6809 implemenation: Alternate")
+else()
+    message("-- Using Mc6809 implemenation: Default")
+endif()
+
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
 
     if(UNIX)

@@ -58,13 +58,6 @@ namespace fs = std::filesystem;
 
 #define FLEX_LABEL
 
-/* uncomment the following line if You want to compile flexemu with
-   an alternative MC6809 processor implementation. It's about 10% faster
-   but only aproximates processor cycles. Good for checking processor
-   implementations against each other */
-
-/* #define FASTFLEX */
-
 /* adapt platform specifics: */
 
 /* PATHSEPARATORSTRING shoud be a define to do */
