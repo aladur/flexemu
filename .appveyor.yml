@@ -1,23 +1,18 @@
 # Appveyor build script for flexemu.
 #
 # Supported builds:
-# - Visual Studio 2019 Win32 Debug with Qt5
-# - Visual Studio 2019 Win32 Release with Qt5
-# - Visual Studio 2019 x64 Debug with Qt5
-# - Visual Studio 2019 x64 Release with Qt5
+# - Visual Studio 2019 x64 Debug with Qt6
 # - Visual Studio 2019 x64 Release with Qt6
 
 image:
-  - Previous Visual Studio 2019
+  - Visual Studio 2019
 
 environment:
   APPVEYOR_YML_DISABLE_PS_LINUX: true
   matrix:
-    - QTMAJOR: 5
     - QTMAJOR: 6
 
 platform:
-  - Win32
   - x64
 
 configuration:
@@ -29,23 +24,15 @@ install:
   # same *.vcxproj project(s).
   - cmd: echo Current Working Directory is %CD%
   - cmd: if %QTMAJOR%==6 set QTVERSION=6.5.3
-  - cmd: if %QTMAJOR%==5 set QTVERSION=5.15.2
   - cmd: set QTDIR=%TEMP%\Qt%QTMAJOR%
   - cmd: echo Qt Directory is %QTDIR%
   - cmd: mkdir "%QTDIR%"
-  - cmd: if %QTMAJOR%==5 mklink /d "%QTDIR%\Win32" C:\Qt\%QTVERSION%\msvc2019
   - cmd: mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2019_64
   # Create properties file defining the Qt dependencies.
   - cmd: powershell.exe build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version %QTVERSION%
   - cmd: git submodule update --init --recursive
 
 matrix:
-  exclude:
-    # Qt6 only supports x64 builds, only test x64 Release.
-    - platform: Win32
-      QTMAJOR: 6
-    - configuration: Debug
-      QTMAJOR: 6
   fast_finish: true
 
 for:

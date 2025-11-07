@@ -91,6 +91,7 @@ void DrawnWidget::paintEvent(QPaintEvent *event)
         auto qdate = QDate(date.GetYear(), date.GetMonth(), date.GetDay());
         auto locale = QLocale::system();
         auto dateString = locale.toString(qdate, QLocale::ShortFormat);
+        painter.setPen(Qt::black);
         painter.drawText(x, y, name);
         painter.drawText(x, y+15, numberString);
         painter.drawText(x, y+30, dateString);
