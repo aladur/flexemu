@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         os: [ windows-2022 ]
-        qt-build: [ A, B ]
+        qt-build: [ A, B, C ]
       fail-fast: false
     env:
       QTDIR: ${{ github.workspace }}\Qt
@@ -27,6 +27,10 @@ jobs:
           ) ELSE (
             IF "${{ matrix.qt-build }}"=="B" (
               echo QT_VERSION=${{ vars.QT6_VERSION_B }}>>%GITHUB_ENV%
+            ) ELSE (
+              IF "${{ matrix.qt-build }}"=="C" (
+                echo QT_VERSION=${{ vars.QT6_VERSION_C }}>>%GITHUB_ENV%
+              )
             )
           )
 
