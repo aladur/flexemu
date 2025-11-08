@@ -1,16 +1,22 @@
 # Appveyor build script for flexemu.
 #
 # Supported builds:
-# - Visual Studio 2019 x64 Debug with Qt6
-# - Visual Studio 2019 x64 Release with Qt6
+# - Visual Studio 2019 x64 Release with Qt6.5.3
+# - Visual Studio 2019 x64 Debug with Qt6.5.3
+# - Visual Studio 2019 x64 Release with Qt6.8.3
+# - Visual Studio 2019 x64 Debug with Qt6.8.3
+# - Visual Studio 2022 x64 Release with Qt6.9.3
+# - Visual Studio 2022 x64 Debug with Qt6.9.3
 
 image:
   - Visual Studio 2019
+  - Visual Studio 2022
 
 environment:
   APPVEYOR_YML_DISABLE_PS_LINUX: true
   matrix:
-    - QTMAJOR: 6
+    - QTVERSION: 6.5.3
+    - QTVERSION: 6.8.3
 
 platform:
   - x64
@@ -23,23 +29,28 @@ install:
   # Create links to build all platform/configuration combinations with the
   # same *.vcxproj project(s).
   - cmd: echo Current Working Directory is %CD%
-  - cmd: if %QTMAJOR%==6 set QTVERSION=6.5.3
-  - cmd: set QTDIR=%TEMP%\Qt%QTMAJOR%
+  - cmd: set QTDIR=%TEMP%\Qt
   - cmd: echo Qt Directory is %QTDIR%
   - cmd: mkdir "%QTDIR%"
-  - cmd: mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2019_64
+  - cmd: if %QTVERSION%==6.5.3 mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2019_64
+  - cmd: if %QTVERSION%==6.8.3 mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2022_64
+  - cmd: if %QTVERSION%==6.9.3 mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2022_64
   # Create properties file defining the Qt dependencies.
   - cmd: powershell.exe build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version %QTVERSION%
   - cmd: git submodule update --init --recursive
 
 matrix:
+  exclude:
+    - image: Visual Studio 2019
+      QTVERSION: 6.9.3
+    - image: Visual Studio 2022
+      QTVERSION: 6.5.3
+    - image: Visual Studio 2022
+      QTVERSION: 6.8.3
   fast_finish: true
 
 for:
   -
-    matrix:
-      only:
-        - image: Visual Studio 2019
     test_script:
       # "if 1==1" is a workaround for not starting a yaml token with percent.
       - echo ===== %PLATFORM% %CONFIGURATION% =====
