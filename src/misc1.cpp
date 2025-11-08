@@ -470,9 +470,9 @@ fs::path flx::getFlexemuUserConfigPath()
     std::string configPath;
     fs::path result = (BEnvironment::GetValue("XDG_CONFIG_HOME", configPath) &&
             !configPath.empty()) ?
-        fs::u8path(configPath) : getHomeDirectory();
+        fs::u8path(configPath) : getHomeDirectory() / u8".config";
 
-    result /= fs::path(u8".config") / u8"flexemu";
+    result /= u8"flexemu";
 
     return result;
 }
