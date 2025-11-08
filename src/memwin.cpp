@@ -200,7 +200,14 @@ MemoryWindow::MemoryWindow(
 
     if (positionAndSize.has_value())
     {
-        setGeometry(positionAndSize.value());
+        QPointer<MemoryWindow> safeThis(this);
+
+        QTimer::singleShot(0, this, [safeThis, ps=positionAndSize.value()](){
+            if (safeThis)
+            {
+                safeThis->setGeometry(ps);
+            }
+        });
     }
 }
 
