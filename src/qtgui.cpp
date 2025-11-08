@@ -1142,6 +1142,7 @@ void QtGui::CreateViewActions(QToolBar &p_toolBar)
     magneticMainWindowAction->setCheckable(true);
     magneticMainWindowAction->setStatusTip(
             tr("Moving Main Window moves all open Windows"));
+    p_toolBar.addAction(magneticMainWindowAction);
     viewMenu->addSeparator();
 
     auto *iconSizeMenu = viewMenu->addMenu(tr("&Icon Size"));
