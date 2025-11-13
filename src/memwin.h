@@ -156,6 +156,7 @@ public slots:
     void OnEventTypeChanged(QEvent::Type type);
 
 signals:
+    void Activated(MemoryWindow *p_win);
     void Closed(MemoryWindow *p_win);
     void MemoryModified(const MemoryWindow *p_win, DWord address,
             const std::vector<Byte> &data) const;

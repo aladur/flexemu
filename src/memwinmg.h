@@ -33,6 +33,7 @@
 #include <memory>
 #include <optional>
 #include <vector>
+#include <list>
 
 
 class Memory;
@@ -78,6 +79,7 @@ public:
     void SetReadOnly(bool isReadOnly) const;
 
 protected slots:
+    void OnMemoryWindowActivated(const MemoryWindow *memoryWindow);
     void OnMemoryWindowClosed(const MemoryWindow *memoryWindow);
     void OnMemoryModified(const MemoryWindow *memoryWindow, DWord address,
             const std::vector<Byte> &data);
@@ -96,6 +98,7 @@ private:
     };
 
     std::vector<MemoryWindowItem> items;
+    std::list<MemoryWindowSPtr> windowsInZOrder;
     Scheduler &scheduler;
     Memory &memory;
     QWidget *parent{};

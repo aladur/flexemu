@@ -52,6 +52,8 @@
 #include <cassert>
 #include <memory>
 #include <optional>
+#include <vector>
+#include <map>
 #include <sstream>
 #include <algorithm>
 
@@ -67,6 +69,25 @@ MemoryWindowManager::MemoryWindowManager(QWidget *p_parent,
 /********************
 ** Protected slots **
 ********************/
+void MemoryWindowManager::OnMemoryWindowActivated(
+        const MemoryWindow *memoryWindow)
+{
+    for (auto iter = windowsInZOrder.begin(); iter != windowsInZOrder.end();
+         ++iter)
+    {
+        if (iter->get() == memoryWindow &&
+            iter->get() != windowsInZOrder.back().get())
+        {
+            auto activatedWindow = *iter;
+            windowsInZOrder.erase(iter);
+            windowsInZOrder.emplace_back(std::move(activatedWindow));
+            break;
+        }
+    }
+
+    assert(items.size() == windowsInZOrder.size());
+}
+
 void MemoryWindowManager::OnMemoryWindowClosed(
         const MemoryWindow *memoryWindow)
 {
@@ -78,6 +99,18 @@ void MemoryWindowManager::OnMemoryWindowClosed(
             break;
         }
     }
+
+    for (auto iter = windowsInZOrder.cbegin(); iter != windowsInZOrder.cend();
+         ++iter)
+    {
+        if (iter->get() == memoryWindow)
+        {
+            windowsInZOrder.erase(iter);
+            break;
+        }
+    }
+
+    assert(items.size() == windowsInZOrder.size());
 }
 
 void MemoryWindowManager::OnMemoryModified(const MemoryWindow *memoryWindow,
@@ -114,7 +147,7 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
                 "A maximum of %1 Memory Windows are open.\n"
                 "No more Memory Windows can be opened.")
                  .arg(sOptions::maxMemoryWindows);
-         QMessageBox::warning(nullptr, PACKAGE_NAME " warning", msg);
+         QMessageBox::warning(parent, PACKAGE_NAME " warning", msg);
          return;
      }
 
@@ -164,16 +197,21 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
 
      auto readMemoryCommand =
          std::make_shared<CReadMemory>(memory, config.addressRange);
-     auto window = std::make_unique<MemoryWindow>( isReadOnly,
+     auto window = std::make_shared<MemoryWindow>( isReadOnly,
              memory.GetMemoryRanges(), config, positionAndSize, parent);
      window->SetIconSize({ options.iconSize, options.iconSize });
+     windowsInZOrder.push_back(window);
      window->show();
+     connect(window.get(), &MemoryWindow::Activated,
+             this, &MemoryWindowManager::OnMemoryWindowActivated);
      connect(window.get(), &MemoryWindow::Closed,
              this, &MemoryWindowManager::OnMemoryWindowClosed);
      connect(window.get(), &MemoryWindow::MemoryModified,
              this, &MemoryWindowManager::OnMemoryModified);
-     MemoryWindowItem item = { std::move(window), readMemoryCommand };
+     MemoryWindowItem item = { window, readMemoryCommand };
      items.push_back(std::move(item));
+
+     assert(items.size() == windowsInZOrder.size());
 
      scheduler.sync_exec(
          std::dynamic_pointer_cast<BCommand>(readMemoryCommand));
@@ -216,15 +254,31 @@ void MemoryWindowManager::SetIconSize(const QSize &iconSize) const
 void MemoryWindowManager::CloseAllWindows(sOptions &options)
 {
     // Iterate on a copy because for each close() OnMemoryWindowClosed()
-    // slot is called which modifies items.
-    std::vector<MemoryWindowItem> itemsCopy = items;
+    // slot is called which modifies items and windowsInZOrder.
+    const auto itemsCopy = items;
+    const auto windowsInZOrderCopy = windowsInZOrder;
+    std::map<MemoryWindow *, unsigned> indexForWindow;
+    unsigned index = 0U;
+
+    assert(items.size() == windowsInZOrder.size());
+
+    for(const auto &item : itemsCopy)
+    {
+        indexForWindow[item.window.get()] = index++;
+    }
 
     options.memoryWindowConfigs.clear();
-    for (auto &item : itemsCopy)
+    // Collect config from lowest to highest z-order.
+    for (const auto &window : windowsInZOrderCopy)
     {
-        options.memoryWindowConfigs.push_back(item.window->GetConfigString());
-        item.window->close();
+        index = indexForWindow[window.get()];
+        auto configString = itemsCopy[index].window->GetConfigString();
+        options.memoryWindowConfigs.emplace_back(configString);
+        itemsCopy[index].window->close();
     }
+
+    windowsInZOrder.clear();
+    items.clear();
 }
 
 void MemoryWindowManager::OpenAllWindows(bool isReadOnly,

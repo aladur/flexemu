@@ -870,6 +870,11 @@ bool MemoryWindow::event(QEvent *event)
         return true;
     }
 
+    if (event->type() == QEvent::WindowActivate)
+    {
+        emit Activated(this);
+    }
+
     return QWidget::event(event);
 }
 

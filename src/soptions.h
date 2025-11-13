@@ -151,8 +151,9 @@ struct sOptions
 
     FlexemuOptionIds_t readOnlyOptionIds;// List of option ids which are
                                          // read-only.
-    std::vector<std::string> memoryWindowConfigs; // configuration of all
-                                                  // memory windows.
+    // configuration of all memory windows ordered from lowest to highest
+    // z-order.
+    std::vector<std::string> memoryWindowConfigs;
 
     static const int maxMemoryWindows = 24;
 };
