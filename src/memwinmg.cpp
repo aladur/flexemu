@@ -320,6 +320,24 @@ MemoryWindowSPtrs MemoryWindowManager::GetAllWindows() const
             return item.window;
         });
 
+    struct
+    {
+        bool operator()(MemoryWindowSPtr &lhs, MemoryWindowSPtr &rhs)
+        {
+            if (lhs->GetAddressRange().lower() ==
+                rhs->GetAddressRange().lower())
+            {
+                return lhs->GetAddressRange().upper() <
+                       rhs->GetAddressRange().upper();
+            }
+
+            return lhs->GetAddressRange().lower() <
+                   rhs->GetAddressRange().lower();
+        };
+    } compareMemoryWindows;
+
+    std::sort(result.begin(), result.end(), compareMemoryWindows);
+
     return result;
 }
 

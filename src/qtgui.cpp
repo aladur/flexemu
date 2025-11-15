@@ -1848,25 +1848,7 @@ void QtGui::OnUpdateWindowMenu()
                 });
     }
 
-    auto memoryWindows = memoryWindowMgr.GetAllWindows();
-
-    struct
-    {
-        bool operator()(MemoryWindowSPtr &lhs, MemoryWindowSPtr &rhs)
-        {
-            if (lhs->GetAddressRange().lower() ==
-                rhs->GetAddressRange().lower())
-            {
-                return lhs->GetAddressRange().upper() <
-                       rhs->GetAddressRange().upper();
-            }
-
-            return lhs->GetAddressRange().lower() <
-                   rhs->GetAddressRange().lower();
-        };
-    } compareMemoryWindows;
-
-    std::sort(memoryWindows.begin(), memoryWindows.end(), compareMemoryWindows);
+    const auto memoryWindows = memoryWindowMgr.GetAllWindows();
 
     for (size_t i = 0U; i < memoryWindows.size(); ++i)
     {
@@ -1875,7 +1857,7 @@ void QtGui::OnUpdateWindowMenu()
             windowMenu->addSeparator();
         }
 
-        auto &memoryWindow = memoryWindows[i];
+        const auto &memoryWindow = memoryWindows[i];
         QString acceleratorPrefix = (i < 9U) ? "&" : "";
         QString text = tr("%1%2 %3").arg(acceleratorPrefix)
                                 .arg(i + 1U)
