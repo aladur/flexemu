@@ -76,6 +76,8 @@ TEST(test_brcfile, fct_GetValue)
     ofs << "KeyForPath" << "      " << std::quoted(tempdir) << "\n";
     ofs << "KeyForNegIntValue" << "      " << -22 << "\n";
     ofs << "KeyForPosIntValue" << "      " << 577901267 << "\n";
+    ofs << "KeyOnlyWithWhiteSpace" << "    " << "\n";
+    ofs << "KeyWithNoValue\n";
     ofs.close();
 
     BRcFile rcf(path);
@@ -97,6 +99,10 @@ TEST(test_brcfile, fct_GetValue)
     EXPECT_EQ(ivalue, -22);
     EXPECT_EQ(rcf.GetValue("KeyForPosIntValue", ivalue), BRC_NO_ERROR);
     EXPECT_EQ(ivalue, 577901267);
+    EXPECT_EQ(rcf.GetValue("KeyWithNoValue", svalue), BRC_NO_ERROR);
+    EXPECT_TRUE(svalue.empty());
+    EXPECT_EQ(rcf.GetValue("KeyOnlyWithWhiteSpace", svalue), BRC_NO_ERROR);
+    EXPECT_TRUE(svalue.empty());
     EXPECT_EQ(rcf.GetValue("Key", ivalue), BRC_NO_INTEGER);
     EXPECT_EQ(ivalue, 577901267);
     EXPECT_EQ(rcf.GetValue("Key", ivalue), BRC_NO_INTEGER);
@@ -134,22 +140,27 @@ TEST(test_brcfile, fct_GetValues)
     ofs << "KeyPrefixIndividualKey9" << "\t\t" << "\"Value3\"" << "\n";
     ofs << "KeyPrefixIndividualKey22" << "\t \t" << "\"Value4\"" << "\n";
     ofs << "KeyPrefixIndividualKey1999" << "   " << "\"Value5\"" << "\n";
+    ofs << "KeyPrefixIndividualKeyOnlyWithWhiteSpace" << "    " << "\n";
+    ofs << "KeyPrefixIndividualKeyNoValue\n";
     ofs.close();
 
     std::map<std::string, std::string> result_map;
     BRcFile rcf(path);
     EXPECT_EQ(rcf.GetValues("KeyPrefix", result_map), BRC_NO_ERROR);
-    EXPECT_EQ(result_map.size(), 5U);
+    EXPECT_EQ(result_map.size(), 7U);
     EXPECT_EQ(result_map.at("IndividualKey1"), "Value1");
     EXPECT_EQ(result_map.at("IndividualKey5"), "Value2");
     EXPECT_EQ(result_map.at("IndividualKey9"), "Value3");
     EXPECT_EQ(result_map.at("IndividualKey22"), "Value4");
     EXPECT_EQ(result_map.at("IndividualKey1999"), "Value5");
+    EXPECT_TRUE(result_map.at("IndividualKeyOnlyWithWhiteSpace").empty());
+    EXPECT_TRUE(result_map.at("IndividualKeyNoValue").empty());
     fs::remove(path);
 
     BRcFile rcnof(fs::temp_directory_path() / "non_existent_file.rc");
     EXPECT_EQ(rcnof.GetValues("KeyPrefix", result_map), BRC_FILE_ERROR);
-    EXPECT_EQ(result_map.size(), 5U);
+    // result_map has not changed.
+    EXPECT_EQ(result_map.size(), 7U);
     EXPECT_EQ(result_map.at("IndividualKey1"), "Value1");
 }
 

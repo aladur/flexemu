@@ -131,17 +131,16 @@ int BRcFile::GetValue(const char *key, std::string &value,
 
     while (!fs.eof())
     {
-        std::stringbuf strbuf;
+        std::string strbuf;
         std::string skey;
 
         fs >> skey;
         if (!skey.empty())
         {
-            fs.get(strbuf);
-            fs.get(); // skip delimiter char.
+            std::getline(fs, strbuf);
             if (skey.size() == keyLength && skey.compare(key) == 0)
             {
-                value = flx::trim(strbuf.str());
+                value = flx::trim(strbuf);
                 if (!value.empty() && value[0] == '"')
                 {
                     isInteger = false;
@@ -206,12 +205,15 @@ int BRcFile::GetValues(const char *keyPrefix,
     values.clear();
     while (!fs.eof())
     {
-        std::stringbuf strbuf;
+        std::string strbuf;
         std::string key;
 
         fs >> key;
-        fs.get(strbuf);
-        auto value = flx::ltrim(strbuf.str());
+        if (!key.empty())
+        {
+            std::getline(fs, strbuf);
+        }
+        auto value = flx::ltrim(strbuf);
         if (key.size() > std::strlen(keyPrefix))
         {
             const auto lcPrefixOfKey =
