@@ -42,7 +42,7 @@
 #include <optional>
 #include <functional>
 #include <array>
-#include <ostream>
+#include <iostream>
 #include <algorithm>
 
 std::array<Byte, 8> Memory::initial_content =

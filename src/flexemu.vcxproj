@@ -234,6 +234,7 @@
     <ClCompile Include="foptman.cpp" />
     <ClCompile Include="fsetupui.cpp" />
     <ClCompile Include="fversion.cpp" />
+    <ClCompile Include="hexdump.cpp" />
     <ClCompile Include="inout.cpp" />
     <ClCompile Include="iodevdbg.cpp" />
     <ClCompile Include="joystick.cpp" />
@@ -526,6 +527,7 @@
     <ClInclude Include="free.h" />
     <ClInclude Include="fversion.h" />
     <ClInclude Include="foptman.h" />
+    <ClInclude Include="hexdump.h" />
     <ClInclude Include="idircnt.h" />
     <ClInclude Include="iffilcnt.h" />
     <ClInclude Include="ifilcnti.h" />

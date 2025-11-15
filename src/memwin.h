@@ -25,7 +25,7 @@
 
 #include "typedefs.h"
 #include "bintervl.h"
-#include "free.h"
+#include "hexdump.h"
 #include "memtype.h"
 #include "finddata.h"
 #include "findui.h"

@@ -23,7 +23,7 @@
 
 #include "typedefs.h"
 #include "finddata.h"
-#include "free.h"
+#include "hexdump.h"
 #include "findui.h"
 #include <cctype>
 #include <cassert>

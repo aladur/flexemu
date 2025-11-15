@@ -27,13 +27,11 @@
 #include "typedefs.h"
 #include "bintervl.h"
 #include "memsrc.h"
-#include <utility>
 #include <charconv>
-#include <optional>
 #include <string>
 #include <array>
 #include <vector>
-#include <iostream>
+#include <ostream>
 #include <regex>
 
 
@@ -49,62 +47,6 @@ namespace flx
             const MemorySource<DWord>::AddressRanges &ranges);
     extern void print_versions(std::ostream &os,
             const std::string &program_name);
-    extern std::vector<Byte> get_bytes_from_hex(const std::string &hex_values);
-    extern void hex_dump(
-            std::ostream &os,
-            const Byte *data,
-            size_t size,
-            DWord bytesPerLine,
-            bool withAscii,
-            bool isDisplayAddress,
-            DWord startAddress,
-            std::optional<DWord> extraSpace = std::nullopt);
-    extern void hex_dump_scale(
-            std::ostream &os,
-            DWord bytesPerLine,
-            bool withAscii,
-            bool isDisplayAddress,
-            std::optional<DWord> extraSpace = std::nullopt);
-
-    enum class HexDumpType : uint8_t
-    {
-        NONE,
-        HexByte,
-        AsciiChar,
-    };
-
-    struct sHexDumpProperties
-    {
-        HexDumpType type{};  // The item type
-        bool isUpperNibble{};// if type is HexByte: if true it is the upper
-                             // nibble, if false the lower nibble
-        DWord beginHexCol{}; // The column of first hex byte
-        DWord endHexCol{};   // The column of last hex byte
-        DWord endCol{};      // The column of last char in line
-        DWord address{};     // The address if type is HexByte or AsciiChar
-    };
-
-    extern sHexDumpProperties get_hex_dump_properties(
-            DWord row,
-            DWord column,
-            size_t size,
-            DWord bytesPerLine,
-            bool withAscii,
-            bool isDisplayAddress,
-            DWord startAddress,
-            std::optional<DWord> extraSpace = std::nullopt);
-
-    extern std::optional<std::pair<DWord, DWord> >
-        get_hex_dump_position_for_address(
-            DWord address,
-            size_t size,
-            DWord bytesPerLine,
-            bool withAscii,
-            bool isDisplayAddress,
-            bool isAscii,
-            bool isUpperNibble,
-            DWord startAddress,
-            std::optional<DWord> extraSpace = std::nullopt);
 
     template<typename T>
     bool convert(const std::string &str, T &value, int base = 10)
@@ -178,7 +120,5 @@ namespace flx
         return result;
     }
 }
-
-extern std::ostream &operator<<(std::ostream &os, flx::HexDumpType type);
 
 #endif

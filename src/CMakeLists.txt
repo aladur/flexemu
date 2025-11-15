@@ -450,6 +450,7 @@ set(flexemu_SOURCES
     foptman.cpp
     fsetupui.cpp
     fversion.cpp
+    hexdump.cpp
     inout.cpp
     iodevdbg.cpp
     joystick.cpp
@@ -563,6 +564,7 @@ set(flexemu_HEADER
     free.h
     fsetupui.h
     fversion.h
+    hexdump.h
     iffilcnt.h
     ifilcnti.h
     ifilecnt.h
