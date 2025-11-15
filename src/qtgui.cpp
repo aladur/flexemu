@@ -1854,6 +1854,13 @@ void QtGui::OnUpdateWindowMenu()
     {
         bool operator()(MemoryWindowSPtr &lhs, MemoryWindowSPtr &rhs)
         {
+            if (lhs->GetAddressRange().lower() ==
+                rhs->GetAddressRange().lower())
+            {
+                return lhs->GetAddressRange().upper() <
+                       rhs->GetAddressRange().upper();
+            }
+
             return lhs->GetAddressRange().lower() <
                    rhs->GetAddressRange().lower();
         };
