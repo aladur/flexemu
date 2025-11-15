@@ -89,6 +89,7 @@ protected:
             const sOptions &options,
             const MemoryWindow::Config_t &config,
             std::optional<QRect> positionAndSize = std::nullopt);
+    bool HasValidAddressRange(const MemoryWindow::Config_t &config) const;
 
 private:
     struct MemoryWindowItem

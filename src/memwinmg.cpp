@@ -165,33 +165,50 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
      OpenMemoryWindow(isReadOnly, options, config);
 }
 
+bool MemoryWindowManager::HasValidAddressRange(
+        const MemoryWindow::Config_t &config) const
+{
+    if (!flx::is_range_in_ranges(config.addressRange,
+                memory.GetAddressRanges()))
+    {
+        std::stringstream stream;
+
+        for (const auto &item : memory.GetMemoryRanges())
+        {
+           if (item.type != MemoryType::NONE)
+           {
+               std::stringstream typeStream;
+
+               typeStream << item.type;
+               stream <<
+                   fmt::format("\n{}: {:04X}-{:04X}", typeStream.str(),
+                       item.addressRange.lower(), item.addressRange.upper());
+           }
+        }
+
+        const auto range = QString("%1-%2")
+            .arg(config.addressRange.lower(), 4, 16, QLatin1Char( '0' ))
+            .arg(config.addressRange.upper(), 4, 16, QLatin1Char( '0' ))
+            .toUpper();
+        QString message =
+            tr("Memory Window has invalid address range:\n") + range +
+            tr(".\n\nValid address ranges:") +
+            QString::fromStdString(stream.str());
+        QMessageBox::critical(parent, tr("flexemu error"), message);
+
+        return false;
+    }
+
+    return true;
+}
+
 void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
         const sOptions &options,
         const MemoryWindow::Config_t &config,
         const std::optional<QRect> positionAndSize)
 {
-     if (!flx::is_range_in_ranges(config.addressRange,
-                 memory.GetAddressRanges()))
+     if (!HasValidAddressRange(config))
      {
-         std::stringstream stream;
-
-         for (const auto &item : memory.GetMemoryRanges())
-         {
-            if (item.type != MemoryType::NONE)
-            {
-                std::stringstream typeStream;
-
-                typeStream << item.type;
-                stream <<
-                    fmt::format("\n{}: {:04X}-{:04X}", typeStream.str(),
-                        item.addressRange.lower(), item.addressRange.upper());
-            }
-         }
-
-         QString message =
-             tr("Invalid address range specified.\n\nValid address ranges:") +
-             QString::fromStdString(stream.str());
-         QMessageBox::critical(nullptr, tr("flexemu error"), message);
          return;
      }
 
@@ -286,17 +303,23 @@ void MemoryWindowManager::OpenAllWindows(bool isReadOnly,
 {
     for (const auto &configString : options.memoryWindowConfigs)
     {
+        MemoryWindow::Config_t config;
+        QRect positionAndSize{};
+
+        MemoryWindow::ConvertConfigString(configString, config,
+            positionAndSize);
         if (items.size() >= sOptions::maxMemoryWindows)
         {
             return;
         }
 
-        QTimer::singleShot(0, this, [&, configString, isReadOnly](){
-            MemoryWindow::Config_t config;
-            QRect positionAndSize{};
+        if (!HasValidAddressRange(config))
+        {
+            continue;
+        }
 
-            MemoryWindow::ConvertConfigString(configString, config,
-                positionAndSize);
+        QTimer::singleShot(0, this, [&, config, positionAndSize, isReadOnly](){
+
             OpenMemoryWindow(isReadOnly, options, config, positionAndSize);
         });
     }
