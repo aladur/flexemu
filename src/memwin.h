@@ -39,6 +39,7 @@
 #include <QFuture>
 #include <QFutureWatcher>
 #include "warnon.h"
+#include <cstddef>
 #include <memory>
 #include <optional>
 #include <string>
@@ -130,7 +131,7 @@ public:
     static QString CreateWindowTitle(
             const std::string &p_title,
             const BInterval<DWord> &addressRange);
-    static void ConvertConfigString(const std::string &configString,
+    static std::size_t ConvertConfigString(const std::string &configString,
             Config_t &config, QRect &positionAndSize);
 
     void SetIconSize(const QSize &iconSize);

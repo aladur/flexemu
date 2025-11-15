@@ -306,14 +306,15 @@ void MemoryWindowManager::OpenAllWindows(bool isReadOnly,
         MemoryWindow::Config_t config;
         QRect positionAndSize{};
 
-        MemoryWindow::ConvertConfigString(configString, config,
-            positionAndSize);
+        const auto count = MemoryWindow::ConvertConfigString(configString,
+                config, positionAndSize);
         if (items.size() >= sOptions::maxMemoryWindows)
         {
             return;
         }
 
-        if (!HasValidAddressRange(config))
+        // Check for valid addr. range and minimum config parameters.
+        if (!HasValidAddressRange(config) || count < 7U)
         {
             continue;
         }

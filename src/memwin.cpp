@@ -85,6 +85,7 @@
 #include <fmt/format.h>
 #include "warnon.h"
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
 #include <cmath>
 #include <ios>
@@ -1334,7 +1335,9 @@ QString MemoryWindow::CreateWindowTitle(
 // <startAddr> and <endAddr> are hexadecimal.
 // for <style> the underlying enum value is used.
 // for windowTitle no comma and semicolon is allowed.
-void MemoryWindow::ConvertConfigString(const std::string &configString,
+// returns the number of available config parameters. For the not available
+// parameters defaults are generated.
+std::size_t MemoryWindow::ConvertConfigString(const std::string &configString,
         Config_t &p_config, QRect &positionAndSize)
 {
     Word startAddr = 0U;
@@ -1347,6 +1350,7 @@ void MemoryWindow::ConvertConfigString(const std::string &configString,
     int y{};
     const auto items = flx::split(configString, ',', true);
     const decltype(items)::size_type min = 12U;
+    size_t itemCount = std::min(items.size(), min);
 
     positionAndSize = QRect(100, 100, 560, 768); // Set some default.
 
@@ -1372,7 +1376,7 @@ void MemoryWindow::ConvertConfigString(const std::string &configString,
         }
     };
 
-    switch(std::min(items.size(), min))
+    switch(itemCount)
     {
         case 12:
             convertToBool(items[11], p_config.isUpdateWindowSize);
@@ -1429,6 +1433,8 @@ void MemoryWindow::ConvertConfigString(const std::string &configString,
         default:
             break;
     }
+
+    return itemCount;
 }
 
 std::optional<DWord> MemoryWindow::CurrentExtraSpace() const
