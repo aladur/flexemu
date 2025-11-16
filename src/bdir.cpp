@@ -34,8 +34,6 @@
 #endif
 #ifdef HAVE_DIRENT_H
     #include <dirent.h>
-#else
-    #define dirent direct
 #endif
 
 #ifdef _WIN32
