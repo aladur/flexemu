@@ -71,6 +71,7 @@ unittests_SOURCES = \
 	test_filesystem.cpp \
 	test_filfschk.cpp \
 	test_fdirent.cpp \
+	test_hexdump.cpp \
 	test_bdate.cpp \
 	test_bdir.cpp \
 	test_bintervl.cpp \
@@ -84,6 +85,7 @@ unittests_SOURCES = \
 	../src/fdoptman.cpp \
 	../src/flblfile.cpp \
 	../src/fversion.cpp \
+	../src/hexdump.cpp \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/ndircont.cpp \
@@ -120,6 +122,7 @@ unittests_SOURCES = \
 	../src/flblfile.h \
 	../src/flexerr.h \
 	../src/fversion.h \
+	../src/hexdump.h \
 	../src/idircnt.h \
 	../src/iffilcnt.h \
 	../src/ifilcnti.h \

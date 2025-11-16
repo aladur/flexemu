@@ -70,6 +70,7 @@ set(unittests_SOURCES
     test_filfschk.cpp
     test_fdirent.cpp
     test_free.cpp
+    test_hexdump.cpp
     test_bdir.cpp
     test_bdate.cpp
     test_bintervl.cpp
@@ -84,6 +85,7 @@ set(unittests_SOURCES
     ../src/flblfile.cpp
     ../src/free.cpp
     ../src/fversion.cpp
+    ../src/hexdump.cpp
     ../src/mc6809lg.cpp
     ../src/mc6809st.cpp
     ../src/ndircont.cpp
@@ -123,6 +125,7 @@ set(unittests_HEADER
     ../src/flexerr.h
     ../src/free.h
     ../src/fversion.h
+    ../src/hexdump.h
     ../src/idircnt.h
     ../src/iffilcnt.h
     ../src/ifilcnti.h
