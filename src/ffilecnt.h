@@ -124,10 +124,10 @@ public:
     fs::path GetPath() const override;
 
     // IFlexDiskByFile interface declaration (to be used in flexemu).
-    bool ReadSector(Byte *buffer, int trk, int sec, int side = -1)
-        const override;
-    bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1)
-        override;
+    bool ReadSector(Byte *buffer, int trk, int sec,
+            std::optional<int> side = std::nullopt) const override;
+    bool WriteSector(const Byte *buffer, int trk, int sec,
+            std::optional<int> side = std::nullopt) override;
     bool FormatSector(const Byte *target, int track, int sector, int side,
                       unsigned sizecode) override;
     bool IsFlexFormat() const override;
@@ -158,7 +158,7 @@ public:
     std::string GetSupportedAttributes() const override;
 
 protected:
-    int ByteOffset(int trk, int sec, int side) const;
+    int ByteOffset(int trk, int sec, std::optional<int> side) const;
     void EvaluateTrack0SectorCount();
     bool CreateDirEntry(FlexDirEntry &dirEntry);
 

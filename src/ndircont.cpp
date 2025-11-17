@@ -1400,7 +1400,7 @@ bool FlexDirectoryDiskBySector::is_last_of_free_chain(
 // from given track and sector.
 // Return true on success.
 bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
-        int /* side = -1 */) const
+        std::optional<int> /* side */) const
 {
     st_t track_sector{static_cast<Byte>(trk), static_cast<Byte>(sec)};
     bool result = true;
@@ -1578,7 +1578,7 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
 // Public interface to write one sector contained in byte stream 'buffer'
 // to given track and sector.
 bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
-        int sec, int /* side = -1 */)
+        int sec, std::optional<int> /* side */)
 {
     bool result = true;
     st_t track_sector{static_cast<Byte>(trk), static_cast<Byte>(sec)};

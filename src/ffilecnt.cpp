@@ -1034,14 +1034,14 @@ void FlexDisk::EvaluateTrack0SectorCount()
 /* low level routines                   */
 /****************************************/
 
-int FlexDisk::ByteOffset(int trk, int sec, int side) const
+int FlexDisk::ByteOffset(int trk, int sec, std::optional<int> side) const
 {
     int byteOffs = param.offset;
     Word side0_offset = 0;
 
-    if (!is_flex_format && side < 0)
+    if (!is_flex_format && side == std::nullopt)
     {
-        throw FlexException(FERR_UNEXPECTED_SIDE, side);
+        throw FlexException(FERR_NO_SIDE_NUMBER);
     }
 
     if (trk > 0)
@@ -1050,7 +1050,7 @@ int FlexDisk::ByteOffset(int trk, int sec, int side) const
         byteOffs += static_cast<int>(param.byte_p_track * (trk - 1));
     }
 
-    if (!is_flex_format && side == 1)
+    if (!is_flex_format && side.has_value() && side.value() == 1)
     {
         // This case handles non FLEX file formats on side 1.
         // In this case evtl. the sector count from side 0 has to be added,
@@ -1074,7 +1074,7 @@ int FlexDisk::ByteOffset(int trk, int sec, int side) const
 // Does not throw any exception !
 // returns false on failure
 bool FlexDisk::ReadSector(Byte *pbuffer, int trk, int sec,
-                          int side /* = -1 */) const
+                          std::optional<int> side) const
 {
     if (!fstream.is_open())
     {
@@ -1108,7 +1108,7 @@ bool FlexDisk::ReadSector(Byte *pbuffer, int trk, int sec,
 // Does not throw any exception !
 // returns false on failure
 bool FlexDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
-                           int side /* = -1 */)
+                           std::optional<int> side)
 {
     if (!fstream.is_open())
     {

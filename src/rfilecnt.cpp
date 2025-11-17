@@ -27,6 +27,7 @@
 #include "filecntb.h"
 #include "flexerr.h"
 #include <cstring>
+#include <optional>
 #include <ios>
 #include <filesystem>
 
@@ -121,7 +122,7 @@ bool FlexRamDisk::close()
 }
 
 bool FlexRamDisk::ReadSector(Byte *pbuffer, int trk, int sec,
-                             int side /* = -1 */) const
+                             std::optional<int> side) const
 {
     if (file_buffer.empty())
     {
@@ -145,7 +146,7 @@ bool FlexRamDisk::ReadSector(Byte *pbuffer, int trk, int sec,
 }
 
 bool FlexRamDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
-                              int side /* = -1 */)
+                              std::optional<int> side)
 {
     if (file_buffer.empty())
     {

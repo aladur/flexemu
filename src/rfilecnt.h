@@ -26,6 +26,7 @@
 #include "typedefs.h"
 #include "efiletim.h"
 #include "ffilecnt.h"
+#include <optional>
 #include <vector>
 #include <filesystem>
 
@@ -56,9 +57,9 @@ public:
     FlexRamDisk &operator= (FlexRamDisk &&src) = delete;
 
     bool ReadSector(Byte *buffer, int trk, int sec,
-                    int side = -1) const override;
+                    std::optional<int> side = std::nullopt) const override;
     bool WriteSector(const Byte *buffer, int trk, int sec,
-                     int side = -1) override;
+                     std::optional<int> side = std::nullopt) override;
 
 private:
     bool close();

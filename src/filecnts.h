@@ -27,6 +27,7 @@
 #include "typedefs.h"
 #include "filecntb.h"
 #include <memory>
+#include <optional>
 #include <array>
 #include <ostream>
 
@@ -184,9 +185,9 @@ class IFlexDiskBySector : public IFlexDiskBase
        (to be used within flexemu) */
 public:
     virtual bool ReadSector(Byte *buffer, int trk, int sec,
-                            int side = -1) const = 0;
+                            std::optional<int> side = std::nullopt) const = 0;
     virtual bool WriteSector(const Byte *buffer, int trk, int sec,
-                             int side = -1) = 0;
+                            std::optional<int> side = std::nullopt) = 0;
     virtual bool FormatSector(const Byte *buffer, int trk, int sec, int side,
                               unsigned sizecode) = 0;
     virtual bool IsFlexFormat() const = 0;

@@ -214,7 +214,7 @@ std::array<const char *, FERR_COUNT> FlexException::errString
     "Invalid usage of disk image iterator",
     "File {0} has unexpected sector count {1}",
     "Disk image {0} is unformatted or has unknown format",
-    "Unexpected side number {0}",
+    "No side number specified",
     "Empty files can not be copied. File {0}",
     "Error {0} on system call '{1}'",
     "Disk image {0} has invalid or unsupported JVC header",

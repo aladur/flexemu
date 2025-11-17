@@ -31,6 +31,7 @@
 #include "rndcheck.h"
 #include <cstdint>
 #include <ctime>
+#include <optional>
 #include <string>
 #include <array>
 #include <vector>
@@ -150,9 +151,9 @@ public:
 
     // IFlexDiskBySector interface declaration.
     bool ReadSector(Byte *buffer, int trk, int sec,
-                    int side = -1) const override;
+                    std::optional<int> side = std::nullopt) const override;
     bool WriteSector(const Byte *buffer, int trk, int sec,
-                     int side = -1) override;
+                     std::optional<int> side = std::nullopt) override;
     bool FormatSector(const Byte *buffer, int trk, int sec, int side,
                       unsigned sizecode) override;
     bool IsFlexFormat() const override;
