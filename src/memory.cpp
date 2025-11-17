@@ -42,7 +42,7 @@
 #include <optional>
 #include <functional>
 #include <array>
-#include <iostream>
+#include <ostream>
 #include <algorithm>
 
 std::array<Byte, 8> Memory::initial_content =
@@ -172,11 +172,7 @@ void Memory::init_memory()
             init_vram_ptr(j | 0x03U, &memory[VIDEORAM_SIZE * (j >> 4U)]);
         }
 
-        if (i != (isHiMem ? MAXVIDEORAM_BANKS : MAXVIDEORAM_BANKS / 4U))
-        {
-            std::cerr << "Memory management initialization failure (i="
-                      << i << ")\n";
-        }
+        assert(i == (isHiMem ? MAXVIDEORAM_BANKS : (MAXVIDEORAM_BANKS / 4U)));
     }
 
     // initialize mmu pointers
