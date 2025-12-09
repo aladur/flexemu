@@ -413,6 +413,10 @@ check_value "$qtversion" "6.2.5 5.15.3"
 if [ $? -eq 0 ]; then
     md5sumfile='md5sum.txt'
 fi
+check_value "$qtversion" "6.10.1"
+if [ $? -eq 0 ]; then
+    md5sumfile='md5sums'
+fi
 
 # Since January 2025 the files are located in a "src" subdirectory.
 # In qtsubdirversions define an array with major.minor versions.
