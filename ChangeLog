@@ -1570,3 +1570,92 @@ Code Maintenance:
  a72017f flexemu, optimize size of CPU Dialog.
  f50dd45 Reduce warnings.
  b64ee25 Update Version to V3.30
+
+V3.31 (20251212)
+Feature Summary:
+* Add magnetic main window button to toolbar.
+* Keep z-order of memory windows.
+New Features:
+ fc76fad9 Add magnetic main window button to toolbar.
+ 0d20ecc1 Memory Window: Better sort algorithm for menu entries.
+Bug Fixes:
+ 3f2ee8f8 Bugfix flexemu on Windows: Persist Magnetic Main Window.
+ c0b07b0d Bugfix: Show right version 3.31 when building with autotools.
+ 48355451 Bugfix deployment.
+ 2a3aba1b Bugfix cmake build: Look for POSIX unistd.h
+ 18184659 Bugfix to avoid Windows link error LNK2019.
+ 04124813 Bugfix flexemu/flexplorer, make disk label always visible.
+ 9cea4f1b Bugfix flexemu, correctly restore MemoryWindow position.
+ 72ce4c62 Bugfix flexemu/flexplorer: Use right config directory.
+ 4355de08 Bugfix flexemu: Keep z-order of Memory Windows.
+ 6575fd1c Bugfix flexemu: Avoid flexemu hangs after start
+ 370d620c Bugfix flexemu: Ignore insufficient Memory Window configs.
+Code Maintenance:
+ c235d7e8 Update Version to V3.31
+ 5b0a8002 git submodule: Update fmt to tag 12.0.0
+ 67d500a5 unittests: Write all test files in temp directory.
+ e8bdeb5b unittests: Use unique filenames when writing test files.
+ 7ec57a12 unittests: Use unique filenames when writing test files (2).
+ 6bb10f50 unittests: Compile unittest with test data path.
+ db82e38d Include what you use: unistd.h
+ ef8dc9d0 Remove superfluous header include misc1.h
+ 4c82a926 Replace strcpy() by strncpy().
+ cfd25833 Windows: Suppress warning C4244 in project libfmt.
+ bb1d3511 Remove superfluous header includes (1).
+ abf44c78 Remove superfluous header includes (2).
+ 3a2b4111 Include what you use (a*.h)
+ 25fd5e86 Include what you use (b*.h)
+ 2ff1fd2b Include what you use (c*.h)
+ 835b035c Include what you use (d*.cpp)
+ 05db7db6 Include what you use (e*.cpp)
+ f524d03f Include what you use (f*.cpp) - part 1
+ 608f83ad Include what you use (f*.cpp) - part 2
+ 2a1ee4f8 Include what you use (i*.cpp)
+ 5c78c0e8 Include what you use (j*.cpp)
+ 55b5880f Include what you use (k*.cpp)
+ 0a2d2bf6 Include what you use (l*.cpp)
+ 6f2e3207 Include what you use (m*.cpp)
+ d9927357 Include what you use (n*.cpp)
+ 5ba73e60 Include what you use (p*.cpp)
+ 952dc26a Include what you use (q*.cpp)
+ 5eb40f98 Include what you use (r*.cpp)
+ 9c11b712 Include what you use (s*.cpp)
+ 3586e38d Include what you use (t*.cpp)
+ 15d6c948 Include what you use (u*.cpp)
+ 11bae8f0 Include what you use (v*.cpp)
+ 538ec244 Include what you use (w*.cpp)
+ a0138cbf Include what you use (misc. header files)
+ d96c3feb Move OSTYPE macro in new header file.
+ 467949d8 Include what you use, test files.
+ b8f6abe4 Move bit operations and sign extend to new header file.
+ ae0ad143 On Windows move NOMINMAX as predefined.
+ ffbf8b1a Remove macros.
+ 22cb70d9 Remove macros (2)
+ 352802ff Include what you use.
+ e17c5d40 Add missing copyright message.
+ cce2201e Replace magic numbers by ASCII control identifiers.
+ 7868751c Add header for Windows specific definitions.
+ c486b549 Remove unused code.
+ 50e8124a Move Windows specific definitions.
+ f0f4acd4 Move Windows specific registry path definitions.
+ d74bb7bd Move Windows specific getopt implementation.
+ 4208112b Remove superfluous code.
+ 151c5862 Move cycles_t declaration to typedefs.h
+ 0b1af2d1 Use std::isspace() when checking for white space ch.
+ 28d3ca86 Remove macros from header misc1.h
+ d3669e32 Remove macros from header misc1.h
+ a44d0e2e Move macro from header misc1.h to free.cpp
+ b007391d Remove superfluous code.
+ 9aeb82ee Include what you use for header windows.h
+ 299d9ee0 Include what you use.
+ f99f6c44 cmake: Support alternative CPU implementation.
+ 792a0574 CI: Update appveyor build.
+ 7d079cb1 CI: Update github actions Windows runner.
+ 6a1c948c Move sort algorithm into class MemoryWindowManager.
+ f38e8dd5 Add member function to check valid address range.
+ 3c961f8a Move hexdump functions into new compilation unit.
+ 294ff596 Add unittests for new hexdump compilation unit.
+ 3f7e4ae2 Remove unused code.
+ 10857b47 Replace magic number by std::optional.
+ 7480fce8 Use assertion for expected value.
+ 5d131588 build script: Support Qt 6.10.1 md5sums file.
