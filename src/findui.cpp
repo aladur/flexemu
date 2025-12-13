@@ -21,19 +21,11 @@
 */
 
 
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #include "findui.h"
 #include "qtfree.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_find.h"
-#else
-#include "find_ui.h"
-#endif
 #include <QLatin1Char>
 #include <QString>
 #include <QValidator>

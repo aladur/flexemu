@@ -28,11 +28,7 @@
 #include "soptions.h"
 #include "poverhlp.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_pprev.h"
-#else
-#include "pprev_ui.h"
-#endif
 #include <QtGlobal>
 #include <QObject>
 #include <QSize>

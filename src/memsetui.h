@@ -26,11 +26,7 @@
 
 #include "memwin.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_memset.h"
-#else
-#include "memset_ui.h"
-#endif
 #include <QObject>
 #include "warnon.h"
 

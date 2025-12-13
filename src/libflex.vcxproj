@@ -126,6 +126,10 @@
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
+    <PreBuildEvent>
+      <Command>copy $(SolutionDir)\src\confignt.h $(SolutionDir)\src\config.h</Command>
+      <Message>Create config.h</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -153,6 +157,10 @@
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
       <AdditionalDependencies>fmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy $(SolutionDir)\src\confignt.h $(SolutionDir)\src\config.h</Command>
+      <Message>Create config.h</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -182,6 +190,10 @@
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
+    <PreBuildEvent>
+      <Command>copy $(SolutionDir)\src\confignt.h $(SolutionDir)\src\config.h</Command>
+      <Message>Create config.h</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -207,6 +219,10 @@
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
       <AdditionalDependencies>fmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy $(SolutionDir)\src\confignt.h $(SolutionDir)\src\config.h</Command>
+      <Message>Create config.h</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bdate.cpp" />

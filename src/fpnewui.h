@@ -25,16 +25,12 @@
 #define FPNEWUI_INCLUDED
 
 
-#include "filecntb.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_fpnew.h"
-#else
-#include "fpnew_ui.h"
-#endif
 #include <QObject>
 #include <QString>
 #include "warnon.h"
+#include "filecntb.h" // After qt include to avoid automoc issue
 
 class QDialog;
 class QLineEdit;

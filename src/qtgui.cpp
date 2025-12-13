@@ -21,11 +21,7 @@
 */
 
 
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #include "typedefs.h"
 #include "misc1.h"
 #include "qtgui.h"
@@ -67,11 +63,7 @@
 #include "poutwin.h"
 #include "bintervl.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_about.h"
-#else
-#include "about_ui.h"
-#endif
 #include <QtGlobal>
 #include <QRgb>
 #include <QString>

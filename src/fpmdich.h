@@ -23,8 +23,6 @@
 #ifndef FPMDICH_INCLUDED
 #define FPMDICH_INCLUDED
 
-#include "filecntb.h"
-#include "fpmodel.h"
 #include "fpedit.h"
 #include "warnoff.h"
 #include <QPoint>
@@ -33,6 +31,8 @@
 #include <QStringList>
 #include <QTableView>
 #include "warnon.h"
+#include "filecntb.h" // After qt include to avoid automoc issue
+#include "fpmodel.h" // After qt include to avoid automoc issue
 #include <memory>
 
 class FlexDnDFiles;

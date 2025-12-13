@@ -26,11 +26,7 @@
 #include <windows.h>
 #include "cvtwchar.h"
 #endif
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #include "benv.h"
 #include <string>
 #include <sstream>

@@ -21,11 +21,7 @@
 */
 
 
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #include "typedefs.h"
 #include "misc1.h"
 #include "memwinmg.h"

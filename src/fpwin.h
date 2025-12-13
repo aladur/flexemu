@@ -25,7 +25,6 @@
 
 #include "e2.h"
 #include "efiletim.h"
-#include "sfpopts.h"
 #include "warnoff.h"
 #include <QPoint>
 #include <QSize>
@@ -34,6 +33,7 @@
 #include <QStringList>
 #include <QList>
 #include "warnon.h"
+#include "sfpopts.h" // After qt include to avoid automoc issue
 #include <functional>
 
 

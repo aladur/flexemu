@@ -35,11 +35,7 @@
 #include "qtfree.h"
 #include "memwinmg.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_cpustat.h"
-#else
-#include "cpustat_ui.h"
-#endif
 #include <QWidget>
 #include <QIcon>
 #include <QTimer>

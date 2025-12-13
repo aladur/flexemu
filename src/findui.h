@@ -25,11 +25,7 @@
 #define FINDSETTINGSUI_INCLUDE
 
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_find.h"
-#else
-#include "find_ui.h"
-#endif
 #include <QObject>
 #include <QString>
 #include "warnon.h"

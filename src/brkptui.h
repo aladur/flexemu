@@ -26,11 +26,7 @@
 
 #include "typedefs.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_brkpt.h"
-#else
-#include "brkpt_ui.h"
-#endif
 #include <QObject>
 #include <optional>
 #include <array>

@@ -2,7 +2,6 @@
 |---------|-------------|-------|-------|---------|
 | [![github actions](https://github.com/aladur/flexemu/actions/workflows/windows-build-and-test.yml/badge.svg?branch=master)](https://github.com/aladur/flexemu/actions/workflows/windows-build-and-test.yml) | [![Appveyor](https://ci.appveyor.com/api/projects/status/github/aladur/flexemu?svg=true)](https://ci.appveyor.com/project/aladur/flexemu) | [![github actions](https://github.com/aladur/flexemu/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/aladur/flexemu/actions/workflows/build-and-test.yml) | [![github actions](https://github.com/aladur/flexemu/actions/workflows/macos-build-and-test.yml/badge.svg?branch=master)](https://github.com/aladur/flexemu/actions/workflows/macos-build-and-test.yml) | [![CirrusCI](https://api.cirrus-ci.com/github/aladur/flexemu.svg?branch=master)](https://cirrus-ci.com/github/aladur/flexemu/master) |
 
-![distribution check](https://img.shields.io/github/actions/workflow/status/aladur/flexemu/distcheck.yml?style=plastic&label=distribution-check)
 ![clang-tidy check](https://img.shields.io/github/actions/workflow/status/aladur/flexemu/clang-tidy-check.yml?style=plastic&label=clang-tidy)
 [![clang-tidy rules checked](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Faladur%2Fflexemu%2Fmaster%2Fmetadata.json&query=%24.clangTidyRules&style=plastic&label=clang-tidy%20rules%20checked&color=blue)](https://github.com/aladur/flexemu/blob/master/.clang-tidy)
 

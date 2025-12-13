@@ -24,12 +24,7 @@
 #ifndef TYPEDEFS_INCLUDED
 #define TYPEDEFS_INCLUDED
 
-#if defined(UNIX) || defined(USE_CMAKE)
-    #include "config.h"
-#else
-    #include "confignt.h"
-#endif
-
+#include "config.h"
 #if HAVE_INTTYPES_H
     #include <inttypes.h>
 #else

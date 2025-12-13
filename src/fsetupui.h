@@ -25,20 +25,16 @@
 #define FSETUPUI_INCLUDED
 
 
-#include "soptions.h"
 #include "termimpf.h"
 #include <vector>
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_fsetup.h"
-#else
-#include "fsetup_ui.h"
-#endif
 #include <QObject>
 #include <QString>
 #include <QUrl>
 #include <QLocale>
 #include "warnon.h"
+#include "soptions.h" // After qt include to avoid automoc issue
 #include <filesystem>
 
 namespace fs = std::filesystem;

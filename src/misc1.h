@@ -25,11 +25,7 @@
 #ifndef MISC1_INCLUDED
 #define MISC1_INCLUDED
 
-#if defined(UNIX) || defined(USE_CMAKE)
     #include "config.h"
-#else
-    #include "confignt.h"
-#endif
 #ifdef _WIN32
     #if !defined(_UNICODE) && !defined(UNICODE)
         #error This program can only be compiled with Unicode support.

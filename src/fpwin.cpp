@@ -37,11 +37,7 @@
 #include "qtfree.h"
 #include "sfpopts.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_about.h"
-#else
-#include "about_ui.h"
-#endif
 #include <QApplication>
 #include <QCoreApplication>
 #include <QDir>

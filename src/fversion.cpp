@@ -21,11 +21,7 @@
 */
 
 
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #include "fversion.h"
 #include "free.h"
 #include <fmt/base.h>
@@ -92,7 +88,7 @@ ItemPairList_t FlexemuVersions::CreateVersions()
     versions.emplace_back("ncurses", std::vector(1U, version));
 #endif
 
-#ifdef USE_CMAKE
+#ifdef CMAKE_VERSION
     version = CMAKE_VERSION;
     versions.emplace_back("cmake", std::vector(1U, version));
 #endif

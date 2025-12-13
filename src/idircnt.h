@@ -26,11 +26,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #include "fdirent.h"
 #include "ifilcnti.h"
 #include "filecont.h"

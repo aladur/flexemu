@@ -24,11 +24,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif

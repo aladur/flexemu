@@ -296,65 +296,65 @@
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="about.ui">
-      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\ui_%(Filename).h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
-      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <Outputs>$(IntDir)\ui_%(Filename).h</Outputs>
       <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="brkpt.ui">
-      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\ui_%(Filename).h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
-      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <Outputs>$(IntDir)\ui_%(Filename).h</Outputs>
       <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="find.ui">
-      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\ui_%(Filename).h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
-      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <Outputs>$(IntDir)\ui_%(Filename).h</Outputs>
       <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="logfil.ui">
-      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\ui_%(Filename).h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
-      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <Outputs>$(IntDir)\ui_%(Filename).h</Outputs>
       <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="memset.ui">
-      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\ui_%(Filename).h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
-      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <Outputs>$(IntDir)\ui_%(Filename).h</Outputs>
       <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="cpustat.ui">
-      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\ui_%(Filename).h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
-      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <Outputs>$(IntDir)\ui_%(Filename).h</Outputs>
       <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="fsetup.ui">
-      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\ui_%(Filename).h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
-      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <Outputs>$(IntDir)\ui_%(Filename).h</Outputs>
       <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="pprev.ui">
-      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\ui_%(Filename).h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
-      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <Outputs>$(IntDir)\ui_%(Filename).h</Outputs>
       <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>

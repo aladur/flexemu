@@ -35,11 +35,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include "warnon.h"
-#ifdef USE_CMAKE
 #include <ui_fpnew.h>
-#else
-#include <fpnew_ui.h>
-#endif
 #include <stdexcept>
 
 FlexplorerNewUi::FlexplorerNewUi() :

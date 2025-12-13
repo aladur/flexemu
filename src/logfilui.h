@@ -26,11 +26,7 @@
 
 #include "scpulog.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include "ui_logfil.h"
-#else
-#include "logfil_ui.h"
-#endif
 #include <QObject>
 #include "warnon.h"
 #include <array>

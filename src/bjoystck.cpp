@@ -20,11 +20,7 @@
 */
 
 
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #ifdef LINUX_JOYSTICK_IS_PRESENT
 #include <sys/stat.h>
 #ifdef HAVE_FCNTL_H

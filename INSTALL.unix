@@ -6,23 +6,7 @@
 * 1. Using autoconf and automake *
 **********************************
 
-  To build flexemu configure scripts are supported, also known as GNU Autoconf
-  and Automake. There are four steps to compile and install it:
-
-      $ export QT_SELECT=qt5
-      $ ./configure
-      $ make
-      $ sudo make install
-
-  HINT: To decrease the build time make has a command line parameter -j<n>
-  where <n> is the number of parallel working (j)obs or commands used to run a
-  compiler or linker. Depending on the used hardware this can significantly
-  decrease the build time. Example using 8 jobs in parallel:
-
-      $ make -j8
-
-  REMARK: To the favour of cmake the support of configure scripts will be
-  discontinued in one of the next flexemu releases.
+  Since flexemu V3.32 support has been discontinued.
 
 ******************
 * 2. Using cmake *
@@ -78,31 +62,15 @@
   qt6 libraries and development files.
   See file docker/readme.md how these docker images can be build.
 
-- By default configure and cmake use the install prefix /usr/local.
+- By default cmake use the install prefix /usr/local.
   This can be changed.
-
-  configure: For example to install flexemu in /usr use the configure
-  option
-
-      $ ./configure --prefix=/usr
-
-  See also: ./configure --help for details about more directories to
-  change.
 
   cmake: For example to install flexemu in /usr use the cmake option
 
       $ cmake -S . -B bld -DCMAKE_INSTALL_PREFIX:PATH=/usr
 
-- By default configure and cmake uses the install system configuration
+- By default cmake uses the install system configuration
   directory (= sysconfdir) /usr/local/etc. This can be changed.
-
-  configure: For example to install the system wide flexemu configuration
-  file in /etc use the configure option
-
-      $ ./configure --sysconfdir=/etc
-
-  See also: ./configure --help for details about more directories to
-  change.
 
   cmake: For example to install the system wide flexemu configuration
   file in /etc use the cmake option
@@ -116,11 +84,6 @@
   usually is gcc/g++. On MacOS and FreeBSD it is clang/clang++. This can be
   changed. flexemu is mostly written in C++ but also contains some tools
   written in C. So both C (= CC) or C++ (= CXX) variables should be changed.
-
-  configure:
-
-     $ CC=clang-16 CXX=clang++-16 ./configure
-     $ make
 
   cmake:
 
@@ -137,26 +100,15 @@
 
   See also: https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html
 
-- Define used Qt version. Using configure the Qt version can be specified:
-
-      $ export QT_SELECT=qt5
-      $ ./configure
-      $ make
-      $ make install
-
-  There may be some other tweaks to be set. It may depend on the distribution.
-  The docker examples in the docker subdirectory may give a hint what is
-  needed for which Linux distribution to compile with Qt6.
-
-  Using cmake the Qt major version can be set as a flexemu specific command
-  line option. The default is to use Qt5.
+- Define used Qt version. Using cmake the Qt major version can be set as a
+  flexemu specific command line option. The default is to use Qt5.
 
      $ cmake -S . -B bld -DFLEXEMU_QT_MAJOR_VERSION=5
      or
      $ cmake -S . -B bld -DFLEXEMU_QT_MAJOR_VERSION=6
 
   As described above the distribution specific packages have to be installed
-  before using cmake or configure. It tries to find the installed packages
+  before using cmake. It tries to find the installed packages
   with the given Qt major number.
 
 - When installing flexemu with the prefix /usr or /usr/local
@@ -176,13 +128,6 @@
 - Using precompiled headers slightly decreases the build time by using
   a large increase of disk space.
 
-  configure: The usage of precompiled headers by default is switched
-  ON. It can be switched off by the flexemu specific configure option
-
-      $ ./configure --disable-precompiled-headers
-      or explicitly switching on:
-      $ ./configure --enable-precompiled-headers
-
   cmake: The usage of precompiled headers by default is switched
   OFF. It can be switched on by the flexemu specific cmake option
 
@@ -194,11 +139,6 @@
   compilation it is set to little endian which works for most modern
   CPU architectures. It can be explicitly set as big endian by a
   flexemu specific option.
-  configure:
-
-      $ ./configure --enable-bitfields-bigendian
-      or explicitly using little endian:
-      $ ./configure --disable-bitfields-bigendian
 
   cmake:
 
@@ -222,12 +162,6 @@
   icons and adding mime types for support of *.dsk, *.flx and *.wta
   files. If they do not work as expected they can be disabled.
 
-  configure: There is a flexemu specific option.
-
-      $ ./configure --disable-post-install
-      or explicitly switching on:
-      $ ./configure --enable-post-install
-
   cmake: There is a flexemu specific option. On Unix like OS the
   default is ON. For MacOS the default is OFF.
 
@@ -243,11 +177,6 @@
 
 - flexemu provides unittests. They can be executed in the following way.
 
-  configure:
-
-     $ ./configure
-     $ make all check
-
   cmake:
 
      $ cmake -S . -B bld
@@ -258,12 +187,6 @@
   available. It uses 'clang-tidy'. The minimum supported clang-tidy
   version is 19.0.0.
   How to use it:
-
-  configure:
-
-     $ ./configure
-     $ make all
-     $ make clang-tidy-check
 
   cmake:
 

@@ -24,8 +24,6 @@
 #define E2SCREEN_INCLUDED
 
 #include "typedefs.h"
-#include "soptions.h"
-#include "blinxsys.h"
 #include "bobservd.h"
 #include "warnoff.h"
 #include <QVector>
@@ -34,6 +32,8 @@
 #include <QWidget>
 #include <QPixmap>
 #include "warnon.h"
+#include "blinxsys.h" // After qt include to avoid automoc issue
+#include "soptions.h" // After qt include to avoid automoc issue
 
 class VideoControl2;
 class QPaintEvent;

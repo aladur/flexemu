@@ -23,11 +23,7 @@
 
 #include "fpcnvui.h"
 #include "warnoff.h"
-#ifdef USE_CMAKE
 #include <ui_fpcnv.h>
-#else
-#include <fpcnv_ui.h>
-#endif
 #include <QString>
 #include <QDialog>
 #include "warnon.h"

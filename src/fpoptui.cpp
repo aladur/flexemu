@@ -25,11 +25,7 @@
 #include "efilesiz.h"
 #include "sfpopts.h"
 #include "efiletim.h"
-#ifdef USE_CMAKE
 #include <ui_fpopt.h>
-#else
-#include <fpopt_ui.h>
-#endif
 #include "warnoff.h"
 #include <QObject>
 #include <QDir>

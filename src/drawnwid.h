@@ -23,12 +23,12 @@
 #ifndef DRAWNWID_INCLUDED
 #define DRAWNWID_INCLUDED
 
-#include "fcinfo.h"
 #include "warnoff.h"
 #include <QSize>
 #include <QWidget>
 #include <QPixmap>
 #include "warnon.h"
+#include "fcinfo.h" // After qt include to avoid automoc issue
 
 class QPaintEvent;
 class QByteArray;

@@ -23,11 +23,7 @@
 #include "typedefs.h"
 #include "misc1.h"
 #include "command.h"
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #include <sstream>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

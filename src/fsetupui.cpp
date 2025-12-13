@@ -21,11 +21,7 @@
 */
 
 
-#if defined(UNIX) || defined(USE_CMAKE)
 #include "config.h"
-#else
-#include "confignt.h"
-#endif
 #include "typedefs.h"
 #include "misc1.h"
 #include "fsetupui.h"
@@ -36,11 +32,7 @@
 #include "termimpf.h"
 #include "colors.h"
 #include "flexerr.h"
-#ifdef USE_CMAKE
 #include <ui_fsetup.h>
-#else
-#include <fsetup_ui.h>
-#endif
 #include "warnoff.h"
 #include <QUrl>
 #include <QColor>
