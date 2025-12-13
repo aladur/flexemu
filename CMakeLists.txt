@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.16)
 cmake_policy(SET CMP0115 NEW)
 
 project(Flexemu
-    VERSION 3.31
+    VERSION 3.32
     DESCRIPTION "A Motorola MC6809 emulator running FLEX"
     HOMEPAGE_URL "https://flexemu.neocities.org/"
     LANGUAGES C CXX

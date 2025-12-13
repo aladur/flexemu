@@ -3,8 +3,8 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,31,0,0
- PRODUCTVERSION 3,31,0,0
+ FILEVERSION 3,32,0,0
+ PRODUCTVERSION 3,32,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -21,12 +21,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "\0"
             VALUE "FileDescription", "Tool for Philips mini digital cassette files\0"
-            VALUE "FileVersion", "3,31,0,0\0"
+            VALUE "FileVersion", "3,32,0,0\0"
             VALUE "InternalName", "mdcrtool.exe\0"
             VALUE "LegalCopyright", "Copyright © 2019-2025 W. Schwotzer\0"
             VALUE "OriginalFilename", "MDCRTOOL.EXE\0"
             VALUE "ProductName", "Flexemu\0"
-            VALUE "ProductVersion", "3,31,0,0\0"
+            VALUE "ProductVersion", "3,32,0,0\0"
         END
     END
     BLOCK "VarFileInfo"
