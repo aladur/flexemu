@@ -9,7 +9,7 @@ build_task:
     # libfmt is not used, flexemu comes with local fmt sources as a git
     # submodule. But it helps to detect if the wrong fmt header files are used.
   install_pkg_script:
-    - pkg install -y sudo pkgconf libtool libfmt ncurses cmake qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport qt5-concurrent
+    - pkg install -y sudo pkgconf libtool libfmt ncurses cmake ninja qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport qt5-concurrent
 
   context_script:
     - sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu|threads_per_core'
@@ -27,14 +27,14 @@ build_task:
     - chown -R user:user .
     - sudo -u user mkdir bld
 
-  configure_script: sudo -u user sh -c "cd bld; cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$HOME/usr -DCMAKE_INSTALL_SYSCONFDIR=$HOME/etc; ls -lRa >ls-lRa.txt"
+  configure_script: sudo -u user sh -c "cd bld; cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=$HOME/usr -DCMAKE_INSTALL_SYSCONFDIR=$HOME/etc; ls -lRa >ls-lRa.txt"
 
-  make_script: sudo -u user sh -c "cd bld; make -j4"
+  make_script: sudo -u user sh -c "cd bld; ninja"
 
-  install_script: cd bld; make install
+  install_script: cd bld; ninja install
 
   test_script:
-    - sudo -u user sh -ec "cd bld; make test ARGS='-V -O unittests.log'"
+    - sudo -u user sh -ec "cd bld; ctest -V"
     - sudo -u user bld/bin/test_gccasm
     - sudo -u user ldd bld/bin/flexemu
     - sudo -u user ldd bld/bin/flexplorer
