@@ -1,7 +1,12 @@
-freebsd_instance:
-  image_family: freebsd-14-3
-
 build_task:
+
+  matrix:
+    - name: FreeBSD14
+      freebsd_instance:
+        image_family: freebsd-14-3
+    - name: FreeBSD15
+      freebsd_instance:
+        image_family: freebsd-15-0-amd64-ufs
 
   env:
     CIRRUS_CLONE_SUBMODULES: true
