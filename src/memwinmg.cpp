@@ -134,7 +134,7 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
 {
      MemoryWindow::Config_t config{"", { 0xC100U, 0xC6FFU },
         MemoryWindow::Style::Bytes16, true, true, false, true};
-     auto *dialog = new QDialog(parent);
+     QDialog dialog(parent);
      MemorySettingsUi ui;
 
      if (items.size() >= sOptions::maxMemoryWindows)
@@ -147,10 +147,10 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
          return;
      }
 
-     ui.setupUi(*dialog);
+     ui.setupUi(dialog);
      ui.SetData(config);
-     dialog->adjustSize();
-     auto result = dialog->exec();
+     dialog.adjustSize();
+     auto result = dialog.exec();
      if (result != QDialog::Accepted)
      {
          return;
