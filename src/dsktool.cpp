@@ -1309,7 +1309,6 @@ int flx::main(int argc, char *argv[])
     if (!is_disk_type_valid)
     {
         estimateDiskType(dsk_file, disk_type);
-        is_disk_type_valid = true;
     }
 
     for (const auto &regexFile : regexFiles)
