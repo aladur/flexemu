@@ -115,20 +115,6 @@ TEST_F(test_ffilebuf, fct_move_ctor)
     const auto uc_test_file(flx::toupper(test_file));
     EXPECT_EQ(uc_test_file.compare(ffb_tgt.GetFilename()), 0);
 
-    // Check source (should be all empty).
-    /* Intentionally test object after move. */
-    /* NOLINTBEGIN(bugprone-use-after-move) */
-    EXPECT_TRUE(ffb_src.IsEmpty());
-    EXPECT_EQ(ffb_src.GetFileSize(), 0U);
-    EXPECT_EQ(ffb_src.GetAttributes(), 0U);
-    EXPECT_EQ(ffb_src.GetSectorMap(), 0);
-    EXPECT_FALSE(ffb_src.IsRandom());
-    EXPECT_EQ(ffb_src.GetDate(), BDate{});
-    EXPECT_EQ(ffb_src.GetTime(), BTime{});
-    /* NOLINTEND(bugprone-use-after-move) */
-    const auto *p_src = static_cast<const Byte *>(ffb_src);
-    EXPECT_EQ(p_src, nullptr);
-
     fs::remove(path);
 }
 

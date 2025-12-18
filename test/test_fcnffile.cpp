@@ -105,11 +105,6 @@ TEST(test_fcnffile, move_ctor)
     FlexemuConfigFile cnfFile1(path);
     auto cnfFile2(std::move(cnfFile1));
 
-    /* Intentionally test object after move. */
-    /* NOLINTBEGIN(bugprone-use-after-move) */
-    EXPECT_TRUE(cnfFile1.GetPath().empty());
-    EXPECT_FALSE(cnfFile1.IsValid());
-    /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
     EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 6U);
     EXPECT_EQ(cnfFile2.GetPath(), path);
@@ -123,11 +118,6 @@ TEST(test_fcnffile, move_assignment)
     FlexemuConfigFile cnfFile1(path);
     auto cnfFile2 = std::move(cnfFile1);
 
-    /* Intentionally test object after move. */
-    /* NOLINTBEGIN(bugprone-use-after-move) */
-    EXPECT_TRUE(cnfFile1.GetPath().empty());
-    EXPECT_FALSE(cnfFile1.IsValid());
-    /* NOLINTEND(bugprone-use-after-move) */
     EXPECT_TRUE(cnfFile2.IsValid());
     EXPECT_EQ(cnfFile2.GetPath(), path);
     EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 6U);

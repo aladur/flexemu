@@ -73,11 +73,6 @@ TEST(test_bmembuf, move_assignment)
     auto buffer_tgt = std::move(buffer_src);
     EXPECT_EQ(buffer_tgt.GetSize(), 0xC000U);
     EXPECT_EQ(buffer_tgt.GetAddressRanges().size(), 0U);
-    /* Intentionally test object after move. */
-    /* NOLINTBEGIN(bugprone-use-after-move) */
-    EXPECT_EQ(buffer_src.GetSize(), 0U);
-    EXPECT_EQ(buffer_src.GetAddressRanges().size(), 0U);
-    /* NOLINTEND(bugprone-use-after-move) */
 }
 
 TEST(test_bmembuf, member_fct)

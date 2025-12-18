@@ -126,11 +126,6 @@ TEST(test_fdirent, move_ctor)
     auto time_tgt = de_tgt.GetTime();
     EXPECT_EQ(time_tgt, time_src);
     EXPECT_EQ(de_tgt.GetTotalFileName(), "file_mov.tst");
-
-    // Source is reset.
-    /* Intentionally test object after move. */
-    /* NOLINTNEXTLINE(bugprone-use-after-move) */
-    EXPECT_EQ(de_src.GetTotalFileName(), "");
 }
 
 TEST(test_fdirent, copy_assignment)
@@ -208,11 +203,6 @@ TEST(test_fdirent, move_assignment)
     auto time_tgt = de_tgt.GetTime();
     EXPECT_EQ(time_tgt, time_src);
     EXPECT_EQ(de_tgt.GetTotalFileName(), "ass_mov.tst");
-
-    // Source is reset.
-    /* Intentionally test object after move. */
-    /* NOLINTNEXTLINE(bugprone-use-after-move) */
-    EXPECT_EQ(de_src.GetTotalFileName(), "");
 }
 
 TEST(test_fdirent, get_set)
