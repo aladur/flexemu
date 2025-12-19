@@ -29,6 +29,8 @@
 
 
 template<class T>
+// Polymorphic interface, virtual dtor is required.
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class MemoryTarget
 {
 public:

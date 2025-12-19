@@ -65,7 +65,6 @@ public:
     Word sizeOfIo() override;
 
     explicit TestDevice(Word byte_size = 1U);
-    ~TestDevice() override = default;
 };
 
 #endif

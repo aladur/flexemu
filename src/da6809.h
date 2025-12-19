@@ -19,12 +19,11 @@ class Da6809 : public AbstractDisassembler
 protected:
 
     Word pc{};
-    const Byte *memory{};
+    const Byte *memory{}; // non-owning
     bool use_undocumented{false};
 
 public:
     Da6809() = default;
-    ~Da6809() override = default;
 
     InstFlg Disassemble(
             const Byte *p_memory,

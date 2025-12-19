@@ -41,7 +41,7 @@ class FlexplorerOptionsUi : public QObject, protected Ui_FlexplorerOptions
 public:
 
     FlexplorerOptionsUi();
-    ~FlexplorerOptionsUi() override = default;
+
     void setupUi(QDialog &dialog);
     void TransferDataToDialog(const struct sFPOptions &options);
     void TransferDataFromDialog(struct sFPOptions &options);
@@ -56,7 +56,7 @@ private:
     void ConnectSignalsWithSlots();
     bool Validate();
 
-    QDialog *dialog{nullptr};
+    QDialog *dialog{nullptr}; // non-owning
 };
 
 #endif

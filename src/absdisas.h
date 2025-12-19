@@ -45,11 +45,15 @@ enum class InstFlg : uint8_t
     LabelAddr = (1U << 6U),    // return a label address
 };
 
+// Polymorphic interface, virtual dtor is required.
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class AbstractDisassembler
 {
 
 public:
+    AbstractDisassembler() = default;
     virtual ~AbstractDisassembler() = default;
+
     virtual InstFlg Disassemble(
                   const Byte *p_memory,
                   DWord p_pc,

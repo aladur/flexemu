@@ -56,7 +56,7 @@ public:
     using Config_t = struct sConfig;
 
     FindSettingsUi();
-    ~FindSettingsUi() override = default;
+
     void setupUi(QDialog &dialog);
     void SetData(const FindSettingsUi::Config_t &config) const;
     void GetData(FindSettingsUi::Config_t &config) const;
@@ -73,7 +73,7 @@ protected:
     void ConnectSignalsWithSlots() const;
 
 private:
-    QDialog *dialog{nullptr};
+    QDialog *dialog{nullptr}; // non-owning
     mutable QString validationError;
 };
 

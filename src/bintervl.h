@@ -43,8 +43,6 @@ public:
                     "lower has to be lower or equal to upper");
         }
     };
-    BInterval(const BInterval &src) = default;
-    ~BInterval() = default;
 
     T const &lower() const { return lower_; };
     T const &upper() const { return upper_; };
@@ -59,7 +57,6 @@ public:
         lower_ = lower;
         upper_ = upper;
     }
-    BInterval& operator= (const BInterval& src) = default;
 
 private:
     T lower_{};

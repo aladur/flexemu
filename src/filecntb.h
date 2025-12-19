@@ -73,6 +73,8 @@ enum class DiskOptions : uint8_t
 
 // This interface gives basic properties access to a FLEX disk image.
 // Rename: FileContainerIfBase => IFlexDiskBase
+// Polymorphic interface, virtual dtor is required.
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class IFlexDiskBase
 {
 public:

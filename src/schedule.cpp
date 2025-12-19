@@ -56,11 +56,6 @@ Scheduler::Scheduler(ScheduledCpu &p_cpu, Inout &p_inout) :
     std::memset(&interrupt_status, 0, sizeof(tInterruptStatus));
 }
 
-Scheduler::~Scheduler()
-{
-    commands.clear();
-}
-
 void Scheduler::request_new_state(CpuState p_user_state)
 {
     if (p_user_state != CpuState::NONE)

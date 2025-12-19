@@ -33,7 +33,7 @@ class BRelativeTime
 {
 public:
     BRelativeTime() = delete;
-    ~BRelativeTime() = delete;
+
     static QWord GetTimeUsll();
 };
 

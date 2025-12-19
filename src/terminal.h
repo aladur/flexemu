@@ -44,6 +44,15 @@ class TerminalIO : public BObserved
 #endif
 
 public:
+    TerminalIO(Scheduler &p_scheduler, ITerminalImplPtr &&p_impl);
+
+    TerminalIO() = delete;
+    TerminalIO(const TerminalIO &src) = delete;
+    TerminalIO &operator=(const TerminalIO &src) = delete;
+    TerminalIO(TerminalIO &&src) = delete;
+    TerminalIO &operator=(TerminalIO &&src) = delete;
+    virtual ~TerminalIO();
+
     bool init(Word reset_key);
     void reset_serial();
     bool has_char_serial();
@@ -60,10 +69,6 @@ public:
 #ifdef UNIX
     static void s_exec_signal(int sig_no, siginfo_t *siginfo, void *ptr);
 #endif
-
-    TerminalIO() = delete;
-    TerminalIO(Scheduler &p_scheduler, ITerminalImplPtr &&p_impl);
-    ~TerminalIO() override;
 
 private:
     void reset_terminal_io();

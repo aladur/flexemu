@@ -44,7 +44,6 @@ class MemoryWindowTextEdit : public QTextEdit
 
 public:
     explicit MemoryWindowTextEdit(QWidget *parent);
-    ~MemoryWindowTextEdit() override = default;
 
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;

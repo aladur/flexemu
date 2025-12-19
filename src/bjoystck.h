@@ -37,7 +37,11 @@ class BJoystick
 public:
     explicit BJoystick(int which = 0);
     BJoystick(const BJoystick &src) = delete;
-    ~BJoystick();
+    BJoystick &operator=(const BJoystick &src) = delete;
+    BJoystick(BJoystick &&src) = delete;
+    BJoystick &operator=(BJoystick &&src) = delete;
+    virtual ~BJoystick();
+
     bool IsOpened() const;
     bool Actualize();
     int32_t XAxis();

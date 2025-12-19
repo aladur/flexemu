@@ -31,12 +31,17 @@ class CmdSetMc6809LoggerConfig : public BCommand
 {
 
 public:
-    CmdSetMc6809LoggerConfig() = delete;
     CmdSetMc6809LoggerConfig(Mc6809 &p_cpu,
             Mc6809LoggerConfig p_cpuLoggerConfig);
+
+    CmdSetMc6809LoggerConfig() = delete;
     CmdSetMc6809LoggerConfig(const CmdSetMc6809LoggerConfig &src) = delete;
     CmdSetMc6809LoggerConfig &operator=(const CmdSetMc6809LoggerConfig &src)
         = delete;
+    CmdSetMc6809LoggerConfig(CmdSetMc6809LoggerConfig &&src) = delete;
+    CmdSetMc6809LoggerConfig &operator=(CmdSetMc6809LoggerConfig &&src)
+        = delete;
+    ~CmdSetMc6809LoggerConfig() override = default;
 
     void Execute() override;
 

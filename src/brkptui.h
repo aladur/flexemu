@@ -45,7 +45,7 @@ class BreakpointSettingsUi : public QObject, protected Ui_BreakpointSettings
 
 public:
     BreakpointSettingsUi();
-    ~BreakpointSettingsUi() override = default;
+
     void setupUi(QDialog &dialog);
     void SetData(const BPArray &breakpoints);
     BPArray GetData() const;
@@ -60,7 +60,7 @@ private slots:
     void OnRejected();
 
 private:
-    QDialog *dialog{nullptr};
+    QDialog *dialog{nullptr}; // non-owning
 };
 
 #endif

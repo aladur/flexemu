@@ -46,6 +46,11 @@ struct TestMemory : public MemoryTarget<DWord>, public MemorySource<DWord>
 {
     TestMemory() = default;
     ~TestMemory() override = default;
+    TestMemory(const TestMemory &src) = default;
+    TestMemory &operator=(const TestMemory &src) = default;
+    TestMemory(TestMemory &&src) = delete;
+    TestMemory &operator=(TestMemory &&src) = delete;
+
     void CopyFrom(const Byte *source, DWord address, DWord size) override
     {
         auto secureSize = size;

@@ -214,6 +214,8 @@ class ProcessArgumentsFtor
 
 public:
     ProcessArgumentsFtor() = delete;
+    ~ProcessArgumentsFtor() = default;
+
     /* Parameter comes from main(). */
     /* NOLINTNEXTLINE(modernize-avoid-c-arrays) */
     ProcessArgumentsFtor(FLEXplorer &win, int p_argc, char *p_argv[])

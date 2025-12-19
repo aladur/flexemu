@@ -228,7 +228,6 @@ public:
 public:
 
     Wd1793() = default;
-    ~Wd1793() override = default;
 };
 
 #endif // WD1793_INCLUDED

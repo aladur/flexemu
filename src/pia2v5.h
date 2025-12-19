@@ -104,6 +104,11 @@ public:
     };
 
     explicit Pia2V5(Mc6809 &p_cpu);
+    Pia2V5() = delete;
+    Pia2V5(const Pia2V5 &src) = delete;
+    Pia2V5 &operator=(const Pia2V5 &src) = delete;
+    Pia2V5(Pia2V5 &&src) = delete;
+    Pia2V5 &operator=(Pia2V5 &&src) = delete;
     ~Pia2V5() override;
 
 private:

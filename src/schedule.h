@@ -52,7 +52,6 @@ public:
 
     Scheduler() = delete;
     Scheduler(ScheduledCpu &p_cpu, Inout &p_inout);
-    ~Scheduler();
 
     CpuState statemachine(CpuState initial_state);
     bool is_finished();

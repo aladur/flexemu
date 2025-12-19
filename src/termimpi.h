@@ -39,6 +39,8 @@ using fct_sigaction = void (*)(int);
 using fct_sigaction = void (*)(int, siginfo_t *, void *);
 #endif
 
+// Polymorphic interface, virtual dtor is required.
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class ITerminalImpl
 {
     friend class TerminalIO;

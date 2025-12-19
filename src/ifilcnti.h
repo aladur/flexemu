@@ -34,6 +34,8 @@ class FlexDirEntry;
 
 // This interface defines a FLEX disk iterator implementation.
 // Rename: FlexDiskIteratorImp => IFlexDiskIteratorImp
+// Polymorphic interface, virtual dtor is required.
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class IFlexDiskIteratorImp
 {
     friend class FlexDiskIterator;

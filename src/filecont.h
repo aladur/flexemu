@@ -42,6 +42,8 @@ class FlexFileBuffer;
 
 // This interface describes a file oriented access to a FLEX disk image.
 // Rename: FileContainerIf => IFlexDiskByFile
+// Polymorphic interface, virtual dtor is required.
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class IFlexDiskByFile : public IFlexDiskBase
 {
     /* File oriented interface (to be used within flexplorer). */

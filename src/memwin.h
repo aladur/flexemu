@@ -120,6 +120,7 @@ public:
     MemoryWindow(MemoryWindow &&src) = delete;
     MemoryWindow &operator=(const MemoryWindow &src) = delete;
     MemoryWindow &operator=(MemoryWindow &&src) = delete;
+    ~MemoryWindow() override = default;
 
     // Static functions
     static const StyleValues_t &GetStyleValues();

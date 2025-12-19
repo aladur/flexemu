@@ -29,7 +29,6 @@ class BEnvironment
 {
 public:
     BEnvironment() = delete;
-    ~BEnvironment() = delete;
 
     static bool RemoveKey(const char *key);
     static bool SetValue(const char *key, const std::string &value);

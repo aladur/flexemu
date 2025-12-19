@@ -69,7 +69,6 @@ class NCursesTerminalImpl : public ITerminalImpl, public BObserved
 public:
     NCursesTerminalImpl() = delete;
     explicit NCursesTerminalImpl(const sOptions &p_options);
-    ~NCursesTerminalImpl() override = default;
 
     // Interface ITerminalImpl
     bool init(Word reset_key, fct_sigaction fct) override;

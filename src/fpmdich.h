@@ -53,7 +53,6 @@ class FlexplorerMdiChild : public QTableView
 public:
     FlexplorerMdiChild(const QString &path, struct sFPOptions &options);
     FlexplorerMdiChild() = delete;
-    ~FlexplorerMdiChild() override = default;
 
     QString GetPath() const;
     QString GetUserFriendlyPath() const;

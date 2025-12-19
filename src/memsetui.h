@@ -40,7 +40,7 @@ class MemorySettingsUi : public QObject, public Ui_MemorySettings
 
 public:
     MemorySettingsUi();
-    ~MemorySettingsUi() override = default;
+
     void setupUi(QDialog &dialog);
     void SetData(const MemoryWindow::Config_t &config) const;
     void GetData(MemoryWindow::Config_t &config) const;
@@ -58,7 +58,7 @@ private slots:
 private:
     bool Validate();
 
-    QDialog *dialog{nullptr};
+    QDialog *dialog{nullptr}; // non-owning
 };
 
 #endif

@@ -69,7 +69,6 @@ public:
 public:
 
     ByteRegister() = default;
-    ~ByteRegister() override = default;
 };
 
 #endif

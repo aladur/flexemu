@@ -46,7 +46,6 @@ public:
 
     BDirectory() = default;
     explicit BDirectory(fs::path &p_path) : path(p_path) { };
-    ~BDirectory() = default;
 
     inline void SetPath(fs::path &p_path)
     {

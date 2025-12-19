@@ -39,9 +39,7 @@ class FlexDiskIteratorImp : public IFlexDiskIteratorImp
 public:
     explicit FlexDiskIteratorImp(FlexDisk *p_base);
     FlexDiskIteratorImp() = delete;
-    FlexDiskIteratorImp(const FlexDiskIteratorImp &src) =
-        delete;
-    ~FlexDiskIteratorImp() override = default;
+
     bool operator==(const IFlexDiskByFile *rhs) const override;
     void AtEnd() override;
     FlexDirEntry &GetDirEntry() override
@@ -55,7 +53,7 @@ private:
     bool SetDateCurrent(const BDate &date) override;
     bool SetAttributesCurrent(Byte attributes) override;
 
-    FlexDisk *base;
+    FlexDisk *base; // non-owning
     int dirIndex;
     st_t dirTrackSector;
     s_dir_sector dirSector{};

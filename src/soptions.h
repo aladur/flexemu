@@ -95,6 +95,9 @@ struct sOptions
     // No glue why clang-tidy finds an identifier __i0 here.
     // NOLINTNEXTLINE(bugprone-reserved-identifier)
     sOptions& operator=(const sOptions &src) = default;
+    sOptions(sOptions &&src) = delete;
+    sOptions& operator=(sOptions &&src) = delete;
+    ~sOptions() = default;
 
     std::string version;
     std::array<fs::path, MAX_DRIVES> drives;

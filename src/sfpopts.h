@@ -39,6 +39,9 @@ struct sFPOptions
     sFPOptions() = default;
     sFPOptions(const sFPOptions &src) = default;
     sFPOptions& operator=(const sFPOptions &src) = default;
+    sFPOptions(sFPOptions &&src) = delete;
+    sFPOptions& operator=(sFPOptions &&src) = delete;
+    ~sFPOptions() = default;
 
     FileTimeAccess ft_access{};
     FileSizeType fileSizeType{};

@@ -38,7 +38,6 @@ class BObserved
 {
 public:
     BObserved() = default;
-    virtual ~BObserved() = default;
 
     void Attach(BObserver &p_observer);
     void Detach(BObserver &p_observer);

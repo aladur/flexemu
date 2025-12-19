@@ -43,6 +43,12 @@ public:
              fs::path p_executable,
              fs::path p_directory = "",
              std::vector<std::string> p_arguments = {});
+
+    BProcess() = delete;
+    BProcess(const BProcess &src) = delete;
+    BProcess &operator=(const BProcess &src) = delete;
+    BProcess(BProcess &&src) = delete;
+    BProcess &operator=(BProcess &&src) = delete;
 #ifdef _WIN32
     ~BProcess();
 #endif

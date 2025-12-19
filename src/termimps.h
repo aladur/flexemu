@@ -55,7 +55,6 @@ class ScrollingTerminalImpl : public ITerminalImpl, public BObserved
 public:
     ScrollingTerminalImpl() = delete;
     explicit ScrollingTerminalImpl(const sOptions &p_options);
-    ~ScrollingTerminalImpl() override = default;
 
     // Interface ITerminalImpl
     bool init(Word reset_key, fct_sigaction fct) override;

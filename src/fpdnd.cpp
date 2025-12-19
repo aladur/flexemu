@@ -88,11 +88,6 @@ FlexFileBuffer &FlexDnDFiles::GetBufferAt(unsigned int index)
     return fileBuffers[index];
 }
 
-FlexDnDFiles::~FlexDnDFiles()
-{
-    fileBuffers.clear();
-}
-
 DWord FlexDnDFiles::GetFileSize() const
 {
     // Reserve memory for path size, dnsHostName size and file count

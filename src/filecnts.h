@@ -179,6 +179,8 @@ struct s_floppy
 
 // This interface describes a sector oriented interface to a FLEX disk image.
 // Rename: FileContainerIfSector => IFlexDiskBySector
+// Polymorphic interface, virtual dtor is required.
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions
 class IFlexDiskBySector : public IFlexDiskBase
 {
     /* Track/Sector oriented File container interface

@@ -29,6 +29,10 @@ class TestObserver : public BObserver
 {
 public:
     TestObserver() = default;
+    TestObserver(const TestObserver &src) = default;
+    TestObserver &operator=(const TestObserver &src) = default;
+    TestObserver(TestObserver &&src) = delete;
+    TestObserver &operator=(TestObserver &&src) = delete;
     ~TestObserver() override = default;
 
     void UpdateFrom(NotifyId id, void *param = nullptr) override
@@ -55,7 +59,11 @@ class TestObserved : public BObserved
 {
 public:
     TestObserved() = default;
-    ~TestObserved() override = default;
+    TestObserved(const TestObserved &src) = default;
+    TestObserved &operator=(const TestObserved &src) = default;
+    TestObserved(TestObserved &&src) = delete;
+    TestObserved &operator=(TestObserved &&src) = delete;
+    virtual ~TestObserved() = default;
 
     void DoNotify(NotifyId id, void *param = nullptr)
     {

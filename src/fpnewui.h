@@ -42,7 +42,6 @@ class FlexplorerNewUi : public QObject, protected Ui_FlexplorerNew
 public:
 
     FlexplorerNewUi();
-    ~FlexplorerNewUi() override = default;
     void setupUi(QDialog &dialog);
     void TransferDataToDialog(DiskType p_disk_Type, int tracks, int sectors,
                               const QString &path = "");
@@ -76,7 +75,7 @@ private:
     bool Validate();
     QString GetCurrentFileExtension() const;
 
-    QDialog *dialog{nullptr};
+    QDialog *dialog{nullptr}; // non-owning
     QString defaultPath;
     DiskType disk_type{DiskType::DSK};
     bool is_disk_type_valid{};

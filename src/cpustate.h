@@ -112,7 +112,11 @@ TIME_BASE = 10000,
 struct CpuStatus
 {
     CpuStatus()  = default;
-    virtual ~CpuStatus() = default;
+    CpuStatus(const CpuStatus &src)  = default;
+    CpuStatus &operator=(const CpuStatus &src)  = default;
+    CpuStatus(CpuStatus &&src)  = delete;
+    CpuStatus &operator=(CpuStatus &&src)  = delete;
+    virtual ~CpuStatus()  = default;
 
     CpuState state{CpuState::NONE};
 };

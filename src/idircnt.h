@@ -54,7 +54,13 @@ public:
     FlexDirectoryDiskIteratorImp() = delete;
     FlexDirectoryDiskIteratorImp(const FlexDirectoryDiskIteratorImp &src) =
         delete;
+    FlexDirectoryDiskIteratorImp &operator=(
+            const FlexDirectoryDiskIteratorImp &src) = delete;
+    FlexDirectoryDiskIteratorImp(FlexDirectoryDiskIteratorImp &&src) = delete;
+    FlexDirectoryDiskIteratorImp &operator=(
+            FlexDirectoryDiskIteratorImp &&src) = delete;
     ~FlexDirectoryDiskIteratorImp() override;
+
     bool operator==(const IFlexDiskByFile *rhs) const override;
     void AtEnd() override;
     FlexDirEntry &GetDirEntry() override
@@ -68,7 +74,7 @@ private:
     bool SetDateCurrent(const BDate &date) override;
     bool SetAttributesCurrent(Byte attributes) override;
 
-    FlexDirectoryDiskByFile *base;
+    FlexDirectoryDiskByFile *base; // non-owning
     FlexDirEntry dirEntry;
     DIRHANDLE dirHdl;
     bool searchOneFileAtEnd;

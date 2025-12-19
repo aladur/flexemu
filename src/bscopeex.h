@@ -32,6 +32,7 @@ class BScopeExit
     T function;
 
 public:
+    BScopeExit() = delete;
     explicit BScopeExit(const T &p_function) : function{ p_function } { }
     explicit BScopeExit(const T &&p_function)
         : function{ std::move(p_function) } { }
@@ -43,6 +44,8 @@ public:
 
     BScopeExit(const BScopeExit &) = delete;
     BScopeExit &operator=(const BScopeExit &) = delete;
+    BScopeExit(BScopeExit &&) = delete;
+    BScopeExit &operator=(BScopeExit &&) = delete;
 };
 
 #endif

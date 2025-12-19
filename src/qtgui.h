@@ -118,7 +118,7 @@ public:
     ~QtGui() override;
     QtGui(const QtGui &src) = delete;
     QtGui(QtGui &&src) = delete;
-    QtGui &operator=(const QtGui &&src) = delete;
+    QtGui &operator=(const QtGui &src) = delete;
     QtGui &operator=(QtGui &&src) = delete;
 
     void SetFloppy(E2floppy *fdc);

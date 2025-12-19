@@ -43,6 +43,12 @@ class RandomFileCheck
 {
 public:
     explicit RandomFileCheck(fs::path p_directory);
+
+    RandomFileCheck() = delete;
+    RandomFileCheck(const RandomFileCheck &src) = default;
+    RandomFileCheck &operator=(const RandomFileCheck &src) = default;
+    RandomFileCheck(RandomFileCheck &&src) = delete;
+    RandomFileCheck &operator=(RandomFileCheck &&src) = delete;
     virtual ~RandomFileCheck();
 
     bool CheckForRandomAndUpdate(const std::string &filename);

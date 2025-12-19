@@ -62,6 +62,8 @@ struct Mc6809CpuStatus : public CpuStatus
     ~Mc6809CpuStatus() override = default;
     Mc6809CpuStatus(const Mc6809CpuStatus &src) = default;
     Mc6809CpuStatus &operator=(const Mc6809CpuStatus &lhs);
+    Mc6809CpuStatus(Mc6809CpuStatus &&src) = default;
+    Mc6809CpuStatus &operator=(Mc6809CpuStatus &&lhs) = default;
 };
 /* NOLINTEND(modernize-avoid-c-arrays) */
 

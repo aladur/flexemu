@@ -104,6 +104,9 @@ public:
     FlexException() noexcept;
     FlexException(const FlexException &src) noexcept;
     FlexException& operator= (const FlexException &src) noexcept;
+    FlexException(FlexException &&src) = delete;
+    FlexException& operator= (FlexException &&src) = delete;
+    ~FlexException() override = default;
 
     explicit FlexException(int ec) noexcept;
     FlexException(int ec, int ip1) noexcept;
@@ -124,7 +127,6 @@ public:
 #ifdef _WIN32
     FlexException(unsigned long lastError, const std::string &sp1) noexcept;
 #endif
-    ~FlexException() override = default;
 
     const char *what() const noexcept override;
     int GetErrorCode() const

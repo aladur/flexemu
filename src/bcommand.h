@@ -31,7 +31,12 @@ class BCommand
 {
 
 public:
+    BCommand(const BCommand &src) = default;
+    BCommand &operator=(const BCommand &src) = default;
+    BCommand(BCommand &&src) = delete;
+    BCommand &operator=(BCommand &&src) = delete;
     virtual ~BCommand() = default;
+
     virtual void Execute() = 0;
 
 protected:

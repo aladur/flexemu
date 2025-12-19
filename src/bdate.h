@@ -47,8 +47,6 @@ public:
 
     BDate() = default;
     BDate(int d, int m, int y);
-    BDate(const BDate &src) = default;
-    ~BDate() = default;
 
     static BDate Now();
     std::string GetDateString(Format format = Format::D2MS3Y4) const;
@@ -60,7 +58,6 @@ public:
     int GetMonth() const ;
     int GetMonthBounded() const;
     int GetYear() const;
-    BDate &operator = (const BDate &src) = default;
     bool operator < (const BDate &d) const;
     bool operator == (const BDate &d) const;
     bool operator != (const BDate &d) const;

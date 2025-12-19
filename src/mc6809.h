@@ -188,9 +188,6 @@ protected:
             : event(static_cast<T>(p_event))
         {
         }
-        ~atomic_event() = default;
-        atomic_event(const atomic_event&) = delete;
-        atomic_event& operator= (const atomic_event&) = delete;
         atomic_event &operator= (Event p_event)
         {
             event = static_cast<T>(p_event);
@@ -262,7 +259,7 @@ protected:
 
 protected:
 
-    Da6809 *disassembler{nullptr};
+    Da6809 *disassembler{nullptr}; // non-owning
 
     // funcitons for instruction execution:
 
@@ -997,7 +994,7 @@ protected:
     // Public constructor and destructor
 public:
     explicit Mc6809(Memory &p_memory);
-    ~Mc6809() override = default;
+    Mc6809() = delete;
 };
 
 //*******************************************************************

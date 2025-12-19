@@ -59,7 +59,7 @@ inline std::ostream &operator<<(std::ostream &os, MemoryType type)
 
 struct sMemoryRangeWithType
 {
-    MemoryType type;
+    MemoryType type{};
     BInterval<DWord> addressRange;
 };
 

@@ -44,9 +44,8 @@ enum : uint8_t
 class BRcFile
 {
 public:
-    BRcFile() = default;
+    BRcFile() = delete;
     explicit BRcFile(fs::path p_path);
-    ~BRcFile() = default;
 
     int SetValue(const char *key, const std::string &value);
     int SetValue(const char *key, const fs::path &value);

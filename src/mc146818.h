@@ -108,6 +108,10 @@ private:
 public:
 
     Mc146818();
+    Mc146818(const Mc146818 &src) = delete;
+    Mc146818 &operator=(const Mc146818 &src) = delete;
+    Mc146818(Mc146818 &&src) = delete;
+    Mc146818 &operator=(Mc146818 &&src) = delete;
     ~Mc146818() override;
 
 };

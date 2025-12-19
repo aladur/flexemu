@@ -49,7 +49,7 @@ class FlexemuOptionsUi : public QObject, protected Ui_FlexemuSetup
 public:
 
     FlexemuOptionsUi();
-    ~FlexemuOptionsUi() override = default;
+
     void setupUi(QDialog *dialog);
     void TransferDataToDialog(const sOptions &options);
     void TransferDataFromDialog(sOptions &options);
@@ -105,7 +105,7 @@ private:
             const QString &directory,
             const QString &filePath);
 
-    QDialog *dialog{nullptr};
+    QDialog *dialog{nullptr}; // non-owning
     std::vector<FlexemuOptionId> readOnlyOptions;
 };
 

@@ -43,7 +43,7 @@ class Mc6809LoggerConfigUi : public QObject, protected Ui_LogfileSettings
 public:
 
     Mc6809LoggerConfigUi();
-    ~Mc6809LoggerConfigUi() override = default;
+
     void setupUi(QDialog &dialog);
     void SetData(const Mc6809LoggerConfig &loggerConfig);
     Mc6809LoggerConfig GetData() const;
@@ -61,7 +61,7 @@ private slots:
     void OnRejected();
 
 private:
-    QDialog *dialog{nullptr};
+    QDialog *dialog{nullptr}; // non-owning
     std::array<QCheckBox *, 8> regCheckBoxes{};
 };
 

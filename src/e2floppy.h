@@ -96,8 +96,13 @@ private:
     const struct sOptions &options;
 
 public:
-    E2floppy() = delete;
     explicit E2floppy(const struct sOptions &options);
+
+    E2floppy() = delete;
+    E2floppy(const E2floppy &src) = delete;
+    E2floppy &operator=(const E2floppy &src) = delete;
+    E2floppy(E2floppy &&src) = delete;
+    E2floppy &operator=(E2floppy &&src) = delete;
     ~E2floppy() override;
 
     // public interface

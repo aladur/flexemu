@@ -34,8 +34,14 @@
 class BObserver
 {
 public:
-    virtual void UpdateFrom(NotifyId id, void *param = nullptr) = 0;
+    BObserver() = default;
+    BObserver(const BObserver &src) = default;
+    BObserver &operator=(const BObserver &src) = default;
+    BObserver(BObserver &&src) = delete;
+    BObserver &operator=(BObserver &&src) = delete;
     virtual ~BObserver() = default;
+
+    virtual void UpdateFrom(NotifyId id, void *param = nullptr) = 0;
 };
 
 #endif // #ifndef BOBSERVER_INCLUDED

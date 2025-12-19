@@ -32,6 +32,8 @@
 #include <iostream>
 
 
+// Polymorphic base class, virtual dtor is required.
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 struct FlexDiskCheckResultItem
 {
     enum class Type : uint8_t

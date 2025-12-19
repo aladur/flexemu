@@ -40,7 +40,7 @@ class FlexplorerConvertUi : public QObject, protected Ui_FlexplorerConvert
 public:
 
     FlexplorerConvertUi();
-    ~FlexplorerConvertUi() override = default;
+
     void setupUi(QDialog &dialog);
     void TransferDataToDialog(const QString &title,
                               const QString &filename,
@@ -50,7 +50,7 @@ public:
     bool GetConvert() const;
     bool GetAskUser() const;
 
-    QDialog *dialog{nullptr};
+    QDialog *dialog{nullptr}; // non-owning
 };
 
 #endif

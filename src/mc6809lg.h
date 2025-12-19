@@ -40,6 +40,10 @@ class Mc6809Logger
 {
 public:
     Mc6809Logger() = default;
+    Mc6809Logger(const Mc6809Logger &src) = delete;
+    Mc6809Logger &operator=(const Mc6809Logger &src) = delete;
+    Mc6809Logger(Mc6809Logger &&src) = delete;
+    Mc6809Logger &operator=(Mc6809Logger &&src) = delete;
     virtual ~Mc6809Logger();
 
     bool doLogging(Word pc) const;

@@ -42,7 +42,6 @@ class DrawnWidget : public QWidget
 public:
     DrawnWidget() = delete;
     explicit DrawnWidget(QWidget *parent);
-    ~DrawnWidget() override = default;
 
     void SetPixmap(const QPixmap &p_pixmap);
     void SetDiskAttributes(const FlexDiskAttributes &p_diskAttributes);

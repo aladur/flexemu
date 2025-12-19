@@ -36,7 +36,6 @@ class DummyTerminalImpl : public ITerminalImpl
 public:
     DummyTerminalImpl() = delete;
     explicit DummyTerminalImpl(const sOptions &p_options);
-    ~DummyTerminalImpl() override = default;
 
     // Interface ITerminalImpl
     bool init(Word reset_key, fct_sigaction fct) override;

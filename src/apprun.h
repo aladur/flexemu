@@ -60,9 +60,14 @@ struct sOptions;
 class ApplicationRunner
 {
 public:
-    ApplicationRunner() = delete;
-    ~ApplicationRunner();
     ApplicationRunner(struct sOptions &p_options, ITerminalImplPtr &&termImpl);
+
+    ApplicationRunner() = delete;
+    ApplicationRunner(const ApplicationRunner &src) = delete;
+    ApplicationRunner &operator=(const ApplicationRunner &src) = delete;
+    ApplicationRunner(ApplicationRunner &&src) = delete;
+    ApplicationRunner &operator=(ApplicationRunner &&src) = delete;
+    virtual ~ApplicationRunner();
 
     int startup(QApplication &app);
     void cleanup();

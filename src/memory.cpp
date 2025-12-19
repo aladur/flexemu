@@ -87,11 +87,6 @@ Memory::Memory(const struct sOptions &options) :
     }
 }
 
-Memory::~Memory()
-{
-    ioDevices.clear();
-}
-
 // memory must be initialized AFTER all memory mapped I/O is created
 void Memory::init_memory()
 {

@@ -65,7 +65,7 @@ extern QWidget *GetParentWidget(QWidget *p_widget, const QString &objectName);
 
 class UpdateWindowGeometryFtor
 {
-    QWidget *widget;
+    QWidget *widget; // non-owning
     std::string geometry;
 
 public:
@@ -73,7 +73,13 @@ public:
     UpdateWindowGeometryFtor(QWidget *w, std::string p_geometry) :
         widget(w)
       , geometry(std::move(p_geometry)) { }
-    UpdateWindowGeometryFtor(const UpdateWindowGeometryFtor &f) = default;
+    UpdateWindowGeometryFtor(const UpdateWindowGeometryFtor &src) = default;
+    UpdateWindowGeometryFtor &operator=(const UpdateWindowGeometryFtor &src) =
+        default;
+    UpdateWindowGeometryFtor(UpdateWindowGeometryFtor &&src) = default;
+    UpdateWindowGeometryFtor &operator=(UpdateWindowGeometryFtor &&src) =
+        default;
+    ~UpdateWindowGeometryFtor() = default;
     void operator() ()
     {
         ::UpdateWindowGeometry(*widget, geometry);

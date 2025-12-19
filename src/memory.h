@@ -71,7 +71,6 @@ class Memory : public MemorySource<DWord>, public MemoryTarget<DWord>,
 {
 public:
     explicit Memory(const struct sOptions &options);
-    ~Memory() override;
 
 private:
     std::array<Byte *, 16> ppage{};
