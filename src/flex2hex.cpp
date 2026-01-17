@@ -94,7 +94,7 @@ static int ConvertFlexToHex(const fs::path &ifile, const fs::path &ofile,
     auto result = load_flex_binary(ifile, memory, startAddress);
     if (result < 0)
     {
-        std::cerr << "*** Error in \"" << ifile << "\":\n    ";
+        std::cerr << "*** Error in " << ifile << ":\n    ";
         print_hexfile_error(std::cerr, result);
         std::cerr << '\n';
         return 1;
