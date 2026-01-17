@@ -118,7 +118,7 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
         const auto stack_line = static_cast<Word>(stack_base + stack_offset);
         text(0, line + 8, flx::hexstr(stack_line));
 
-        std::string hex_dump;
+        std::string hex_dump(" ");
         std::string ascii_dump;
 
         for (Word x = 0U; x < CPU_STACK_BYTES; ++x)
@@ -129,7 +129,7 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
             ascii_dump.append(flx::ascchr(ch));
         }
 
-        text(6, line + 8, hex_dump);
+        text(5, line + 8, hex_dump);
         text(6 + 3 * CPU_STACK_BYTES, line + 8, ascii_dump);
         stack_offset += CPU_STACK_BYTES;
     }
