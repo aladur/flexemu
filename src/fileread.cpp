@@ -400,10 +400,12 @@ static int load_flex_binary(std::istream &istream, MemoryTarget<DWord> &memtgt,
 }
 
 int load_hexfile(const fs::path &path, MemoryTarget<DWord> &memtgt,
-                 DWord &startAddress)
+                 DWord &startAddress, bool isHexOnly)
 {
     Word ch;
-    std::ifstream istream(path, std::ios_base::in | std::ios_base::binary);
+    auto flags = isHexOnly ? std::ios_base::in :
+        std::ios_base::in | std::ios_base::binary;
+    std::ifstream istream(path, flags);
 
     if (!istream.is_open())
     {
@@ -413,7 +415,7 @@ int load_hexfile(const fs::path &path, MemoryTarget<DWord> &memtgt,
     ch = static_cast<Word>(istream.get());
     istream.unget();
 
-    if (ch != 0x02)
+    if (!isHexOnly && ch != 0x02)
     {
         istream.close();
         istream.open(path, std::ios_base::in);
@@ -433,7 +435,7 @@ int load_hexfile(const fs::path &path, MemoryTarget<DWord> &memtgt,
         return load_motorola_srecord(istream, memtgt, startAddress);
     }
 
-    if (ch == 0x02)
+    if (!isHexOnly && ch == 0x02)
     {
         return load_flex_binary(istream, memtgt, startAddress);
     }

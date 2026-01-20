@@ -111,6 +111,7 @@ jobs:
           %BINPATH%\dsktool.exe -V || EXIT /B
           %BINPATH%\mdcrtool.exe -V || EXIT /B
           %BINPATH%\flex2hex.exe -V || EXIT /B
+          %BINPATH%\hex2flex.exe -V || EXIT /B
           %BINPATH%\dsktool.exe -l disks\games.dsk || EXIT /B
           %BINPATH%\dsktool.exe -f new_r.dsk -S 80dsdd -y || EXIT /B
           %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r.dsk || EXIT /B

@@ -46,6 +46,7 @@ build_task:
     - sudo -u user bld/bin/dsktool -V
     - sudo -u user bld/bin/mdcrtool -V
     - sudo -u user bld/bin/flex2hex -V
+    - sudo -u user bld/bin/hex2flex -V
     - sudo -u user bld/bin/dsktool -l disks/games.dsk
     - sudo -u user bld/bin/dsktool -f new.dsk -S 80dsdd
     - sudo -u user bld/bin/dsktool -C disks/system.dsk -T new.dsk

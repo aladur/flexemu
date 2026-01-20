@@ -58,6 +58,7 @@ for:
       - if 1==1 %BINPATH%\dsktool.exe -V
       - if 1==1 %BINPATH%\mdcrtool.exe -V
       - if 1==1 %BINPATH%\flex2hex.exe -V
+      - if 1==1 %BINPATH%\hex2flex.exe -V
       - if 1==1 %BINPATH%\dsktool.exe -l disks\games.dsk
       - if 1==1 %BINPATH%\dsktool.exe -f new_r.dsk -S 80dsdd -y
       - if 1==1 %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r.dsk

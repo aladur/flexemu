@@ -143,7 +143,7 @@ copy_files() {
     done
     if [ "x$5" != "x" ]; then
         # cmake only: copy built *.exe files.
-        for file in flex2hex.exe dsktool.exe mdcrtool.exe flexemu.exe flexplorer.exe
+        for file in flex2hex.exe hex2flex.exe dsktool.exe mdcrtool.exe flexemu.exe flexplorer.exe
         do
             cp -f $5/bin/$4/$file $targetdir
         done

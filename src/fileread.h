@@ -35,7 +35,8 @@ namespace fs = std::filesystem;
 
 extern int load_hexfile(const fs::path &path,
                         MemoryTarget<DWord> &memtgt,
-                        DWord &startAddress);
+                        DWord &startAddress,
+                        bool isHexOnly = false);
 extern int load_flex_binary(const fs::path &path,
                             MemoryTarget<DWord> &memtgt,
                             DWord &startAddress);

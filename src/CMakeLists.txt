@@ -266,6 +266,56 @@ target_link_libraries(flex2hex PRIVATE
 )
 
 #################################
+# Build hex2flex executable.
+#################################
+
+set(hex2flex_SOURCES
+    hex2flex.cpp
+    fversion.cpp
+    wingtopt.cpp
+    wmain.cpp
+)
+set(hex2flex_HEADER
+    bintervl.h
+    bmembuf.h
+    config.h
+    cvtwchar.h
+    fileread.h
+    flexerr.h
+    free.h
+    fversion.h
+    memsrc.h
+    memtgt.h
+    misc1.h
+    ostype.h
+    typedefs.h
+    wingtopt.h
+    wmain.h
+)
+add_executable(hex2flex ${hex2flex_SOURCES} ${hex2flex_HEADER})
+if(WIN32)
+    target_sources(hex2flex PRIVATE hex2flex.rc)
+endif()
+
+target_include_directories(hex2flex SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
+target_include_directories(hex2flex PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+if(FLEXEMU_USE_PRECOMPILE_HEADERS)
+    target_precompile_headers(hex2flex REUSE_FROM flexemu::libflex)
+endif()
+if(UNIX)
+    target_compile_definitions(hex2flex PRIVATE UNIX)
+endif()
+if(WIN32)
+    target_compile_definitions(hex2flex PRIVATE _CONSOLE)
+endif()
+target_compile_definitions(hex2flex PRIVATE USE_CMAKE)
+target_link_libraries(hex2flex PRIVATE
+    flexemu::libflex
+    fmt::fmt
+    Threads::Threads
+)
+
+#################################
 # Build mdcrtool executable.
 #################################
 
@@ -960,7 +1010,7 @@ endif()
 
 set(APPLICATIONS_FULL_DIR "${CMAKE_INSTALL_FULL_DATADIR}/applications")
 
-install(TARGETS flex2hex mdcrtool dsktool flexemu flexplorer)
+install(TARGETS flex2hex hex2flex mdcrtool dsktool flexemu flexplorer)
 install(FILES boot DESTINATION ${CMAKE_INSTALL_DATADIR}/flexemu)
 install(FILES flexemu.conf flexlabl.conf TYPE SYSCONF)
 install(FILES flexemu.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)

@@ -69,6 +69,7 @@ jobs:
           bld/bin/dsktool -V
           bld/bin/mdcrtool -V
           bld/bin/flex2hex -V
+          bld/bin/hex2flex -V
           bld/bin/dsktool -l disks/games.dsk
           bld/bin//dsktool -f new.dsk -S 80dsdd
           bld/bin/dsktool -C disks/system.dsk -T new.dsk

@@ -42,6 +42,7 @@ Docker also provides an easy to use command line tool to run a docker image.
 
 This can be used for all flexemu command line tools like
 <code>flex2hex</code>,
+<code>hex2flex</code>,
 <code>dsktool</code>,
 <code>mdcrtool</code>,
 <code>bin2s19</code>,
