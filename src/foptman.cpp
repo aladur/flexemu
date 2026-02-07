@@ -85,6 +85,7 @@ constexpr const char * const FLEXSCREENFACTOR = "ScreenFactor";
 constexpr const char * const FLEXICONSIZE = "IconSize";
 constexpr const char * const FLEXISSTATUSBARVISIBLE = "IsStatusBarVisible";
 constexpr const char * const FLEXISMAGNETICMAINWINDOW = "IsMagneticMainWindow";
+constexpr const char * const FLEXISFULLSCREEN = "IsFullscreen";
 constexpr const char * const FLEXFREQUENCY = "Frequency";
 constexpr const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
 constexpr const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
@@ -672,6 +673,10 @@ void FlexemuOptions::WriteOptionsToRegistry(
                 options.isMagneticMainWindow ? 1 : 0);
                 break;
 
+        case FlexemuOptionId::IsFullscreen:
+            reg.SetValue(FLEXISFULLSCREEN, options.isFullscreen ? 1 : 0);
+                break;
+
         case FlexemuOptionId::IsDirectoryDiskActive:
             reg.SetValue(FLEXISDIRECTORYDISKACTIVE,
                 options.isDirectoryDiskActive ? 1 : 0);
@@ -922,6 +927,10 @@ void FlexemuOptions::WriteOptionsToFile(
                 previousOptions.isMagneticMainWindow;
             break;
 
+        case FlexemuOptionId::IsFullscreen:
+            optionsToWrite.isFullscreen = previousOptions.isFullscreen;
+            break;
+
         case FlexemuOptionId::MemoryWindowConfigs:
             optionsToWrite.memoryWindowConfigs =
                 previousOptions.memoryWindowConfigs;
@@ -987,6 +996,7 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isStatusBarVisible ? 1 : 0);
     rcFile.SetValue(FLEXISMAGNETICMAINWINDOW,
             optionsToWrite.isMagneticMainWindow ? 1 : 0);
+    rcFile.SetValue(FLEXISFULLSCREEN, optionsToWrite.isFullscreen ? 1 : 0);
     rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont);
     rcFile.SetValue(FLEXPRINTPAGEBREAKDETECTED,
             optionsToWrite.isPrintPageBreakDetected ? 1 : 0);
@@ -1184,6 +1194,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!reg.GetValue(FLEXISMAGNETICMAINWINDOW, int_result))
     {
         options.isMagneticMainWindow = (int_result != 0);
+    }
+
+    if (!reg.GetValue(FLEXISFULLSCREEN, int_result))
+    {
+        options.isFullscreen = (int_result != 0);
     }
 
     reg.GetValue(FLEXPRINTFONT, options.printFont);
@@ -1389,6 +1404,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!rcFile.GetValue(FLEXISMAGNETICMAINWINDOW, int_result))
     {
         options.isMagneticMainWindow = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXISFULLSCREEN, int_result))
+    {
+        options.isFullscreen = (int_result != 0);
     }
 
     rcFile.GetValue(FLEXPRINTFONT, options.printFont);

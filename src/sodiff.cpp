@@ -188,6 +188,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::IsMagneticMainWindow);
     }
 
+    if (opt1.isFullscreen != opt2.isFullscreen)
+    {
+        notEquals.push_back(FlexemuOptionId::IsFullscreen);
+    }
+
     if (opt1.isDirectoryDiskActive != opt2.isDirectoryDiskActive)
     {
         notEquals.push_back(FlexemuOptionId::IsDirectoryDiskActive);

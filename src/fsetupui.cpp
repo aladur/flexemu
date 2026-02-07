@@ -324,6 +324,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     c_fileTime->setChecked(setFileTime);
 
     c_isDisplaySmooth->setChecked(options.isSmooth != 0);
+    c_isFullscreen->setChecked(options.isFullscreen);
 
     r_scrollingTerminal->setChecked(options.terminalType == 1);
     r_ncursesTerminal->setChecked(options.terminalType == 2);
@@ -478,6 +479,10 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 c_isDisplaySmooth->setEnabled(false);
                 break;
 
+            case FlexemuOptionId::IsFullscreen:
+                c_isFullscreen->setEnabled(false);
+                break;
+
             case FlexemuOptionId::IsTerminalIgnoreESC:
                 c_terminalIgnoreESC->setEnabled(false);
                 break;
@@ -618,6 +623,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::IconSize:
                 case FlexemuOptionId::IsStatusBarVisible:
                 case FlexemuOptionId::IsMagneticMainWindow:
+                case FlexemuOptionId::IsFullscreen:
                 case FlexemuOptionId::MemoryWindowConfigs:
                     break;
             }
@@ -891,6 +897,11 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
     if (!IsReadOnly(FlexemuOptionId::IsDisplaySmooth))
     {
         options.isSmooth = c_isDisplaySmooth->isChecked();
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::IsFullscreen))
+    {
+        options.isFullscreen = c_isFullscreen->isChecked();
     }
 
     if (!IsReadOnly(FlexemuOptionId::TerminalType))

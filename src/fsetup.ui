@@ -63,7 +63,7 @@
         <enum>QTabWidget::North</enum>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="t_emulatedHardware">
         <attribute name="title">
@@ -226,13 +226,23 @@
          <string>User Interface</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="0">
-          <widget class="QLabel" name="l_nColors">
+         <item row="6" column="0" colspan="2">
+          <widget class="QCheckBox" name="c_isDisplaySmooth">
            <property name="text">
-            <string>Number of shades</string>
+            <string>Display Smooth</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="cb_color"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="l_geometry">
+           <property name="text">
+            <string>Screen size</string>
            </property>
            <property name="buddy">
-            <cstring>cb_nColors</cstring>
+            <cstring>cb_screenSize</cstring>
            </property>
           </widget>
          </item>
@@ -249,16 +259,6 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="l_geometry">
-           <property name="text">
-            <string>Screen size</string>
-           </property>
-           <property name="buddy">
-            <cstring>cb_screenSize</cstring>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="0">
           <widget class="QLabel" name="l_color">
            <property name="text">
@@ -269,31 +269,17 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="cb_color"/>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="cb_nColors"/>
          </item>
-         <item row="5" column="0" colspan="2">
-          <widget class="QCheckBox" name="c_isInverse">
-           <property name="text">
-            <string>Display inverse colors</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0" colspan="2">
-          <widget class="QCheckBox" name="c_isDisplaySmooth">
-           <property name="text">
-            <string>Display Smooth</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0" colspan="2">
+         <item row="8" column="0" colspan="2">
           <widget class="QCheckBox" name="c_isConfirmExit">
            <property name="text">
             <string>Confirm exit</string>
            </property>
           </widget>
          </item>
-         <item row="8" column="0">
+         <item row="9" column="0">
           <spacer name="verticalSpacer_5">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -306,8 +292,12 @@
            </property>
           </spacer>
          </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="cb_nColors"/>
+         <item row="5" column="0" colspan="2">
+          <widget class="QCheckBox" name="c_isInverse">
+           <property name="text">
+            <string>Display inverse colors</string>
+           </property>
+          </widget>
          </item>
          <item row="0" column="2">
           <spacer name="horizontalSpacer_2">
@@ -326,6 +316,23 @@
           <widget class="QCheckBox" name="c_multiColorScheme">
            <property name="text">
             <string>Multi color scheme</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="l_nColors">
+           <property name="text">
+            <string>Number of shades</string>
+           </property>
+           <property name="buddy">
+            <cstring>cb_nColors</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QCheckBox" name="c_isFullscreen">
+           <property name="text">
+            <string>Fullscreen</string>
            </property>
           </widget>
          </item>

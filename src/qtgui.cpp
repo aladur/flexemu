@@ -251,6 +251,10 @@ QtGui::QtGui(
     }
     UpdateStatusBarCheck();
     UpdateMagneticMainWindowCheck();
+    if (options.isFullscreen)
+    {
+        SetFullScreenMode(true);
+    }
 
     ::UpdateWindowGeometry(*this, options.mainWindowGeometry, true);
 
@@ -413,6 +417,10 @@ void QtGui::OnPreferences()
 
                 case FlexemuOptionId::IsDisplaySmooth:
                     ToggleSmoothDisplay();
+                    break;
+
+                case FlexemuOptionId::IsFullscreen:
+                    SetFullScreenMode(options.isFullscreen);
                     break;
 
                 case FlexemuOptionId::CanFormatDrive0:
@@ -1671,6 +1679,10 @@ void QtGui::SetFullScreenMode(bool isFullScreen)
     }
 
     UpdateFullScreenCheck();
+
+    options.isFullscreen = isFullScreen;
+    oldOptions.isFullscreen = isFullScreen;
+    WriteOneOption(options, FlexemuOptionId::IsFullscreen);
 }
 
 bool QtGui::IsFullScreenMode() const
