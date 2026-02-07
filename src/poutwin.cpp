@@ -21,6 +21,7 @@
 */
 
 
+#include "config.h"
 #include "typedefs.h"
 #include "poutwin.h"
 #include "qtfree.h"
@@ -596,6 +597,9 @@ void PrintOutputWindow::OnPaintRequested(QPrinter *p) const
     layout.setPageSize(QPageSize(pageSizeId));
     layout.setMargins(margins);
     p->setPageLayout(layout);
+    p->setCreator(PACKAGE_NAME " V" VERSION);
+    p->setFontEmbeddingEnabled(true);
+
     bool isInvalid = !p->setPageMargins(margins, QPageLayout::Millimeter);
     SetMarginsInfo(isInvalid);
 
