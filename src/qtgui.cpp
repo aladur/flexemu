@@ -995,39 +995,30 @@ void QtGui::OnIconSize(int index)
 
 void QtGui::OnScreenSize(int index)
 {
-    if (index == screenSizeComboBox->count() - 1)
+    if (IsFullScreenMode())
     {
-        if (!IsFullScreenMode())
-        {
-            SetFullScreenMode(true);
-        }
-    }
-    else
-    {
-        if (IsFullScreenMode())
-        {
-            SetFullScreenMode(false);
-        }
-        e2screen->ResizeToFactor(index + 1);
-        toolBar->SetPixelSize(index + 1);
-        toolBar->updateGeometry();
-        statusToolBar->SetPixelSize(index + 1);
-        statusToolBar->updateGeometry();
-        AdjustSize();
-
-        oldOptions.pixelSize = index + 1;
-        options.pixelSize = index + 1;
-        WriteOneOption(options, FlexemuOptionId::PixelSize);
+        SetFullScreenMode(false);
     }
 
-    UpdateScreenSizeCheck(index);
+
+    e2screen->ResizeToFactor(index + 1);
+    toolBar->SetPixelSize(index + 1);
+    toolBar->updateGeometry();
+    statusToolBar->SetPixelSize(index + 1);
+    statusToolBar->updateGeometry();
+    AdjustSize();
+
+    oldOptions.pixelSize = index + 1;
+    options.pixelSize = index + 1;
+    WriteOneOption(options, FlexemuOptionId::PixelSize);
 }
 
-void QtGui::UpdateScreenSizeCheck(int index) const
+void QtGui::UpdateScreenSizeCheck(std::optional<int> index) const
 {
     for (int actionIndex = 0; actionIndex < SCREEN_SIZES; ++actionIndex)
     {
-        screenSizeAction[actionIndex]->setChecked(actionIndex == index);
+        screenSizeAction[actionIndex]->setChecked(
+            index.has_value() && actionIndex == index.value());
     }
 }
 
@@ -1115,7 +1106,7 @@ void QtGui::CreateViewActions(QToolBar &p_toolBar)
         keySequenceFullScreen = QKeySequence(Qt::Key_F11);
     }
     const auto fullScreenIcon = QIcon(":/resource/screen-full.png");
-    fullScreenAction = viewMenu->addAction(fullScreenIcon, tr("&Full Screen"));
+    fullScreenAction = viewMenu->addAction(fullScreenIcon, tr("&Fullscreen"));
     connect(fullScreenAction, &QAction::triggered, this, &QtGui::OnFullScreen);
     fullScreenAction->setCheckable(true);
     fullScreenAction->setShortcut(keySequenceFullScreen);
@@ -1135,6 +1126,7 @@ void QtGui::CreateViewActions(QToolBar &p_toolBar)
     magneticMainWindowAction->setStatusTip(
             tr("Moving Main Window moves all open Windows"));
     p_toolBar.addAction(magneticMainWindowAction);
+    p_toolBar.addAction(fullScreenAction);
     viewMenu->addSeparator();
 
     auto *iconSizeMenu = viewMenu->addMenu(tr("&Icon Size"));
@@ -1162,9 +1154,6 @@ void QtGui::CreateViewActions(QToolBar &p_toolBar)
                 cast_from_qsizetype(text.size()));
     }
 
-    const auto screenFullIcon = QIcon(":/resource/screen-full.png");
-    screenSizeComboBox->addItem(screenFullIcon, "");
-    screenSizeComboBox->insertSeparator(screenSizeComboBox->count() - 1);
     // E2Screen is the only widget which gets the focus.
     screenSizeComboBox->setFocusPolicy(Qt::NoFocus);
     p_toolBar.addWidget(screenSizeComboBox);
@@ -1653,6 +1642,10 @@ void QtGui::ToggleCpuRunStop()
 void QtGui::ToggleFullScreenMode()
 {
     SetFullScreenMode(!IsFullScreenMode());
+    if (IsFullScreenMode())
+    {
+        UpdateScreenSizeCheck();
+    }
 }
 
 void QtGui::ToggleSmoothDisplay()
@@ -1748,10 +1741,6 @@ void QtGui::UpdateCpuUndocumentedCheck() const
 void QtGui::UpdateFullScreenCheck() const
 {
     fullScreenAction->setChecked(IsFullScreenMode());
-    if (IsFullScreenMode())
-    {
-        screenSizeComboBox->setCurrentIndex(screenSizeComboBox->count() - 1);
-    }
 }
 
 void QtGui::UpdateStatusBarCheck() const
@@ -2249,12 +2238,8 @@ void QtGui::keyPressEvent(QKeyEvent *event)
                 case Qt::Key_4:
                 case Qt::Key_5:
                 {
-                    auto index = event->key() - Qt::Key_1 + 1;
-                    e2screen->ResizeToFactor(index);
-                    AdjustSize();
-                    UpdateScreenSizeCheck(index);
-                    UpdateScreenSizeValue(index);
-                    event->accept();
+                    auto index = event->key() - Qt::Key_1;
+                    OnScreenSize(index + 1);
                     return;
                 }
 

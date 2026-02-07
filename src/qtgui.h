@@ -212,7 +212,7 @@ private:
     void UpdateCpuFrequencyCheck() const;
     void UpdateCpuRunStopCheck() const;
     void UpdateCpuUndocumentedCheck() const;
-    void UpdateScreenSizeCheck(int index) const;
+    void UpdateScreenSizeCheck(std::optional<int> index = std::nullopt) const;
     void UpdateScreenSizeValue(int index) const;
     void SetIconSize(const QSize &size);
     void SetIconSizeCheck(const QSize &size);
