@@ -86,6 +86,7 @@ constexpr const char * const FLEXICONSIZE = "IconSize";
 constexpr const char * const FLEXISSTATUSBARVISIBLE = "IsStatusBarVisible";
 constexpr const char * const FLEXISMAGNETICMAINWINDOW = "IsMagneticMainWindow";
 constexpr const char * const FLEXISFULLSCREEN = "IsFullscreen";
+constexpr const char * const FLEXISFLOATINGTOOLBAR = "IsFloatingToolBar";
 constexpr const char * const FLEXFREQUENCY = "Frequency";
 constexpr const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
 constexpr const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
@@ -675,6 +676,8 @@ void FlexemuOptions::WriteOptionsToRegistry(
 
         case FlexemuOptionId::IsFullscreen:
             reg.SetValue(FLEXISFULLSCREEN, options.isFullscreen ? 1 : 0);
+            reg.SetValue(FLEXISFLOATINGTOOLBAR,
+                    options.isFloatingToolBar ? 1 : 0);
                 break;
 
         case FlexemuOptionId::IsDirectoryDiskActive:
@@ -929,6 +932,8 @@ void FlexemuOptions::WriteOptionsToFile(
 
         case FlexemuOptionId::IsFullscreen:
             optionsToWrite.isFullscreen = previousOptions.isFullscreen;
+            optionsToWrite.isFloatingToolBar =
+                previousOptions.isFloatingToolBar;
             break;
 
         case FlexemuOptionId::MemoryWindowConfigs:
@@ -997,6 +1002,8 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXISMAGNETICMAINWINDOW,
             optionsToWrite.isMagneticMainWindow ? 1 : 0);
     rcFile.SetValue(FLEXISFULLSCREEN, optionsToWrite.isFullscreen ? 1 : 0);
+    rcFile.SetValue(FLEXISFLOATINGTOOLBAR,
+            optionsToWrite.isFloatingToolBar ? 1 : 0);
     rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont);
     rcFile.SetValue(FLEXPRINTPAGEBREAKDETECTED,
             optionsToWrite.isPrintPageBreakDetected ? 1 : 0);
@@ -1199,6 +1206,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!reg.GetValue(FLEXISFULLSCREEN, int_result))
     {
         options.isFullscreen = (int_result != 0);
+    }
+
+    if (!reg.GetValue(FLEXISFLOATINGTOOLBAR, int_result))
+    {
+        options.isFloatingToolBar = (int_result != 0);
     }
 
     reg.GetValue(FLEXPRINTFONT, options.printFont);
@@ -1409,6 +1421,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!rcFile.GetValue(FLEXISFULLSCREEN, int_result))
     {
         options.isFullscreen = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXISFLOATINGTOOLBAR, int_result))
+    {
+        options.isFloatingToolBar = (int_result != 0);
     }
 
     rcFile.GetValue(FLEXPRINTFONT, options.printFont);

@@ -194,6 +194,7 @@ QtGui::QtGui(
     e2screen->setFocusPolicy(Qt::StrongFocus);
 
     CreateIcons();
+    CreateFloatingToolBar(iconSize);
     CreateStatusToolBar(*mainLayout, iconSize);
     const auto name = QString::fromUtf8("statusBarLayout");
     statusBarLayout->setObjectName(name);
@@ -218,6 +219,14 @@ QtGui::QtGui(
 
     e2screen->ReleaseMouseCapture();
     e2screen->Attach(*this);
+    connect(e2screen,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+            static_cast<void (E2Screen::*)(bool)>(
+                &E2Screen::NotifyMouseInRect),
+#else
+            QOverload<bool>::of(&E2Screen::NotifyMouseInRect),
+#endif
+            this, &QtGui::NotifyMouseInRect);
 
     // Initialize the non-modal CPU Dialog but don't open it.
     cpuUi.setupUi(cpuDialog);
@@ -245,7 +254,8 @@ QtGui::QtGui(
 
     SetIconSizeCheck(iconSize);
 
-    if (!options.isStatusBarVisible)
+    isStatusBarVisible = options.isStatusBarVisible;
+    if (!isStatusBarVisible)
     {
         SetStatusBarVisibility(false);
     }
@@ -889,6 +899,35 @@ void QtGui::OnTimer()
         memcpy(&irqStat, &newIrqStat, sizeof(tInterruptStatus));
     }
 
+    // check every 50 ms for
+    // - Delay, move and hide floating toolbar
+    if (timerTicks % (50000 / TIME_BASE) == 0)
+    {
+        if (floatingToolBarCounter.has_value())
+        {
+            if (floatingToolBarCounter.value() > 0U)
+            {
+                // Delay some time.
+                --floatingToolBarCounter.value();
+            }
+
+            if (floatingToolBarCounter.value() == 0U &&
+                !floatingToolBarContainer->isHidden())
+            {
+                // Move floating toolbar up, until out of screen.
+                const auto y = floatingToolBarContainer->y() - 1;
+
+                UpdateFloatingToolBarPosition(y);
+                if (y + floatingToolBarContainer->height() < 0)
+                {
+                    // If out of screen, hide it.
+                    floatingToolBarContainer->hide();
+                    floatingToolBarCounter.reset();
+                }
+            }
+        }
+    }
+
     // check every 20 ms for
     // - Update CPU status
     // - Repaint screen
@@ -1008,13 +1047,14 @@ void QtGui::OnScreenSize(int index)
         SetFullScreenMode(false);
     }
 
-
     e2screen->ResizeToFactor(index + 1);
     toolBar->SetPixelSize(index + 1);
     toolBar->updateGeometry();
     statusToolBar->SetPixelSize(index + 1);
     statusToolBar->updateGeometry();
     AdjustSize();
+    UpdateScreenSizeCheck(index);
+    UpdateScreenSizeValue(index);
 
     oldOptions.pixelSize = index + 1;
     options.pixelSize = index + 1;
@@ -1053,6 +1093,8 @@ void QtGui::CreateActions(QLayout &layout, const QSize &iconSize)
     CreateCpuActions(*toolBar);
     CreateWindowActions(*toolBar);
     CreateHelpActions(*toolBar);
+
+    AddActions();
 }
 
 void QtGui::CreateFileActions(QToolBar &p_toolBar)
@@ -1256,6 +1298,28 @@ void QtGui::CreateWindowActions(QToolBar & /* toolBar */)
     connect(windowMenu, &QMenu::aboutToShow, this, &QtGui::OnUpdateWindowMenu);
 }
 
+void QtGui::AddActions()
+{
+    // Add actions to this main window allows hotkey support in
+    // fullscreen mode with floating toolbar hidden.
+    addAction(exitAction);
+    addAction(preferencesAction);
+    addAction(fullScreenAction);
+    addAction(smoothAction);
+    addAction(cpuRunAction);
+    addAction(cpuStopAction);
+    addAction(cpuResetAction);
+    addAction(cpuViewAction);
+    addAction(breakpointsAction);
+    addAction(loggingAction);
+    addAction(originalFrequencyAction);
+
+    for (auto *action : screenSizeAction)
+    {
+        addAction(action);
+    }
+}
+
 void QtGui::CreateHelpActions(QToolBar &p_toolBar)
 {
     auto *helpMenu = menuBar->addMenu(tr("&Help"));
@@ -1279,6 +1343,61 @@ void QtGui::CreateHelpActions(QToolBar &p_toolBar)
     aboutQtAction = helpMenu->addAction(aboutQtIcon, tr("&About Qt"));
     connect(aboutQtAction, &QAction::triggered, qApp, &QApplication::aboutQt);
     aboutQtAction->setStatusTip(tr("Show the Qt library's about box"));
+}
+
+void QtGui::CreateFloatingToolBar(const QSize &iconSize)
+{
+    if (floatingToolBarContainer != nullptr)
+    {
+        return;
+    }
+
+    floatingToolBarContainer = new QWidget(this);
+    assert(floatingToolBarContainer != nullptr);
+    floatingToolBarContainer->setObjectName(
+            QStringLiteral("floatingToolBarContainer"));
+
+    QPalette palette;
+    palette.setColor(QPalette::Window, QColor(240, 240, 240));
+    floatingToolBarContainer->setPalette(palette);
+    floatingToolBarContainer->setAutoFillBackground(true);
+
+    floatingToolBar = CreateToolBar(floatingToolBarContainer,
+            tr("FloatingToolBar"), QStringLiteral("floatingToolBar"),
+            iconSize);
+    assert(floatingToolBar != nullptr);
+
+    assert(exitAction != nullptr);
+    floatingToolBar->addAction(exitAction);
+    floatingToolBar->addSeparator();
+    floatingToolBar->addAction(preferencesAction);
+    floatingToolBar->addSeparator();
+    floatingToolBar->addAction(fullScreenAction);
+    floatingToolBar->addSeparator();
+    floatingToolBar->addAction(cpuRunAction);
+    floatingToolBar->addAction(cpuStopAction);
+    floatingToolBar->addAction(cpuResetAction);
+    floatingToolBar->addSeparator();
+    floatingToolBar->addAction(cpuViewAction);
+    floatingToolBar->addAction(breakpointsAction);
+    floatingToolBar->addAction(loggingAction);
+    floatingToolBar->addSeparator();
+    floatingToolBar->addAction(originalFrequencyAction);
+
+    auto *layout = new QHBoxLayout(floatingToolBarContainer);
+    layout->setContentsMargins(2, 2, 2, 2);
+    layout->addWidget(floatingToolBar);
+
+    floatingToolBarContainer->hide();
+}
+
+void QtGui::UpdateFloatingToolBarPosition(int y) const
+{
+    floatingToolBarContainer->adjustSize();
+    QApplication::processEvents();
+    const auto x = e2screen->x() +
+        (e2screen->width() - floatingToolBarContainer->width()) / 2;
+    floatingToolBarContainer->move(x, y);
 }
 
 void QtGui::CreateStatusToolBar(QLayout &layout, const QSize &iconSize)
@@ -1650,10 +1769,6 @@ void QtGui::ToggleCpuRunStop()
 void QtGui::ToggleFullScreenMode()
 {
     SetFullScreenMode(!IsFullScreenMode());
-    if (IsFullScreenMode())
-    {
-        UpdateScreenSizeCheck();
-    }
 }
 
 void QtGui::ToggleSmoothDisplay()
@@ -1669,19 +1784,74 @@ void QtGui::ToggleSmoothDisplay()
 
 void QtGui::SetFullScreenMode(bool isFullScreen)
 {
-    if (isFullScreen)
+    if (options.isFloatingToolBar)
     {
-        showFullScreen();
+        if (isFullScreen)
+        {
+            menuBar->setVisible(false);
+            toolBar->setVisible(false);
+            statusToolBar->setVisible(false);
+            SetStatusBarVisibility(false);
+            showFullScreen();
+
+            QTimer::singleShot(0, this, [&]()
+            {
+                UpdateFloatingToolBarPosition(FLOATING_TOOLBAR_Y);
+                floatingToolBarContainer->raise();
+                floatingToolBarContainer->show();
+                const auto midth = e2screen->width() / 2;
+                const auto width = floatingToolBarContainer->width();
+                // When the mouse is moved into this defined rectangle the
+                // floating toolbar gets visible immediately.
+                const QPoint pos(e2screen->x() + midth - width, e2screen->y());
+                const QRect rect(pos, 2 * floatingToolBarContainer->size());
+                e2screen->SetMouseNotificationRect(rect);
+                floatingToolBarCounter = FLOATING_TOOLBAR_HIDE_DELAY;
+            });
+            UpdateScreenSizeCheck();
+        }
+        else
+        {
+            e2screen->SetMouseNotificationRect();
+            floatingToolBarContainer->hide();
+            showNormal();
+            menuBar->setVisible(true);
+            toolBar->setVisible(true);
+            statusToolBar->setVisible(true);
+            if (isStatusBarVisible)
+            {
+                SetStatusBarVisibility(true);
+            }
+        }
     }
     else
     {
-        showNormal();
+        menuBar->setVisible(true);
+        toolBar->setVisible(true);
+        statusToolBar->setVisible(true);
+        if (isStatusBarVisible)
+        {
+            SetStatusBarVisibility(true);
+        }
+        floatingToolBarContainer->hide();
+        floatingToolBarCounter.reset();
+
+        if (isFullScreen)
+        {
+            showFullScreen();
+            UpdateScreenSizeCheck();
+        }
+        else
+        {
+            showNormal();
+        }
     }
 
     UpdateFullScreenCheck();
 
     options.isFullscreen = isFullScreen;
     oldOptions.isFullscreen = isFullScreen;
+    oldOptions.isFloatingToolBar = options.isFloatingToolBar;
     WriteOneOption(options, FlexemuOptionId::IsFullscreen);
 }
 
@@ -1692,11 +1862,12 @@ bool QtGui::IsFullScreenMode() const
 
 void QtGui::ToggleStatusBarVisibility()
 {
-    SetStatusBarVisibility(!statusBarFrame->isVisible());
+    isStatusBarVisible = !isStatusBarVisible;
+    SetStatusBarVisibility(isStatusBarVisible);
     UpdateStatusBarCheck();
 
-    oldOptions.isStatusBarVisible = statusBarFrame->isVisible();
-    options.isStatusBarVisible = statusBarFrame->isVisible();
+    oldOptions.isStatusBarVisible = isStatusBarVisible;
+    options.isStatusBarVisible = isStatusBarVisible;
     WriteOneOption(options, FlexemuOptionId::IsStatusBarVisible);
 
     QTimer::singleShot(0, this, &QtGui::OnResize);
@@ -1757,7 +1928,7 @@ void QtGui::UpdateFullScreenCheck() const
 
 void QtGui::UpdateStatusBarCheck() const
 {
-    statusBarAction->setChecked(statusBar->isVisible());
+    statusBarAction->setChecked(isStatusBarVisible);
 }
 
 void QtGui::UpdateMagneticMainWindowCheck() const
@@ -1774,6 +1945,8 @@ void QtGui::SetIconSize(const QSize &iconSize)
     statusToolBar->setIconSize(iconSize);
     printOutputWindow->SetIconSize(iconSize);
     memoryWindowMgr.SetIconSize(iconSize);
+    floatingToolBar->setIconSize(iconSize);
+    floatingToolBar->adjustSize();
 
     resize(size() + QSize(0, heightDiff));
 }
@@ -2252,6 +2425,7 @@ void QtGui::keyPressEvent(QKeyEvent *event)
                 {
                     auto index = event->key() - Qt::Key_1;
                     OnScreenSize(index + 1);
+                    event->accept();
                     return;
                 }
 
@@ -2355,6 +2529,29 @@ void QtGui::moveEvent(QMoveEvent *event)
         if (printOutputWindow != nullptr && printOutputWindow->isVisible())
         {
             printOutputWindow->move(printOutputWindow->pos() + diffPos);
+        }
+    }
+}
+
+void QtGui::NotifyMouseInRect(bool isInRect)
+{
+    if (!IsFullScreenMode() || !options.isFloatingToolBar)
+    {
+        return;
+    }
+
+    if (isInRect)
+    {
+        UpdateFloatingToolBarPosition(FLOATING_TOOLBAR_Y);
+        floatingToolBarContainer->raise();
+        floatingToolBarContainer->show();
+        floatingToolBarCounter.reset();
+    }
+    else
+    {
+        if (!floatingToolBarCounter.has_value())
+        {
+            floatingToolBarCounter = FLOATING_TOOLBAR_HIDE_DELAY;
         }
     }
 }

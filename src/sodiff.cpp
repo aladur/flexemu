@@ -188,7 +188,8 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::IsMagneticMainWindow);
     }
 
-    if (opt1.isFullscreen != opt2.isFullscreen)
+    if (opt1.isFullscreen != opt2.isFullscreen ||
+        opt1.isFloatingToolBar != opt2.isFloatingToolBar)
     {
         notEquals.push_back(FlexemuOptionId::IsFullscreen);
     }

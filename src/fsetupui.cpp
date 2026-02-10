@@ -324,7 +324,9 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     c_fileTime->setChecked(setFileTime);
 
     c_isDisplaySmooth->setChecked(options.isSmooth != 0);
-    c_isFullscreen->setChecked(options.isFullscreen);
+    g_isFullscreen->setChecked(options.isFullscreen);
+    r_isFullscreenWithMenus->setChecked(!options.isFloatingToolBar);
+    r_isFullscreenWithFTB->setChecked(options.isFloatingToolBar);
 
     r_scrollingTerminal->setChecked(options.terminalType == 1);
     r_ncursesTerminal->setChecked(options.terminalType == 2);
@@ -480,7 +482,9 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 break;
 
             case FlexemuOptionId::IsFullscreen:
-                c_isFullscreen->setEnabled(false);
+                g_isFullscreen->setEnabled(false);
+                r_isFullscreenWithMenus->setEnabled(false);
+                r_isFullscreenWithFTB->setEnabled(false);
                 break;
 
             case FlexemuOptionId::IsTerminalIgnoreESC:
@@ -901,7 +905,8 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
 
     if (!IsReadOnly(FlexemuOptionId::IsFullscreen))
     {
-        options.isFullscreen = c_isFullscreen->isChecked();
+        options.isFullscreen = g_isFullscreen->isChecked();
+        options.isFloatingToolBar = r_isFullscreenWithFTB->isChecked();
     }
 
     if (!IsReadOnly(FlexemuOptionId::TerminalType))

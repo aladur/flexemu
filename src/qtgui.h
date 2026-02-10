@@ -134,6 +134,9 @@ signals:
 protected:
     void redraw_cpuview_impl(const Mc6809CpuStatus &status) override;
 
+public slots:
+    void NotifyMouseInRect(bool isInRect);
+
 private slots:
     void OnPrinterOutput();
     void OnExit();
@@ -179,6 +182,8 @@ private:
     void CreateCpuActions(QToolBar &p_toolBar);
     void CreateHelpActions(QToolBar &p_toolBar);
     void CreateWindowActions(QToolBar &p_toolBar);
+    void AddActions();
+    void CreateFloatingToolBar(const QSize &iconSize);
     QAction *CreateScreenSizeAction(const QIcon &icon, QMenu &menu,
                                     uint16_t index);
     void CreateStatusToolBar(QLayout &layout, const QSize &iconSize);
@@ -194,6 +199,7 @@ private:
                           DiskStatus newStatus);
     void UpdateInterruptStatus(tIrqType irqType, bool status);
     void UpdateFrequencyStatus() const;
+    void UpdateFloatingToolBarPosition(int y) const;
     void ToggleSmoothDisplay();
     void ToggleCpuFrequency();
     void ToggleCpuUndocumented();
@@ -263,6 +269,8 @@ private:
     QMenuBar *menuBar{};
     QMenu *windowMenu{};
     FlexemuToolBar *toolBar{};
+    QWidget *floatingToolBarContainer{};
+    QToolBar *floatingToolBar{};
     FlexemuToolBar *statusToolBar{};
     QLabel *newKeyLabel{};
     QLabel *frequencyLabel{};
@@ -313,8 +321,10 @@ private:
     bool isForceScreenUpdate{};
     bool isRestartNeeded{};
     bool isTimerFirstTime{true};
+    bool isStatusBarVisible{};
     int timerTicks{0};
     Byte oldFirstRasterLine{0U};
+    std::optional<unsigned> floatingToolBarCounter;
     std::optional<float> newFrequency;
     std::mutex newFrequencyMutex;
     std::vector<Byte> newKeys;
@@ -338,6 +348,9 @@ private:
     sOptions oldOptions{};
 
     static int preferencesTabIndex;
+
+    static const unsigned FLOATING_TOOLBAR_HIDE_DELAY{40U};
+    static const int FLOATING_TOOLBAR_Y{8};
 };
 #endif
 

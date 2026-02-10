@@ -27,6 +27,7 @@
 #include "bobservd.h"
 #include "warnoff.h"
 #include <QVector>
+#include <QRect>
 #include <QSize>
 #include <QRgb>
 #include <QWidget>
@@ -34,6 +35,7 @@
 #include "warnon.h"
 #include "blinxsys.h" // After qt include to avoid automoc issue
 #include "soptions.h" // After qt include to avoid automoc issue
+#include <optional>
 
 class VideoControl2;
 class QPaintEvent;
@@ -82,12 +84,16 @@ public:
     void ResizeToFactor(int factor);
     bool IsSmoothDisplay() const;
     void SetBackgroundColor(const QColor &color);
+    void SetMouseNotificationRect(const QRect &rect = QRect());
 
     // QWidget Overrides
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
     bool hasHeightForWidth() const override;
     int heightForWidth(int width) const override;
+
+signals:
+    void NotifyMouseInRect(bool p_isInRect);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -138,7 +144,9 @@ private:
     QSize preferredScreenSize;
     QSize scaledScreenSize;
     QPoint origin;
+    QRect mouseNotificationRect;
     unsigned int numLockIndicatorMask;
+    std::optional<bool> isInRect;
 #ifdef __linux__
     BLinuxSysInfo sysInfo;
 #endif

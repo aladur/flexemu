@@ -128,6 +128,18 @@ void E2Screen::mouseMoveEvent(QMouseEvent *event)
     assert(event != nullptr);
 
     SetMouseCoordinatesAndButtons(event);
+
+    if (!mouseNotificationRect.isNull())
+    {
+        const bool currentIsInRect =
+            mouseNotificationRect.contains(event->x(), event->y());
+        // Only notify on value changed.
+        if (!isInRect.has_value() || currentIsInRect != isInRect.value())
+        {
+            isInRect = currentIsInRect;
+            emit NotifyMouseInRect(currentIsInRect);
+        }
+    }
 }
 
 void E2Screen::mousePressEvent(QMouseEvent *event)
@@ -912,3 +924,12 @@ void E2Screen::InitializeNumLockIndicatorMask()
 #endif // #if defined(UNIX) && !defined(X_DISPLAY_MISSING)
 }
 
+void E2Screen::SetMouseNotificationRect(const QRect &rect)
+{
+    mouseNotificationRect = rect;
+
+    if (rect.isNull())
+    {
+        isInRect.reset();
+    }
+}

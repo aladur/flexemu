@@ -151,7 +151,9 @@ struct sOptions
     bool isStatusBarVisible{}; // true if status bar is visible.
     bool isMagneticMainWindow{}; // true if main window moves together with all
                                  // open windows.
-    bool isFullscreen{}; // true if fullscreen mode is active
+    bool isFullscreen{}; // true if fullscreen is active.
+    bool isFloatingToolBar{}; // true if floatng toolbar is active. Only used
+                              // if fullscreen is active.
     fs::path cpuLogPath; // Path used for CPU instruction logging
 
     FlexemuOptionIds_t readOnlyOptionIds;// List of option ids which are
