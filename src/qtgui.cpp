@@ -1784,67 +1784,30 @@ void QtGui::ToggleSmoothDisplay()
 
 void QtGui::SetFullScreenMode(bool isFullScreen)
 {
-    if (options.isFloatingToolBar)
+    if (options.isFloatingToolBar && isFullScreen)
     {
-        if (isFullScreen)
+        UpdateMenuToolAndStatusBarVisibility(false);
+        showFullScreen();
+        if (options.isFloatingToolBar &&
+            floatingToolBarContainer->isHidden())
         {
-            menuBar->setVisible(false);
-            toolBar->setVisible(false);
-            statusToolBar->setVisible(false);
-            SetStatusBarVisibility(false);
-            showFullScreen();
-
-            QTimer::singleShot(0, this, [&]()
-            {
-                UpdateFloatingToolBarPosition(FLOATING_TOOLBAR_Y);
-                floatingToolBarContainer->raise();
-                floatingToolBarContainer->show();
-                const auto midth = e2screen->width() / 2;
-                const auto width = floatingToolBarContainer->width();
-                // When the mouse is moved into this defined rectangle the
-                // floating toolbar gets visible immediately.
-                const QPoint pos(e2screen->x() + midth - width, e2screen->y());
-                const QRect rect(pos, 2 * floatingToolBarContainer->size());
-                e2screen->SetMouseNotificationRect(rect);
-                floatingToolBarCounter = FLOATING_TOOLBAR_HIDE_DELAY;
-            });
-            UpdateScreenSizeCheck();
-        }
-        else
-        {
-            e2screen->SetMouseNotificationRect();
-            floatingToolBarContainer->hide();
-            showNormal();
-            menuBar->setVisible(true);
-            toolBar->setVisible(true);
-            statusToolBar->setVisible(true);
-            if (isStatusBarVisible)
-            {
-                SetStatusBarVisibility(true);
-            }
+            // Transition from fullscreen with menu to fullscreen with
+            // floating toolbar, see also resizeEvent().
+            UpdateFloatingToolBarVisibility(true);
         }
     }
     else
     {
-        menuBar->setVisible(true);
-        toolBar->setVisible(true);
-        statusToolBar->setVisible(true);
-        if (isStatusBarVisible)
-        {
-            SetStatusBarVisibility(true);
-        }
-        floatingToolBarContainer->hide();
-        floatingToolBarCounter.reset();
-
+        UpdateFloatingToolBarVisibility(false);
         if (isFullScreen)
         {
             showFullScreen();
-            UpdateScreenSizeCheck();
         }
         else
         {
             showNormal();
         }
+        UpdateMenuToolAndStatusBarVisibility(true);
     }
 
     UpdateFullScreenCheck();
@@ -1855,9 +1818,41 @@ void QtGui::SetFullScreenMode(bool isFullScreen)
     WriteOneOption(options, FlexemuOptionId::IsFullscreen);
 }
 
+void QtGui::UpdateFloatingToolBarVisibility(bool isVisible)
+{
+    if (isVisible)
+    {
+        UpdateFloatingToolBarPosition(FLOATING_TOOLBAR_Y);
+        floatingToolBarContainer->raise();
+        floatingToolBarContainer->show();
+        const auto midth = e2screen->width() / 2;
+        const auto width = floatingToolBarContainer->width();
+        // When the mouse is moved into this defined rectangle the
+        // floating toolbar gets visible immediately.
+        const QPoint pos(e2screen->x() + midth - width, e2screen->y());
+        const QRect rect(pos, 2 * floatingToolBarContainer->size());
+        e2screen->SetMouseNotificationRect(rect);
+        floatingToolBarCounter = FLOATING_TOOLBAR_HIDE_DELAY;
+    }
+    else
+    {
+        e2screen->SetMouseNotificationRect();
+        floatingToolBarCounter.reset();
+        floatingToolBarContainer->hide();
+    }
+}
+
 bool QtGui::IsFullScreenMode() const
 {
     return (windowState() & Qt::WindowFullScreen) == Qt::WindowFullScreen;
+}
+
+void QtGui::UpdateMenuToolAndStatusBarVisibility(bool isVisible) const
+{
+    menuBar->setVisible(isVisible);
+    toolBar->setVisible(isVisible);
+    statusToolBar->setVisible(isVisible);
+    SetStatusBarVisibility(isStatusBarVisible & isVisible);
 }
 
 void QtGui::ToggleStatusBarVisibility()
@@ -1881,7 +1876,7 @@ void QtGui::ToggleMagneticMainWindow()
     WriteOneOption(options, FlexemuOptionId::IsMagneticMainWindow);
 }
 
-void QtGui::SetStatusBarVisibility(bool isVisible)
+void QtGui::SetStatusBarVisibility(bool isVisible) const
 {
     for (int index = 0; index < statusBarLayout->count(); ++index)
     {
@@ -2463,8 +2458,20 @@ void QtGui::keyPressEvent(QKeyEvent *event)
 
 void QtGui::resizeEvent(QResizeEvent *event)
 {
-    if (!IsFullScreenMode())
+    if (IsFullScreenMode())
     {
+        // Transition from window to fullscreen.
+        // At this point the resize to fullscreen is already processed
+        // and the floating toolbar position can be correctly calculated.
+        if (options.isFloatingToolBar)
+        {
+            UpdateFloatingToolBarVisibility(true);
+        }
+        UpdateScreenSizeCheck();
+    }
+    else
+    {
+        UpdateFloatingToolBarVisibility(false);
         int index = (e2screen->GetScaledSize().width() / WINDOWWIDTH) - 1;
         index = std::min(index, 4);
         UpdateScreenSizeCheck(index);

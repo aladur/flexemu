@@ -200,6 +200,8 @@ private:
     void UpdateInterruptStatus(tIrqType irqType, bool status);
     void UpdateFrequencyStatus() const;
     void UpdateFloatingToolBarPosition(int y) const;
+    void UpdateMenuToolAndStatusBarVisibility(bool isVisible) const;
+    void UpdateFloatingToolBarVisibility(bool isVisible);
     void ToggleSmoothDisplay();
     void ToggleCpuFrequency();
     void ToggleCpuUndocumented();
@@ -207,7 +209,7 @@ private:
     void ToggleStatusBarVisibility();
     void ToggleMagneticMainWindow();
     void ToggleCpuRunStop();
-    void SetStatusBarVisibility(bool isVisible);
+    void SetStatusBarVisibility(bool isVisible) const;
     void SetFullScreenMode(bool isFullScreen);
     bool IsFullScreenMode() const;
     void UpdateFullScreenCheck() const;
