@@ -39,14 +39,13 @@
 #include <cstring>
 #include <cassert>
 #include <stdexcept>
+#include <random>
 #include <optional>
 #include <functional>
 #include <array>
 #include <ostream>
 #include <algorithm>
-
-std::array<Byte, 8> Memory::initial_content =
-{ 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
+#include <chrono>
 
 Memory::Memory(const struct sOptions &options) :
     isRamExtension(options.isRamExtension),
@@ -56,6 +55,9 @@ Memory::Memory(const struct sOptions &options) :
     deviceAccess(0x10000U - genio_base, ioDeviceAccess{NO_DEVICE, 0U})
 
 {
+    const auto now = std::chrono::system_clock::now();
+    random_seed =
+        static_cast<unsigned>(std::chrono::system_clock::to_time_t(now));
     // Eurocom II/V5 has 48 KByte memory on mainboard. Never the less
     // allocate 64 KByte to map the Boot ROM into F000 - FFFF.
     memory.resize(memory_size);
@@ -92,30 +94,15 @@ void Memory::init_memory()
 {
     DWord i;
     Byte j;
-    Byte *p;
-
-    p = initial_content.data();
 
     for (i = 0; i < video_ram_size; i++)
     {
-        if (*p == 0x00)
-        {
-            p = initial_content.data();
-        }
-
-        video_ram[i] = *(p++);
+        video_ram[i] = generate_random_byte();
     }
-
-    p = initial_content.data();
 
     for (i = 0; i < memory_size; i++)
     {
-        if (*p == 0x00)
-        {
-            p = initial_content.data();
-        }
-
-        memory[i] = *(p++);
+        memory[i] = generate_random_byte();
     }
 
     for (i = 0; i < YBLOCKS; i++)
@@ -468,4 +455,42 @@ void Memory::sort_devices_properties()
                 });
         devicesPropertiesSorted = true;
     }
+}
+
+Byte Memory::generate_random_byte()
+{
+    static bool isInitialized = false;
+    static std::array<Byte, 1024> values{};
+    static std::random_device rd;
+    static std::minstd_rand0 gen(rd());
+    static constexpr const double probability_bit_set = 0.2;
+    static constexpr const unsigned a = 1664525;
+    static constexpr const unsigned c = 1013904223;
+
+    if (!isInitialized)
+    {
+        std::bernoulli_distribution bit_distrib(probability_bit_set);
+
+        // Initialize values array with a given probability of bits set.
+        for (auto &value : values)
+        {
+            std::uint8_t byte = 0U;
+
+            for (std::uint8_t mask = 1U; mask != 0U; mask <<= 1U)
+            {
+                if (bit_distrib(gen))
+                {
+                    byte |= mask;
+                }
+            }
+            value = byte;
+        }
+        isInitialized = true;
+    }
+
+    // Linear congruential generator (LCG). Use paramtrization from
+    // Knuth and H. W. Lewis.
+    random_seed = a * random_seed + c;
+
+    return values[random_seed % (values.size() - 1U)];
 }

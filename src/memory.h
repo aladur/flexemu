@@ -83,6 +83,7 @@ private:
     DWord video_ram_size{0};
     Word genio_base{0xFFF0U};
     Byte ramBank{0};
+    unsigned random_seed{123456789U};
     std::vector<Byte> memory;
     std::vector<Byte> video_ram;
     MemorySource<DWord>::AddressRanges addressRanges;
@@ -99,13 +100,12 @@ private:
     std::array<Byte *, MAX_VRAM> vram_ptrs{};
     Word video_ram_active_bits{0}; // 16-bit, one for each video memory page
     std::array<bool, YBLOCKS> changed{};
-    static std::array<Byte, 8> initial_content;
 
 private:
     void init_memory();
     void init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr);
     void sort_devices_properties();
-
+    Byte generate_random_byte();
 
 public:
     // Initialization functions
