@@ -220,8 +220,10 @@ private:
     void UpdateCpuFrequencyCheck() const;
     void UpdateCpuRunStopCheck() const;
     void UpdateCpuUndocumentedCheck() const;
-    void UpdateScreenSizeCheck(std::optional<int> index = std::nullopt) const;
-    void UpdateScreenSizeValue(int index) const;
+    void UpdateScreenSizeCheck(std::optional<int> optIndex =
+            std::nullopt) const;
+    void UpdateScreenSizeValue(std::optional<int> optIndex =
+            std::nullopt) const;
     void SetIconSize(const QSize &size);
     void SetIconSizeCheck(const QSize &size);
     static QUrl CreateDocumentationUrl(const QString &docDir,
@@ -249,11 +251,11 @@ private:
     void GotIllegalInstruction(const Mc6809CpuStatus &status);
     void ForceRestart();
     void RestoreMemoryWindows();
+    void InitializeAfterShow();
 
     // QWidget Overrides
     bool event(QEvent *event) override;
     void changeEvent(QEvent *event) override;
-    void showEvent(QShowEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void closeEvent(QCloseEvent *event) override;

@@ -66,6 +66,7 @@
 #include "ui_about.h"
 #include <QtGlobal>
 #include <QRgb>
+#include <QPointer>
 #include <QString>
 #include <QStringList>
 #include <QPixmap>
@@ -203,10 +204,9 @@ QtGui::QtGui(
     mainLayout->addLayout(statusBarLayout);
     CreateStatusBar(*statusBarLayout);
 
-    setWindowState(Qt::WindowActive);
-    // Resize needed here to overwrite previous adjustSize()
-    // with 2/3 screen limit.
-    resize(sizeHint());
+    setWindowState(Qt::WindowActive | (options.isFullscreen ?
+                Qt::WindowFullScreen : Qt::WindowNoState));
+
     const auto flexemuIcon = QIcon(":/resource/flexemu.png");
     setWindowIcon(flexemuIcon);
 
@@ -261,14 +261,15 @@ QtGui::QtGui(
     }
     UpdateStatusBarCheck();
     UpdateMagneticMainWindowCheck();
-    if (options.isFullscreen)
-    {
-        SetFullScreenMode(true);
-    }
-
     ::UpdateWindowGeometry(*this, options.mainWindowGeometry, true);
 
-    QTimer::singleShot(0, this, &QtGui::RestoreMemoryWindows);
+    QPointer<QtGui> safeThis(this);
+    QTimer::singleShot(0, this, [safeThis](){
+        if (safeThis)
+        {
+            safeThis->InitializeAfterShow();
+        };
+    });
 }
 
 QtGui::~QtGui()
@@ -1053,29 +1054,36 @@ void QtGui::OnScreenSize(int index)
     statusToolBar->SetPixelSize(index + 1);
     statusToolBar->updateGeometry();
     AdjustSize();
-    UpdateScreenSizeCheck(index);
-    UpdateScreenSizeValue(index);
-
     oldOptions.pixelSize = index + 1;
     options.pixelSize = index + 1;
     WriteOneOption(options, FlexemuOptionId::PixelSize);
 }
 
-void QtGui::UpdateScreenSizeCheck(std::optional<int> index) const
+void QtGui::UpdateScreenSizeCheck(std::optional<int> optIndex) const
 {
+    if (!optIndex.has_value())
+    {
+        optIndex = -1;
+    }
+
     for (int actionIndex = 0; actionIndex < SCREEN_SIZES; ++actionIndex)
     {
-        screenSizeAction[actionIndex]->setChecked(
-            index.has_value() && actionIndex == index.value());
+        const bool isChecked = (actionIndex == optIndex.value());
+        screenSizeAction[actionIndex]->setChecked(isChecked);
     }
 }
 
-void QtGui::UpdateScreenSizeValue(int index) const
+void QtGui::UpdateScreenSizeValue(std::optional<int> optIndex) const
 {
-    if (screenSizeComboBox->currentIndex() != index)
+    if (!optIndex.has_value())
+    {
+        optIndex = -1;
+    }
+
+    if (screenSizeComboBox->currentIndex() != optIndex.value())
     {
         screenSizeComboBox->disconnect();
-        screenSizeComboBox->setCurrentIndex(index);
+        screenSizeComboBox->setCurrentIndex(optIndex.value());
         ConnectScreenSizeComboBoxSignalSlots();
     }
 }
@@ -1206,6 +1214,8 @@ void QtGui::CreateViewActions(QToolBar &p_toolBar)
 
     // E2Screen is the only widget which gets the focus.
     screenSizeComboBox->setFocusPolicy(Qt::NoFocus);
+    screenSizeComboBox->setCurrentIndex(options.pixelSize - 1);
+
     p_toolBar.addWidget(screenSizeComboBox);
     ConnectScreenSizeComboBoxSignalSlots();
 
@@ -1865,7 +1875,10 @@ void QtGui::ToggleStatusBarVisibility()
     options.isStatusBarVisible = isStatusBarVisible;
     WriteOneOption(options, FlexemuOptionId::IsStatusBarVisible);
 
-    QTimer::singleShot(0, this, &QtGui::OnResize);
+    if (!IsFullScreenMode())
+    {
+        QTimer::singleShot(0, this, &QtGui::OnResize);
+    }
 }
 
 void QtGui::ToggleMagneticMainWindow()
@@ -1959,9 +1972,10 @@ void QtGui::SetIconSizeCheck(const QSize &iconSize)
 
 }
 
+// NOLINTNEXTLINE(readability-make-member-function-const)
 void QtGui::AdjustSize()
 {
-    if (!IsFullScreenMode())
+    if (!options.isFullscreen)
     {
         QTimer::singleShot(0, this, &QtGui::OnResize);
     }
@@ -2357,18 +2371,6 @@ void QtGui::changeEvent(QEvent *event)
     }
 }
 
-void QtGui::showEvent(QShowEvent * /*event*/)
-{
-    int index = (e2screen->GetScaledSize().width() / WINDOWWIDTH) - 1;
-
-    index = std::min(index, SCREEN_SIZES - 1);
-    UpdateScreenSizeCheck(index);
-    UpdateScreenSizeValue(index);
-    UpdateStatusBarCheck();
-
-    e2screen->setFocus();
-}
-
 void QtGui::keyPressEvent(QKeyEvent *event)
 {
     assert(event != nullptr);
@@ -2458,7 +2460,9 @@ void QtGui::keyPressEvent(QKeyEvent *event)
 
 void QtGui::resizeEvent(QResizeEvent *event)
 {
-    if (IsFullScreenMode())
+    std::optional<int> optIndex;
+
+    if (options.isFullscreen)
     {
         // Transition from window to fullscreen.
         // At this point the resize to fullscreen is already processed
@@ -2467,16 +2471,15 @@ void QtGui::resizeEvent(QResizeEvent *event)
         {
             UpdateFloatingToolBarVisibility(true);
         }
-        UpdateScreenSizeCheck();
     }
     else
     {
         UpdateFloatingToolBarVisibility(false);
-        int index = (e2screen->GetScaledSize().width() / WINDOWWIDTH) - 1;
-        index = std::min(index, 4);
-        UpdateScreenSizeCheck(index);
-        UpdateScreenSizeValue(index);
+        optIndex = (event->size().width() / WINDOWWIDTH) - 1;
+        optIndex = std::min(optIndex.value(), SCREEN_SIZES - 1);
     }
+    UpdateScreenSizeCheck(optIndex);
+    UpdateScreenSizeValue(optIndex);
 
     event->ignore();
     QWidget::resizeEvent(event);
@@ -2505,7 +2508,10 @@ void QtGui::closeEvent(QCloseEvent *event)
         {
             options.cpuDialogGeometry = ::GetWindowGeometry(*cpuDialog);
         }
-        options.mainWindowGeometry = ::GetWindowGeometry(*this);
+        if (!IsFullScreenMode())
+        {
+            options.mainWindowGeometry = ::GetWindowGeometry(*this);
+        }
 
         FlexemuOptionsDifference optionsDiff(options, oldOptions);
 
@@ -2524,7 +2530,7 @@ void QtGui::closeEvent(QCloseEvent *event)
 
 void QtGui::moveEvent(QMoveEvent *event)
 {
-    if (options.isMagneticMainWindow)
+    if (!options.isFullscreen && options.isMagneticMainWindow)
     {
         const auto diffPos = event->pos() - event->oldPos();
 
@@ -2871,4 +2877,15 @@ void QtGui::RestoreMemoryWindows()
     const auto isReadOnly = (cpuState != CpuState::Stop);
 
     memoryWindowMgr.OpenAllWindows(isReadOnly, options);
+}
+
+void QtGui::InitializeAfterShow()
+{
+    if (options.isFullscreen)
+    {
+        SetFullScreenMode(true);
+    }
+    e2screen->setFocus();
+
+    RestoreMemoryWindows();
 }
