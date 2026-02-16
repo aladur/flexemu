@@ -204,8 +204,7 @@ QtGui::QtGui(
     mainLayout->addLayout(statusBarLayout);
     CreateStatusBar(*statusBarLayout);
 
-    setWindowState(Qt::WindowActive | (options.isFullscreen ?
-                Qt::WindowFullScreen : Qt::WindowNoState));
+    setWindowState(Qt::WindowActive);
 
     const auto flexemuIcon = QIcon(":/resource/flexemu.png");
     setWindowIcon(flexemuIcon);
@@ -219,6 +218,7 @@ QtGui::QtGui(
 
     e2screen->ReleaseMouseCapture();
     e2screen->Attach(*this);
+    e2screen->setFocus();
     connect(e2screen,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
             static_cast<void (E2Screen::*)(bool)>(
@@ -261,7 +261,6 @@ QtGui::QtGui(
     }
     UpdateStatusBarCheck();
     UpdateMagneticMainWindowCheck();
-    ::UpdateWindowGeometry(*this, options.mainWindowGeometry, true);
 
     QPointer<QtGui> safeThis(this);
     QTimer::singleShot(0, this, [safeThis](){
@@ -1794,10 +1793,17 @@ void QtGui::ToggleSmoothDisplay()
 
 void QtGui::SetFullScreenMode(bool isFullScreen)
 {
+    // When switching from or to fullscreen mode always use
+    // setWindowState(). This allows to detect the new state with
+    // windowState().
+    if (isFullScreen)
+    {
+        isMagneticMainWindowEnabled = false;
+    }
     if (options.isFloatingToolBar && isFullScreen)
     {
         UpdateMenuToolAndStatusBarVisibility(false);
-        showFullScreen();
+        setWindowState(windowState() | Qt::WindowFullScreen);
         if (options.isFloatingToolBar &&
             floatingToolBarContainer->isHidden())
         {
@@ -1811,11 +1817,11 @@ void QtGui::SetFullScreenMode(bool isFullScreen)
         UpdateFloatingToolBarVisibility(false);
         if (isFullScreen)
         {
-            showFullScreen();
+            setWindowState(windowState() | Qt::WindowFullScreen);
         }
         else
         {
-            showNormal();
+            setWindowState(windowState() & ~Qt::WindowFullScreen);
         }
         UpdateMenuToolAndStatusBarVisibility(true);
     }
@@ -1826,6 +1832,10 @@ void QtGui::SetFullScreenMode(bool isFullScreen)
     oldOptions.isFullscreen = isFullScreen;
     oldOptions.isFloatingToolBar = options.isFloatingToolBar;
     WriteOneOption(options, FlexemuOptionId::IsFullscreen);
+    if (!isFullScreen)
+    {
+        isMagneticMainWindowEnabled = true;
+    }
 }
 
 void QtGui::UpdateFloatingToolBarVisibility(bool isVisible)
@@ -2462,7 +2472,7 @@ void QtGui::resizeEvent(QResizeEvent *event)
 {
     std::optional<int> optIndex;
 
-    if (options.isFullscreen)
+    if (IsFullScreenMode())
     {
         // Transition from window to fullscreen.
         // At this point the resize to fullscreen is already processed
@@ -2530,7 +2540,12 @@ void QtGui::closeEvent(QCloseEvent *event)
 
 void QtGui::moveEvent(QMoveEvent *event)
 {
-    if (!options.isFullscreen && options.isMagneticMainWindow)
+    // Ignore if old position was x/y == 0/0. This indicates a switch
+    // from fullscreen to normal window mode.
+    // isMagneticMainWindowEnabled == false indicates fullscreen mode
+    // in place.
+    if (isMagneticMainWindowEnabled && options.isMagneticMainWindow &&
+        !event->oldPos().isNull())
     {
         const auto diffPos = event->pos() - event->oldPos();
 
@@ -2881,11 +2896,15 @@ void QtGui::RestoreMemoryWindows()
 
 void QtGui::InitializeAfterShow()
 {
+    // UpdateWindowGeometry has to be executed in message loop to
+    // avoid main window restored at wrong position on Windows.
+    ::UpdateWindowGeometry(*this, options.mainWindowGeometry, true);
+
     if (options.isFullscreen)
     {
         SetFullScreenMode(true);
     }
-    e2screen->setFocus();
 
     RestoreMemoryWindows();
+    isMagneticMainWindowEnabled = !options.isFullscreen;
 }

@@ -326,6 +326,8 @@ private:
     bool isRestartNeeded{};
     bool isTimerFirstTime{true};
     bool isStatusBarVisible{};
+    bool isMagneticMainWindowEnabled{};
+
     int timerTicks{0};
     Byte oldFirstRasterLine{0U};
     std::optional<unsigned> floatingToolBarCounter;
