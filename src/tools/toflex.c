@@ -3,7 +3,7 @@
 
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997  W. Schwotzer
+    Copyright (C) 1997,2026  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,63 +22,80 @@
 
 
 /*
-	convert a text file from UNIX to FLEX format
-
-	input:  read from stdin
-	output: write to stdout
+    convert a text file from UNIX to FLEX format
 */
 
 
-#include <stdlib.h>
 #include <stdio.h>
 
 int main(int argc, char **argv)
 {
-	int c = 0;
-	int spaces = 0;
+    int c = 0;
+    int spaces = 0;
 
-	if (argc > 1) {
-		fprintf(stderr, "*** Error: Superfluous parameter: %s\n", argv[1]);
-		fprintf(stderr, "syntax: toflex\n");
-		fprintf(stderr, " read from stdin\n");
-		fprintf(stderr, " write to stdout\n");
-		exit(1);
-	}
-	while ((c = getchar()) != EOF) {
-		if (c != ' ' && c != '\t' && spaces) {
-			if (spaces > 1) {
-				putchar(0x09);
-				putchar(spaces);
-			} else
-				putchar(' ');
-			spaces = 0;
-		}
-		if (c == ' ') {
-			/* do space compression */
-			if (++spaces == 127) {
-				putchar(0x09);
-				putchar(spaces);
-				spaces = 0;
-			}
-		} else
-		if (c == '\t') {
-			/* tab will be converted to 8 spaces */
-			if (spaces >= 127 - 8) {
-				putchar(0x09);
-				putchar(127);
-				spaces -= 127 - 8;
-			} else
-				spaces += 8;
-		} else
-		if (c == '\n')
-			putchar(0x0d);
-		else
-			putchar(c);
-	} /* while */
-	if (spaces) {
-		putchar(0x09);
-		putchar(spaces);
-	}
-	exit(0);
+    if (argc > 1)
+    {
+        fprintf(stderr, "*** Error: Superfluous parameter: %s\n", argv[1]);
+        fprintf(stderr, "syntax: toflex\n");
+        fprintf(stderr, " read from stdin\n");
+        fprintf(stderr, " write to stdout\n");
+
+        return 1;
+    }
+
+    while ((c = getchar()) != EOF)
+    {
+        if (c != ' ' && c != '\t' && spaces)
+        {
+            if (spaces > 1)
+            {
+                putchar(0x09);
+                putchar(spaces);
+            }
+            else
+            {
+                putchar(' ');
+            }
+            spaces = 0;
+        }
+        if (c == ' ')
+        {
+            /* do space compression */
+            if (++spaces == 127)
+            {
+                putchar(0x09);
+                putchar(spaces);
+                spaces = 0;
+            }
+        } else if (c == '\t')
+        {
+            /* tab will be converted to 8 spaces */
+            if (spaces >= 127 - 8)
+            {
+                putchar(0x09);
+                putchar(127);
+                spaces -= 127 - 8;
+            }
+            else
+            {
+                spaces += 8;
+            }
+        } else if (c == '\n')
+        {
+            putchar(0x0d);
+        }
+        else
+        {
+            putchar(c);
+        }
+    }
+
+    if (spaces)
+    {
+        putchar(0x09);
+        putchar(spaces);
+    }
+
+    return 0;
 }
 

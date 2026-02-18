@@ -3,7 +3,7 @@
 
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997  W. Schwotzer
+    Copyright (C) 1997,2026  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,49 +22,57 @@
 
 
 /*
-	convert a text file from FLEX to native file format (UNIX)
-
-	input:  read from stdin
-	output: write to stdout
+    convert a text file from FLEX to native file format (UNIX)
 */
 
-
-#include <stdlib.h>
 #include <stdio.h>
 
 int main(int argc, char **argv)
 {
-	int c;
+    int c;
 
-	if (argc > 1) {
-		fprintf(stderr, "*** Error: Superfluous parameter: %s\n", argv[1]);
-		fprintf(stderr, "syntax: fromflex\n");
-		fprintf(stderr, " read from stdin\n");
-		fprintf(stderr, " write to stdout\n");
-		exit(1);
-	}
-	while ((c = getchar()) != EOF) {
-		if (c == 0x0d)
-			putchar('\n');
-		else
-		if (c == 0x09) {
-			/* expand space compression */
-			if ((c = getchar()) != EOF) {
-				while (c--)
-					putchar(' ');
-			} else {
-				fprintf(stderr, "warning: file maybe corrupt\n");
-				putchar(' ');
-			}
-		} else
-		if (c == 0x00)
-			;	/* if null no output */
-		else
-		if (c == 0x0a)
-			;	/* if carriage return no output */
-		else
-			putchar(c);
-	} /* while */
-	exit(0);
+    if (argc > 1)
+    {
+        fprintf(stderr, "*** Error: Superfluous parameter: %s\n", argv[1]);
+        fprintf(stderr, "syntax: fromflex\n");
+        fprintf(stderr, " read from stdin\n");
+        fprintf(stderr, " write to stdout\n");
+        return 1;
+    }
+
+    while ((c = getchar()) != EOF)
+    {
+        if (c == 0x0d)
+        {
+            putchar('\n');
+        }
+        else if (c == 0x09)
+        {
+            /* expand space compression */
+            c = getchar();
+            if (c != EOF)
+            {
+                while (c--)
+                {
+                    putchar(' ');
+                }
+            }
+            else
+            {
+                fprintf(stderr, "warning: file maybe corrupt\n");
+                putchar(' ');
+            }
+        }
+        else if (c == 0x00 || c == 0x0a)
+        {
+            /* Ignore NUL or CR (carriage return) */
+        }
+        else
+        {
+            putchar(c);
+        }
+    }
+
+    return 0;
 }
 
