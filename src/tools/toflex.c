@@ -22,80 +22,64 @@
 
 
 /*
-    convert a text file from UNIX to FLEX format
+    Convert a regular text file to FLEX text format.
 */
 
 
+#include "convert.h"
 #include <stdio.h>
+#ifdef __linux__
+#include <getopt.h>
+#endif
+#include <unistd.h>
+
+extern char *optarg;
+
+void usage()
+{
+    fprintf(stderr,
+"Usage: toflex [INPUT]... [OUTPUT]\n"
+"Convert regular text file(s) into a FLEX text file.\n"
+"Usage: toflex [-i <text_file> [ -i <...> [...]]] [-o <flex_text_file>]\n"
+"\n"
+"INPUT:\n"
+"  -i <text_file>:      Text file, multiple input options are possible.\n"
+"                       Default is to read from standard input.\n"
+"OUTPUT:\n"
+"  -o <flex_text_file>: FLEX text file. Default is to write to standard\n"
+"                       output.\n"
+"\n"
+"If input and output are files the access and modification timestamp from\n"
+"first input file is copied to output file.\n"
+    );
+}
 
 int main(int argc, char **argv)
 {
-    int c = 0;
-    int spaces = 0;
+    const char *optstr = "i:o:h";
+    int result;
+    const char *ifiles[argc];
+    const char *ofile = NULL;
+    int count = 0;
 
-    if (argc > 1)
+    while ((result = getopt(argc, argv, optstr)) != -1)
     {
-        fprintf(stderr, "*** Error: Superfluous parameter: %s\n", argv[1]);
-        fprintf(stderr, "syntax: toflex\n");
-        fprintf(stderr, " read from stdin\n");
-        fprintf(stderr, " write to stdout\n");
+        switch (result)
+        {
+            case 'i':
+                ifiles[count++] = optarg;
+                break;
 
-        return 1;
-    }
+            case 'o':
+                ofile = optarg;
+                break;
 
-    while ((c = getchar()) != EOF)
-    {
-        if (c != ' ' && c != '\t' && spaces)
-        {
-            if (spaces > 1)
-            {
-                putchar(0x09);
-                putchar(spaces);
-            }
-            else
-            {
-                putchar(' ');
-            }
-            spaces = 0;
-        }
-        if (c == ' ')
-        {
-            /* do space compression */
-            if (++spaces == 127)
-            {
-                putchar(0x09);
-                putchar(spaces);
-                spaces = 0;
-            }
-        } else if (c == '\t')
-        {
-            /* tab will be converted to 8 spaces */
-            if (spaces >= 127 - 8)
-            {
-                putchar(0x09);
-                putchar(127);
-                spaces -= 127 - 8;
-            }
-            else
-            {
-                spaces += 8;
-            }
-        } else if (c == '\n')
-        {
-            putchar(0x0d);
-        }
-        else
-        {
-            putchar(c);
+            case 'h':
+                usage();
+                return 0;
         }
     }
 
-    if (spaces)
-    {
-        putchar(0x09);
-        putchar(spaces);
-    }
-
-    return 0;
+    return convert_files(ifiles, count, ofile, convert_to_flex);
 }
 

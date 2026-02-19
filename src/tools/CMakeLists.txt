@@ -34,9 +34,9 @@ if(UNIX)
     #################################
 
     add_executable(bin2s19 bin2s19.c)
-    add_executable(fromflex fromflex.c)
+    add_executable(fromflex fromflex.c convert.c convert.h)
     add_executable(rcvflex rcvflex.c typedefs.h)
-    add_executable(toflex toflex.c)
+    add_executable(toflex toflex.c convert.c convert.h)
     add_executable(send2flx send2flx.c)
     add_executable(testdaa testdaa.c)
 

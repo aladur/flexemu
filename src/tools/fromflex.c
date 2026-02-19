@@ -22,57 +22,62 @@
 
 
 /*
-    convert a text file from FLEX to native file format (UNIX)
+    Convert a FLEX text file to a regular text file.
 */
 
+#include "convert.h"
 #include <stdio.h>
+#ifdef __linux__
+#include <getopt.h>
+#endif
+#include <unistd.h>
+
+extern char *optarg;
+
+void usage()
+{
+    fprintf(stderr,
+"Usage: fromflex [INPUT]... [OUTPUT]\n"
+"Convert FLEX text file(s) into a regular text file.\n"
+"Usage: fromflex [-i <flex_text_file> [ -i <...> [...]]] [-o <text_file>]\n"
+"\n"
+"INPUT:\n"
+"  -i <flex_text_file>: FLEX text file, multiple input options are possible.\n"
+"                       Default is to read from standard input.\n"
+"OUTPUT:\n"
+"  -o <text_file>:      Text file. Default is to write to standard output.\n"
+"\n"
+"If input and output are files the access and modification timestamp from\n"
+"first input file is copied to output file.\n"
+    );
+}
 
 int main(int argc, char **argv)
 {
-    int c;
+    const char *optstr = "i:o:h";
+    int result;
+    const char *ifiles[argc];
+    const char *ofile = NULL;
+    int count = 0;
 
-    if (argc > 1)
+    while ((result = getopt(argc, argv, optstr)) != -1)
     {
-        fprintf(stderr, "*** Error: Superfluous parameter: %s\n", argv[1]);
-        fprintf(stderr, "syntax: fromflex\n");
-        fprintf(stderr, " read from stdin\n");
-        fprintf(stderr, " write to stdout\n");
-        return 1;
-    }
+        switch (result)
+        {
+            case 'i':
+                ifiles[count++] = optarg;
+                break;
 
-    while ((c = getchar()) != EOF)
-    {
-        if (c == 0x0d)
-        {
-            putchar('\n');
-        }
-        else if (c == 0x09)
-        {
-            /* expand space compression */
-            c = getchar();
-            if (c != EOF)
-            {
-                while (c--)
-                {
-                    putchar(' ');
-                }
-            }
-            else
-            {
-                fprintf(stderr, "warning: file maybe corrupt\n");
-                putchar(' ');
-            }
-        }
-        else if (c == 0x00 || c == 0x0a)
-        {
-            /* Ignore NUL or CR (carriage return) */
-        }
-        else
-        {
-            putchar(c);
+            case 'o':
+                ofile = optarg;
+                break;
+
+            case 'h':
+                usage();
+                return 0;
         }
     }
 
-    return 0;
+    return convert_files(ifiles, count, ofile, convert_from_flex);
 }
 
