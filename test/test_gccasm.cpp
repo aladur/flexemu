@@ -23,11 +23,13 @@
 
 #include "test_gccasm.h"
 #include "typedefs.h"
+#include "misc1.h"
 #include "bitops.h"
 #include "mc6809.h"
 #include "mc6809st.h"
 #include "soptions.h"
 #include "foptman.h"
+#include "fcnffile.h"
 #include <iomanip>
 #include <functional>
 #include <string>
@@ -531,7 +533,9 @@ static bool test_gccasm_fctByte(const std::string& mnemonic,
 {
     struct sOptions options;
     FlexemuOptions::InitOptions(options);
-    Memory memory(options);
+    auto configFile =
+        std::make_shared<FlexemuConfigFile>(flx::getFlexemuConfigFile());
+    Memory memory(options, configFile);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     bool success = true;
@@ -578,7 +582,9 @@ static bool test_gccasm_fctRefByte(const std::string& mnemonic,
 {
     struct sOptions options;
     FlexemuOptions::InitOptions(options);
-    Memory memory(options);
+    auto configFile =
+        std::make_shared<FlexemuConfigFile>(flx::getFlexemuConfigFile());
+    Memory memory(options, configFile);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     bool success = true;
@@ -631,7 +637,9 @@ static bool test_gccasm_fctByteByte(const std::string& mnemonic,
 {
     struct sOptions options;
     FlexemuOptions::InitOptions(options);
-    Memory memory(options);
+    auto configFile =
+        std::make_shared<FlexemuConfigFile>(flx::getFlexemuConfigFile());
+    Memory memory(options, configFile);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     Word op1;
@@ -684,7 +692,9 @@ static bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
 {
     struct sOptions options;
     FlexemuOptions::InitOptions(options);
-    Memory memory(options);
+    auto configFile =
+        std::make_shared<FlexemuConfigFile>(flx::getFlexemuConfigFile());
+    Memory memory(options, configFile);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     Word op1;
@@ -744,7 +754,9 @@ static bool test_gccasm_fctWordWord(const std::string& mnemonic,
 {
     struct sOptions options;
     FlexemuOptions::InitOptions(options);
-    Memory memory(options);
+    auto configFile =
+        std::make_shared<FlexemuConfigFile>(flx::getFlexemuConfigFile());
+    Memory memory(options, configFile);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     DWord op1;
@@ -804,7 +816,9 @@ static bool test_gccasm_fctRefWordWord(const std::string& mnemonic,
 {
     struct sOptions options;
     FlexemuOptions::InitOptions(options);
-    Memory memory(options);
+    auto configFile =
+        std::make_shared<FlexemuConfigFile>(flx::getFlexemuConfigFile());
+    Memory memory(options, configFile);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     DWord op1;

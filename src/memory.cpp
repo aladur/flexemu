@@ -47,11 +47,13 @@
 #include <algorithm>
 #include <chrono>
 
-Memory::Memory(const struct sOptions &options) :
+Memory::Memory(const struct sOptions &options,
+               FlexemuConfigFileSPtr p_configFile) :
     isRamExtension(options.isRamExtension),
     isHiMem(options.isHiMem),
     isFlexibleMmu(options.isFlexibleMmu),
     isEurocom2V5(options.isEurocom2V5),
+    configFile(std::move(p_configFile)),
     deviceAccess(0x10000U - genio_base, ioDeviceAccess{NO_DEVICE, 0U})
 
 {

@@ -47,6 +47,7 @@
 #include "drisel.h"
 #include "tstdev.h"
 #include "iodevdbg.h"
+#include "fcnffile.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -76,6 +77,7 @@ private:
     void AddIoDevicesToMemory();
     int LoadBootRomFile();
 
+    const FlexemuConfigFileSPtr configFile;
     struct sOptions &options;
     Memory memory;
     Mc6809 cpu;
