@@ -3,7 +3,7 @@
 
 
     Basic class for platform independent high resolution time support
-    Copyright (C) 2001-2025  W. Schwotzer
+    Copyright (C) 2001-2026  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

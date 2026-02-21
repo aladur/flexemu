@@ -25,7 +25,7 @@ BEGIN
             VALUE "FileDescription", "An MC6809 emulator running FLEX\0"
             VALUE "FileVersion", "3,32,0,0\0"
             VALUE "InternalName", "Flexemu.exe\0"
-            VALUE "LegalCopyright", "Copyright © 1997-2025 W. Schwotzer\0"
+            VALUE "LegalCopyright", "Copyright © 1997-2026 W. Schwotzer\0"
             VALUE "OriginalFilename", "FLEXEMU.EXE\0"
             VALUE "ProductName", "Flexemu\0"
             VALUE "ProductVersion", "3,32,0,0\0"

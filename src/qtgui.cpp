@@ -3,7 +3,7 @@
 
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2020-2025  W. Schwotzer
+    Copyright (C) 2020-2026  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -766,7 +766,7 @@ QString QtGui::GetAboutHtmlText() const
        "<a href=\"http://flexemu.neocities.org/copying.txt\">"
        "GNU GENERAL PUBLIC LICENCE V2</a>.<p><p>"
        "Have Fun!<p><p>"
-       "Copyright (C) 1997-2025 "
+       "Copyright (C) 1997-2026 "
        "<a href=\"mailto:wolfgang.schwotzer@gmx.net\">"
        "Wolfgang Schwotzer</a><p>"
        "<a href=\"http://flexemu.neocities.org\">"

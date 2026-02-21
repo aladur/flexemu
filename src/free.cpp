@@ -3,7 +3,7 @@
 
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2025  W. Schwotzer
+    Copyright (C) 2025-2026  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ constexpr const char *COPYRIGHT_MESSAGE = \
     "and You are welcome to redistribute it under certain conditions.\n" \
     "Please notice that this project was developed under the terms of the\n" \
     "GNU GENERAL PUBLIC LICENCE V2.\n" \
-    "Copyright (C) 1998-2025 Wolfgang Schwotzer\n" \
+    "Copyright (C) 1998-2026 Wolfgang Schwotzer\n" \
     "http://flexemu.neocities.org\n";
 
 std::string flx::find_regex_string(const std::regex &regex,

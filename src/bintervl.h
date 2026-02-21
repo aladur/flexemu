@@ -3,7 +3,7 @@
 
     Basic class representing a closed interval with lower and upper bound.
     Implementation is a subset of boost::interval and fully compatible.
-    Copyright (C) 2020-2025  W. Schwotzer
+    Copyright (C) 2020-2026  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

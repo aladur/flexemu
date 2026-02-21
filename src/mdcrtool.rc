@@ -23,7 +23,7 @@ BEGIN
             VALUE "FileDescription", "Tool for Philips mini digital cassette files\0"
             VALUE "FileVersion", "3,32,0,0\0"
             VALUE "InternalName", "mdcrtool.exe\0"
-            VALUE "LegalCopyright", "Copyright © 2019-2025 W. Schwotzer\0"
+            VALUE "LegalCopyright", "Copyright © 2019-2026 W. Schwotzer\0"
             VALUE "OriginalFilename", "MDCRTOOL.EXE\0"
             VALUE "ProductName", "Flexemu\0"
             VALUE "ProductVersion", "3,32,0,0\0"

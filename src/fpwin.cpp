@@ -3,7 +3,7 @@
 
 
     FLEXplorer, An explorer for FLEX disk image files and directory disks.
-    Copyright (C) 2020-2025  W. Schwotzer
+    Copyright (C) 2020-2026  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -600,7 +600,7 @@ void FLEXplorer::OnAbout()
            "<a href=\"http://flexemu.neocities.org/copying.txt\">"
            "GNU GENERAL PUBLIC LICENCE V2</a>.<p><p>"
            "Have Fun!<p><p>"
-           "Copyright (C) 1998-2025 "
+           "Copyright (C) 1998-2026 "
            "<a href=\"mailto:wolfgang.schwotzer@gmx.net\">"
            "Wolfgang Schwotzer</a><p>"
            "<a href=\"http://flexemu.neocities.org\">"

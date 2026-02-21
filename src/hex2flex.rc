@@ -23,7 +23,7 @@ BEGIN
             VALUE "FileDescription", "Convert hex files to FLEX binaries\0"
             VALUE "FileVersion", "3,32,0,0\0"
             VALUE "InternalName", "hex2flex.exe\0"
-            VALUE "LegalCopyright", "Copyright © 2026 W. Schwotzer\0"
+            VALUE "LegalCopyright", "Copyright © 2025-2026 W. Schwotzer\0"
             VALUE "OriginalFilename", "HEX2FLEX.EXE\0"
             VALUE "ProductName", "Flexemu\0"
             VALUE "ProductVersion", "3,32,0,0\0"
