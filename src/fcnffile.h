@@ -25,6 +25,7 @@
 
 #include "typedefs.h"
 #include <optional>
+#include <memory>
 #include <string>
 #include <vector>
 #include <set>
@@ -65,5 +66,6 @@ private:
     fs::path path;
 };
 
+using FlexemuConfigFileSPtr = std::shared_ptr<FlexemuConfigFile>;
 #endif
 

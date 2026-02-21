@@ -43,12 +43,15 @@
 #include "warnon.h"
 #include <cstdlib>
 #include <stdexcept>
+#include <memory>
 
 
 ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
         ITerminalImplPtr &&termImpl) :
+    configFile(
+        std::make_shared<FlexemuConfigFile>(flx::getFlexemuConfigFile())),
     options(p_options),
-    memory(options),
+    memory(options, configFile),
     cpu(memory),
     fdc(options),
     inout(p_options, memory),
@@ -153,11 +156,9 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
 
     if (options.isEurocom2V5)
     {
-        FlexemuConfigFile configFile(flx::getFlexemuConfigFile());
-
-        auto logMdcr = configFile.GetDebugSupportOption("logMdcr");
+        auto logMdcr = configFile->GetDebugSupportOption("logMdcr");
         auto logFilePath =
-            fs::u8path(configFile.GetDebugSupportOption("logMdcrFilePath"));
+            fs::u8path(configFile->GetDebugSupportOption("logMdcrFilePath"));
         pia2v5.set_debug(logMdcr, logFilePath);
     }
 
@@ -183,9 +184,8 @@ ApplicationRunner::~ApplicationRunner()
 
 void ApplicationRunner::AddIoDevicesToMemory()
 {
-    FlexemuConfigFile configFile(flx::getFlexemuConfigFile());
-    const auto deviceParams = configFile.ReadIoDevices();
-    const auto pairOfParams = configFile.GetIoDeviceLogging();
+    const auto deviceParams = configFile->ReadIoDevices();
+    const auto pairOfParams = configFile->GetIoDeviceLogging();
     const auto logFilePath = std::get<0>(pairOfParams);
     const auto deviceNames = std::get<1>(pairOfParams);
 
@@ -315,9 +315,7 @@ int ApplicationRunner::startup(QApplication &app)
         return 1;
     }
 
-    FlexemuConfigFile configFile(flx::getFlexemuConfigFile());
-
-    auto optional_address = configFile.GetSerparAddress(options.hex_file);
+    auto optional_address = configFile->GetSerparAddress(options.hex_file);
     if (!optional_address.has_value() || !terminalIO.is_terminal_supported())
     {
         // The specified hex_file does not support switching between
@@ -346,7 +344,7 @@ int ApplicationRunner::startup(QApplication &app)
     memory.reset_io();
     cpu.reset();
 
-    auto optional_boot_char = configFile.GetBootCharacter(options.hex_file);
+    auto optional_boot_char = configFile->GetBootCharacter(options.hex_file);
     if (options.term_mode && terminalIO.is_terminal_supported())
     {
         terminalIO.set_startup_command(options.startup_command);
