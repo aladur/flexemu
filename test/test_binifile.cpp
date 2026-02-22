@@ -177,6 +177,68 @@ TEST_F(test_binifile, fct_GetLineNumber)
     EXPECT_EQ(lineNumber, 0);
     fs::remove(path);
 }
+
+TEST_F(test_binifile, fct_HasSection)
+{
+    const auto path1 = fs::temp_directory_path() / u8"ini_file1.ini";
+    EXPECT_TRUE(createIniFile(path1));
+    BIniFile iniFile1(path1);
+    std::string section;
+    EXPECT_TRUE(iniFile1.HasSection(section));
+    section = "Section._-~@ 3";
+    EXPECT_TRUE(iniFile1.HasSection(section));
+    section = "SECTION2";
+    EXPECT_TRUE(iniFile1.HasSection(section));
+    section = "NotExistingSection";
+    EXPECT_FALSE(iniFile1.HasSection(section));
+    fs::remove(path1);
+
+    const auto path2 = fs::temp_directory_path() / u8"ini_file2.ini";
+    std::ofstream ofs2(path2);
+    ASSERT_TRUE(ofs2.is_open());
+    ofs2 <<
+        "#  key30=value30\n"
+        ";  key30=value30\n"
+        "#\n"
+        ";\n"
+        "[SECTION2]\n";
+    ofs2.close();
+    BIniFile iniFile2(path2);
+    section = "";
+    EXPECT_FALSE(iniFile2.HasSection(section));
+    section = "SECTION2";
+    EXPECT_TRUE(iniFile2.HasSection(section));
+    fs::remove(path2);
+
+    const auto path3 = fs::temp_directory_path() / u8"ini_file3.ini";
+    std::ofstream ofs3(path3);
+    ASSERT_TRUE(ofs3.is_open());
+    ofs3 <<
+        "key11=value11\n"
+        "[SECTION2]\n";
+    ofs3.close();
+    BIniFile iniFile3(path3);
+    section = "";
+    EXPECT_TRUE(iniFile3.HasSection(section));
+    section = "SECTION2";
+    EXPECT_TRUE(iniFile3.HasSection(section));
+    fs::remove(path3);
+
+    const auto path4 = fs::temp_directory_path() / u8"ini_file4.ini";
+    std::ofstream ofs4(path4);
+    ASSERT_TRUE(ofs4.is_open());
+    ofs4 <<
+        "[SECTION2]\n"
+        "[]\n";
+    ofs4.close();
+    BIniFile iniFile4(path4);
+    section = "";
+    EXPECT_TRUE(iniFile4.HasSection(section));
+    section = "SECTION2";
+    EXPECT_TRUE(iniFile4.HasSection(section));
+    fs::remove(path4);
+}
+
 TEST_F(test_binifile, fct_ReadSection_exceptions)
 {
     const auto path1 = fs::temp_directory_path() / u8"ini_file1.ini";
