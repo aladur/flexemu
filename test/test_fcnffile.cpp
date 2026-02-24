@@ -313,9 +313,7 @@ TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
         "[IoDevices]\n"
         "invalidDevice=FFE0\n";
     ofs.close();
-    FlexemuConfigFile cnfFile1(path);
-    ASSERT_TRUE(cnfFile1.IsValid());
-    EXPECT_THAT([&](){ cnfFile1.ReadIoDevices(); },
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
             testing::Throws<FlexException>());
     fs::remove(path);
 
@@ -325,9 +323,7 @@ TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
         "[IoDevices]\n"
         "mmu=10000\n";
     ofs.close();
-    FlexemuConfigFile cnfFile3(path);
-    ASSERT_TRUE(cnfFile3.IsValid());
-    EXPECT_THAT([&](){ cnfFile3.ReadIoDevices(); },
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
             testing::Throws<FlexException>());
     fs::remove(path);
 
@@ -337,9 +333,7 @@ TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
         "[IoDevices]\n"
         "mmu=FD00,0\n";
     ofs.close();
-    FlexemuConfigFile cnfFile4(path);
-    ASSERT_TRUE(cnfFile4.IsValid());
-    EXPECT_THAT([&](){ cnfFile4.ReadIoDevices(); },
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
             testing::Throws<FlexException>());
     fs::remove(path);
 
@@ -349,9 +343,7 @@ TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
         "[IoDevices]\n"
         "mmu=FD00,1001\n";
     ofs.close();
-    FlexemuConfigFile cnfFile5(path);
-    ASSERT_TRUE(cnfFile5.IsValid());
-    EXPECT_THAT([&](){ cnfFile5.ReadIoDevices(); },
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
             testing::Throws<FlexException>());
     fs::remove(path);
 
@@ -361,9 +353,7 @@ TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
         "[IoDevices]\n"
         "mmu=\n";
     ofs.close();
-    FlexemuConfigFile cnfFile6(path);
-    ASSERT_TRUE(cnfFile6.IsValid());
-    EXPECT_THAT([&](){ cnfFile6.ReadIoDevices(); },
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
             testing::Throws<FlexException>());
     fs::remove(path);
 }
@@ -377,9 +367,7 @@ TEST(test_fcnffile, fct_GetDebugSupportOption_exceptions)
         "[DebugSupport]\n"
         "invalidKey=value\n";
     ofs.close();
-    FlexemuConfigFile cnfFile(path);
-    ASSERT_TRUE(cnfFile.IsValid());
-    EXPECT_THAT([&](){ cnfFile.GetDebugSupportOption("invalidKey"); },
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
             testing::Throws<FlexException>());
     fs::remove(path);
 }
@@ -394,12 +382,8 @@ TEST(test_fcnffile, fct_GetSerparAddress_exceptions)
         "monitor.hex=10000\n"
         "monitor.s19=FFFFFFFFFFFFFFFF\n";
     ofs.close();
-    FlexemuConfigFile cnfFile1(path);
-    ASSERT_TRUE(cnfFile1.IsValid());
-    EXPECT_THAT([&](){ cnfFile1.GetSerparAddress(u8"monitor.hex"); },
-        testing::Throws<FlexException>());
-    EXPECT_THAT([&](){ cnfFile1.GetSerparAddress(u8"monitor.s19"); },
-        testing::Throws<FlexException>());
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
     fs::remove(path);
 
     ofs.open(path, std::ios::out | std::ios::trunc);
@@ -408,10 +392,17 @@ TEST(test_fcnffile, fct_GetSerparAddress_exceptions)
         "[SERPARAddress]\n"
         "monitor.hex\n";
     ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[SERPARAddress]\n"
+        "monitor.hex=EF00\n";
+    ofs.close();
     FlexemuConfigFile cnfFile2(path);
-    ASSERT_TRUE(cnfFile2.IsValid());
-    EXPECT_THAT([&](){ cnfFile2.GetSerparAddress(u8"monitor.hex"); },
-        testing::Throws<FlexException>());
     auto optional_value = cnfFile2.GetSerparAddress(
             u8"unsupported_monitor.hex");
     EXPECT_FALSE(optional_value.has_value());
@@ -427,35 +418,54 @@ TEST(test_fcnffile, fct_GetBootCharacter_exceptions)
     ASSERT_TRUE(ofs.is_open());
     ofs <<
         "[BootCharacter]\n"
-        "monitor.hex=AA\n"
-        "monitor.s19=abc\n"
-        "monitor.xxx=\n";
+        "monitor.hex=AA\n";
     ofs.close();
-    FlexemuConfigFile cnfFile1(path);
-    ASSERT_TRUE(cnfFile1.IsValid());
-    EXPECT_THAT([&](){ cnfFile1.GetBootCharacter(u8"monitor.hex"); },
-        testing::Throws<FlexException>());
-    EXPECT_THAT([&](){ cnfFile1.GetBootCharacter(u8"monitor.s19"); },
-        testing::Throws<FlexException>());
-    EXPECT_THAT([&](){ cnfFile1.GetBootCharacter(u8"monitor.xxx"); },
-        testing::Throws<FlexException>());
-    auto optional_value = cnfFile1.GetBootCharacter(
-            u8"unsupported_monitor.hex");
-    EXPECT_FALSE(optional_value.has_value());
-    EXPECT_THAT([&]() { auto v = optional_value.value(); (void)v; },
-        testing::Throws<std::bad_optional_access>());
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
     fs::remove(path);
 
     ofs.open(path, std::ios::out | std::ios::trunc);
     ASSERT_TRUE(ofs.is_open());
     ofs <<
         "[BootCharacter]\n"
-        "monitor.hex\n";
+        "monitor.s19=abc\n";
     ofs.close();
-    FlexemuConfigFile cnfFile2(path);
-    ASSERT_TRUE(cnfFile2.IsValid());
-    EXPECT_THAT([&](){ cnfFile1.GetBootCharacter(u8"monitor.hex"); },
-        testing::Throws<FlexException>());
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootCharacter]\n"
+        "monitor.xxx=\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootCharacter]\n"
+        "monitor.xxx\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootCharacter]\n"
+        "monitor.hex=X\n";
+    ofs.close();
+    FlexemuConfigFile cnfFile1(path);
+    auto optional_value = cnfFile1.GetBootCharacter(
+            u8"unsupported_monitor.hex");
+    EXPECT_FALSE(optional_value.has_value());
+    EXPECT_THAT([&]() { auto v = optional_value.value(); (void)v; },
+        testing::Throws<std::bad_optional_access>());
     fs::remove(path);
 }
 
