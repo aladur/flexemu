@@ -73,9 +73,9 @@ FlexemuConfigFile::FlexemuConfigFile(fs::path p_path) :
     InitializeBootCharacters();
 }
 
-std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
+std::vector<sIoDeviceMapping> FlexemuConfigFile::GetIoDeviceMappings() const
 {
-    return deviceMappings;
+    return ioDeviceMappings;
 }
 
 void FlexemuConfigFile::InitializeIoDeviceMappings()
@@ -83,14 +83,14 @@ void FlexemuConfigFile::InitializeIoDeviceMappings()
     BIniFile iniFile(path);
     const std::string section{"IoDevices"};
 
-    auto valueForKey = iniFile.ReadSection(section);
+    const auto valueForKey = iniFile.ReadSection(section);
 
     for (const auto &iter : valueForKey)
     {
         const auto &validDevices = GetValidDevices();
-        if (validDevices.find(iter.first) == validDevices.end())
+        if (validDevices.find(iter.first) == validDevices.cend())
         {
-            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
+            const auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                         lineNumber, iter.first + "=" + iter.second,
                         iniFile.GetPath());
@@ -110,12 +110,12 @@ void FlexemuConfigFile::InitializeIoDeviceMappings()
             mapping.name = iter.first;
             addressStream << std::hex << addressString;
             addressStream >> baseAddress;
-            if (baseAddress > 0xffff)
+            if (baseAddress > 0xFFFF)
             {
-                auto lineNumber = iniFile.GetLineNumber(section, iter.first);
+                const auto lineNumber =
+                    iniFile.GetLineNumber(section, iter.first);
                 throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                    lineNumber,
-                                    iter.first + "=" + iter.second,
+                                    lineNumber, iter.first + "=" + iter.second,
                                     iniFile.GetPath());
             }
 
@@ -126,9 +126,9 @@ void FlexemuConfigFile::InitializeIoDeviceMappings()
                 byteSizeStream << std::hex << byteSizeString;
                 byteSizeStream >> byteSize;
                 if (byteSize <= 0 || byteSize > 4096 ||
-                        baseAddress + byteSize - 1U > 0xffff)
+                        baseAddress + byteSize - 1U > 0xFFFF)
                 {
-                    auto lineNumber =
+                    const auto lineNumber =
                         iniFile.GetLineNumber(section, iter.first);
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                         lineNumber,
@@ -140,28 +140,26 @@ void FlexemuConfigFile::InitializeIoDeviceMappings()
 
             mapping.baseAddress = static_cast<Word>(baseAddress);
 
-            deviceMappings.push_back(mapping);
+            ioDeviceMappings.push_back(mapping);
+            continue;
         }
-        else
-        {
-            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
-            throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                lineNumber, iter.first + "=" + iter.second,
-                                iniFile.GetPath());
-        }
+
+        const auto lineNumber = iniFile.GetLineNumber(section, iter.first);
+        throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                            lineNumber, iter.first + "=" + iter.second,
+                            iniFile.GetPath());
     }
 }
 
 std::optional<Word> FlexemuConfigFile::GetSerparAddress(
-        const fs::path &monitorFilePath)
-    const
+        const fs::path &monitorFilePath) const
 {
-    std::string fileName = monitorFilePath.filename().u8string();
+    auto filename = monitorFilePath.filename().u8string();
 
 #ifdef _WIN32
-    flx::strlower(fileName);
+    flx::strlower(filename);
 #endif
-    const auto iter = serparAddressForMonitorFile.find(fileName);
+    const auto iter = serparAddressForMonitorFile.find(filename);
 
     return (iter == serparAddressForMonitorFile.cend()) ?
         std::nullopt : std::optional<Word>(iter->second);
@@ -172,12 +170,12 @@ void FlexemuConfigFile::InitializeSerparAddresses()
     BIniFile iniFile(path);
     const std::string section{"SERPARAddress"};
 
-    auto valueForKey = iniFile.ReadSection(section);
+    const auto valueForKey = iniFile.ReadSection(section);
 
     for (const auto &iter : valueForKey)
     {
         std::size_t address;
-        std::string key = iter.first;
+        auto key = iter.first;
 
 #ifdef _WIN32
         flx::strlower(key);
@@ -189,10 +187,9 @@ void FlexemuConfigFile::InitializeSerparAddresses()
             continue;
         }
 
-        auto lineNumber = iniFile.GetLineNumber(section, iter.first);
+        const auto lineNumber = iniFile.GetLineNumber(section, iter.first);
         throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                            lineNumber,
-                            iter.first + "=" + iter.second,
+                            lineNumber, iter.first + "=" + iter.second,
                             iniFile.GetPath());
     }
 }
@@ -214,13 +211,13 @@ void FlexemuConfigFile::InitializeDebugSupportOptions()
     BIniFile iniFile(path);
     const std::string section{"DebugSupport"};
 
-    auto valueForKey = iniFile.ReadSection(section);
+    const auto valueForKey = iniFile.ReadSection(section);
 
     for (const auto &iter : valueForKey)
     {
-        if (validKeys.find(iter.first) == validKeys.end())
+        if (validKeys.find(iter.first) == validKeys.cend())
         {
-            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
+            const auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                 lineNumber, iter.first + "=" + iter.second,
                                 iniFile.GetPath());
@@ -243,7 +240,7 @@ void FlexemuConfigFile::InitializeIoDeviceLogging()
     BIniFile iniFile(path);
     const std::string section{"IoDeviceLogging"};
 
-    auto valueForKey = iniFile.ReadSection(section);
+    const auto valueForKey = iniFile.ReadSection(section);
 
     for (const auto &iter : valueForKey)
     {
@@ -257,17 +254,17 @@ void FlexemuConfigFile::InitializeIoDeviceLogging()
                 device = flx::trim(std::move(device));
 
                 const auto &validDevices = GetValidDevices();
-                if (validDevices.find(device) == validDevices.end())
+                if (validDevices.find(device) != validDevices.cend())
                 {
-                    auto lineNumber =
-                        iniFile.GetLineNumber(section, iter.first);
-                    throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                lineNumber,
-                                iter.first + "=" + iter.second,
-                                iniFile.GetPath());
+                    devices.emplace(device);
+                    continue;
                 }
 
-                devices.emplace(device);
+                const auto lineNumber =
+                    iniFile.GetLineNumber(section, iter.first);
+                throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                    lineNumber, iter.first + "=" + iter.second,
+                                    iniFile.GetPath());
             }
 
         }
@@ -277,11 +274,10 @@ void FlexemuConfigFile::InitializeIoDeviceLogging()
         }
         else
         {
-            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
+            const auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                        lineNumber,
-                        iter.first + "=" + iter.second,
-                        iniFile.GetPath());
+                                lineNumber, iter.first + "=" + iter.second,
+                                iniFile.GetPath());
         }
     }
 
@@ -312,13 +308,13 @@ bool FlexemuConfigFile::IsValid() const
 std::optional<Byte> FlexemuConfigFile::GetBootCharacter(
         const fs::path &monitorFilePath) const
 {
-    std::string fileName = monitorFilePath.filename().u8string();
+    auto filename = monitorFilePath.filename().u8string();
 
 #ifdef _WIN32
-    flx::strlower(fileName);
+    flx::strlower(filename);
 #endif
 
-    const auto iter = bootCharacterForMonitorFile.find(fileName);
+    const auto iter = bootCharacterForMonitorFile.find(filename);
 
     return (iter == bootCharacterForMonitorFile.cend()) ?
         std::nullopt : std::optional<Byte>(iter->second);
@@ -329,11 +325,11 @@ void FlexemuConfigFile::InitializeBootCharacters()
     BIniFile iniFile(path);
     const std::string section{"BootCharacter"};
 
-    auto valueForKey = iniFile.ReadSection(section);
+    const auto valueForKey = iniFile.ReadSection(section);
 
     for (const auto &iter : valueForKey)
     {
-        std::string key = iter.first;
+        auto key = iter.first;
 
 #ifdef _WIN32
         flx::strlower(key);
@@ -341,10 +337,9 @@ void FlexemuConfigFile::InitializeBootCharacters()
 
         if (iter.second.size() != 1)
         {
-            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
+            const auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                lineNumber,
-                                iter.first + "=" + iter.second,
+                                lineNumber, iter.first + "=" + iter.second,
                                 iniFile.GetPath());
         }
 

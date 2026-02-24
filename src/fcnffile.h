@@ -57,7 +57,7 @@ public:
 
     fs::path GetPath() const;
     bool IsValid() const;
-    std::vector<sIoDeviceMapping> ReadIoDevices() const;
+    std::vector<sIoDeviceMapping> GetIoDeviceMappings() const;
     std::string GetDebugSupportOption(const std::string &key) const;
     std::pair<std::string, std::set<std::string> > GetIoDeviceLogging() const;
     std::optional<Word> GetSerparAddress(const fs::path &monitorFilePath) const;
@@ -72,7 +72,7 @@ protected:
 
 private:
     fs::path path;
-    std::vector<sIoDeviceMapping> deviceMappings;
+    std::vector<sIoDeviceMapping> ioDeviceMappings;
     std::map<std::string, std::string> debugSupportOptionForKey;
     std::pair<std::string, std::set<std::string> > ioDeviceLogging;
     std::map<std::string, Word> serparAddressForMonitorFile;

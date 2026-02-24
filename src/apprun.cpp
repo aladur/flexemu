@@ -184,7 +184,7 @@ ApplicationRunner::~ApplicationRunner()
 
 void ApplicationRunner::AddIoDevicesToMemory()
 {
-    const auto deviceParams = configFile->ReadIoDevices();
+    const auto deviceParams = configFile->GetIoDeviceMappings();
     const auto pairOfParams = configFile->GetIoDeviceLogging();
     const auto logFilePath = std::get<0>(pairOfParams);
     const auto deviceNames = std::get<1>(pairOfParams);

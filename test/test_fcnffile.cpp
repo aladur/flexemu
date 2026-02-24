@@ -106,7 +106,7 @@ TEST(test_fcnffile, move_ctor)
     auto cnfFile2(std::move(cnfFile1));
 
     EXPECT_TRUE(cnfFile2.IsValid());
-    EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 6U);
+    EXPECT_EQ(cnfFile2.GetIoDeviceMappings().size(), 6U);
     EXPECT_EQ(cnfFile2.GetPath(), path);
     fs::remove(path);
 }
@@ -120,17 +120,17 @@ TEST(test_fcnffile, move_assignment)
 
     EXPECT_TRUE(cnfFile2.IsValid());
     EXPECT_EQ(cnfFile2.GetPath(), path);
-    EXPECT_EQ(cnfFile2.ReadIoDevices().size(), 6U);
+    EXPECT_EQ(cnfFile2.GetIoDeviceMappings().size(), 6U);
     fs::remove(path);
 }
 
-TEST(test_fcnffile, fct_ReadIoDevices)
+TEST(test_fcnffile, fct_GetIoDeviceMappings)
 {
     const auto path = fs::temp_directory_path() / u8"cnf4.conf";
     ASSERT_TRUE(createCnfFile(path));
     FlexemuConfigFile cnfFile(path);
     ASSERT_TRUE(cnfFile.IsValid());
-    const auto deviceMappings = cnfFile.ReadIoDevices();
+    const auto deviceMappings = cnfFile.GetIoDeviceMappings();
     EXPECT_EQ(deviceMappings.size(), 6U);
     for (const auto &deviceParams : deviceMappings)
     {
@@ -304,7 +304,7 @@ TEST(test_fcnffile, fct_GetBootCharacter)
     fs::remove(path);
 }
 
-TEST(test_fcnffile, fct_ReadIoDevices_exceptions)
+TEST(test_fcnffile, fct_GetIoDeviceMappings_exceptions)
 {
     const auto path = fs::temp_directory_path() / u8"cnf6.conf";
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
