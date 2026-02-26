@@ -122,10 +122,10 @@ BIniFile::Type BIniFile::ReadLine(int line_number,
     return Type::Unknown;
 }
 
-BIniFile::SectionContent_t BIniFile::ReadSection(
+BIniFile::SectionContentOrdered_t BIniFile::ReadSectionOrdered(
                                              const std::string &section) const
 {
-    SectionContent_t resultMap;
+    SectionContentOrdered_t result;
     std::set<std::string> foundKeys;
     std::ifstream istream(path);
     int line_number = 0;
@@ -167,7 +167,7 @@ BIniFile::SectionContent_t BIniFile::ReadSection(
                                     GetPath());
                         }
 
-                        resultMap.insert({ key, value });;
+                        result.emplace_back(key, value);
                         foundKeys.insert(key);
                     }
                     break;
@@ -179,7 +179,21 @@ BIniFile::SectionContent_t BIniFile::ReadSection(
         }
     }
 
-    return resultMap;
+    return result;
+}
+
+BIniFile::SectionContent_t BIniFile::ReadSection(
+        const std::string &section) const
+{
+    SectionContent_t result;
+    auto content = ReadSectionOrdered(section);
+
+    for (auto &item : content)
+    {
+        result.emplace(std::move(item.first), std::move(item.second));
+    }
+
+    return result;
 }
 
 bool BIniFile::HasSection(const std::string &section) const

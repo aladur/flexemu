@@ -58,8 +58,8 @@ protected:
                 "[ ]\n"
                 "key13=value13\n"
                 "[SECTION2]\n"
-                "key21=value21\n"
                 "key22=value22\n"
+                "key21=value21\n"
                 "[SECTION2]\n"
                 "key23=value23\n"
                 "[  Section._-~@ 3    ]   \n"
@@ -68,12 +68,12 @@ protected:
                 "#\n"
                 ";\n"
                 "key31=value31\n"
-                "key32 = value32\n"
-                "key33     =     value 33     \n"
-                "key34\t=\tvalue34    \n"
                 "key35     \t=\t   value35\n"
-                "key36=\n"
+                "key32 = value32\n"
+                "key34\t=\tvalue34    \n"
+                "key33     =     value 33     \n"
                 "key37\n"
+                "key36=\n"
                 "k=v\n"
                 "[SECTION2]\n"
                 "key24=value24\n"
@@ -158,6 +158,38 @@ TEST_F(test_binifile, fct_ReadSection)
     fs::remove(path);
 }
 
+TEST_F(test_binifile, fct_ReadSectionOrdered)
+{
+    const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
+    EXPECT_TRUE(createIniFile(path));
+    BIniFile iniFile(path);
+    std::string section;
+    const auto r1 = iniFile.ReadSectionOrdered(section);
+    ASSERT_EQ(r1.size(), 2U);
+    EXPECT_EQ(r1[0], std::pair(std::string("key11"), std::string("value11")));
+    EXPECT_EQ(r1[1], std::pair(std::string("key12"), std::string("value12")));
+    section = "SECTION2";
+    const auto r2 = iniFile.ReadSectionOrdered(section);
+    ASSERT_EQ(r2.size(), 2U);
+    EXPECT_EQ(r2[0], std::pair(std::string("key22"), std::string("value22")));
+    EXPECT_EQ(r2[1], std::pair(std::string("key21"), std::string("value21")));
+    section = "Section._-~@ 3";
+    const auto r3 = iniFile.ReadSectionOrdered(section);
+    ASSERT_EQ(r3.size(), 8U);
+    EXPECT_EQ(r3[0], std::pair(std::string("key31"), std::string("value31")));
+    EXPECT_EQ(r3[1], std::pair(std::string("key35"), std::string("value35")));
+    EXPECT_EQ(r3[2], std::pair(std::string("key32"), std::string("value32")));
+    EXPECT_EQ(r3[3], std::pair(std::string("key34"), std::string("value34")));
+    EXPECT_EQ(r3[4], std::pair(std::string("key33"), std::string("value 33")));
+    EXPECT_EQ(r3[5], std::pair(std::string("key37"), std::string()));
+    EXPECT_EQ(r3[6], std::pair(std::string("key36"), std::string()));
+    EXPECT_EQ(r3[7], std::pair(std::string("k"), std::string("v")));
+    section = "NotExistingSection";
+    const auto result4 = iniFile.ReadSectionOrdered(section);
+    EXPECT_TRUE(result4.empty());
+    fs::remove(path);
+}
+
 TEST_F(test_binifile, fct_GetLineNumber)
 {
     const auto path = fs::temp_directory_path() / u8"ini_file1.ini";
@@ -166,7 +198,7 @@ TEST_F(test_binifile, fct_GetLineNumber)
     auto lineNumber = iniFile.GetLineNumber("", "key12");
     EXPECT_EQ(lineNumber, 2);
     lineNumber = iniFile.GetLineNumber("SECTION2", "key21");
-    EXPECT_EQ(lineNumber, 6);
+    EXPECT_EQ(lineNumber, 7);
     lineNumber = iniFile.GetLineNumber("Section._-~@ 3", "key31");
     EXPECT_EQ(lineNumber, 15);
     lineNumber = iniFile.GetLineNumber("InvalidSection", "key11");

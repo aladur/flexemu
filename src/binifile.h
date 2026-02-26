@@ -23,9 +23,11 @@
 #ifndef BINIFILE_INCLUDED
 #define BINIFILE_INCLUDED
 
-#include <string>
-#include <map>
+#include <utility>
 #include <cstdint>
+#include <string>
+#include <vector>
+#include <map>
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -35,6 +37,8 @@ class BIniFile
 {
 public:
     using SectionContent_t = std::map<std::string, std::string>;
+    using SectionContentOrdered_t =
+        std::vector<std::pair<std::string, std::string> >;
 
     BIniFile() = delete;
     BIniFile(const BIniFile &src) = delete;
@@ -48,6 +52,8 @@ public:
     bool IsValid() const;
     fs::path GetPath() const;
     SectionContent_t ReadSection(const std::string &section) const;
+    SectionContentOrdered_t ReadSectionOrdered(const std::string &section)
+        const;
     bool HasSection(const std::string &section) const;
     int GetLineNumber(const std::string &section, const std::string &key) const;
 
