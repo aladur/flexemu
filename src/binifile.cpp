@@ -122,10 +122,10 @@ BIniFile::Type BIniFile::ReadLine(int line_number,
     return Type::Unknown;
 }
 
-std::map<std::string, std::string> BIniFile::ReadSection(
+BIniFile::SectionContent_t BIniFile::ReadSection(
                                              const std::string &section) const
 {
-    std::map<std::string, std::string> resultMap;
+    SectionContent_t resultMap;
     std::set<std::string> foundKeys;
     std::ifstream istream(path);
     int line_number = 0;

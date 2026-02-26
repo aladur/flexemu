@@ -34,6 +34,8 @@ namespace fs = std::filesystem;
 class BIniFile
 {
 public:
+    using SectionContent_t = std::map<std::string, std::string>;
+
     BIniFile() = delete;
     BIniFile(const BIniFile &src) = delete;
     BIniFile(BIniFile &&src) noexcept;
@@ -45,8 +47,7 @@ public:
 
     bool IsValid() const;
     fs::path GetPath() const;
-    std::map<std::string, std::string> ReadSection(const std::string &section)
-                                                                          const;
+    SectionContent_t ReadSection(const std::string &section) const;
     bool HasSection(const std::string &section) const;
     int GetLineNumber(const std::string &section, const std::string &key) const;
 
