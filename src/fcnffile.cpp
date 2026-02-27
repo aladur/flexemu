@@ -25,6 +25,7 @@
 #include "fcnffile.h"
 #include "flexerr.h"
 #include "binifile.h"
+#include "filecntb.h"
 #include "free.h"
 #include <ios>
 #include <utility>
@@ -71,6 +72,7 @@ FlexemuConfigFile::FlexemuConfigFile(fs::path p_path) :
     InitializeIoDeviceLogging();
     InitializeSerparAddresses();
     InitializeBootCharacters();
+    InitializeBootSectorFileProperties();
 }
 
 std::vector<sIoDeviceMapping> FlexemuConfigFile::GetIoDeviceMappings() const
@@ -344,5 +346,51 @@ void FlexemuConfigFile::InitializeBootCharacters()
         }
 
         bootCharacterForMonitorFile.emplace(key, iter.second[0]);
+    }
+}
+
+BootSectorFileProperties_t FlexemuConfigFile::GetBootSectorFileProperties()
+    const
+{
+    return bootSectorFileProperties;
+}
+
+void FlexemuConfigFile::InitializeBootSectorFileProperties()
+{
+    BIniFile iniFile(path);
+    const std::string section{"BootSectorFile"};
+    static const std::regex regex("[a-z][a-z0-9_]{0,7}");
+    std::set<std::string> addedBootSectorFiles;
+    const auto valueForKey = iniFile.ReadSectionOrdered(section);
+
+    for (const auto &iter : valueForKey)
+    {
+        std::string bootSectorFile = iter.first;
+        std::size_t offset;
+
+        if (regex_match(bootSectorFile, regex) &&
+            addedBootSectorFiles.find(bootSectorFile) ==
+                addedBootSectorFiles.cend() &&
+            (flx::convert(iter.second, offset, 16) &&
+             offset >= 0x02U && offset <= 0xFEU &&
+            (bootSectorFile != BOOT_FILE || offset == 0x03U)))
+        {
+            bootSectorFileProperties.push_back(
+                    {bootSectorFile, static_cast<Word>(offset)});
+
+            addedBootSectorFiles.emplace(bootSectorFile);
+            continue;
+        }
+
+        const auto lineNumber = iniFile.GetLineNumber(section, iter.first);
+        throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                            lineNumber, iter.first + "=" + iter.second,
+                            iniFile.GetPath());
+    }
+
+    // Default if section does not exist for backwards compatibility.
+    if (bootSectorFileProperties.empty() && !iniFile.HasSection(section))
+    {
+        bootSectorFileProperties.push_back({BOOT_FILE, 0x03});
     }
 }

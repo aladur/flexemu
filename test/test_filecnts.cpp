@@ -92,7 +92,7 @@ protected:
             diskPath = diskPaths[idx][DIR];
             const auto &ft = (idx == FT) ? with_ft : no_ft;
             auto *pdir = new FlexDirectoryDiskBySector(diskPath,
-                    ft, tracks, sectors);
+                    ft, tracks, sectors, nullptr);
             disks[idx][DIR].reset(cast(pdir));
             ASSERT_NE(disks[idx][DIR].get(), nullptr) <<
                 "path=" << diskPath.u8string();

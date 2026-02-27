@@ -73,7 +73,7 @@ class Memory : public MemorySource<DWord>, public MemoryTarget<DWord>,
 {
 public:
     explicit Memory(const struct sOptions &options,
-                    FlexemuConfigFileSPtr p_configFile);
+                    const FlexemuConfigFileSPtr &p_configFile);
 
 private:
     std::array<Byte *, 16> ppage{};
@@ -82,12 +82,12 @@ private:
     bool isFlexibleMmu{false};
     bool isEurocom2V5{false}; // Emulate an Eurocom II/V5
                               // (instead of Eurocom II/V7)
+    bool isPresetRam{false};
     DWord memory_size{0x10000};
     DWord video_ram_size{0};
     Word genio_base{0xFFF0U};
     Byte ramBank{0};
     unsigned random_seed{123456789U};
-    const FlexemuConfigFileSPtr configFile;
     std::vector<Byte> memory;
     std::vector<Byte> video_ram;
     MemorySource<DWord>::AddressRanges addressRanges;

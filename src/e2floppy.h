@@ -30,6 +30,7 @@
 #include "filecnts.h"
 #include "e2.h"
 #include "fcinfo.h"
+#include "fcnffile.h"
 #include <mutex>
 #include <string>
 #include <array>
@@ -94,9 +95,11 @@ private:
     std::array<Byte, 4> idAddressMark{};
 
     const struct sOptions &options;
+    FlexemuConfigFileSPtr configFile;
 
 public:
-    explicit E2floppy(const struct sOptions &options);
+    E2floppy(const struct sOptions &options,
+             FlexemuConfigFileSPtr p_configFile);
 
     E2floppy() = delete;
     E2floppy(const E2floppy &src) = delete;

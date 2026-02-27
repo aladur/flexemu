@@ -22,7 +22,6 @@
 
 
 #include "typedefs.h"
-#include "misc1.h"
 #include "memory.h"
 #include "e2.h"
 #include "bintervl.h"
@@ -48,18 +47,25 @@
 #include <chrono>
 
 Memory::Memory(const struct sOptions &options,
-               FlexemuConfigFileSPtr p_configFile) :
+               const FlexemuConfigFileSPtr &p_configFile) :
     isRamExtension(options.isRamExtension),
     isHiMem(options.isHiMem),
     isFlexibleMmu(options.isFlexibleMmu),
     isEurocom2V5(options.isEurocom2V5),
-    configFile(std::move(p_configFile)),
     deviceAccess(0x10000U - genio_base, ioDeviceAccess{NO_DEVICE, 0U})
 
 {
     const auto now = std::chrono::system_clock::now();
     random_seed =
         static_cast<unsigned>(std::chrono::system_clock::to_time_t(now));
+
+    if (p_configFile)
+    {
+        const auto value = p_configFile->GetDebugSupportOption("presetRAM");
+
+        isPresetRam = (value == "1");
+    }
+
     // Eurocom II/V5 has 48 KByte memory on mainboard. Never the less
     // allocate 64 KByte to map the Boot ROM into F000 - FFFF.
     memory.resize(memory_size);
@@ -180,24 +186,13 @@ void Memory::init_memory()
 
 void Memory::init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr)
 {
-    static int do_preset_ram = -1;
-
     vram_ptrs[vram_ptr_index] = ram_ptr;
 
     // Check for debug option 'presetRAM'. If set preset RAM with value.
     // This may be helpfull when debugging the memory management unit (MMU).
     // Please remember that most monitor programs initialize the base and
     // extended RAM to 0x00.
-    if (do_preset_ram < 0)
-    {
-        const auto path(flx::getFlexemuConfigFile().u8string());
-        FlexemuConfigFile configFile(path);
-        const auto value = configFile.GetDebugSupportOption("presetRAM");
-
-        do_preset_ram = (value == "1") ? 1 : 0;
-    }
-
-    if (do_preset_ram == 1)
+    if (isPresetRam)
     {
         std::memset(ram_ptr, vram_ptr_index, VIDEORAM_SIZE);
     }

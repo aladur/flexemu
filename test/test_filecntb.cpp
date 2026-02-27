@@ -295,8 +295,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryBySector)
         auto type = DiskType::Directory;
         auto options = DiskOptions::HasSectorIF;
         ASSERT_TRUE(fs::create_directory(path));
-        auto *pdisk =
-            new FlexDirectoryDiskBySector(path, ft_access, tracks, sectors);
+        auto *pdisk = new FlexDirectoryDiskBySector(path, ft_access, tracks,
+                                                    sectors, nullptr);
         disk.reset(cast(pdisk));
         ASSERT_NE(disk.get(), nullptr);
         EXPECT_TRUE(static_cast<bool>(disk));

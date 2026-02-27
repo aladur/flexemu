@@ -42,6 +42,13 @@ struct sIoDeviceMapping
     std::optional<Word> byteSize;
 };
 
+struct sBootSectorFileProperties
+{
+    std::string bootSectorFile;
+    Word linkAddressOffset;
+};
+
+using BootSectorFileProperties_t = std::vector<sBootSectorFileProperties>;
 
 class FlexemuConfigFile
 {
@@ -62,6 +69,7 @@ public:
     std::pair<std::string, std::set<std::string> > GetIoDeviceLogging() const;
     std::optional<Word> GetSerparAddress(const fs::path &monitorFilePath) const;
     std::optional<Byte> GetBootCharacter(const fs::path &monitorFilePath) const;
+    BootSectorFileProperties_t GetBootSectorFileProperties() const;
 
 protected:
     void InitializeIoDeviceMappings();
@@ -69,6 +77,7 @@ protected:
     void InitializeIoDeviceLogging();
     void InitializeSerparAddresses();
     void InitializeBootCharacters();
+    void InitializeBootSectorFileProperties();
 
 private:
     fs::path path;
@@ -77,6 +86,7 @@ private:
     std::pair<std::string, std::set<std::string> > ioDeviceLogging;
     std::map<std::string, Word> serparAddressForMonitorFile;
     std::map<std::string, Byte> bootCharacterForMonitorFile;
+    BootSectorFileProperties_t bootSectorFileProperties;
 };
 
 using FlexemuConfigFileSPtr = std::shared_ptr<FlexemuConfigFile>;

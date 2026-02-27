@@ -304,6 +304,65 @@ TEST(test_fcnffile, fct_GetBootCharacter)
     fs::remove(path);
 }
 
+TEST(test_fcnffile, fct_GetBootSectorFileProperties)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf11.conf";
+    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "boot=03\n"
+        "a=2\n"
+        "boot_29=55\n"
+        "a1234567=A\n"
+        "nboot=EE\n";
+    ofs.close();
+    FlexemuConfigFile cnfFile1(path);
+    const auto properties1 = cnfFile1.GetBootSectorFileProperties();
+    ASSERT_EQ(properties1.size(), 5U);
+    EXPECT_EQ(properties1.at(0).bootSectorFile, "boot");
+    EXPECT_EQ(properties1.at(1).bootSectorFile, "a");
+    EXPECT_EQ(properties1.at(2).bootSectorFile, "boot_29");
+    EXPECT_EQ(properties1.at(3).bootSectorFile, "a1234567");
+    EXPECT_EQ(properties1.at(4).bootSectorFile, "nboot");
+    auto value = properties1.at(0).linkAddressOffset;
+    EXPECT_TRUE(value == 0x03U);
+    value = properties1.at(1).linkAddressOffset;
+    EXPECT_TRUE(value == 0x02U);
+    value = properties1.at(2).linkAddressOffset;
+    EXPECT_TRUE(value == 0x55U);
+    value = properties1.at(3).linkAddressOffset;
+    EXPECT_TRUE(value == 0x0AU);
+    value = properties1.at(4).linkAddressOffset;
+    EXPECT_TRUE(value == 0xEEU);
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n";
+    ofs.close();
+    FlexemuConfigFile cnfFile3(path);
+    const auto properties3 = cnfFile3.GetBootSectorFileProperties();
+    ASSERT_TRUE(properties3.empty());
+    fs::remove(path);
+
+    // Section not defined => backwards compatibility mode.
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[NotBootSectorFileSection]\n";
+    ofs.close();
+    FlexemuConfigFile cnfFile4(path);
+    const auto properties4 = cnfFile4.GetBootSectorFileProperties();
+    ASSERT_EQ(properties4.size(), 1U);
+    EXPECT_EQ(properties4.at(0).bootSectorFile, "boot");
+    value = properties4.at(0).linkAddressOffset;
+    EXPECT_TRUE(value == 0x03U);
+    fs::remove(path);
+
+}
+
 TEST(test_fcnffile, fct_GetIoDeviceMappings_exceptions)
 {
     const auto path = fs::temp_directory_path() / u8"cnf6.conf";
@@ -466,6 +525,121 @@ TEST(test_fcnffile, fct_GetBootCharacter_exceptions)
     EXPECT_FALSE(optional_value.has_value());
     EXPECT_THAT([&]() { auto v = optional_value.value(); (void)v; },
         testing::Throws<std::bad_optional_access>());
+    fs::remove(path);
+}
+
+TEST(test_fcnffile, fct_GetBootSectorFileProperties_exceptions)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf12.conf";
+    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "boot=02\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "Inv.ext=03\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "Invalid=03\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "too_long_filename=03\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "file1=03\n"
+        "file1=03\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "boot1=invalid\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "boot1=0x05\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "boot0=00\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "boot1=01\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "boot1=FF\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[BootSectorFile]\n"
+        "boot1=FFFFFFFFFFFFFFFF\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
     fs::remove(path);
 }
 

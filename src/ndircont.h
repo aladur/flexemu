@@ -29,6 +29,7 @@
 #include "filecntb.h"
 #include "filecnts.h"
 #include "rndcheck.h"
+#include "fcnffile.h"
 #include <cstdint>
 #include <ctime>
 #include <optional>
@@ -110,7 +111,8 @@ public:
     FlexDirectoryDiskBySector(FlexDirectoryDiskBySector &&) = delete;
     FlexDirectoryDiskBySector(const fs::path &path,
                            const FileTimeAccess &fileTimeAccess,
-                           int tracks, int sectors);
+                           int tracks, int sectors,
+                           const FlexemuConfigFileSPtr &p_configFile);
     ~FlexDirectoryDiskBySector() override;
 
     FlexDirectoryDiskBySector &operator=(const FlexDirectoryDiskBySector &) = delete;
@@ -122,6 +124,8 @@ private:
     Byte attributes{};
     const FileTimeAccess &ft_access{};
     s_floppy param{};
+    fs::path bootSectorFile{BOOT_FILE};
+    Word linkAddressOffset{0x03U};
 
     // Some structures needed for a FLEX file system
     // link table: Each sector has an entry in the link table.
@@ -140,7 +144,8 @@ private:
 public:
     static FlexDirectoryDiskBySector *Create(const fs::path &path,
             const FileTimeAccess &fileTimeAccess,
-            int tracks, int sectors, DiskType disk_type);
+            int tracks, int sectors, DiskType disk_type,
+            FlexemuConfigFileSPtr &configFile);
 
     // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;

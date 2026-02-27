@@ -47,8 +47,10 @@
 namespace fs = std::filesystem;
 
 
-E2floppy::E2floppy(const struct sOptions &p_options)
+E2floppy::E2floppy(const struct sOptions &p_options,
+                   FlexemuConfigFileSPtr p_configFile)
     : options(p_options)
+    , configFile(std::move(p_configFile))
 {
     assert(track.size() == drive_status.size());
     assert(track.size() == floppy.size());
@@ -143,7 +145,8 @@ bool E2floppy::mount_drive(const fs::path &path,
                          containerPath,
                          options.fileTimeAccess,
                          options.directoryDiskTracks,
-                         options.directoryDiskSectors));
+                         options.directoryDiskSectors,
+                         configFile));
                 }
                 catch (FlexException &)
                 {
@@ -719,7 +722,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
                     pfloppy = IFlexDiskBySectorPtr(
                         FlexDirectoryDiskBySector::Create(
                             path, options.fileTimeAccess,
-                            trk, sec, disk_type));
+                            trk, sec, disk_type, configFile));
                 }
                 break;
 

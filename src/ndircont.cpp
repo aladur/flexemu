@@ -109,7 +109,8 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         const fs::path &path,
         const FileTimeAccess &fileTimeAccess,
         int tracks,
-        int sectors)
+        int sectors,
+        const FlexemuConfigFileSPtr &p_configFile)
     : directory(path)
     , randomFileCheck(path)
     , ft_access(fileTimeAccess)
@@ -158,6 +159,19 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
 
     mount(number, tracks, sectors);
     number++;
+
+    if (p_configFile)
+    {
+        for (const auto &props : p_configFile->GetBootSectorFileProperties())
+        {
+            if (fs::exists(directory / props.bootSectorFile))
+            {
+                bootSectorFile = fs::u8path(props.bootSectorFile);
+                linkAddressOffset = props.linkAddressOffset;
+                break;
+            }
+        }
+    }
 }
 
 FlexDirectoryDiskBySector::~FlexDirectoryDiskBySector()
@@ -183,7 +197,8 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
-        DiskType disk_type)
+        DiskType disk_type,
+        FlexemuConfigFileSPtr &configFile)
 {
     if (disk_type != DiskType::Directory)
     {
@@ -200,7 +215,8 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         throw FlexException(FERR_UNABLE_TO_CREATE, path);
     }
 
-    return new FlexDirectoryDiskBySector(path, fileTimeAccess, tracks, sectors);
+    return new FlexDirectoryDiskBySector(path, fileTimeAccess, tracks, sectors,
+                                         configFile);
 }
 
 fs::path FlexDirectoryDiskBySector::GetPath() const
@@ -1448,7 +1464,8 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
                 // chapter "Diskette Initialization" the first two
                 // sectors contain a boot program.
                 // Reading the boot sector 00-01 or 00-02
-                // from a file which name is defined in BOOT_FILE.
+                // from a file which name is defined in bootSectorFile.
+                // See file flexemu.conf section [BootSectorFile] for details.
                 // If this file has a size of SECTOR_SIZE reading
                 // sector 00-02 contains all zeros.
                 // The boot code is contained in sector 00-01 and
@@ -1458,7 +1475,7 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
                 // when reading it a default boot code is set which
                 // savely jumps back into the monitor program.
 
-                const auto path = directory / BOOT_FILE;
+                const auto path = directory / bootSectorFile;
                 bool set_default_boot_code = true;
                 std::ifstream ifs(path, std::ios::in | std::ios::binary);
 
@@ -1472,8 +1489,8 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
                     {
                         st_t boot_link = link_address();
 
-                        buffer[3] = boot_link.trk;
-                        buffer[4] = boot_link.sec;
+                        buffer[linkAddressOffset] = boot_link.trk;
+                        buffer[linkAddressOffset + 1U] = boot_link.sec;
                     }
                     if (ifs.fail() && sec == 1)
                     {
@@ -1621,11 +1638,12 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
 
         case SectorType::Boot:
             {
-                // Write boot sector 00-01 or 00-02.
-                // into a file which name is defined in BOOT_FILE.
+                // Write boot sector 00-01 or 00-02
+                // into a file which name is defined in bootSectorFile.
+                // For details see file flexemu.conf section [BootSectorFile].
                 BootSectorBuffer_t bootSectors{};
 
-                const auto path = directory / BOOT_FILE;
+                const auto path = directory / bootSectorFile;
                 std::fill(bootSectors.begin(), bootSectors.end(), '\0');
 
                 const auto status = fs::status(path);
@@ -1647,8 +1665,10 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                         bootSectors.cbegin() + SECTOR_SIZE,
                         bootSectors.cend(),
                         [](Byte b){ return b == 0; });
+
                 // Remove link address.
-                flx::setValueBigEndian<Word>(&bootSectors[3], 0U);
+                const auto offset = linkAddressOffset;
+                flx::setValueBigEndian<Word>(&bootSectors[offset], 0U);
                 // If sector 2 contains all zero bytes only write
                 // the first sector otherwise write first and second
                 // sector to file.
