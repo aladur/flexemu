@@ -204,10 +204,10 @@ void E2Screen::keyPressEvent(QKeyEvent *event)
 
 void E2Screen::resizeEvent(QResizeEvent *event)
 {
+    assert(event != nullptr);
+
     int width = event->size().width();
     int height = event->size().height();
-
-    assert(event != nullptr);
 
     if (width / height >= 2)
     {
