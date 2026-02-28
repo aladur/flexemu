@@ -324,9 +324,9 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     c_fileTime->setChecked(setFileTime);
 
     c_isDisplaySmooth->setChecked(options.isSmooth != 0);
-    g_isFullscreen->setChecked(options.isFullscreen);
-    r_isFullscreenWithMenus->setChecked(!options.isFloatingToolBar);
-    r_isFullscreenWithFTB->setChecked(options.isFloatingToolBar);
+    g_isFullScreen->setChecked(options.isFullScreen);
+    r_isFullScreenWithMenus->setChecked(!options.isFloatingToolBar);
+    r_isFullScreenWithFTB->setChecked(options.isFloatingToolBar);
 
     r_scrollingTerminal->setChecked(options.terminalType == 1);
     r_ncursesTerminal->setChecked(options.terminalType == 2);
@@ -481,10 +481,10 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 c_isDisplaySmooth->setEnabled(false);
                 break;
 
-            case FlexemuOptionId::IsFullscreen:
-                g_isFullscreen->setEnabled(false);
-                r_isFullscreenWithMenus->setEnabled(false);
-                r_isFullscreenWithFTB->setEnabled(false);
+            case FlexemuOptionId::IsFullScreen:
+                g_isFullScreen->setEnabled(false);
+                r_isFullScreenWithMenus->setEnabled(false);
+                r_isFullScreenWithFTB->setEnabled(false);
                 break;
 
             case FlexemuOptionId::IsTerminalIgnoreESC:
@@ -627,7 +627,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::IconSize:
                 case FlexemuOptionId::IsStatusBarVisible:
                 case FlexemuOptionId::IsMagneticMainWindow:
-                case FlexemuOptionId::IsFullscreen:
+                case FlexemuOptionId::IsFullScreen:
                 case FlexemuOptionId::MemoryWindowConfigs:
                     break;
             }
@@ -903,10 +903,10 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
         options.isSmooth = c_isDisplaySmooth->isChecked();
     }
 
-    if (!IsReadOnly(FlexemuOptionId::IsFullscreen))
+    if (!IsReadOnly(FlexemuOptionId::IsFullScreen))
     {
-        options.isFullscreen = g_isFullscreen->isChecked();
-        options.isFloatingToolBar = r_isFullscreenWithFTB->isChecked();
+        options.isFullScreen = g_isFullScreen->isChecked();
+        options.isFloatingToolBar = r_isFullScreenWithFTB->isChecked();
     }
 
     if (!IsReadOnly(FlexemuOptionId::TerminalType))

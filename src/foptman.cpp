@@ -674,8 +674,8 @@ void FlexemuOptions::WriteOptionsToRegistry(
                 options.isMagneticMainWindow ? 1 : 0);
                 break;
 
-        case FlexemuOptionId::IsFullscreen:
-            reg.SetValue(FLEXISFULLSCREEN, options.isFullscreen ? 1 : 0);
+        case FlexemuOptionId::IsFullScreen:
+            reg.SetValue(FLEXISFULLSCREEN, options.isFullScreen ? 1 : 0);
             reg.SetValue(FLEXISFLOATINGTOOLBAR,
                     options.isFloatingToolBar ? 1 : 0);
                 break;
@@ -930,8 +930,8 @@ void FlexemuOptions::WriteOptionsToFile(
                 previousOptions.isMagneticMainWindow;
             break;
 
-        case FlexemuOptionId::IsFullscreen:
-            optionsToWrite.isFullscreen = previousOptions.isFullscreen;
+        case FlexemuOptionId::IsFullScreen:
+            optionsToWrite.isFullScreen = previousOptions.isFullScreen;
             optionsToWrite.isFloatingToolBar =
                 previousOptions.isFloatingToolBar;
             break;
@@ -1001,7 +1001,7 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isStatusBarVisible ? 1 : 0);
     rcFile.SetValue(FLEXISMAGNETICMAINWINDOW,
             optionsToWrite.isMagneticMainWindow ? 1 : 0);
-    rcFile.SetValue(FLEXISFULLSCREEN, optionsToWrite.isFullscreen ? 1 : 0);
+    rcFile.SetValue(FLEXISFULLSCREEN, optionsToWrite.isFullScreen ? 1 : 0);
     rcFile.SetValue(FLEXISFLOATINGTOOLBAR,
             optionsToWrite.isFloatingToolBar ? 1 : 0);
     rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont);
@@ -1205,7 +1205,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     if (!reg.GetValue(FLEXISFULLSCREEN, int_result))
     {
-        options.isFullscreen = (int_result != 0);
+        options.isFullScreen = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXISFLOATINGTOOLBAR, int_result))
@@ -1420,7 +1420,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     if (!rcFile.GetValue(FLEXISFULLSCREEN, int_result))
     {
-        options.isFullscreen = (int_result != 0);
+        options.isFullScreen = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXISFLOATINGTOOLBAR, int_result))

@@ -188,10 +188,10 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::IsMagneticMainWindow);
     }
 
-    if (opt1.isFullscreen != opt2.isFullscreen ||
+    if (opt1.isFullScreen != opt2.isFullScreen ||
         opt1.isFloatingToolBar != opt2.isFloatingToolBar)
     {
-        notEquals.push_back(FlexemuOptionId::IsFullscreen);
+        notEquals.push_back(FlexemuOptionId::IsFullScreen);
     }
 
     if (opt1.isDirectoryDiskActive != opt2.isDirectoryDiskActive)

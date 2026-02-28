@@ -257,7 +257,7 @@
           <widget class="QComboBox" name="cb_nColors"/>
          </item>
          <item row="11" column="0">
-          <widget class="QGroupBox" name="g_isFullscreen">
+          <widget class="QGroupBox" name="g_isFullScreen">
            <property name="title">
             <string>Fullscreen Mode</string>
            </property>
@@ -269,14 +269,14 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
             <item>
-             <widget class="QRadioButton" name="r_isFullscreenWithMenus">
+             <widget class="QRadioButton" name="r_isFullScreenWithMenus">
               <property name="text">
                <string>Menus and toolbar</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="r_isFullscreenWithFTB">
+             <widget class="QRadioButton" name="r_isFullScreenWithFTB">
               <property name="text">
                <string>Floating toolbar</string>
               </property>

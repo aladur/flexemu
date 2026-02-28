@@ -429,8 +429,8 @@ void QtGui::OnPreferences()
                     ToggleSmoothDisplay();
                     break;
 
-                case FlexemuOptionId::IsFullscreen:
-                    SetFullScreenMode(options.isFullscreen);
+                case FlexemuOptionId::IsFullScreen:
+                    SetFullScreenMode(options.isFullScreen);
                     break;
 
                 case FlexemuOptionId::CanFormatDrive0:
@@ -1828,10 +1828,10 @@ void QtGui::SetFullScreenMode(bool isFullScreen)
 
     UpdateFullScreenCheck();
 
-    options.isFullscreen = isFullScreen;
-    oldOptions.isFullscreen = isFullScreen;
+    options.isFullScreen = isFullScreen;
+    oldOptions.isFullScreen = isFullScreen;
     oldOptions.isFloatingToolBar = options.isFloatingToolBar;
-    WriteOneOption(options, FlexemuOptionId::IsFullscreen);
+    WriteOneOption(options, FlexemuOptionId::IsFullScreen);
     if (!isFullScreen)
     {
         isMagneticMainWindowEnabled = true;
@@ -1985,7 +1985,7 @@ void QtGui::SetIconSizeCheck(const QSize &iconSize)
 // NOLINTNEXTLINE(readability-make-member-function-const)
 void QtGui::AdjustSize()
 {
-    if (!options.isFullscreen)
+    if (!options.isFullScreen)
     {
         QTimer::singleShot(0, this, &QtGui::OnResize);
     }
@@ -2900,11 +2900,11 @@ void QtGui::InitializeAfterShow()
     // avoid main window restored at wrong position on Windows.
     ::UpdateWindowGeometry(*this, options.mainWindowGeometry, true);
 
-    if (options.isFullscreen)
+    if (options.isFullScreen)
     {
         SetFullScreenMode(true);
     }
 
     RestoreMemoryWindows();
-    isMagneticMainWindowEnabled = !options.isFullscreen;
+    isMagneticMainWindowEnabled = !options.isFullScreen;
 }

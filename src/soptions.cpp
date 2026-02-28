@@ -69,7 +69,7 @@ const FlexemuOptionIds_t &GetAllFlexemuOptionIds()
         FlexemuOptionId::DirectoryDiskTrkSec,
         FlexemuOptionId::IsStatusBarVisible,
         FlexemuOptionId::IsMagneticMainWindow,
-        FlexemuOptionId::IsFullscreen,
+        FlexemuOptionId::IsFullScreen,
         FlexemuOptionId::TerminalType,
         FlexemuOptionId::MemoryWindowConfigs,
     };
