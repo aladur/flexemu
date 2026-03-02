@@ -1068,7 +1068,7 @@ void QtGui::UpdateScreenSizeCheck(std::optional<int> optIndex) const
     for (int actionIndex = 0; actionIndex < SCREEN_SIZES; ++actionIndex)
     {
         const bool isChecked = (actionIndex == optIndex.value());
-        screenSizeAction[actionIndex]->setChecked(isChecked);
+        screenSizeActions[actionIndex]->setChecked(isChecked);
     }
 }
 
@@ -1190,8 +1190,8 @@ void QtGui::CreateViewActions(QToolBar &p_toolBar)
 
     for (uint16_t index = 0U; index < ICON_SIZES; ++index)
     {
-        iconSizeAction[index] = CreateIconSizeAction(*iconSizeMenu, index);
-        connect(iconSizeAction[index], &QAction::triggered,
+        iconSizeActions[index] = CreateIconSizeAction(*iconSizeMenu, index);
+        connect(iconSizeActions[index], &QAction::triggered,
             this, [&,index](){ OnIconSize(index); });
     }
 
@@ -1203,7 +1203,7 @@ void QtGui::CreateViewActions(QToolBar &p_toolBar)
         const auto iconPath = QString(":/resource/screen%1.png").arg(index + 1);
         const auto screenSizeIcon = QIcon(iconPath);
 
-        screenSizeAction[index] =
+        screenSizeActions[index] =
             CreateScreenSizeAction(screenSizeIcon, *screenSizeMenu, index);
         auto text = QString("x%1").arg(index + 1);
         screenSizeComboBox->addItem(screenSizeIcon, text);
@@ -1323,7 +1323,7 @@ void QtGui::AddActions()
     addAction(loggingAction);
     addAction(originalFrequencyAction);
 
-    for (auto *action : screenSizeAction)
+    for (auto *action : screenSizeActions)
     {
         addAction(action);
     }
@@ -1434,11 +1434,11 @@ void QtGui::AddDiskStatusButtons()
         for (Word i = 0; i < MAX_DRIVES; ++i)
         {
             const auto text = tr("Disk #%1 not ready").arg(i);
-            diskStatusAction[i] = statusToolBar->addAction(iconNoFloppy, text);
-            connect(diskStatusAction[i], &QAction::triggered,
+            diskStatusActions[i] = statusToolBar->addAction(iconNoFloppy, text);
+            connect(diskStatusActions[i], &QAction::triggered,
                 this, [this, i=i]() { OnDiskStatus(i); });
             auto statusTip = tr("Open disk #%1 status").arg(i);
-            diskStatusAction[i]->setStatusTip(statusTip);
+            diskStatusActions[i]->setStatusTip(statusTip);
         }
     }
 }
@@ -1675,32 +1675,32 @@ void QtGui::UpdateDiskStatus(Word floppyIndex, DiskStatus oldStatus,
     if (HasFloppy())
     {
         QString text;
-        assert(static_cast<size_t>(floppyIndex) < diskStatusAction.size());
+        assert(static_cast<size_t>(floppyIndex) < diskStatusActions.size());
 
         switch (newStatus)
         {
             case DiskStatus::EMPTY:
                 text = tr("Disk #%1 not ready").arg(floppyIndex);
-                diskStatusAction[floppyIndex]->setText(text);
-                diskStatusAction[floppyIndex]->setIcon(iconNoFloppy);
+                diskStatusActions[floppyIndex]->setText(text);
+                diskStatusActions[floppyIndex]->setIcon(iconNoFloppy);
                 break;
 
             case DiskStatus::INACTIVE:
                 if (oldStatus == DiskStatus::EMPTY)
                 {
                     text = fct_getStatusText(floppyIndex);
-                    diskStatusAction[floppyIndex]->setText(text);
+                    diskStatusActions[floppyIndex]->setText(text);
                 }
-                diskStatusAction[floppyIndex]->setIcon(iconInactiveFloppy);
+                diskStatusActions[floppyIndex]->setIcon(iconInactiveFloppy);
                 break;
 
             case DiskStatus::ACTIVE:
                 if (oldStatus == DiskStatus::EMPTY)
                 {
                     text = fct_getStatusText(floppyIndex);
-                    diskStatusAction[floppyIndex]->setText(text);
+                    diskStatusActions[floppyIndex]->setText(text);
                 }
-                diskStatusAction[floppyIndex]->setIcon(iconActiveFloppy);
+                diskStatusActions[floppyIndex]->setIcon(iconActiveFloppy);
                 break;
         }
     }
@@ -1975,7 +1975,7 @@ void QtGui::SetIconSizeCheck(const QSize &iconSize)
 
     for (int index = 0; index < ICON_SIZES; ++index)
     {
-        auto *action = iconSizeAction[index];
+        auto *action = iconSizeActions[index];
         assert(action != nullptr);
         action->setChecked(index == sizeIndex);
     }

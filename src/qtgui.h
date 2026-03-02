@@ -302,9 +302,9 @@ private:
     QAction *introductionAction{};
     QAction *aboutAction{};
     QAction *aboutQtAction{};
-    std::array<QAction *, MAX_DRIVES> diskStatusAction{};
-    std::array<QAction *, ICON_SIZES> iconSizeAction{};
-    std::array<QAction *, SCREEN_SIZES> screenSizeAction{};
+    std::array<QAction *, MAX_DRIVES> diskStatusActions{};
+    std::array<QAction *, ICON_SIZES> iconSizeActions{};
+    std::array<QAction *, SCREEN_SIZES> screenSizeActions{};
     QAction *interruptStatusAction{};
     PrintOutputWindow *printOutputWindow{};
     QIcon iconNoFloppy;
