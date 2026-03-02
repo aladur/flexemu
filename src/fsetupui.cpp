@@ -250,8 +250,8 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     c_multiColorScheme->setChecked(isMultiColorSchemeChecked);
 
-    c_isInverse->setChecked(options.isInverse != 0);
-    c_isConfirmExit->setChecked(options.isConfirmExit != 0);
+    c_isInverse->setChecked(options.isInverse);
+    c_isConfirmExit->setChecked(options.isConfirmExit);
 
     c_undocumented->setChecked(options.use_undocumented);
 
@@ -323,7 +323,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
            (FileTimeAccess::Get | FileTimeAccess::Set));
     c_fileTime->setChecked(setFileTime);
 
-    c_isDisplaySmooth->setChecked(options.isSmooth != 0);
+    c_isDisplaySmooth->setChecked(options.isSmooth);
     g_isFullScreen->setChecked(options.isFullScreen);
     r_isFullScreenWithMenus->setChecked(!options.isFloatingToolBar);
     r_isFullScreenWithFTB->setChecked(options.isFloatingToolBar);
