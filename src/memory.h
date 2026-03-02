@@ -66,6 +66,22 @@ struct ioDeviceProperties
     BInterval<Word> addressRange;
 };
 
+enum class RamPattern : uint8_t
+{
+    AllZero, // Use $00
+    AllOne, // Use $FF
+    Lines64, // Repeatedly use 64 byte $00 and 64 byte $FF
+    Random10, // Use random byte pattern with 10% chance of bit set
+    Random20, // Use random byte pattern with 20% chance of bit set
+    Random30, // Use random byte pattern with 30% chance of bit set
+    Random40, // Use random byte pattern with 40% chance of bit set
+    Random50, // Use random byte pattern with 50% chance of bit set
+    Random60, // Use random byte pattern with 60% chance of bit set
+    Random70, // Use random byte pattern with 70% chance of bit set
+    Random80, // Use random byte pattern with 80% chance of bit set
+    Random90, // Use random byte pattern with 90% chance of bit set
+};
+
 using DevicesProperties_t = std::vector<struct ioDeviceProperties>;
 
 class Memory : public MemorySource<DWord>, public MemoryTarget<DWord>,
@@ -88,6 +104,7 @@ private:
     Word genio_base{0xFFF0U};
     Byte ramBank{0};
     unsigned random_seed{123456789U};
+    RamPattern ramPattern{RamPattern::AllZero};
     std::vector<Byte> memory;
     std::vector<Byte> video_ram;
     MemorySource<DWord>::AddressRanges addressRanges;
@@ -109,7 +126,8 @@ private:
     void init_memory();
     void init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr);
     void sort_devices_properties();
-    Byte generate_random_byte();
+    Byte generate_random_byte(RamPattern p_ramPattern);
+    static std::optional<RamPattern> Convert(const std::string &ramPattern);
 
 public:
     // Initialization functions

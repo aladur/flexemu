@@ -62,8 +62,15 @@ Memory::Memory(const struct sOptions &options,
     if (p_configFile)
     {
         const auto value = p_configFile->GetDebugSupportOption("presetRAM");
+        const auto optRamPattern =
+            Convert(p_configFile->GetRuntimeSupportOption("presetRAMPattern"));
 
         isPresetRam = (value == "1");
+
+        if (optRamPattern.has_value())
+        {
+            ramPattern = optRamPattern.value();
+        }
     }
 
     // Eurocom II/V5 has 48 KByte memory on mainboard. Never the less
@@ -105,12 +112,12 @@ void Memory::init_memory()
 
     for (i = 0; i < video_ram_size; i++)
     {
-        video_ram[i] = generate_random_byte();
+        video_ram[i] = generate_random_byte(ramPattern);
     }
 
     for (i = 0; i < memory_size; i++)
     {
-        memory[i] = generate_random_byte();
+        memory[i] = generate_random_byte(ramPattern);
     }
 
     for (i = 0; i < YBLOCKS; i++)
@@ -454,18 +461,25 @@ void Memory::sort_devices_properties()
     }
 }
 
-Byte Memory::generate_random_byte()
+Byte Memory::generate_random_byte(RamPattern p_ramPattern)
 {
     static bool isInitialized = false;
+    static Byte lineValue = 0U;
+    static Byte lineCount = 0U;
     static std::array<Byte, 1024> values{};
     static std::random_device rd;
     static std::minstd_rand0 gen(rd());
-    static constexpr const double probability_bit_set = 0.2;
     static constexpr const unsigned a = 1664525;
     static constexpr const unsigned c = 1013904223;
 
-    if (!isInitialized)
+    if (!isInitialized && p_ramPattern >= RamPattern::Random10 &&
+        p_ramPattern <= RamPattern::Random90)
     {
+        using T = std::underlying_type_t<RamPattern>;
+
+        const auto propability = 1U + static_cast<T>(p_ramPattern) -
+         static_cast<T>(RamPattern::Random10);
+        double probability_bit_set = propability * 0.1;
         std::bernoulli_distribution bit_distrib(probability_bit_set);
 
         // Initialize values array with a given probability of bits set.
@@ -485,9 +499,68 @@ Byte Memory::generate_random_byte()
         isInitialized = true;
     }
 
-    // Linear congruential generator (LCG). Use paramtrization from
-    // Knuth and H. W. Lewis.
-    random_seed = a * random_seed + c;
+    switch (p_ramPattern)
+    {
+        case RamPattern::AllZero:
+            return 0x00U;
 
-    return values[random_seed % (values.size() - 1U)];
+        case RamPattern::AllOne:
+            return 0xFFU;
+
+        case RamPattern::Lines64:
+            if (++lineCount == 64U)
+            {
+                lineCount = 0U;
+                lineValue = lineValue ? 0x00U : 0xFFU;
+            }
+            return lineValue;
+
+        case RamPattern::Random10:
+        case RamPattern::Random20:
+        case RamPattern::Random30:
+        case RamPattern::Random40:
+        case RamPattern::Random50:
+        case RamPattern::Random60:
+        case RamPattern::Random70:
+        case RamPattern::Random80:
+        case RamPattern::Random90:
+            // Linear congruential generator (LCG). Use paramtrization from
+            // Knuth and H. W. Lewis.
+            random_seed = a * random_seed + c;
+            return values[random_seed % (values.size() - 1U)];
+    }
 }
+
+std::optional<RamPattern> Memory::Convert(const std::string &ramPattern)
+{
+    static const std::vector<const char *> validStrings
+    {
+        "all_zero",
+        "all_one",
+        "lines64",
+        "random10", "random20", "random30",
+        "random40", "random50", "random60",
+        "random70", "random80", "random90",
+    };
+    static const std::vector<RamPattern> patterns
+    {
+        RamPattern::AllZero,
+        RamPattern::AllOne,
+        RamPattern::Lines64,
+        RamPattern::Random10, RamPattern::Random20, RamPattern::Random30,
+        RamPattern::Random40, RamPattern::Random50, RamPattern::Random60,
+        RamPattern::Random70, RamPattern::Random80, RamPattern::Random90,
+    };
+    assert(validStrings.size() == patterns.size());
+
+    const auto iter =
+        std::find(validStrings.cbegin(), validStrings.cend(), ramPattern);
+
+    if (iter != validStrings.cend())
+    {
+        return patterns[iter - validStrings.cbegin()];
+    }
+
+    return std::nullopt;
+}
+

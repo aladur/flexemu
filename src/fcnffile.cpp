@@ -69,6 +69,7 @@ FlexemuConfigFile::FlexemuConfigFile(fs::path p_path) :
 
     InitializeIoDeviceMappings();
     InitializeDebugSupportOptions();
+    InitializeRuntimeSupportOptions();
     InitializeIoDeviceLogging();
     InitializeSerparAddresses();
     InitializeBootCharacters();
@@ -204,6 +205,14 @@ std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
     return (iter == debugSupportOptionForKey.cend()) ? "" : iter->second;
 }
 
+std::string FlexemuConfigFile::GetRuntimeSupportOption(const std::string &key)
+    const
+{
+    const auto iter = runtimeSupportOptionForKey.find(key);
+
+    return (iter == runtimeSupportOptionForKey.cend()) ? "" : iter->second;
+}
+
 void FlexemuConfigFile::InitializeDebugSupportOptions()
 {
     static const auto validKeys = std::set<std::string>{
@@ -226,6 +235,46 @@ void FlexemuConfigFile::InitializeDebugSupportOptions()
         }
 
         debugSupportOptionForKey.emplace(iter.first, iter.second);
+    }
+}
+
+void FlexemuConfigFile::InitializeRuntimeSupportOptions()
+{
+    static const auto validKeys = std::set<std::string>{
+        "presetRAMPattern",
+    };
+    static const auto validRamPatterns = std::set<std::string>{
+        "all_zero",
+        "all_one",
+        "lines64",
+        "random10", "random20", "random30", "random40", "random50",
+        "random60", "random70", "random80", "random90",
+    };
+
+    BIniFile iniFile(path);
+    const std::string section{"RuntimeSupport"};
+
+    const auto valueForKey = iniFile.ReadSection(section);
+
+    for (const auto &iter : valueForKey)
+    {
+        if (validKeys.find(iter.first) == validKeys.cend() ||
+            (iter.first == "presetRAMPattern" &&
+             validRamPatterns.find(iter.second) == validRamPatterns.cend()))
+        {
+            const auto lineNumber = iniFile.GetLineNumber(section, iter.first);
+            throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                lineNumber, iter.first + "=" + iter.second,
+                                iniFile.GetPath());
+        }
+
+        runtimeSupportOptionForKey.emplace(iter.first, iter.second);
+    }
+
+    // Default if section does not exist for backwards compatibility.
+    if (runtimeSupportOptionForKey.empty() && !iniFile.HasSection(section))
+    {
+        runtimeSupportOptionForKey.emplace("presetRAMPattern", "random20");
     }
 }
 

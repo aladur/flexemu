@@ -214,6 +214,34 @@ TEST(test_fcnffile, fct_GetDebugSupportOption)
     fs::remove(path);
 }
 
+TEST(test_fcnffile, fct_GetRuntimeSupportOption)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf5_1.conf";
+    static const std::vector<const char *> validStrings
+    {
+        "all_zero",
+        "all_one",
+        "lines64",
+        "random10", "random20", "random30",
+        "random40", "random50", "random60",
+        "random70", "random80", "random90",
+    };
+
+    for (const auto &expectedValue : validStrings)
+    {
+        std::fstream ofs(path, std::ios::out | std::ios::trunc);
+        ASSERT_TRUE(ofs.is_open());
+        ofs <<
+            "[RuntimeSupport]\n"
+            "presetRAMPattern=" << expectedValue << "\n";
+        ofs.close();
+        FlexemuConfigFile cnfFile(path);
+        const auto value = cnfFile.GetRuntimeSupportOption("presetRAMPattern");
+        EXPECT_EQ(expectedValue, value);
+        fs::remove(path);
+    }
+}
+
 TEST(test_fcnffile, fct_GetSerparAddress)
 {
     const auto path = fs::temp_directory_path() / u8"cnf5.conf";
@@ -425,6 +453,40 @@ TEST(test_fcnffile, fct_GetDebugSupportOption_exceptions)
     ofs <<
         "[DebugSupport]\n"
         "invalidKey=value\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+}
+
+TEST(test_fcnffile, fct_GetRuntimeSupportOption_exceptions)
+{
+    const auto path = fs::temp_directory_path() / u8"cnf7_1.conf";
+    std::fstream ofs(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[RuntimeSupport]\n"
+        "invalidKey=all_zero\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[RuntimeSupport]\n"
+        "presetRAMPattern=\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[RuntimeSupport]\n"
+        "presetRAMPattern=invalid_value\n";
     ofs.close();
     EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
             testing::Throws<FlexException>());

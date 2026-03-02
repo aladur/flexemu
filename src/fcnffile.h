@@ -66,6 +66,7 @@ public:
     bool IsValid() const;
     std::vector<sIoDeviceMapping> GetIoDeviceMappings() const;
     std::string GetDebugSupportOption(const std::string &key) const;
+    std::string GetRuntimeSupportOption(const std::string &key) const;
     std::pair<std::string, std::set<std::string> > GetIoDeviceLogging() const;
     std::optional<Word> GetSerparAddress(const fs::path &monitorFilePath) const;
     std::optional<Byte> GetBootCharacter(const fs::path &monitorFilePath) const;
@@ -74,6 +75,7 @@ public:
 protected:
     void InitializeIoDeviceMappings();
     void InitializeDebugSupportOptions();
+    void InitializeRuntimeSupportOptions();
     void InitializeIoDeviceLogging();
     void InitializeSerparAddresses();
     void InitializeBootCharacters();
@@ -83,6 +85,7 @@ private:
     fs::path path;
     std::vector<sIoDeviceMapping> ioDeviceMappings;
     std::map<std::string, std::string> debugSupportOptionForKey;
+    std::map<std::string, std::string> runtimeSupportOptionForKey;
     std::pair<std::string, std::set<std::string> > ioDeviceLogging;
     std::map<std::string, Word> serparAddressForMonitorFile;
     std::map<std::string, Byte> bootCharacterForMonitorFile;
