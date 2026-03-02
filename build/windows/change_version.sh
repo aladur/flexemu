@@ -81,8 +81,14 @@ echo changing version from $old_version to $new_version.
 sed -i "s/$old_version/$new_version/" installer/Flexemu.nsi
 sed -i "s/${old_version}\s*$/$new_version/" ../../CMakeLists.txt
 sed -i "s/$old_cversion/$new_cversion/" ../../src/flexdisk.rc
+sed -i "s/$old_version/$new_version/" ../../src/flexdisk.rc
 sed -i "s/$old_cversion/$new_cversion/" ../../src/flexemu.rc
+sed -i "s/$old_version/$new_version/" ../../src/flexemu.rc
 sed -i "s/$old_cversion/$new_cversion/" ../../src/dsktool.rc
+sed -i "s/$old_version/$new_version/" ../../src/dsktool.rc
 sed -i "s/$old_cversion/$new_cversion/" ../../src/mdcrtool.rc
+sed -i "s/$old_version/$new_version/" ../../src/mdcrtool.rc
 sed -i "s/$old_cversion/$new_cversion/" ../../src/flex2hex.rc
+sed -i "s/$old_version/$new_version/" ../../src/flex2hex.rc
 sed -i "s/$old_cversion/$new_cversion/" ../../src/hex2flex.rc
+sed -i "s/$old_version/$new_version/" ../../src/hex2flex.rc
