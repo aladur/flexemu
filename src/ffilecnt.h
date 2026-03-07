@@ -163,7 +163,7 @@ protected:
     bool CreateDirEntry(FlexDirEntry &dirEntry);
 
     void Initialize_for_flx_format(const s_flex_header &header);
-    void Initialize_for_dsk_format(const s_formats &format);
+    void Initialize_for_format(const s_formats &format, DiskType type);
     void Initialize_unformatted_disk();
     static void Create_boot_sectors(BootSectorBuffer_t &bootSectors,
                                     std::optional<fs::path> bsFile);
@@ -191,6 +191,8 @@ protected:
         const std::optional<fs::path> &bsFile);
     static FlexDirEntry CreateDirEntryFrom(const s_dir_entry &dir_entry,
             const std::string &filename);
+    static bool IsInFlexFormatTable(int tracks, int sectors);
+    static Byte GetFlexSectorsOnTrack0(int tracks, int sectors);
 
     // IFlexDiskByFile interface performance functions.
     void InitializeFilenames();

@@ -40,6 +40,10 @@ std::string FlexDiskAttributes::GetTypeString() const
             str = "Disk image file, FLX format";
             break;
 
+        case DiskType::IMA:
+            str = "Disk image file, IMA format";
+            break;
+
         case DiskType::Directory:
             str = "directory";
             break;

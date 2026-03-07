@@ -728,6 +728,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
 
             case DiskType::DSK:
             case DiskType::FLX:
+            case DiskType::IMA:
                 pfloppy = IFlexDiskBySectorPtr(
                     FlexDisk::Create(path.u8string(), fileTimeAccess,
                         trk, sec, disk_type));

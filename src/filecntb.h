@@ -59,6 +59,7 @@ enum class DiskType : uint8_t
 {
     DSK, // A *.dsk (or *.wta) disk image file.
     FLX, // A *.flx disk image file.
+    IMA, // A *.ima disk image file.
     Directory, // A directory disk.
 };
 

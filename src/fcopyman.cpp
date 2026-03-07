@@ -55,6 +55,7 @@ bool FlexCopyManager::FileCopy(const std::string &sourcName,
     auto fileBuffer = src.ReadToBuffer(sourcName);
 
     if ((src.GetFlexDiskType() == DiskType::DSK ||
+         src.GetFlexDiskType() == DiskType::IMA ||
          src.GetFlexDiskType() == DiskType::FLX) &&
          dst.GetFlexDiskType() == DiskType::Directory &&
         fileBuffer.IsFlexTextFile() && autoTextConversion)
@@ -65,6 +66,7 @@ bool FlexCopyManager::FileCopy(const std::string &sourcName,
 
     if (src.GetFlexDiskType() == DiskType::Directory &&
         (dst.GetFlexDiskType() == DiskType::DSK ||
+         dst.GetFlexDiskType() == DiskType::IMA ||
          dst.GetFlexDiskType() == DiskType::FLX) &&
         fileBuffer.IsTextFile() && autoTextConversion)
     {
