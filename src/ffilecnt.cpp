@@ -53,7 +53,6 @@
 #include <vector>
 #include <sstream>
 #include <filesystem>
-#include <iostream>
 
 namespace fs = std::filesystem;
 
@@ -180,7 +179,7 @@ FlexDisk::FlexDisk(
 
         if (!IsFlexFileFormat(DiskType::FLX))
         {
-            // This is a FLX file container but it is not compatible
+            // This is a FLX disk image file but it is not compatible
             // to FLEX.
             is_flex_format = false;
         }
@@ -188,30 +187,24 @@ FlexDisk::FlexDisk(
     }
 
     s_formats format { };
-    auto jvcHeader = GetJvcFileHeader();
-    auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());
     Word tracks;
     Word sectors;
 
     if (IsFlexFileFormat(DiskType::IMA) &&
-        GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
+        GetFlexTracksSectors(tracks, sectors, 0U))
     {
-        std::cout << "Check IMA file\n";
         // File is identified as a FLEX IMA container format
-        if (jvcHeaderSize != 0U)
-        {
-            throw FlexException(FERR_IS_NO_FILECONTAINER, path);
-        }
-
         format.tracks = tracks;
         format.sectors = sectors;
         format.sides = 0U;
         format.size = static_cast<SDWord>(file_size);
         format.offset = 0;
         Initialize_for_format(format, DiskType::IMA);
-        std::cout << "Valid IMA file\n";
         return;
     }
+
+    auto jvcHeader = GetJvcFileHeader();
+    auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());
 
     // check if it is a DSK formated disk
     // read system info sector
@@ -1263,23 +1256,29 @@ bool FlexDisk::FormatSector(const Byte *target, int track, int sector,
                           param.max_sector0, param.max_sector, param.sides0,
                           param.sides);
 
-    fstream.seekg(0);
-    if (fstream.fail())
+    if (param.type == DiskType::FLX)
     {
-        result = false;
-    }
+        // For FLX format update file header.
+        fstream.seekg(0);
+        if (fstream.fail())
+        {
+            result = false;
+        }
 
-    fstream.write(reinterpret_cast<const char *>(&flx_header),
-                  sizeof(flx_header));
-    if (fstream.fail())
-    {
-        result = false;
+        fstream.write(reinterpret_cast<const char *>(&flx_header),
+                      sizeof(flx_header));
+        if (fstream.fail())
+        {
+            result = false;
+        }
     }
 
     result &= WriteSector(target, track, sector, side);
 
-    if (result && !is_flex_format && (file_size == getFileSize(flx_header)) &&
-        IsFlexFileFormat(DiskType::FLX))
+    const auto estimatedFileSize = getFileSize(flx_header) -
+        (param.type == DiskType::IMA ? sizeof(s_flex_header) : 0);
+    if (result && !is_flex_format && (file_size == estimatedFileSize) &&
+        IsFlexFileFormat(param.type))
     {
         is_flex_format = true;
     }
@@ -1323,10 +1322,6 @@ void FlexDisk::Initialize_for_format(const s_formats &format, DiskType type)
     {
         auto size_tracks = SECTOR_SIZE * (format.tracks - 1) * format.sectors;
         sector0 = static_cast<Word>((format.size - size_tracks) / SECTOR_SIZE);
-        std::cout << "size=" << format.size << "\n";
-        std::cout << "tracks=" << format.tracks << "\n";
-        std::cout << "sectors=" << format.sectors << "\n";
-        std::cout << "sectors0=" << sector0 << "\n";
     }
     else
     {
@@ -1361,10 +1356,15 @@ void FlexDisk::Initialize_for_format(const s_formats &format, DiskType type)
 
 void FlexDisk::Initialize_unformatted_disk()
 {
-    file_size = sizeof(struct s_flex_header);
+    // An unformatted disk can have IMA or FLX format.
+    // If file extension is not *.ima FLX format is used as default.
+    const auto extension = flx::tolower(path.extension().u8string());
+    const bool isFlxDisk = (extension != ".ima");
+
+    file_size = isFlxDisk ? sizeof(struct s_flex_header) : 0U;
     param = { };
-    param.offset = sizeof(struct s_flex_header);
-    param.type = DiskType::FLX;
+    param.offset = isFlxDisk ? sizeof(struct s_flex_header) : 0U;
+    param.type = isFlxDisk ? DiskType::FLX : DiskType::IMA;
     param.options = DiskOptions::NONE;
 }
 
@@ -1513,7 +1513,8 @@ void FlexDisk::Create_format_table(DiskType p_disk_type, int trk, int sec,
 
     format.tracks = static_cast<Word>(trk);
     format.sectors = static_cast<Word>(sec);
-    format.sectors0 = (p_disk_type == DiskType::FLX) ?
+    format.sectors0 = (p_disk_type == DiskType::FLX ||
+                       p_disk_type == DiskType::IMA) ?
                           getTrack0SectorCount(format.tracks, format.sectors) :
                           format.sectors;
 
@@ -1526,7 +1527,7 @@ void FlexDisk::Create_format_table(DiskType p_disk_type, int trk, int sec,
 }
 
 // return != 0 on success
-// format FLX or DSK format. FLX format always with sector_size 256
+// format FLX, DSK or IMA format. FLX format always with sector_size 256
 // number of sectors on track 0 is calculated by method
 // getTrack0SectorCount().
 
@@ -1678,15 +1679,12 @@ bool FlexDisk::IsFlexFileFormat(DiskType p_disk_type) const
     // Only formats defined in flex_formats and sectors <= 72 are supported.
     if (extension == ".ima")
     {
-        std::cout << "extension *.ima\n";
         if (p_disk_type != DiskType::IMA)
         {
             return false;
         }
-        auto jvcHeader = GetJvcFileHeader();
-        auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());
 
-        if (GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
+        if (GetFlexTracksSectors(tracks, sectors, 0U))
         {
             const auto size_tracks = SECTOR_SIZE * (tracks - 1) * sectors;
             const auto sectors0 = static_cast<Word>((fileSize - size_tracks) /
@@ -1694,9 +1692,9 @@ bool FlexDisk::IsFlexFileFormat(DiskType p_disk_type) const
 
             if (tracks > 0U && tracks < 256U &&
                 sectors > 0U && sectors <= 72U &&
+                fileSize % SECTOR_SIZE == 0 &&
                 IsInFlexFormatTable(tracks, sectors) &&
-                sectors0 == GetFlexSectorsOnTrack0(tracks, sectors) &&
-                fileSize % SECTOR_SIZE == 0 && jvcHeaderSize == 0)
+                sectors0 == getTrack0SectorCount(tracks, sectors))
             {
                 return true;
             }
@@ -2040,22 +2038,3 @@ bool FlexDisk::IsInFlexFormatTable(int tracks, int sectors)
     return (iter != flex_formats.cend());
 }
 
-Byte FlexDisk::GetFlexSectorsOnTrack0(int tracks, int sectors)
-{
-    const st_t ts{
-        static_cast<Byte>(tracks - 1U),
-        static_cast<Byte>(sectors)
-    };
-    static_assert(flex_formats.size() == flex_sectors0.size(),
-                  "flex_formats and flex_sectors0 have different size");
-
-    // NOLINTNEXTLINE(readability-qualified-auto).
-    const auto iter = std::find(flex_formats.cbegin(), flex_formats.cend(), ts);
-
-    if (iter != flex_formats.cend())
-    {
-        return flex_sectors0[iter - flex_formats.cbegin()];
-    }
-
-    return '\0';
-}

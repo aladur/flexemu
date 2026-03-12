@@ -98,7 +98,7 @@ protected:
         }
 
         if (type == DiskType::DSK || type == DiskType::FLX ||
-            type == DiskType::Directory)
+            type == DiskType::IMA || type == DiskType::Directory)
         {
             ASSERT_TRUE(diskInfo.GetIsFlexFormat());
             EXPECT_EQ(diskInfo.GetDate(), BDate::Now());
@@ -194,6 +194,44 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
                 type, options, isWP);
         disk.reset();
         fs::remove(path2);
+    }
+
+    const auto path3 = fs::temp_directory_path() / u8"flexdisk.ima";
+
+    for (const auto trk_sec : flex_formats)
+    {
+        int tracks = trk_sec.trk + 1;
+        int sectors = trk_sec.sec;
+        auto type = DiskType::IMA;
+        auto options = DiskOptions::HasSectorIF;
+        bool isWP = (tracks == 40);
+        FlexDisk *pdisk{};
+
+        if (sectors > 72)
+        {
+            continue;
+        }
+
+        EXPECT_NO_THROW(
+            pdisk = FlexDisk::Create(path3, ft_access, tracks, sectors, type));
+        disk.reset(cast(pdisk));
+        if (isWP)
+        {
+            disk.reset();
+            disk.reset(cast(new FlexDisk(path3, mode, ft_access)));
+        }
+
+        ASSERT_NE(disk.get(), nullptr);
+        EXPECT_TRUE(static_cast<bool>(disk));
+        EXPECT_EQ(disk->IsWriteProtected(), tracks == 40);
+        EXPECT_EQ(disk->GetFlexDiskType(), type);
+        EXPECT_EQ(disk->GetPath(), path3);
+        FlexDiskAttributes diskInfo{};
+        ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
+        CheckAttributes(diskInfo, path3, 0U, 0U, tracks, sectors, SECTOR_SIZE,
+                type, options, isWP);
+        disk.reset();
+        fs::remove(path3);
     }
 }
 

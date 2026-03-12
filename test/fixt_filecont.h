@@ -61,20 +61,23 @@ protected:
     // Second index of diskFiles, diskPaths or disks:
     const int DSK{0};// *.dsk disk image file index.
     const int FLX{1};// *.flx disk image file index.
-    const int DIR{2};// directory disk index.
+    const int IMA{2};// *.ima disk image file index.
+    const int DIR{3};// directory disk index.
 
-    static constexpr const std::array<std::array<const char *, 3>, 8> diskFiles
+    static constexpr const std::array<std::array<const char *, 4>, 8> diskFiles
     {{
-        {"testdisk_ro.dsk", "testdisk_ro.flx", "testdir_ro"},
-        {"testdisk_rw.dsk", "testdisk_rw.flx", "testdir_rw"},
-        {"testdisk_ .dsk", "testdisk_ .flx", "testdir_ sp"},
-        {u8"testdisk_\u2665.dsk", u8"testdisk_\u2665.flx", u8"testdir_\u2665"},
-        {"testdisk_ft.dsk", "testdisk_ft.flx", "testdir_ft"},
-        {"testdisk_tgt.dsk", "testdisk_tgt.flx", "testdir_tgt"},
-        {"testdisk_rom.dsk", "testdisk_rom.flx", ""},
-        {"testdisk_ram.dsk", "testdisk_ram.flx", ""},
+        {"testdisk_ro.dsk", "testdisk_ro.flx", "testdisk_ro.ima", "testdir_ro"},
+        {"testdisk_rw.dsk", "testdisk_rw.flx", "testdisk_rw.ima", "testdir_rw"},
+        {"testdisk_ .dsk", "testdisk_ .flx", "testdisk_ .ima", "testdir_ sp"},
+        {u8"testdisk_\u2665.dsk", u8"testdisk_\u2665.flx",
+         u8"testdisk_\u2665.ima", u8"testdir_\u2665"},
+        {"testdisk_ft.dsk", "testdisk_ft.flx", "testdisk_ft.ima", "testdir_ft"},
+        {"testdisk_tgt.dsk", "testdisk_tgt.flx", "testdisk_tgt.ima",
+          "testdir_tgt"},
+        {"testdisk_rom.dsk", "testdisk_rom.flx", "testdisk_rom.ima", ""},
+        {"testdisk_ram.dsk", "testdisk_ram.flx", "testdisk_ram.ima", ""},
     }};
-    std::array<std::array<fs::path, 3>, 8> diskPaths;
+    std::array<std::array<fs::path, 4>, 8> diskPaths;
 
     const int tracks = 35;
     const int sectors = 10;
@@ -125,7 +128,7 @@ protected:
 
         for (int idx = RO; idx <= GetMaxDiskIndex(); ++idx)
         {
-            for (int tidx = DSK; tidx <= FLX; ++tidx)
+            for (int tidx = DSK; tidx <= IMA; ++tidx)
             {
                 diskPath = diskPaths[idx][tidx];
                 if (idx == TGT)
@@ -205,6 +208,7 @@ protected:
         {
             fs::remove(diskPaths[idx][DSK]);
             fs::remove(diskPaths[idx][FLX]);
+            fs::remove(diskPaths[idx][IMA]);
         }
 
         for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)

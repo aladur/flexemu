@@ -103,6 +103,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QRadioButton" name="r_imaFile">
+          <property name="text">
+           <string>IMA-file</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QRadioButton" name="r_mdcrFile">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">

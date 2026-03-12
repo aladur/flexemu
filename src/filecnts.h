@@ -234,32 +234,6 @@ constexpr std::array<st_t, 19> flex_formats
     {255, 255}, // Hard disk, 256 Tracks
 }};
 
-// Array contains the number of sectors on track 0 (= single density)
-// for all formats defined in flex_formats.
-// Used for DiskType::IMA.
-constexpr std::array<Byte, 19> flex_sectors0
-{
-    10,
-    10,
-    20,
-    20,
-    10,
-    10,
-    20,
-    20,
-    10,
-    10,
-    20,
-    20,
-    20,
-    15,
-    15,
-    30,
-    30,
-    255,
-    255,
-};
-
 constexpr std::array<const char *, 19> flex_format_descriptions
 {{
     "35-10 5 1/4 inch, Single-sided, single-density, 87.5 KByte",

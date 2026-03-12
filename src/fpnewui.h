@@ -58,6 +58,7 @@ public:
 private slots:
     void OnDskFileFormat(bool value);
     void OnFlxFileFormat(bool value);
+    void OnImaFileFormat(bool value);
     void OnMdcrFileFormat(bool value);
     void OnFormatChanged(int index);
     void OnTrkSecChanged(int tracks, int sectors);
@@ -69,8 +70,11 @@ private slots:
 
 private:
     void InitializeWidgets();
+    void UpdateDiskFormatComboBox();
     void ConnectSignalsWithSlots();
-    void UpdateFormatTrkSecEnable(bool isMdcrFormat);
+    void ConnectDiskFormatComboBox(bool isConnect);
+    void UpdateTrkSecEnable(bool isEnabled);
+    int AddDiskFormatItems(bool isAddHardDisks);
     void UpdateFilename();
     bool Validate();
     QString GetCurrentFileExtension() const;
@@ -79,6 +83,8 @@ private:
     QString defaultPath;
     DiskType disk_type{DiskType::DSK};
     bool is_disk_type_valid{};
+    int diskFormatIndexOffset{};
+    int hardDiskFormatEntryCount{};
 };
 
 #endif

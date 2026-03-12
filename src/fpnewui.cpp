@@ -56,14 +56,82 @@ void FlexplorerNewUi::InitializeWidgets()
 {
     r_dskFile->setChecked(true);
 
+    UpdateDiskFormatComboBox();
+}
+
+int FlexplorerNewUi::AddDiskFormatItems(bool isAddHardDisks)
+{
     int index = 0;
-    cb_diskFormat->addItem("[Set Tracks and Sectors]", index);
+    int count = 0;
+
     for (const auto *description : flex_format_descriptions)
     {
-        cb_diskFormat->addItem(description, ++index);
+        const auto &trk_sec = flex_formats[index++];
+        bool isHardDisk = (trk_sec.trk >= 254U && trk_sec.sec == 255U);
+
+        if (isHardDisk == isAddHardDisks)
+        {
+            cb_diskFormat->addItem(description, 1000);
+            ++count;
+        }
     }
-    cb_diskFormat->setMaxVisibleItems(cb_diskFormat->count());
-    cb_diskFormat->setCurrentIndex(0);
+
+    return count;
+}
+
+void FlexplorerNewUi::UpdateDiskFormatComboBox()
+{
+    int count = cb_diskFormat->count();
+    int currentIndex = (count == 0) ?
+        0 : cb_diskFormat->currentIndex() - diskFormatIndexOffset;;
+    bool isKeepIndex0 = (cb_diskFormat->currentIndex() == -1 ||
+                         (cb_diskFormat->currentIndex() == 0 &&
+                          diskFormatIndexOffset == 1));
+    if (count == 0)
+    {
+        AddDiskFormatItems(false);
+    }
+
+    ConnectDiskFormatComboBox(false);
+    if (diskFormatIndexOffset == 0 && !r_imaFile->isChecked())
+    {
+        // Insert "Set Track/Sector" item as first item.
+        cb_diskFormat->insertItem(0, "[Set Tracks and Sectors]");
+        diskFormatIndexOffset = 1;
+    }
+    else if (diskFormatIndexOffset != 0 && r_imaFile->isChecked())
+    {
+        // Remove the first item "Set Track/Sector".
+        cb_diskFormat->removeItem(0);
+        diskFormatIndexOffset = 0;
+    }
+
+    if (hardDiskFormatEntryCount == 0 && !r_imaFile->isChecked())
+    {
+        // Add n harddisk items at the end.
+        hardDiskFormatEntryCount = AddDiskFormatItems(true);
+    }
+    else if (hardDiskFormatEntryCount != 0 && r_imaFile->isChecked())
+    {
+        int index = cb_diskFormat->count() - 1;
+
+        for (int idx = 0; idx < hardDiskFormatEntryCount; ++idx)
+        {
+            // Remove the last n harddisk items from the end.
+            cb_diskFormat->removeItem(index--);
+        }
+        hardDiskFormatEntryCount = 0;
+    }
+
+    count = cb_diskFormat->count();
+    cb_diskFormat->setMaxVisibleItems(count);
+    currentIndex += diskFormatIndexOffset;
+    currentIndex = std::max(0, std::min(currentIndex, count - 1));
+    currentIndex = isKeepIndex0 ? 0 : currentIndex;
+    ConnectDiskFormatComboBox(true);
+
+    cb_diskFormat->setCurrentIndex(-1); // force update
+    cb_diskFormat->setCurrentIndex(currentIndex);
 }
 
 void FlexplorerNewUi::TransferDataToDialog(DiskType p_disk_type,
@@ -82,6 +150,9 @@ void FlexplorerNewUi::TransferDataToDialog(DiskType p_disk_type,
     {
         case DiskType::FLX:
             r_flxFile->setChecked(true);
+            break;
+        case DiskType::IMA:
+            r_imaFile->setChecked(true);
             break;
         case DiskType::DSK:
         case DiskType::Directory:
@@ -112,6 +183,8 @@ void FlexplorerNewUi::ConnectSignalsWithSlots()
             this, &FlexplorerNewUi::OnDskFileFormat);
     connect(r_flxFile, &QAbstractButton::toggled,
             this, &FlexplorerNewUi::OnFlxFileFormat);
+    connect(r_imaFile, &QAbstractButton::toggled,
+            this, &FlexplorerNewUi::OnImaFileFormat);
     connect(r_mdcrFile, &QAbstractButton::toggled,
             this, &FlexplorerNewUi::OnMdcrFileFormat);
     connect(e_tracks,
@@ -128,14 +201,7 @@ void FlexplorerNewUi::ConnectSignalsWithSlots()
             QOverload<int>::of(&QSpinBox::valueChanged),
 #endif
             this, &FlexplorerNewUi::OnSectorChanged);
-    connect(cb_diskFormat,
-#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
-            static_cast<void (QComboBox::*)(int)>(
-                &QComboBox::currentIndexChanged),
-#else
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-#endif
-            this, &FlexplorerNewUi::OnFormatChanged);
+    ConnectDiskFormatComboBox(true);
     connect(b_path, &QAbstractButton::clicked,
             this, &FlexplorerNewUi::OnSelectPath);
 
@@ -143,6 +209,24 @@ void FlexplorerNewUi::ConnectSignalsWithSlots()
             this, &FlexplorerNewUi::OnAccepted);
     connect(c_buttonBox, &QDialogButtonBox::rejected,
             this, &FlexplorerNewUi::OnRejected);
+}
+
+void FlexplorerNewUi::ConnectDiskFormatComboBox(bool isConnect)
+{
+    if (isConnect)
+    {
+        connect(cb_diskFormat,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+                static_cast<void (QComboBox::*)(int)>(
+                    &QComboBox::currentIndexChanged),
+#else
+                QOverload<int>::of(&QComboBox::currentIndexChanged),
+#endif
+                this, &FlexplorerNewUi::OnFormatChanged);
+        return;
+    }
+
+    cb_diskFormat->disconnect();
 }
 
 int FlexplorerNewUi::GetTracks() const
@@ -194,7 +278,9 @@ void FlexplorerNewUi::OnDskFileFormat(bool value)
     {
         disk_type = DiskType::DSK;
         is_disk_type_valid = true;
-        UpdateFormatTrkSecEnable(false);
+        cb_diskFormat->setEnabled(true);
+        UpdateDiskFormatComboBox();
+        UpdateTrkSecEnable(true);
         UpdateFilename();
     }
 }
@@ -205,7 +291,22 @@ void FlexplorerNewUi::OnFlxFileFormat(bool value)
     {
         disk_type = DiskType::FLX;
         is_disk_type_valid = true;
-        UpdateFormatTrkSecEnable(false);
+        cb_diskFormat->setEnabled(true);
+        UpdateDiskFormatComboBox();
+        UpdateTrkSecEnable(true);
+        UpdateFilename();
+    }
+}
+
+void FlexplorerNewUi::OnImaFileFormat(bool value)
+{
+    if (value)
+    {
+        disk_type = DiskType::IMA;
+        is_disk_type_valid = true;
+        cb_diskFormat->setEnabled(true);
+        UpdateDiskFormatComboBox();
+        UpdateTrkSecEnable(false);
         UpdateFilename();
     }
 }
@@ -215,35 +316,41 @@ void FlexplorerNewUi::OnMdcrFileFormat(bool value)
     if (value)
     {
         is_disk_type_valid = false;
-        UpdateFormatTrkSecEnable(true);
+        cb_diskFormat->setEnabled(false);
+        UpdateTrkSecEnable(false);
         UpdateFilename();
     }
 
 }
 
-void FlexplorerNewUi::UpdateFormatTrkSecEnable(bool isMdcrFormat)
+void FlexplorerNewUi::UpdateTrkSecEnable(bool isEnabled)
 {
-    bool isFreeDiskFormat = (cb_diskFormat->currentIndex() == 0);
+    const bool isFreeDiskFormat = (cb_diskFormat->currentIndex() == 0) &&
+                   (r_flxFile->isChecked() || r_dskFile->isChecked());
 
-    cb_diskFormat->setEnabled(!isMdcrFormat);
-    e_tracks->setEnabled(!isMdcrFormat && isFreeDiskFormat);
-    e_sectors->setEnabled(!isMdcrFormat && isFreeDiskFormat);
+    e_tracks->setEnabled(isEnabled && isFreeDiskFormat);
+    e_sectors->setEnabled(isEnabled && isFreeDiskFormat);
 }
 
 void FlexplorerNewUi::OnFormatChanged(int index)
 {
+    if (index < 0)
+    {
+        return;
+    }
+
     bool isMdcrFormat = r_mdcrFile->isChecked();
-    bool isFreeDiskFormat = (index == 0);
+    const bool isFreeDiskFormat = (index == 0) &&
+                   (r_flxFile->isChecked() || r_dskFile->isChecked());
 
     if (!isFreeDiskFormat)
     {
-        auto trk_sec = flex_formats[index - 1];
+        const auto &trk_sec = flex_formats[index - diskFormatIndexOffset];
         e_tracks->setValue(trk_sec.trk + 1);
         e_sectors->setValue(trk_sec.sec);
     }
 
-    e_tracks->setEnabled(!isMdcrFormat && isFreeDiskFormat);
-    e_sectors->setEnabled(!isMdcrFormat && isFreeDiskFormat);
+    UpdateTrkSecEnable(!isMdcrFormat);
 }
 
 void FlexplorerNewUi::OnSectorChanged(int sectors)
@@ -278,7 +385,8 @@ void FlexplorerNewUi::OnSelectPath()
 {
     QString caption = tr("Save disk file");
     QString filter =
-                tr("FLEX disk image files (*.dsk *.flx *.wta);;All files (*.*)");
+                tr("FLEX disk image files (*.dsk *.flx *.ima *.wta);;"
+                   "All files (*.*)");
 
     if (IsMDCRDiskActive())
     {
@@ -398,6 +506,8 @@ QString FlexplorerNewUi::GetCurrentFileExtension() const
             return "dsk";
         case DiskType::FLX:
             return "flx";
+        case DiskType::IMA:
+            return "ima";
     }
 
     return "";

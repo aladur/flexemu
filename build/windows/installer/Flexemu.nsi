@@ -454,6 +454,7 @@ Section "-Registry update"
   WriteRegStr   HKCR "Applications\FLEXplorer.exe\SupportedTypes" ".dsk" ""
   WriteRegStr   HKCR "Applications\FLEXplorer.exe\SupportedTypes" ".flx" ""
   WriteRegStr   HKCR "Applications\FLEXplorer.exe\SupportedTypes" ".wta" ""
+  WriteRegStr   HKCR "Applications\FLEXplorer.exe\SupportedTypes" ".ima" ""
   WriteRegStr   HKCR "Applications\FLEXplorer.exe\shell\open\command" "" "$\"$INSTDIR\FLEXplorer.exe$\" $\"%1$\""
 
   ; Add Application paths

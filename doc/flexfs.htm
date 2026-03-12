@@ -16,6 +16,7 @@ Flexemu supports three different file systems to be used as disk drive:
 <ul>
  <li><a href="#dsk_format">DSK Disk image files</a>
  <li><a href="#flx_format">FLX Disk image files</a>
+ <li><a href="#ima_format">IMA Disk image files</a>
  <li><a href="#nafs_format">Vitual disk images</a>
 </ul>
 <div class="options-list">
@@ -37,9 +38,10 @@ Also FLEX software archives use DSK disk image files, see:
  FLEX Software Archive</a> by Simon Wynn Consulting.<p>
 A *.DSK file contains all sectors of a disk. A wide range of track/sector
 combinations is supported.
-Following table shows typical used disk formats:
+Following table shows all prefered floppy disk formats:
 <p>
 <table>
+ <caption><b>Prefered floppy disk formats</b></caption>
  <tr><th>Disk size<br>[inch]</th><th>Sides</th><th>Density<br>*)</th><th>Tracks</th><th>Sectors</th><th>File size<br>[KByte]</th>
  <tr><td>5 1/4</td><td>1</td><td>SD</td><td>35</td><td>10</td><td>87.5</td>
  <tr><td>5 1/4</td><td>1</td><td>DD</td><td>35</td><td>10</td><td>157.5</td>
@@ -58,15 +60,21 @@ Following table shows typical used disk formats:
  <tr><td>8</td><td>1</td><td>DD</td><td>77</td><td>26</td><td>500.5</td>
  <tr><td>8</td><td>2</td><td>SD</td><td>77</td><td>30</td><td>577.5</td>
  <tr><td>8</td><td>2</td><td>DD</td><td>77</td><td>52</td><td>1001</td>
- <tr><td>**)</td><td>-</td><td>-</td><td>255</td><td>255</td><td>16256.25</td>
- <tr><td>**)</td><td>-</td><td>-</td><td>256</td><td>255</td><td>16320</td>
 </table>
 <p>
-*) SD = single density, DS = double density, QD = quad density<br>
-**) Harddisk<p>
+*) SD = single density, DS = double density, QD = quad density
+<p>In addition the following harddisk formats are supported.
+<table>
+ <caption><b>Prefered harddisk formats</b></caption>
+ <tr><th>Disk size<br>[inch]</th><th>Sides</th><th>Density<br>*)</th><th>Tracks</th><th>Sectors</th><th>File size<br>[KByte]</th>
+ <tr><td>-</td><td>-</td><td>-</td><td>255</td><td>255</td><td>16256.25</td>
+ <tr><td>-</td><td>-</td><td>-</td><td>256</td><td>255</td><td>16320</td>
+</table>
+<p>
 The sector size is always 256 Byte. The size of the
-file can simply be computed with &lt;nr_of_tracks&gt; * &lt;nr_of_sectors&gt; *
-256 Byte. If the DSK-file is write protected the drive within flexemu is write
+file can simply be computed with<p>
+&lt;nr_of_tracks&gt; * &lt;nr_of_sectors&gt; * 256 Byte
+<p>If the DSK-file is write protected the drive within flexemu is write
 protected too.<p>
 Optionally a
 <a href="https://sites.google.com/site/dabarnstudio/coco-utilities/jvc-disk-format">JVC file header</a> is supported. The header can contain 1 up to 5 bytes.
@@ -85,7 +93,7 @@ flexemu supports the following JVC header values:
 **) For FLEX compatibility the first sector ID always should be 1<br>
 ***) Sector attribute flag should be 0 (A sector attribute byte is unsupported)<br>
 </dd>
-<dt id="flx_format">FLX Disk image files
+<dt id="flx_format">FLX Disk image files</dt>
 <dd>
 FLX disk image files (with file extension *.FLX) have the same structure as a
 *.DSK file with an additional 16-byte header at the beginning of the file. The
@@ -107,6 +115,28 @@ header describes the disk format:
 The header allows to have a different number of sectors on track 0 as on other
 tracks. For the actual format look at
 <a href="https://github.com/aladur/flexemu/blob/899653f1e8dcfc722a803567fb90828f606a2811/src/filecnts.h#L265">struct s_flex_header</a>.
+</dd>
+<dt id="ima_format">IMA Disk image files</dt>
+<dd>
+IMA disk image files (with file extension *.IMA) seem to get more common
+for FLEX emulators.
+There are emulators supporting IMA disk image files, for example:
+<a href="http://www.evenson-consulting.com/swtpc/">
+ SWTPC 6800/6809 Emulator</a> by Evenson Consulting Services.
+IMA disk image files (with file extension *.IMA) always use single density
+on track 0 as needed by FLEX, see
+<a href="6809fadg.pdf" target="_blank">6809 FLEX Adaption Guide</a>
+for details. So when using disk image files with an emulator and also use
+these disks with a physical floppy disk or a
+<a href="https://www.gotekemulator.com/">Gotek USB floppy disk emulator</a>
+this format is recommended.
+It contains no metadata. Only the prefered floppy disk
+formats as described in <a href=#dsk_format>DSK Disk image files</a> are
+supported.
+The sector size is always 256 Byte. The size of the file can simply be
+computed with<p>
+ (&lt;nr_of_sectors_track0&gt; + ((&lt;nr_of_tracks&gt; - 1) *
+&lt;nr_of_sectors&gt;)) * 256 Byte
 </dd>
 <dt id="nafs_format">Virtual disk images</dt>
 <dd>

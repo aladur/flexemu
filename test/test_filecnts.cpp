@@ -46,7 +46,7 @@ namespace fs = std::filesystem;
 class test_IFlexDiskBySector : public test_FlexDiskFixture
 {
 protected:
-    std::array<std::array<IFlexDiskBySectorPtr, 3>, 8> disks{};
+    std::array<std::array<IFlexDiskBySectorPtr, 4>, 8> disks{};
 
      int GetMaxDiskIndex() override
      {

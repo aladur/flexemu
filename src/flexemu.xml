@@ -14,5 +14,10 @@
     <glob pattern="*.flx"/>
     <icon name="application-x-flex-diskimage"/>
   </mime-type>
+  <mime-type type="application/x-ima">
+    <comment>FLEX disk image</comment>
+    <glob pattern="*.ima"/>
+    <icon name="application-x-flex-diskimage"/>
+  </mime-type>
 </mime-info>
 

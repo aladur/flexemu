@@ -398,6 +398,10 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     {
                         disk_type = DiskType::FLX;
                     }
+                    else if (extension.compare(".ima") == 0)
+                    {
+                        disk_type = DiskType::IMA;
+                    }
                     else
                     {
                         answer_stream << "EMU parameter error: file extension "

@@ -195,7 +195,7 @@ void FLEXplorer::OnOpenFlexDisk()
         QString::fromStdString(options.openDiskPath.u8string());
     QStringList filePaths;
     QFileDialog dialog(this, tr("Select FLEX disk image files"), defaultDir,
-                       "FLEX disk image files (*.dsk *.flx *.wta);;"
+                       "FLEX disk image files (*.dsk *.flx *.ima *.wta);;"
                        "All files (*.*)");
 
     dialog.setFileMode(QFileDialog::ExistingFiles);
@@ -1171,7 +1171,7 @@ void FLEXplorer::SetStatusMessage(const QString &message)
 
 QStringList FLEXplorer::GetSupportedFiles(const QMimeData *mimeData)
 {
-    static const QStringList supportedExtensions{ "dsk", "flx", "wta" };
+    static const QStringList supportedExtensions{ "dsk", "flx", "wta", "ima" };
     QStringList supportedFiles;
 
     for (const auto &url : mimeData->urls())

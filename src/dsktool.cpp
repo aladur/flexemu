@@ -853,7 +853,7 @@ static void usage()
         "Usage: dsktool -C <dsk-file> -T<tgt-dsk-file> [-v][-z][-y|-n][-m]"
         "[-R<file>...]\n"
         "                  [<regex>...]\n"
-        "Usage: dsktool -f <dsk-file> [-v][-F(dsk|flx)][-y|-n] -S<size>\n"
+        "Usage: dsktool -f <dsk-file> [-v][-F(dsk|flx|ima)][-y|-n] -S<size>\n"
         "                  -B<boot-sector-file>\n"
         "Usage: dsktool -h\n"
         "Usage: dsktool -i <dsk-file> [-v][-t][-z][-y|-n] <file> [<file>...]\n"
@@ -890,7 +890,7 @@ static void usage()
         "  -d<directory> The target directory.\n"
         "                Default: current directory.\n"
         "  -D            Additional debug output.\n"
-        "  -F(dsk|flx)   Use *.dsk or *.flx disk image file format.\n"
+        "  -F(dsk|flx|ima) Use *.dsk, *.flx or *.ima disk image file format.\n"
         "                *.wta extension is handled as *.dsk format.\n"
         "                If not set it is determined from the file extension\n"
         "                or finally the default is *.dsk\n"
@@ -905,10 +905,10 @@ static void usage()
         "  -B<boot-sector-file> Read contents of boot sector(s) from file.\n" <<
         "                It has a size of one or two sectors"
         " (" << SECTOR_SIZE << " or " << 2*SECTOR_SIZE << " Byte).\n"
-        "  -T<dsk-file>  A target FLEX disk image file with *.dsk or *.flx "
-        "format.\n"
+        "  -T<dsk-file>  A target FLEX disk image file with *.dsk, *.flx or "
+        "*.ima format.\n"
         "                *.wta extension is handled as *.dsk format.\n"
-        "  <dsk-file>    A FLEX disk image file with *.dsk or *.flx "
+        "  <dsk-file>    A FLEX disk image file with *.dsk, *.flx or *.ima "
         "format.\n"
         "                *.wta extension is handled as *.dsk format.\n"
         "  <FLEX-file>   A FLEX text or binary file.\n"
@@ -934,6 +934,7 @@ static bool getDiskTypeFromExtension(std::string ext, DiskType &disk_type)
     static const std::string strDsk{"dsk"};
     static const std::string strWta{"wta"};
     static const std::string strFlx{"flx"};
+    static const std::string strIma{"ima"};
     ext = flx::tolower(ext);
 
     if (strDsk.compare(ext) == 0 || strWta.compare(ext) == 0)
@@ -947,6 +948,13 @@ static bool getDiskTypeFromExtension(std::string ext, DiskType &disk_type)
         disk_type = DiskType::FLX;
         return true;
     }
+
+    if (strIma.compare(ext) == 0)
+    {
+        disk_type = DiskType::IMA;
+        return true;
+    }
+
 
     return false;
 }

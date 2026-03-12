@@ -52,7 +52,7 @@ using FlexDiskByFilePtr = std::unique_ptr<IFlexDiskByFile>;
 class test_IFlexDiskByFile : public test_FlexDiskFixture
 {
 protected:
-    std::array<std::array<FlexDiskByFilePtr, 3>, 8> disks;
+    std::array<std::array<FlexDiskByFilePtr, 4>, 8> disks;
 
     void SetUp() override
     {
@@ -71,7 +71,7 @@ protected:
             const auto &ft = (idx == FT) ? with_ft : no_ft;
             FlexDisk *pdisk{};
 
-            for (int tidx = DSK; tidx <= FLX; ++tidx)
+            for (int tidx = DSK; tidx <= IMA; ++tidx)
             {
                 diskPath = diskPaths[idx][tidx];
                 pdisk = (idx == RAM || idx == ROM) ?
@@ -99,6 +99,7 @@ protected:
         {
             disks[idx][DSK].reset();
             disks[idx][FLX].reset();
+            disks[idx][IMA].reset();
             disks[idx][DIR].reset();
         }
 
@@ -118,7 +119,8 @@ protected:
     static std::string GetDiskTypeString(IFlexDiskByFile *disk)
     {
         if(disk->GetFlexDiskType() == DiskType::DSK ||
-           disk->GetFlexDiskType() == DiskType::FLX)
+           disk->GetFlexDiskType() == DiskType::FLX ||
+           disk->GetFlexDiskType() == DiskType::IMA)
         {
             return "file";
         }
@@ -296,6 +298,7 @@ TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
 {
     static const auto diskPathDsk = diskPaths[RW][DSK].u8string();
     static const auto diskPathFlx = diskPaths[RW][FLX].u8string();
+    static const auto diskPathIma = diskPaths[RW][IMA].u8string();
     const std::vector<int> indices{RW, RAM};
 
     for (int idx : indices)
@@ -344,7 +347,8 @@ TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
             }
 
             if (disk->GetPath().u8string() == diskPathDsk ||
-                disk->GetPath().u8string() == diskPathFlx)
+                disk->GetPath().u8string() == diskPathFlx ||
+                disk->GetPath().u8string() == diskPathIma)
             {
                 // FLX_NODELETE, FLX_NOREAD and FLX_NOCAT is only supported
                 // with FlexDiskByFile (but not FlexDirectoryByFile).
