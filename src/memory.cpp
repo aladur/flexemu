@@ -529,6 +529,8 @@ Byte Memory::generate_random_byte(RamPattern p_ramPattern)
             random_seed = a * random_seed + c;
             return values[random_seed % (values.size() - 1U)];
     }
+
+    return 0x00U;
 }
 
 std::optional<RamPattern> Memory::Convert(const std::string &ramPattern)

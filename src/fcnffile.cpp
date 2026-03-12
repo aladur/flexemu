@@ -415,7 +415,7 @@ void FlexemuConfigFile::InitializeBootSectorFileProperties()
     for (const auto &iter : valueForKey)
     {
         std::string bootSectorFile = iter.first;
-        std::size_t offset;
+        std::size_t offset{};
 
         if (regex_match(bootSectorFile, regex) &&
             addedBootSectorFiles.find(bootSectorFile) ==
