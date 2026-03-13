@@ -73,31 +73,28 @@ void FlexemuOptionsUi::ConnectSignalsWithSlots()
     connect(b_monitorPgm, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_monitorPgm, FileType::HexBinaryFile); });
 
-    constexpr const auto fType = FileType::FlexDiskFile;
     connect(b_drive0, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_drive0, fType); });
+            [&](){ OnSelectFile(*e_drive0, FileType::FlexDiskFile); });
     connect(b_drive1, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_drive1, fType); });
+            [&](){ OnSelectFile(*e_drive1, FileType::FlexDiskFile); });
     connect(b_drive2, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_drive2, fType); });
+            [&](){ OnSelectFile(*e_drive2, FileType::FlexDiskFile); });
     connect(b_drive3, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_drive3, fType); });
+            [&](){ OnSelectFile(*e_drive3, FileType::FlexDiskFile); });
 
-    constexpr const auto dType = FileType::FlexDiskDirectory;
     connect(b_drive0Dir, &QAbstractButton::clicked,
-            [&](){ OnSelectDirectory(*e_drive0, dType); });
+            [&](){OnSelectDirectory(*e_drive0, FileType::FlexDiskDirectory);});
     connect(b_drive1Dir, &QAbstractButton::clicked,
-            [&](){ OnSelectDirectory(*e_drive1, dType); });
+            [&](){OnSelectDirectory(*e_drive1, FileType::FlexDiskDirectory);});
     connect(b_drive2Dir, &QAbstractButton::clicked,
-            [&](){ OnSelectDirectory(*e_drive2, dType); });
+            [&](){OnSelectDirectory(*e_drive2, FileType::FlexDiskDirectory);});
     connect(b_drive3Dir, &QAbstractButton::clicked,
-            [&](){ OnSelectDirectory(*e_drive3, dType); });
+            [&](){OnSelectDirectory(*e_drive3, FileType::FlexDiskDirectory);});
 
-    constexpr const auto cType = FileType::CassetteFile;
     connect(b_mdcrDrive0, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_mdcrDrive0, cType); });
+            [&](){ OnSelectFile(*e_mdcrDrive0, FileType::CassetteFile); });
     connect(b_mdcrDrive1, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_mdcrDrive1, cType); });
+            [&](){ OnSelectFile(*e_mdcrDrive1, FileType::CassetteFile); });
 
     connect(r_ramExtNone, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::UpdateRamDependencies);
