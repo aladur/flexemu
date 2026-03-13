@@ -311,7 +311,7 @@ using SectorMap_t = std::array<Byte, 2 * DBPS>;
 
 extern std::ostream& operator<<(std::ostream& os, const st_t &st);
 
-extern Word getTrack0SectorCount(int tracks, int sectors);
+extern Word getTrack0SectorCount(DiskType type, int tracks, int sectors);
 extern Word getSides(int tracks, int sectors);
 extern Word getBytesPerSector(uint32_t sizecode);
 extern size_t getFileSize(const s_flex_header &header);

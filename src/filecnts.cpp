@@ -44,8 +44,21 @@ std::ostream& operator<<(std::ostream& os, const st_t &st)
 
 // Return the sector count on track 0 which has always single density (SD)
 // except for a harddisk.
-Word getTrack0SectorCount(int tracks, int sectors)
+Word getTrack0SectorCount(DiskType type, int tracks, int sectors)
 {
+    if (type == DiskType::IMA && tracks == 255)
+    {
+        switch (sectors)
+        {
+            case 26: return 15; // 8 inch, single sided, double density.
+            case 52: return 30; // 8 inch, single sided, double density.
+            case 18: return 10; // 5 1/4 inch, single sided, double density.
+            case 36: return 20; // 5 1/4 inch, double sided, double density.
+            default:
+                return sectors; // single density, always same sector count.
+        }
+    }
+
     if (tracks >= 254)
     {
         // This is a harddisk. Assuming same density for all tracks.

@@ -305,14 +305,14 @@ DiskOptions FlexDirectoryDiskBySector::GetFlexDiskOptions() const
 void FlexDirectoryDiskBySector::initialize_header(int tracks, int sectors)
 {
     param.offset = 0;
+    param.type = DiskType::Directory;
     param.write_protect = ((attributes & WRITE_PROTECT) != 0) ? 1U : 0U;
     param.max_sector = static_cast<Word>(sectors);
-    param.max_sector0 = getTrack0SectorCount(tracks, sectors);
+    param.max_sector0 = getTrack0SectorCount(param.type, tracks, sectors);
     param.max_track = static_cast<Word>(tracks - 1);
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
     param.byte_p_track = param.max_sector * SECTOR_SIZE;
-    param.type = DiskType::Directory;
     param.options = DiskOptions::HasSectorIF;
 }
 

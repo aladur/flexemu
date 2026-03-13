@@ -51,6 +51,7 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <set>
 #include <sstream>
 #include <filesystem>
 
@@ -1316,7 +1317,7 @@ void FlexDisk::Initialize_for_format(const s_formats &format, DiskType type)
     if (type == DiskType::DSK)
     {
         sector0 = (format.offset != 0U) ? format.sectors :
-                     getTrack0SectorCount(format.tracks, format.sectors);
+                     getTrack0SectorCount(type, format.tracks, format.sectors);
     }
     else if (type == DiskType::IMA)
     {
@@ -1511,19 +1512,17 @@ void FlexDisk::Create_format_table(DiskType p_disk_type, int trk, int sec,
         sec = 255;
     }
 
+    const auto sectors0 = getTrack0SectorCount(p_disk_type, trk, sec);
     format.tracks = static_cast<Word>(trk);
     format.sectors = static_cast<Word>(sec);
     format.sectors0 = (p_disk_type == DiskType::FLX ||
-                       p_disk_type == DiskType::IMA) ?
-                          getTrack0SectorCount(format.tracks, format.sectors) :
-                          format.sectors;
+                       p_disk_type == DiskType::IMA) ? sectors0 : sec;
 
     format.size = format.tracks * format.sectors *
         static_cast<int>(SECTOR_SIZE);
     // calculate number of directory sectors.
     // track 0 only contains directory sectors.
-    format.dir_sectors = getTrack0SectorCount(trk, sec) -
-                          first_dir_trk_sec.sec + 1;
+    format.dir_sectors = sectors0 - first_dir_trk_sec.sec + 1;
 }
 
 // return != 0 on success
@@ -1686,6 +1685,11 @@ bool FlexDisk::IsFlexFileFormat(DiskType p_disk_type) const
 
         if (GetFlexTracksSectors(tracks, sectors, 0U))
         {
+            // List of valid sector count for 255 tracks.
+            static const std::set<int> validSectorCount{
+                10, 20, 18, 36, // 5 1/4 inch floppy disks
+                15, 30, 26, 52, // 8 inch floppy disks
+            };
             const auto size_tracks = SECTOR_SIZE * (tracks - 1) * sectors;
             const auto sectors0 = static_cast<Word>((fileSize - size_tracks) /
                     SECTOR_SIZE);
@@ -1693,8 +1697,10 @@ bool FlexDisk::IsFlexFileFormat(DiskType p_disk_type) const
             if (tracks > 0U && tracks < 256U &&
                 sectors > 0U && sectors <= 72U &&
                 fileSize % SECTOR_SIZE == 0 &&
-                IsInFlexFormatTable(tracks, sectors) &&
-                sectors0 == getTrack0SectorCount(tracks, sectors))
+                (IsInFlexFormatTable(tracks, sectors) ||
+                 (tracks == 255 && (validSectorCount.find(sectors) !=
+                                    validSectorCount.cend()))) &&
+                sectors0 == getTrack0SectorCount(p_disk_type, tracks, sectors))
             {
                 return true;
             }

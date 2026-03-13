@@ -72,11 +72,50 @@ TEST(test_filecnts, fct_getTrack0SectorCount)
         { 1000, 5, 5U },
         { 1000, 255, 255U },
     }};
+    std::vector<DiskType> types{{
+        DiskType::DSK, DiskType::FLX, DiskType::Directory
+    }};
     auto index = 0;
 
     for (const auto &sample : samples)
     {
-        auto sectors0 = getTrack0SectorCount(sample.tracks, sample.sectors);
+        for (const auto type : types)
+        {
+            const auto sectors0 =
+                getTrack0SectorCount(type, sample.tracks, sample.sectors);
+            EXPECT_EQ(sectors0, sample.expected_sectors0) << "index=" << index;
+            ++index;
+        }
+    }
+
+    std::vector<TestSample_t> samplesIma{{
+        { 35, 10, 10U },
+        { 35, 18, 10U },
+        { 35, 20, 20U },
+        { 35, 36, 20U },
+        { 40, 10, 10U },
+        { 40, 18, 10U },
+        { 40, 20, 20U },
+        { 40, 36, 20U },
+        { 77, 15, 15U },
+        { 77, 26, 15U },
+        { 77, 30, 30U },
+        { 77, 52, 30U },
+        { 255, 10, 10U },
+        { 255, 18, 10U },
+        { 255, 20, 20U },
+        { 255, 36, 20U },
+        { 255, 15, 15U },
+        { 255, 26, 15U },
+        { 255, 30, 30U },
+        { 255, 52, 30U },
+    }};
+    index = 0;
+
+    for (const auto &sample : samplesIma)
+    {
+        const auto sectors0 =
+            getTrack0SectorCount(DiskType::IMA, sample.tracks, sample.sectors);
         EXPECT_EQ(sectors0, sample.expected_sectors0) << "index=" << index;
         ++index;
     }
