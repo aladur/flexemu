@@ -50,6 +50,7 @@ void KeyboardIO::reset_parallel()
     optional_boot_char.reset();
     std::lock_guard<std::mutex> guard(parallel_mutex);
     key_buffer_parallel.clear();
+    has_key.store(false, std::memory_order_release);
 }
 
 void KeyboardIO::put_char_parallel(Byte key, bool &do_notify)
@@ -62,6 +63,7 @@ void KeyboardIO::put_char_parallel(Byte key, bool &do_notify)
     if (was_empty)
     {
         do_notify = true;
+        has_key.store(true, std::memory_order_release);
     }
 }
 
@@ -93,8 +95,9 @@ bool KeyboardIO::has_key_parallel(bool &do_notify)
         return do_notify;
     }
 
-    std::lock_guard<std::mutex> guard(parallel_mutex);
-    return !key_buffer_parallel.empty();
+    // Use atomic bool is faster than aquiring a lock guard and
+    // check key_buffer_parallel for not being empty.
+    return has_key.load(std::memory_order_acquire);
 }
 
 // Read character and remove it from the queue.
@@ -128,6 +131,10 @@ Byte KeyboardIO::read_char_parallel(bool &do_notify)
         if (!key_buffer_parallel.empty())
         {
             do_notify = true;
+        }
+        else
+        {
+            has_key.store(false, std::memory_order_release);
         }
     }
 
@@ -191,6 +198,7 @@ void KeyboardIO::set_startup_command(const std::string &startup_command)
         std::copy(startup_command.begin(), startup_command.end(),
                   std::back_inserter(key_buffer_parallel));
         key_buffer_parallel.push_back('\r');
+        has_key.store(true, std::memory_order_release);
     }
 }
 

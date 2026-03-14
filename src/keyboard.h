@@ -27,6 +27,7 @@
 
 #include "typedefs.h"
 #include <mutex>
+#include <atomic>
 #include <optional>
 #include <string>
 #include <deque>
@@ -43,6 +44,7 @@ class KeyboardIO
     std::deque<Byte> key_buffer_parallel;
     unsigned int keyMask{0};
     Word init_delay{500};
+    std::atomic<bool> has_key{};
     std::optional<Byte> optional_boot_char;
 
 public:
