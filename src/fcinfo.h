@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include "bdate.h"
+#include <optional>
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -45,6 +46,7 @@ private:
     BDate date;
     fs::path path; // path of container file
     int sectors{0}; // Number of sectors per track
+    int sectorsTrack0{0}; // Number of sectors on track 0
     int tracks{0}; // Number of tracks
     std::string diskname; // name of disk
     unsigned int number{0U};// disk number
@@ -143,10 +145,12 @@ public:
         is_valid = true;
     }
 
-    inline void SetTrackSector(int t, int s)
+    inline void SetTrackSector(int t, int s,
+            std::optional<int> s0 = std::nullopt)
     {
         tracks = t;
         sectors = s;
+        sectorsTrack0 = s0.has_value() ? s0.value() : s;
         is_valid = true;
     }
 
@@ -154,6 +158,13 @@ public:
     {
         t = tracks;
         s = sectors;
+    }
+
+    inline void GetTrackSector(int &t, int &s, int &s0) const
+    {
+        t = tracks;
+        s = sectors;
+        s0 = sectorsTrack0;
     }
 
     /* Property only valid if GetIsFlexFormat() == true */

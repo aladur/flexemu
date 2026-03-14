@@ -128,9 +128,11 @@ protected:
         EXPECT_EQ(diskInfo.GetNumber(), diskNumber);
         int tracks = 0;
         int sectors = 0;
-        diskInfo.GetTrackSector(tracks, sectors);
+        int sectors0 = 0;
+        diskInfo.GetTrackSector(tracks, sectors, sectors0);
         EXPECT_EQ(tracks, expectedTracks);
         EXPECT_EQ(sectors, expectedSectors);
+        EXPECT_EQ(sectors0, expectedSectorsTrack0);
         EXPECT_EQ(diskInfo.GetSectorSize(), expectedSectorSize);
         EXPECT_EQ(diskInfo.GetIsWriteProtected(), isWriteProtected);
         EXPECT_EQ(diskInfo.GetJvcFileHeader().size(), jvcHeaderSize);

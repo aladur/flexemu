@@ -178,8 +178,10 @@ void OpenDiskStatusDialog(QWidget *parent,
         const auto tYes = QObject::tr("yes");
         const auto tNo = QObject::tr("no");
         const auto options = diskAttributes.GetOptions();
+        const auto type = diskAttributes.GetType();
+        const bool is_flx_ima = type == DiskType::FLX || type == DiskType::IMA;
         const bool is_trk_sec_valid =
-            (diskAttributes.GetType() != DiskType::Directory) ||
+            (type != DiskType::Directory) ||
             (options & DiskOptions::HasSectorIF) != DiskOptions::NONE;
         int row = 0;
         auto rowCount = 5;
@@ -188,6 +190,7 @@ void OpenDiskStatusDialog(QWidget *parent,
         rowCount += driveNumber.has_value() ? 1 : 0;
         rowCount += diskAttributes.GetIsFlexFormat() ? 4 : 0;
         rowCount += is_trk_sec_valid ? 3 : 0;
+        rowCount += is_trk_sec_valid && is_flx_ima ? 1 : 0;
         rowCount += (diskAttributes.GetType() == DiskType::DSK) ? 1 : 0;
         model.setRowCount(rowCount);
 
@@ -235,17 +238,25 @@ void OpenDiskStatusDialog(QWidget *parent,
         {
             int tracks;
             int sectors;
+            int sectors0;
 
             text = QObject::tr("Sectorsize [Byte]");
             model.setItem(row, 0, new QStandardItem(text));
             text = QString::number(diskAttributes.GetSectorSize());
             model.setItem(row++, 1, new QStandardItem(text));
-            diskAttributes.GetTrackSector(tracks, sectors);
+            diskAttributes.GetTrackSector(tracks, sectors, sectors0);
             model.setItem(row, 0, new QStandardItem(QObject::tr("Tracks")));
             model.setItem(row++, 1, new QStandardItem(QString::number(tracks)));
             model.setItem(row, 0, new QStandardItem(QObject::tr("Sectors")));
             text = QString::number(sectors);
             model.setItem(row++, 1, new QStandardItem(text));
+            if (is_flx_ima)
+            {
+                model.setItem(row, 0, new QStandardItem(
+                              QObject::tr("Sectors/Track0")));
+                text = QString::number(sectors0);
+                model.setItem(row++, 1, new QStandardItem(text));
+            }
         }
 
         text = QObject::tr("Write-protect");

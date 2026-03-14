@@ -327,11 +327,13 @@ std::string E2floppy::drive_attributes_string(Word drive_nr)
     {
         int trk;
         int sec;
+        int sec0;
         bool is_write_protected = diskAttributes.GetIsWriteProtected();
         bool is_flex_format = diskAttributes.GetIsFlexFormat();
         const auto ascii_path = to_ascii_path(diskAttributes.GetPath());
+        const auto type = diskAttributes.GetType();
 
-        diskAttributes.GetTrackSector(trk, sec);
+        diskAttributes.GetTrackSector(trk, sec, sec0);
         stream << "drive       #" << drive_nr << '\n'
             << "type:       " << diskAttributes.GetTypeString() << '\n';
 
@@ -342,11 +344,15 @@ std::string E2floppy::drive_attributes_string(Word drive_nr)
         }
         stream << "path:       " << ascii_path << '\n'
                << "tracks:     " << trk << '\n'
-               << "sectors:    " << sec << '\n'
-               << "write-prot: " << (is_write_protected ? "yes" : "no") << '\n'
+               << "sectors:    " << sec << '\n';
+        if (type == DiskType::FLX || type == DiskType::IMA)
+        {
+            stream << "sec/trk0:   " << sec0 << '\n';
+        }
+        stream << "write-prot: " << (is_write_protected ? "yes" : "no") << '\n'
                << "FLEX format:" << (is_flex_format ? "yes" : "no")
                << '\n';
-        if (diskAttributes.GetType() == DiskType::DSK)
+        if (type == DiskType::DSK)
         {
             auto header = diskAttributes.GetJvcFileHeader();
 
