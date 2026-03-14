@@ -526,19 +526,28 @@ bool FlexDisk::GetDiskAttributes(FlexDiskAttributes &diskAttributes) const
             disk_name.append(".");
             disk_name.append(disk_ext);
         }
+        uint64_t diskSize;
+        if (param.type == DiskType::FLX || param.type == DiskType::IMA)
+        {
+            diskSize = param.byte_p_track0 +
+                       param.byte_p_track * param.max_track + param.offset;
+        }
+        else
+        {
+            diskSize = (sis.sir.last.sec * (sis.sir.last.trk + 1)) *
+                       param.byte_p_sector + param.offset;
+        }
         diskAttributes.SetDate(BDate(sis.sir.day, sis.sir.month, year));
         diskAttributes.SetFree(flx::getValueBigEndian<Word>(&sis.sir.free[0]) *
                                param.byte_p_sector);
-        diskAttributes.SetTotalSize((sis.sir.last.sec *
-                                    (sis.sir.last.trk + 1)) *
-                                    param.byte_p_sector);
+        diskAttributes.SetTotalSize(diskSize);
         diskAttributes.SetDiskname(disk_name);
         diskAttributes.SetNumber(
                 flx::getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     }
     else
     {
-        if (param.type == DiskType::FLX)
+        if (param.type == DiskType::FLX || param.type == DiskType::IMA)
         {
             const auto size = param.byte_p_track0 +
                     param.byte_p_track * param.max_track;
