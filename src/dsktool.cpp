@@ -472,11 +472,12 @@ static int SummaryOfDskFile(const fs::path &dsk_file,
 
         const auto file = (verbose ? dsk_file : dsk_file.filename()).u8string();
 
+        const auto trk_sec_sec0 =
+            fmt::format("{:<2}-{:<2}-{:<2}", tracks, sectors, sectors0);
         std::cout << fmt::format(
-            "{} {:<12} {:<5} {:<2}-{:<2}-{:<2} {:<5} {:<5} {:<5} {}\n",
+            "{} {:<12} {:<5} {:<10} {:<5} {:<5} {:<5} {}\n",
             diskAttributes.GetDate().GetDateString(format), name,
-            diskAttributes.GetNumber(),
-            tracks, sectors, sectors0, file_count,
+            diskAttributes.GetNumber(), trk_sec_sec0, file_count,
             diskAttributes.GetTotalSize() / SECTOR_SIZE,
             diskAttributes.GetFree() / SECTOR_SIZE, file);
         sum_size += (diskAttributes.GetTotalSize() / SECTOR_SIZE);
@@ -499,8 +500,8 @@ static int SummaryOfDskFiles(const std::vector<fs::path> &dsk_files,
     uint64_t sum_free = 0U;
 
     std::cout <<
-        "DATE        DISKNAME     #     TT-SS-S0 FILES SIZE  FREE  FILE\n" <<
-        "                                              [SECTORS]\n";
+        "DATE        DISKNAME     #     TT-SS-S0   FILES SIZE  FREE  FILE\n" <<
+        "                                                [SECTORS]\n";
 
     for (const auto &dsk_file : dsk_files)
     {
