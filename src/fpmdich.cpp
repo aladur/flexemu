@@ -618,10 +618,6 @@ void FlexplorerMdiChild::Info()
         return;
     }
 
-    int tracks;
-    int sectors;
-    diskAttributes.GetTrackSector(tracks, sectors);
-
     auto title = tr("Disk image %1 #%2")
         .arg(QString::fromStdString(diskAttributes.GetDiskname()))
         .arg(diskAttributes.GetNumber());
