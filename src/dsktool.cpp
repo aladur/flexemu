@@ -135,6 +135,14 @@ static int FormatFlexDiskFile(const fs::path &dsk_file, DiskType disk_type,
         }
     }
 
+    const auto extension = flx::tolower(dsk_file.extension().u8string());
+    if (disk_type == DiskType::IMA && extension != ".ima")
+    {
+        std::cerr << "*** Error: " << dsk_file <<
+                     " must have *.ima file extension. Aborted.\n";
+        return 1;
+    }
+
     try
     {
         std::unique_ptr<FlexDisk> container;

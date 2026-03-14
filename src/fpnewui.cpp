@@ -424,6 +424,17 @@ bool FlexplorerNewUi::Validate()
         return false;
     }
 
+    const auto extension = QFileInfo(e_path->text()).suffix().toLower();
+    if (disk_type == DiskType::IMA && extension != "ima")
+    {
+        e_path->setFocus(Qt::OtherFocusReason);
+        QMessageBox::critical(dialog, tr("Flexplorer Error"),
+                tr("File must have *.ima file extension "));
+
+        return false;
+    }
+
+
     if (QFileInfo::exists(e_path->text()))
     {
         e_path->setFocus(Qt::OtherFocusReason);
