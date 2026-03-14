@@ -78,7 +78,6 @@ protected:
     s_floppy param{};
     DWord file_size{};
     const FileTimeAccess &ft_access{};
-    DiskType disk_type{};
 
     // Variables only used for FLX format when formatting a disk
     bool is_flex_format{false}; // true when this is a FLEX compatible format.
