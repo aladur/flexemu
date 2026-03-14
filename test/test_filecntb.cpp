@@ -83,6 +83,7 @@ protected:
             DiskOptions options,
             bool isWriteProtected)
     {
+        const auto file = path.filename();
         auto diskName = flx::toupper(path.filename().u8string());
         auto pos = diskName.find_first_of('.');
         if (pos != std::string::npos)
@@ -101,12 +102,13 @@ protected:
         if (type == DiskType::DSK || type == DiskType::FLX ||
             type == DiskType::IMA || type == DiskType::Directory)
         {
-            ASSERT_TRUE(diskInfo.GetIsFlexFormat());
-            EXPECT_EQ(diskInfo.GetDate(), BDate::Now());
+            ASSERT_TRUE(diskInfo.GetIsFlexFormat()) << file;
+            EXPECT_EQ(diskInfo.GetDate(), BDate::Now()) << file;
             if ((options & DiskOptions::HasSectorIF) != DiskOptions::NONE)
             {
                 EXPECT_EQ(diskInfo.GetFree(),
-                  (expectedTracks - 1) * expectedSectors * expectedSectorSize);
+                  (expectedTracks - 1) * expectedSectors * expectedSectorSize)
+                    << file;
                 const auto file_size = (type == DiskType::Directory) ?
                     0 : fs::file_size(path);
                 const auto headerSize = (type == DiskType::FLX) ? 16 :
@@ -117,27 +119,27 @@ protected:
                         headerSize;
                 if (type != DiskType::Directory)
                 {
-                    EXPECT_EQ(diskInfo.GetTotalSize(), file_size);
+                    EXPECT_EQ(diskInfo.GetTotalSize(), file_size) << file;
                 }
-                EXPECT_EQ(diskInfo.GetTotalSize(), fileSize);
+                EXPECT_EQ(diskInfo.GetTotalSize(), fileSize) << file;
             }
         }
-        EXPECT_EQ(diskInfo.GetOptions(), options);
-        EXPECT_EQ(diskInfo.GetPath(), path);
-        EXPECT_EQ(diskInfo.GetDiskname(), diskName);
-        EXPECT_EQ(diskInfo.GetNumber(), diskNumber);
+        EXPECT_EQ(diskInfo.GetOptions(), options) << file;
+        EXPECT_EQ(diskInfo.GetPath(), path) << file;
+        EXPECT_EQ(diskInfo.GetDiskname(), diskName) << file;
+        EXPECT_EQ(diskInfo.GetNumber(), diskNumber) << file;
         int tracks = 0;
         int sectors = 0;
         int sectors0 = 0;
         diskInfo.GetTrackSector(tracks, sectors, sectors0);
-        EXPECT_EQ(tracks, expectedTracks);
-        EXPECT_EQ(sectors, expectedSectors);
-        EXPECT_EQ(sectors0, expectedSectorsTrack0);
-        EXPECT_EQ(diskInfo.GetSectorSize(), expectedSectorSize);
-        EXPECT_EQ(diskInfo.GetIsWriteProtected(), isWriteProtected);
-        EXPECT_EQ(diskInfo.GetJvcFileHeader().size(), jvcHeaderSize);
-        EXPECT_TRUE(diskInfo.IsValid());
-        EXPECT_EQ(diskInfo.GetType(), type);
+        EXPECT_EQ(tracks, expectedTracks) << file;
+        EXPECT_EQ(sectors, expectedSectors) << file;
+        EXPECT_EQ(sectors0, expectedSectorsTrack0) << file;
+        EXPECT_EQ(diskInfo.GetSectorSize(), expectedSectorSize) << file;
+        EXPECT_EQ(diskInfo.GetIsWriteProtected(), isWriteProtected) << file;
+        EXPECT_EQ(diskInfo.GetJvcFileHeader().size(), jvcHeaderSize) << file;
+        EXPECT_TRUE(diskInfo.IsValid()) << file;
+        EXPECT_EQ(diskInfo.GetType(), type) << file;
     }
 };
 
