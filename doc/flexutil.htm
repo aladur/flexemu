@@ -132,9 +132,10 @@ By default it is preconfigured for <b>neumon54.hex</b>.
 It supports a parallel I/O on pia1 (MC6821) which will be
 used in the graphic mode, and a serial I/O on acia1 (MC6850) wich will be
 used in the terminal mode. for <b>neumon54.hex</b> the modes can be switched
-'by hand' by changing the contents of address 0xEF86 (SERPAR):
+'by hand' by changing the contents of address 0xEF86 (SERPAR).
 <p>
 <table>
+ <caption>SERPAR modes</caption>
  <tr><th>SERPAR</th><th>mode</th></tr>
  <tr><th>== 0</th><th>parallel I/O (graphic mode)</th></tr>
  <tr><th>!= 0</th><th>seriell I/O (terminal mode)</th></tr>
@@ -214,9 +215,10 @@ can be 0 up to 12.
 <p>
 <b>&lt;file_spec&gt;</b> specifies the file to be opened.
 <p>
-<b>&lt;mode&gt;</b> specifies one of the following file access modes:
+<b>&lt;mode&gt;</b> specifies one of the following file access modes.
 <p>
 <table>
+ <caption>ofiles Modes</caption>
  <tr><th>mode</th><th>description</th></tr>
  <tr><th>+R</th><th>Open for read, the file has to exist.</th></tr>
  <tr><th>+W</th><th>Open for write, the file must not exist.</th></tr>

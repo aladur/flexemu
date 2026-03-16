@@ -17,6 +17,10 @@ table, td {
     border: 1px solid black;
 }
 
+table, caption {
+    font-weight: bold;
+};
+
 dt {
     margin-top: 0.5em;
     margin-bottom: 0.5em;

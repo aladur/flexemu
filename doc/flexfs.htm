@@ -38,10 +38,10 @@ Also FLEX software archives use DSK disk image files, see:
  FLEX Software Archive</a> by Simon Wynn Consulting.<p>
 A *.DSK file contains all sectors of a disk. A wide range of track/sector
 combinations is supported.
-Following table shows all prefered floppy disk geometries:
+Following table shows all prefered floppy disk geometries.
 <p>
 <table>
- <caption><b>Prefered DSK floppy disk geometries</b></caption>
+ <caption>Prefered DSK floppy disk geometries</caption>
  <tr><th>Disk size<br>[inch]</th><th>Sides</th><th>Density<br>*)</th><th>Tracks</th><th>Sectors</th><th>File size<br>[KByte]</th>
  <tr><td>5 1/4</td><td>1</td><td>SD</td><td>35</td><td>10</td><td>87.5</td>
  <tr><td>5 1/4</td><td>1</td><td>DD</td><td>35</td><td>18</td><td>157.5</td>
@@ -65,7 +65,7 @@ Following table shows all prefered floppy disk geometries:
 *) SD = single density, DS = double density, QD = quad density
 <p>In addition the following harddisk geometries are supported.
 <table>
- <caption><b>Prefered DSK harddisk geometries</b></caption>
+ <caption>Prefered DSK harddisk geometries</caption>
  <tr><th>Disk size<br>[inch]</th><th>Sides</th><th>Density<br>*)</th><th>Tracks</th><th>Sectors</th><th>File size<br>[KByte]</th>
  <tr><td>-</td><td>-</td><td>-</td><td>255</td><td>255</td><td>16256.25</td>
  <tr><td>-</td><td>-</td><td>-</td><td>256</td><td>255</td><td>16320</td>
@@ -78,9 +78,10 @@ file can simply be computed with<p>
 protected too.<p>
 Optionally a
 <a href="https://sites.google.com/site/dabarnstudio/coco-utilities/jvc-disk-format">JVC file header</a> is supported. The header can contain 1 up to 5 bytes.
-flexemu supports the following JVC header values:
+flexemu supports the following JVC header values.
 <p>
 <table>
+ <caption>Flexemu JVC File Header Support</caption>
  <tr><th>Byte offset</th><th>Description</th><th>Default</th><th>Supported<br>values</th>
  <tr><td>0</td><td>Sectors per track</td><td>-</td><td>5-255</td>
  <tr><td>1</td><td>Side count</td><td>1</td><td>1,2</td>
@@ -98,9 +99,10 @@ flexemu supports the following JVC header values:
 FLX disk image files (with file extension *.FLX) have the same structure as a
 *.DSK file with an additional 16-byte header at the beginning of the file
 containing metadata. FLX disk image files support the same disk geometries
-as DSK disk image files and even more. The header describes the disk geometry:
+as DSK disk image files and even more. The header describes the disk geometry.
 <p>
 <table>
+ <caption>Flexemu FLX File Header</caption>
  <tr><th>bytes</th><th>name</th><th>description</th>
  <tr><td>4</td><td>magic_number</td><td>always 0x485C9A33</td>
  <tr><td>1</td><td>write_protect</td><td>flag for write protection</td>
@@ -139,7 +141,7 @@ It contains no metadata.
  means they can be read, written or formatted.
 <p>
 <table>
- <caption><b>Prefered IMA floppy disk geometries</b></caption>
+ <caption>Prefered IMA floppy disk geometries</caption>
  <tr><th>Disk size<br>[inch]</th><th>Sides</th><th>Density<br>*)</th>
   <th>Tracks</th><th>Sectors</th><th>Sectors on<br>Track0 **)</th>
   <th>File size<br>[KByte]</th>
@@ -176,7 +178,7 @@ computed with
  them virtual disks because I never have heard of floppy disk drives with 255
  tracks.
 <table>
- <caption><b>IMA Virtual disk geometries</b></caption>
+ <caption>IMA Virtual disk geometries</caption>
  <tr><th>Sides</th><th>Density<br>*)</th>
  <th>Tracks</th><th>Sectors</th><th>Sectors<br>on Track0</th>
  <th>File size<br>[KByte]</th>
@@ -213,6 +215,7 @@ The following table gives a detailed description of how random files are
 identified. It is used by flexemu and flexplorer.
 <p>
 <table>
+ <caption>Virtual Disk Random File Detection</caption>
  <tr><th>Version</th><th>Random file detection</th>
  <tr><td>&lt; V3.22</td><td>
 On a read-write directory disk random files are identified by the user execute
