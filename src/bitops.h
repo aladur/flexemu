@@ -25,6 +25,7 @@
 
 #include "typedefs.h"
 #include <cassert>
+#include <atomic>
 
 template<typename T> bool BTST(T value, unsigned bitpos)
 {
@@ -42,6 +43,25 @@ template<typename T> void BCLR(T &value, unsigned bitpos)
 {
     assert((bitpos >> 3U) < sizeof(T));
     value &= static_cast<T>(~static_cast<T>(static_cast<T>(1U) << bitpos));
+}
+
+template<typename T> bool BTST(std::atomic<T> &value, unsigned bitpos)
+{
+    assert((bitpos >> 3U) < sizeof(T));
+    return (value.load() & static_cast<T>(static_cast<T>(1U) << bitpos)) != 0;
+}
+
+template<typename T> void BSET(std::atomic<T> &value, unsigned bitpos)
+{
+    assert((bitpos >> 3U) < sizeof(T));
+    value.fetch_or(static_cast<T>(static_cast<T>(1U) << bitpos));
+}
+
+template<typename T> void BCLR(std::atomic<T> &value, unsigned bitpos)
+{
+    assert((bitpos >> 3U) < sizeof(T));
+    value.fetch_and(
+            static_cast<T>(~static_cast<T>(static_cast<T>(1U) << bitpos)));
 }
 
 inline Word EXTEND8(Byte value)
