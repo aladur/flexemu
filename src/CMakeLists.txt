@@ -451,9 +451,6 @@ if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
 endif()
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 6)
     find_package(Qt6 REQUIRED Core Widgets Gui PrintSupport Concurrent)
-    if (UNIX AND APPLE)
-        find_package(Qt6 REQUIRED MacExtras)
-    endif()
 endif()
 
 #################################
@@ -693,9 +690,11 @@ target_include_directories(flexemu SYSTEM PRIVATE
 )
 if(UNIX)
     if(APPLE)
-        target_include_directories(flexemu SYSTEM PRIVATE
-            ${Qt${FLEXEMU_QT_MAJOR_VERSION}MacExtras_INCLUDE_DIRS}
-        )
+        if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
+            target_include_directories(flexemu SYSTEM PRIVATE
+                ${Qt${FLEXEMU_QT_MAJOR_VERSION}MacExtras_INCLUDE_DIRS}
+            )
+        endif()
     else()
         target_include_directories(flexemu SYSTEM PRIVATE
             ${Qt${FLEXEMU_QT_MAJOR_VERSION}X11Extras_INCLUDE_DIRS}
@@ -729,7 +728,6 @@ else()
 endif()
 
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
-
     if(UNIX)
         if(APPLE)
             target_link_libraries(flexemu PRIVATE Qt5::MacExtras)
@@ -746,9 +744,6 @@ if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
     )
 endif()
 if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 6)
-    if(UNIX AND APPLE)
-        target_link_libraries(flexemu PRIVATE Qt6::MacExtras)
-    endif()
     target_link_libraries(flexemu PRIVATE
         Qt6::Concurrent
         Qt6::PrintSupport
@@ -944,15 +939,16 @@ if(UNIX)
     foreach(QT_INCLUDE_DIR ${Qt${FLEXEMU_QT_MAJOR_VERSION}PrintSupport_INCLUDE_DIRS})
         list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
     endforeach()
-    if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5 AND NOT APPLE)
-        foreach(QT_INCLUDE_DIR ${Qt5X11Extras_INCLUDE_DIRS})
-            list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
-        endforeach()
-    endif()
-    if(APPLE)
-        foreach(QT_INCLUDE_DIR ${Qt${FLEXEMU_QT_MAJOR_VERSION}MacExtras_INCLUDE_DIRS})
-            list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
-        endforeach()
+    if (${FLEXEMU_QT_MAJOR_VERSION} EQUAL 5)
+        if(APPLE)
+            foreach(QT_INCLUDE_DIR ${Qt${FLEXEMU_QT_MAJOR_VERSION}MacExtras_INCLUDE_DIRS})
+                list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
+            endforeach()
+        else()
+            foreach(QT_INCLUDE_DIR ${Qt5X11Extras_INCLUDE_DIRS})
+                list(APPEND ARGUMENTS -isystem${QT_INCLUDE_DIR})
+            endforeach()
+        endif()
     endif()
     list(APPEND ARGUMENTS -DF_DATADIR=\"${FLEXEMU_FULL_DATADIR}\")
     list(APPEND ARGUMENTS -DF_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\")

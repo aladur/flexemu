@@ -16,14 +16,14 @@ jobs:
     env:
       CC: clang
       CXX: clang++
-      QT_SELECT: qt5
+      QT_SELECT: qt6
     steps:
 
       - name: Install packages
         run: |
-          brew install gnu-sed ncurses qt@5
+          brew install gnu-sed ncurses qt@6
           echo "/opt/homebrew/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
-          echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
+          echo "/opt/homebrew/opt/qt@6/bin" >> $GITHUB_PATH
 
       - name: Context
         run: |
@@ -53,7 +53,7 @@ jobs:
         run: |
           mkdir bld
           cd bld
-          cmake .. -DCMAKE_PREFIX_PATH=$HOMEBREW_PREFIX/opt/ncurses -DCMAKE_INSTALL_PREFIX:PATH=$HOME/usr -DCMAKE_INSTALL_SYSCONFDIR=$HOME/etc
+          cmake .. -DCMAKE_PREFIX_PATH=$HOMEBREW_PREFIX/opt/ncurses -DCMAKE_INSTALL_PREFIX:PATH=$HOME/usr -DCMAKE_INSTALL_SYSCONFDIR=$HOME/etc -DFLEXEMU_QT_MAJOR_VERSION=6
       - name: Make
         run: cd bld; make -j5
 
@@ -108,7 +108,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: flexemu-build-and-test-macos-qt5-clang-result
+          name: flexemu-build-and-test-macos-qt6-clang-result
           path: result
           if-no-files-found: error
 

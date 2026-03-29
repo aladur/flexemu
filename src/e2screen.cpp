@@ -500,12 +500,14 @@ bool E2Screen::IsNumLockOn() const
     {
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 2, 0))
+#if !defined(__APPLE__)
         auto *x11App =
             qApp->nativeInterface<QNativeInterface::QX11Application>();
         if (x11App != nullptr)
         {
             display = x11App->display();
         }
+#endif // if !defined(__APPLE__)
 #else
     // 6.0.0 <= Qt < 6.2.0
 #error Only Qt6 versions 6.2.0 or higher are supported
@@ -869,12 +871,14 @@ void E2Screen::InitializeNumLockIndicatorMask()
     {
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 2, 0))
+#if !defined(__APPLE__)
         auto *x11App =
             qApp->nativeInterface<QNativeInterface::QX11Application>();
         if (x11App != nullptr)
         {
             display = x11App->display();
         }
+#endif // #if !defined(__APPLE__)
 #else
     // 6.0.0 <= Qt < 6.2.0
 #error Only Qt6 versions 6.2.0 or higher are supported

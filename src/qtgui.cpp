@@ -2505,7 +2505,8 @@ void QtGui::closeEvent(QCloseEvent *event)
         while (!scheduler.is_finished())
         {
             scheduler.timer_elapsed();
-            QThread::msleep(10);
+            QApplication::processEvents();
+            QThread::yieldCurrentThread();
         }
         timer.stop();
         if (printOutputWindow != nullptr)
