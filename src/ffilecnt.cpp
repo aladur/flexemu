@@ -1526,7 +1526,8 @@ void FlexDisk::Create_format_table(DiskType p_disk_type, int trk, int sec,
     format.tracks = static_cast<Word>(trk);
     format.sectors = static_cast<Word>(sec);
     format.sectors0 = (p_disk_type == DiskType::FLX ||
-                       p_disk_type == DiskType::IMA) ? sectors0 : sec;
+                       p_disk_type == DiskType::IMA) ?
+                           sectors0 : static_cast<Word>(sec);
 
     format.size = format.tracks * format.sectors *
         static_cast<int>(SECTOR_SIZE);

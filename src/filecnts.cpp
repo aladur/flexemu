@@ -55,7 +55,8 @@ Word getTrack0SectorCount(DiskType type, int tracks, int sectors)
             case 18: return 10; // 5 1/4 inch, single sided, double density.
             case 36: return 20; // 5 1/4 inch, double sided, double density.
             default:
-                return sectors; // single density, always same sector count.
+                return static_cast<Word>(sectors); // single density,
+                                                   // always same sector count.
         }
     }
 
