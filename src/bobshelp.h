@@ -37,6 +37,15 @@ enum class NotifyId : uint8_t
     SetFrequency,
     KeyPressed, // key pressed in context of UI thread.
     KeyPressedOnCPU, // key pressed in context of CPU thread.
+    SetHostTimer, // Activate or disable timer based on host time interval.
+    HostTimerEvent, // Signals a host timer event.
+};
+
+struct HostTimerUpdate_t
+{
+      std::int64_t cycleTimeNs;
+      int uniqueTimerId;
+      bool isValid;
 };
 
 #endif // #ifndef BOBSHELP_INCLUDED

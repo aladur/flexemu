@@ -66,7 +66,8 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
     command(inout, scheduler, fdc, options),
     tstdev(512U),
     gui(cpu, memory, scheduler, inout, vico1, vico2,
-        joystickIO, keyboardIO, terminalIO, pia1, p_options)
+        joystickIO, keyboardIO, terminalIO, pia1, p_options),
+    hostTimer(Mc146818::HOST_TIMER_ID)
 {
     if (options.startup_command.size() > MAX_COMMAND)
     {
@@ -174,6 +175,9 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
     if (options.useRtc)
     {
         rtc.Attach(cpu);
+        rtc.Attach(hostTimer);
+        gui.Attach(hostTimer);
+        hostTimer.Attach(rtc);
     }
 }
 

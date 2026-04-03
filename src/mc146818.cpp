@@ -99,7 +99,6 @@ std::string Mc146818::getConfigFilePath(Mc146818::Config type)
 Mc146818::~Mc146818()
 {
     const auto path = getConfigFilePath(Config::New);
-
     if (path.empty())
     {
         return;
@@ -232,6 +231,7 @@ void Mc146818::writeIo(Word offset, Byte val)
 
         case 0x0a:
             A = val & 0x7FU;
+            updatePeriodicIrqRate();
             break;
 
         case 0x0b:
@@ -543,5 +543,38 @@ bool Mc146818::increment_day(Byte &p_day, Byte p_month, Byte p_year)
     }
 
     return false;
+}
+
+void Mc146818::UpdateFrom(NotifyId id, void *param)
+{
+    const int uniqueTimerId = *static_cast<int *>(param);
+
+    if (id == NotifyId::HostTimerEvent && uniqueTimerId == HOST_TIMER_ID)
+    {
+        BSET<Byte>(C, 6U); // set periodic interrupt flag
+
+        if (BTST<Byte>(B, 6U)) // Periodic interrupt enable bit
+        {
+            BSET<Byte>(C, 7U);
+            Notify(NotifyId::SetFirq);
+        }
+    }
+}
+
+void Mc146818::updatePeriodicIrqRate()
+{
+    HostTimerUpdate_t params{};
+    HostTimerUpdate_t *pParams = nullptr;
+    const auto registerSelect = A & 0x0FU;
+
+    if (registerSelect != 0U)
+    {
+        const auto shift = 15U - registerSelect;
+        params.uniqueTimerId = HOST_TIMER_ID;
+        params.cycleTimeNs = static_cast<std::int64_t>(500000000ULL >> shift);
+        pParams = &params;
+    }
+
+    Notify(NotifyId::SetHostTimer, pParams);
 }
 

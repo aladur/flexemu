@@ -31,6 +31,7 @@
 #include "soptions.h"
 #include "e2.h"
 #include "bobserv.h"
+#include "bobservd.h"
 #include "ccopymem.h"
 #include "qtfree.h"
 #include "memwinmg.h"
@@ -97,7 +98,8 @@ using ColorTablesCache = QHash<std::size_t, QByteArray>;
 using ColorTablesCache = QHash<uint, QByteArray>;
 #endif
 
-class QtGui : public QWidget, public AbstractGui, public BObserver
+class QtGui : public QWidget, public AbstractGui, public BObserver,
+              public BObserved
 {
     Q_OBJECT
 

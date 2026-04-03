@@ -27,15 +27,17 @@
 
 #include "typedefs.h"
 #include "iodevice.h"
+#include "bobserv.h"
 #include "bobservd.h"
 #include <cstdint>
+#include <atomic>
 #include <string>
 #include <array>
 
 
 class Mc6809;
 
-class Mc146818 : public IoDevice, public BObserved
+class Mc146818 : public IoDevice, public BObserver, public BObserved
 {
     // Internal registers:
 
@@ -51,8 +53,8 @@ protected:
     Byte month{0};
     Byte year{0};
     Byte A{0};
-    Byte B{0};
-    Byte C{0};
+    std::atomic<Byte> B{0};
+    std::atomic<Byte> C{0};
     Byte D{0};
     std::array<Byte, 50> ram{}; // 50 bytes of internal RAM
 
@@ -86,6 +88,9 @@ public:
         return 64;
     };
     virtual void update_1_second();
+    void UpdateFrom(NotifyId id, void *param = nullptr) override;
+
+    static const int HOST_TIMER_ID{146818};
 
 private:
 
@@ -102,6 +107,7 @@ private:
     bool increment(Byte &reg, Byte min, Byte max);
     bool increment_hour(Byte &p_hour) const;
     bool increment_day(Byte &p_day, Byte p_month, Byte p_year);
+    void updatePeriodicIrqRate();
 
     static std::string getConfigFilePath(Config type);
 

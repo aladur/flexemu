@@ -235,6 +235,7 @@
     <ClCompile Include="fsetupui.cpp" />
     <ClCompile Include="fversion.cpp" />
     <ClCompile Include="hexdump.cpp" />
+    <ClCompile Include="hosttime.cpp" />
     <ClCompile Include="inout.cpp" />
     <ClCompile Include="iodevdbg.cpp" />
     <ClCompile Include="joystick.cpp" />
@@ -528,6 +529,7 @@
     <ClInclude Include="fversion.h" />
     <ClInclude Include="foptman.h" />
     <ClInclude Include="hexdump.h" />
+    <ClInclude Include="hosttime.h" />
     <ClInclude Include="idircnt.h" />
     <ClInclude Include="iffilcnt.h" />
     <ClInclude Include="ifilcnti.h" />

@@ -47,6 +47,7 @@
 #include "drisel.h"
 #include "tstdev.h"
 #include "iodevdbg.h"
+#include "hosttime.h"
 #include "fcnffile.h"
 #include <string>
 #include <vector>
@@ -100,6 +101,7 @@ private:
     VideoControl2 vico2;
     TestDevice tstdev;
     QtGui gui;
+    HostTimer hostTimer;
     std::map<std::string, IoDevice &> ioDevices;
     std::vector<IoDeviceDebug> debugLogDevices;
     std::unique_ptr<std::thread> cpuThread;

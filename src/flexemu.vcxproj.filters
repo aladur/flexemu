@@ -93,6 +93,9 @@
     <ClCompile Include="hexdump.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="hosttime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="inout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -427,6 +430,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hexdump.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hosttime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="idircnt.h">

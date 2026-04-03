@@ -20,6 +20,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
+find_library(RT_LIBRARY rt)
 
 add_subdirectory(bitmaps)
 add_subdirectory(tools)
@@ -498,6 +499,7 @@ set(flexemu_SOURCES
     fsetupui.cpp
     fversion.cpp
     hexdump.cpp
+    hosttime.cpp
     inout.cpp
     iodevdbg.cpp
     joystick.cpp
@@ -612,6 +614,7 @@ set(flexemu_HEADER
     fsetupui.h
     fversion.h
     hexdump.h
+    hosttime.h
     iffilcnt.h
     ifilcnti.h
     ifilecnt.h
@@ -763,6 +766,9 @@ if(UNIX)
         ${CURSES_LIBRARIES}
         Threads::Threads
     )
+endif()
+if(RT_LIBRARY)
+    target_link_libraries(flexemu PRIVATE ${RT_LIBRARY})
 endif()
 
 #################################

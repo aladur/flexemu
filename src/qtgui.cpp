@@ -2501,6 +2501,7 @@ void QtGui::closeEvent(QCloseEvent *event)
     {
         e2screen->ReleaseMouseCapture();
         e2screen->Detach(*this);
+        Notify(NotifyId::SetHostTimer, nullptr); // Disable all host timers.
         scheduler.request_new_state(CpuState::Exit);
         while (!scheduler.is_finished())
         {
