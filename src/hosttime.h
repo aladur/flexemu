@@ -23,10 +23,17 @@
 #ifndef HOSTTIMER_INCLUDED
 #define HOSTTIMER_INCLUDED
 
+#ifndef _WIN32
+#include <unistd.h>
+#if defined(_POSIX_TIMERS) && (_POSIX_TIMERS > 0)
+#define USE_POSIX_TIMERS
+#endif
+#endif
+
 #include "bobserv.h"
 #include "bobservd.h"
 #include <cstdint>
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
 #include <ctime>
 #endif
 #include <functional>
@@ -37,7 +44,7 @@
 // on the host clock.
 class HostTimer : public BObserver, public BObserved
 {
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
     using HostTimerMap_t =
         std::unordered_map<int, std::reference_wrapper<HostTimer> >;
 #endif
@@ -46,7 +53,7 @@ private:
     std::int64_t cycleTimeNs{};
     std::atomic<bool> isNotify{};
     const int uniqueTimerId{};
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
     timer_t timerId{};
     const int sigVal{};
     int lastErrno{};
@@ -63,7 +70,7 @@ public:
 
     void UpdateFrom(NotifyId id, void *param = nullptr) override;
     void DoNotify();
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
     static HostTimer::HostTimerMap_t &GetHostTimerMap();
 #endif
 

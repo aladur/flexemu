@@ -24,7 +24,7 @@
 #include "bobshelp.h"
 #include <cstdint>
 #include <stdexcept>
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
 #include <ctime>
 #include <cerrno>
 #include <csignal>
@@ -33,17 +33,17 @@
 #include <atomic>
 #include <unordered_map>
 
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
 static void SignalHandler(int sig, siginfo_t *sigInfo, void *uc);
 #endif
 
 HostTimer::HostTimer(int p_uniqueTimerId)
     : uniqueTimerId(p_uniqueTimerId)
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
     , sigVal(uniqueTimerId)
 #endif
 {
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
     struct sigevent sigEvent{};
     struct sigaction sigAction{};
 
@@ -79,7 +79,7 @@ HostTimer::HostTimer(int p_uniqueTimerId)
 HostTimer::~HostTimer()
 {
     DisableTimer();
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
     timer_delete(timerId);
     GetHostTimerMap().erase(sigVal);
 #endif
@@ -89,7 +89,7 @@ void HostTimer::InitCycleTime(std::int64_t p_cycleTimeNs)
 {
     cycleTimeNs = p_cycleTimeNs;
 
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
     if (lastErrno == 0)
     {
         constexpr const std::int64_t const1SecNs = 1000000000LL;
@@ -115,7 +115,7 @@ void HostTimer::DisableTimer()
     isNotify.store(false);
     cycleTimeNs = 0;
 
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
     constexpr const struct itimerspec timerSpec{};
 
     // Disarm the timer.
@@ -143,7 +143,7 @@ void HostTimer::UpdateFrom(NotifyId id, void *param)
             InitCycleTime(params->cycleTimeNs);
 
             // Return flag if this timer is valid.
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
             params->isValid = (lastErrno == 0);
 #else
             params->isValid = false;
@@ -161,7 +161,7 @@ void HostTimer::DoNotify()
     }
 }
 
-#if defined(UNIX) && !defined(__APPLE__)
+#ifdef USE_POSIX_TIMERS
 HostTimer::HostTimerMap_t &HostTimer::GetHostTimerMap()
 {
     static HostTimerMap_t timerForSigVal;
