@@ -261,6 +261,27 @@ protected:
         return path;
     }
 
+    static fs::path createFileBytes(
+            const fs::path &directory,
+            const std::string &filename,
+            bool isText, unsigned byteCount)
+    {
+        const auto path = directory / filename;
+        const auto mode =
+            isText ? std::ios::out : (std::ios::out | std::ios::binary);
+        std::fstream ofs(path, mode);
+
+        EXPECT_TRUE(ofs.is_open()) << "path=" << path << "\n";
+        for (unsigned index = 0; index < byteCount; ++index)
+        {
+            const char ch =
+                (index % 64U == 63U || index == byteCount - 1U) ?  '\r' : 'A';
+            ofs.put(ch);
+        }
+
+        return path;
+    }
+
     static bool setDateTime(const fs::path &path, const BDate &date,
             const BTime &time, FileTimeAccess ft_access)
     {

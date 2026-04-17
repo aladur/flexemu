@@ -872,7 +872,9 @@ FlexDirEntry FlexFileBuffer::GetDirEntry() const
     if (!buffer.empty())
     {
         dirEntry.SetTotalFileName(fileHeader.fileName);
-        dirEntry.SetFileSize(fileHeader.fileSize / DBPS * SECTOR_SIZE);
+        const auto fileSize = SECTOR_SIZE * (fileHeader.fileSize / DBPS +
+                (fileHeader.fileSize % DBPS == 0U ? 0U : 1U));
+        dirEntry.SetFileSize(fileSize);
         dirEntry.SetAttributes(static_cast<Byte>(fileHeader.attributes));
         dirEntry.SetDate(GetDate());
         dirEntry.SetTime(GetTime());

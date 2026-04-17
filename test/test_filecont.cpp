@@ -41,6 +41,7 @@
 #include <array>
 #include <vector>
 #include <filesystem>
+#include <fmt/format.h>
 
 
 using ::testing::StartsWith;
@@ -455,8 +456,8 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
         EXPECT_EQ(dirEntry.GetTime(), BTime(22, 1));
     }
 
-    const std::vector<int> indices{RW, RAM};
-    for (int idx : indices)
+    const std::vector<int> rwIndices{RW, RAM};
+    for (int idx : rwIndices)
     {
         for (auto &disk : disks[idx])
         {
@@ -509,6 +510,38 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
     }
 
     fs::remove(path);
+
+    FlexCopyManager::autoTextConversion = false;
+    for (unsigned size = 4U; size < 516; size += 4U)
+    {
+        const auto sizeFile = fmt::format("size{:04}.txt", size);
+        path = createFileBytes(temp_dir, sizeFile, true, size);
+
+        for (int idx : rwIndices)
+        {
+            for (auto &disk : disks[idx])
+            {
+                FlexFileBuffer buffer;
+                FlexDirEntry dirEntry;
+
+                if (!disk)
+                {
+                    continue;
+                }
+
+                ASSERT_TRUE(buffer.ReadFromFile(path, ft)) << "size=" << size;
+                ASSERT_TRUE(disk->WriteFromBuffer(buffer)) << "size=" << size;
+                ASSERT_TRUE(disk->FindFile(sizeFile, dirEntry));
+                EXPECT_FALSE(dirEntry.IsEmpty());
+                const auto sizeSectorAligned = SECTOR_SIZE *
+                    ((size % 252U == 0U) ?  size / 252U : 1U + (size / 252U));
+                EXPECT_EQ(dirEntry.GetFileSize(), sizeSectorAligned) <<
+                    "size=" << size << " path=" << disk->GetPath();
+            }
+        }
+
+        fs::remove(path);
+    }
 }
 
 TEST_F(test_IFlexDiskByFile, fct_FileCopy)
