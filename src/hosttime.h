@@ -23,7 +23,9 @@
 #ifndef HOSTTIMER_INCLUDED
 #define HOSTTIMER_INCLUDED
 
-#ifndef _WIN32
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
 #if defined(_POSIX_TIMERS) && (_POSIX_TIMERS > 0)
 #define USE_POSIX_TIMERS
@@ -35,6 +37,10 @@
 #include <cstdint>
 #ifdef USE_POSIX_TIMERS
 #include <ctime>
+#endif
+#ifdef _WIN32
+#include <thread>
+#include <memory>
 #endif
 #include <functional>
 #include <atomic>
@@ -50,13 +56,22 @@ class HostTimer : public BObserver, public BObserved
 #endif
 
 private:
-    std::int64_t cycleTimeNs{};
-    std::atomic<bool> isNotify{};
+    volatile std::atomic<bool> isNotify{};
     const int uniqueTimerId{};
+#ifdef _WIN32
+    std::atomic<std::int64_t> cycleTimeNs{};
+    HANDLE hTimer{};
+    HANDLE hWait{};
+    DWORD lastError{};
+    LARGE_INTEGER dueTime{};
+    std::unique_ptr<std::thread> timerThread;
+    volatile std::atomic<bool> isFinalize{};
+#else
 #ifdef USE_POSIX_TIMERS
     timer_t timerId{};
     const int sigVal{};
     int lastErrno{};
+#endif
 #endif
 
 public:
@@ -77,6 +92,9 @@ public:
 protected:
     void InitCycleTime(std::int64_t p_cycleTimeNs);
     void DisableTimer();
+#ifdef _WIN32
+    void Run();
+#endif
 };
 
 #endif

@@ -29,9 +29,20 @@
 #include <cerrno>
 #include <csignal>
 #endif
+#ifdef _WIN32
+#include <thread>
+#include <memory>
+#include <windows.h>
+#endif
 #include <functional>
 #include <atomic>
 #include <unordered_map>
+
+// Windows 10, Version 1803 (Build 17134) or newer is needed.
+#ifndef CREATE_WAITABLE_TIMER_HIGH_RESOLUTION
+/* NOLINTNEXTLINE(cppcoreguidelines-macro-usage) */
+#define CREATE_WAITABLE_TIMER_HIGH_RESOLUTION 0x00000002U
+#endif
 
 #ifdef USE_POSIX_TIMERS
 static void SignalHandler(int sig, siginfo_t *sigInfo, void *uc);
@@ -43,6 +54,19 @@ HostTimer::HostTimer(int p_uniqueTimerId)
     , sigVal(uniqueTimerId)
 #endif
 {
+#ifdef _WIN32
+    hWait = CreateEvent(nullptr, FALSE, FALSE, TEXT("FlexemuHostTimerWaitEvent"));
+    hTimer = CreateWaitableTimerEx(nullptr, nullptr,
+                 CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
+    if (hWait == nullptr || hTimer == nullptr)
+    {
+        lastError = GetLastError();
+    }
+    else
+    {
+        timerThread = std::make_unique<std::thread>(&HostTimer::Run, this);
+    }
+#endif
 #ifdef USE_POSIX_TIMERS
     struct sigevent sigEvent{};
     struct sigaction sigAction{};
@@ -79,6 +103,22 @@ HostTimer::HostTimer(int p_uniqueTimerId)
 HostTimer::~HostTimer()
 {
     DisableTimer();
+
+#ifdef _WIN32
+    SetEvent(hWait);
+    CloseHandle(hTimer);
+    hTimer = nullptr;
+    isFinalize.store(true);
+
+    if (timerThread)
+    {
+        timerThread->join();
+        timerThread.reset();
+    }
+
+    CloseHandle(hWait);
+    hWait = nullptr;
+#endif
 #ifdef USE_POSIX_TIMERS
     timer_delete(timerId);
     GetHostTimerMap().erase(sigVal);
@@ -87,8 +127,12 @@ HostTimer::~HostTimer()
 
 void HostTimer::InitCycleTime(std::int64_t p_cycleTimeNs)
 {
-    cycleTimeNs = p_cycleTimeNs;
+    isNotify.store(true);
 
+#ifdef _WIN32
+    cycleTimeNs.store(p_cycleTimeNs);
+    SetEvent(hWait);
+#endif
 #ifdef USE_POSIX_TIMERS
     if (lastErrno == 0)
     {
@@ -106,14 +150,14 @@ void HostTimer::InitCycleTime(std::int64_t p_cycleTimeNs)
         }
     }
 #endif
-
-    isNotify.store(true);
 }
 
 void HostTimer::DisableTimer()
 {
     isNotify.store(false);
-    cycleTimeNs = 0;
+#ifdef _WIN32
+    cycleTimeNs.store(0);
+#endif
 
 #ifdef USE_POSIX_TIMERS
     constexpr const struct itimerspec timerSpec{};
@@ -143,10 +187,12 @@ void HostTimer::UpdateFrom(NotifyId id, void *param)
             InitCycleTime(params->cycleTimeNs);
 
             // Return flag if this timer is valid.
+            params->isValid = false;
+#ifdef _WIN32
+            params->isValid = (lastError == 0);
+#endif
 #ifdef USE_POSIX_TIMERS
             params->isValid = (lastErrno == 0);
-#else
-            params->isValid = false;
 #endif
         }
     }
@@ -160,6 +206,53 @@ void HostTimer::DoNotify()
         Notify(NotifyId::HostTimerEvent, static_cast<void *>(&id));
     }
 }
+
+#ifdef _WIN32
+void HostTimer::Run()
+{
+    std::int64_t currentCycleTimeNs{};
+    HANDLE hThread = GetCurrentThread();
+    int previousThreadPriority = GetThreadPriority(hThread);
+    DWORD threadAffinityMask = 1;
+    SetThreadAffinityMask(hThread, threadAffinityMask);
+
+    while (!isFinalize.load())
+    {
+        auto result = WaitForSingleObject(hWait, INFINITE);
+        if (result != 0)
+        {
+            lastError = GetLastError();
+        }
+        SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
+
+        while (lastError == 0 && isNotify.load())
+        {
+            if (currentCycleTimeNs != cycleTimeNs.load())
+            {
+                currentCycleTimeNs = cycleTimeNs.load();
+                dueTime.QuadPart = -(currentCycleTimeNs / 100);
+            }
+
+            if (hTimer != nullptr && lastError == 0 &&
+                !SetWaitableTimer(hTimer, &dueTime, 0, nullptr, nullptr, 0))
+            {
+                lastError = GetLastError();
+            }
+
+            if (hTimer != nullptr && lastError == 0)
+            {
+                result = WaitForSingleObject(hTimer, INFINITE);
+                if (result == WAIT_OBJECT_0)
+                {
+                    DoNotify();
+                }
+            }
+        }
+
+        SetThreadPriority(hThread, previousThreadPriority);
+    }
+}
+#endif
 
 #ifdef USE_POSIX_TIMERS
 HostTimer::HostTimerMap_t &HostTimer::GetHostTimerMap()
@@ -180,4 +273,3 @@ static void SignalHandler(int sig, siginfo_t *sigInfo, void * /*uc*/)
     }
 }
 #endif
-
