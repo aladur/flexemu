@@ -32,6 +32,8 @@
 #ifdef _WIN32
 #include <thread>
 #include <memory>
+#include <string>
+#include <array>
 #include <windows.h>
 #endif
 #include <functional>
@@ -48,24 +50,51 @@
 static void SignalHandler(int sig, siginfo_t *sigInfo, void *uc);
 #endif
 
-HostTimer::HostTimer(int p_uniqueTimerId)
+HostTimer::HostTimer(int p_uniqueTimerId,
+        const FlexemuConfigFileSPtr &configFile)
     : uniqueTimerId(p_uniqueTimerId)
+#ifdef _WIN32
+    , useSpinLock(configFile->GetRuntimeSupportOption("useHostTimerSpinLock")
+                  == "1")
+#endif
 #ifdef USE_POSIX_TIMERS
     , sigVal(uniqueTimerId)
 #endif
 {
 #ifdef _WIN32
-    hWait = CreateEvent(nullptr, FALSE, FALSE, TEXT("FlexemuHostTimerWaitEvent"));
-    hTimer = CreateWaitableTimerEx(nullptr, nullptr,
-                 CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
-    if (hWait == nullptr || hTimer == nullptr)
+    std::wstring waitName = L"Local\\FlexemuHostTimerWaitEvent_" +
+        std::to_wstring(uniqueTimerId);
+    hWait = CreateEvent(nullptr, FALSE, FALSE, waitName.c_str());
+    if (hWait == nullptr)
     {
         lastError = GetLastError();
     }
-    else
+    if (lastError == 0)
+    {
+        std::wstring cancelName = L"Local\\FlexemuHostTimerCancelEvent_" +
+            std::to_wstring(uniqueTimerId);
+        hCancel = CreateEvent(nullptr, FALSE, FALSE, cancelName.c_str());
+        if (hCancel == nullptr)
+        {
+            lastError = GetLastError();
+        }
+    }
+    if (lastError == 0)
+    {
+        hTimer = CreateWaitableTimerEx(nullptr, nullptr,
+            CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
+        if (hTimer == nullptr)
+        {
+            lastError = GetLastError();
+        }
+    }
+
+    if (lastError == 0)
     {
         timerThread = std::make_unique<std::thread>(&HostTimer::Run, this);
     }
+#else
+    (void)configFile;
 #endif
 #ifdef USE_POSIX_TIMERS
     struct sigevent sigEvent{};
@@ -118,6 +147,8 @@ HostTimer::~HostTimer()
 
     CloseHandle(hWait);
     hWait = nullptr;
+    CloseHandle(hCancel);
+    hCancel = nullptr;
 #endif
 #ifdef USE_POSIX_TIMERS
     timer_delete(timerId);
@@ -130,6 +161,10 @@ void HostTimer::InitCycleTime(std::int64_t p_cycleTimeNs)
     isNotify.store(true);
 
 #ifdef _WIN32
+    LARGE_INTEGER localInitTicks;
+    QueryPerformanceCounter(&localInitTicks);
+    initTicks.store(localInitTicks.QuadPart);
+    SetEvent(hCancel);
     cycleTimeNs.store(p_cycleTimeNs);
     SetEvent(hWait);
 #endif
@@ -157,6 +192,7 @@ void HostTimer::DisableTimer()
     isNotify.store(false);
 #ifdef _WIN32
     cycleTimeNs.store(0);
+    SetEvent(hCancel);
 #endif
 
 #ifdef USE_POSIX_TIMERS
@@ -212,18 +248,22 @@ void HostTimer::Run()
 {
     std::int64_t currentCycleTimeNs{};
     HANDLE hThread = GetCurrentThread();
-    int previousThreadPriority = GetThreadPriority(hThread);
     DWORD threadAffinityMask = 1;
+    LARGE_INTEGER frequency;
+    LONGLONG maxTicks{};
+    std::int64_t startTicks{};
+
+    SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
     SetThreadAffinityMask(hThread, threadAffinityMask);
+    QueryPerformanceFrequency(&frequency);
 
     while (!isFinalize.load())
     {
         auto result = WaitForSingleObject(hWait, INFINITE);
-        if (result != 0)
+        if (result != ERROR_SUCCESS)
         {
             lastError = GetLastError();
         }
-        SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
 
         while (lastError == 0 && isNotify.load())
         {
@@ -231,25 +271,65 @@ void HostTimer::Run()
             {
                 currentCycleTimeNs = cycleTimeNs.load();
                 dueTime.QuadPart = -(currentCycleTimeNs / 100);
+                startTicks = initTicks.load();
+                maxTicks =
+                    (currentCycleTimeNs * frequency.QuadPart) / 1000000000LL;
             }
 
-            if (hTimer != nullptr && lastError == 0 &&
-                !SetWaitableTimer(hTimer, &dueTime, 0, nullptr, nullptr, 0))
+            if (useSpinLock && currentCycleTimeNs < 1000000)
             {
-                lastError = GetLastError();
-            }
+                // For cycle times < 1 ms use spin lock if flag is set.
+                // Resource allocation: One CPU core used exclusively for
+                // about 100% for this task. Default: flag is off.
+                bool isTimeOut = false;
+                LARGE_INTEGER currentTicks;
 
-            if (hTimer != nullptr && lastError == 0)
-            {
-                result = WaitForSingleObject(hTimer, INFINITE);
-                if (result == WAIT_OBJECT_0)
+                do
+                {
+                    Sleep(0);
+                    QueryPerformanceCounter(&currentTicks);
+                    auto ticks = currentTicks.QuadPart - startTicks;
+                    isTimeOut = (ticks >= maxTicks);
+                } while (!isTimeOut && isNotify.load() &&
+                    currentCycleTimeNs == cycleTimeNs.load());
+
+                if (isTimeOut)
                 {
                     DoNotify();
+                    startTicks = currentTicks.QuadPart;
+                }
+            }
+            else
+            {
+                if (lastError == 0 && SetWaitableTimer(hTimer, &dueTime, 0,
+                    nullptr, nullptr, 0) != ERROR_SUCCESS)
+                {
+                    lastError = GetLastError();
+                }
+
+                if (lastError == 0)
+                {
+                    std::array<HANDLE, 2> handles = { hCancel, hTimer };
+                    result = WaitForMultipleObjects(
+                        static_cast<DWORD>(handles.size()), &handles[0], FALSE,
+                        INFINITE);
+                    if (result == WAIT_OBJECT_0)
+                    {
+                        // Wait has intentionally been canceled, cancel timer too.
+                        CancelWaitableTimer(hTimer);
+                    }
+                    else if (result == WAIT_OBJECT_0 + 1)
+                    {
+                        // Timer signalled, notify receiver.
+                        DoNotify();
+                    }
+                    else if(result == WAIT_FAILED)
+                    {
+                        lastError = GetLastError();
+                    }
                 }
             }
         }
-
-        SetThreadPriority(hThread, previousThreadPriority);
     }
 }
 #endif

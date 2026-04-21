@@ -53,6 +53,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
     options(p_options),
     memory(options, configFile),
     cpu(memory),
+    rtc(configFile),
     fdc(options, configFile),
     inout(p_options, memory),
     scheduler(cpu, inout),
@@ -67,7 +68,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
     tstdev(512U),
     gui(cpu, memory, scheduler, inout, vico1, vico2,
         joystickIO, keyboardIO, terminalIO, pia1, p_options),
-    hostTimer(Mc146818::HOST_TIMER_ID)
+    hostTimer(Mc146818::HOST_TIMER_ID, configFile)
 {
     if (options.startup_command.size() > MAX_COMMAND)
     {

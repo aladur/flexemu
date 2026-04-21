@@ -34,6 +34,7 @@
 
 #include "bobserv.h"
 #include "bobservd.h"
+#include "fcnffile.h"
 #include <cstdint>
 #ifdef USE_POSIX_TIMERS
 #include <ctime>
@@ -62,10 +63,13 @@ private:
     std::atomic<std::int64_t> cycleTimeNs{};
     HANDLE hTimer{};
     HANDLE hWait{};
+    HANDLE hCancel{};
     DWORD lastError{};
     LARGE_INTEGER dueTime{};
+    std::atomic<std::int64_t> initTicks{};
     std::unique_ptr<std::thread> timerThread;
     volatile std::atomic<bool> isFinalize{};
+    bool useSpinLock{};
 #else
 #ifdef USE_POSIX_TIMERS
     timer_t timerId{};
@@ -76,7 +80,7 @@ private:
 
 public:
     HostTimer() = delete;
-    explicit HostTimer(int p_uniqueTimerId);
+    HostTimer(int p_uniqueTimerId, const FlexemuConfigFileSPtr &configFile);
     ~HostTimer() override;
     HostTimer(const HostTimer &src) = delete;
     HostTimer(HostTimer &&src) = delete;

@@ -216,7 +216,9 @@ std::string FlexemuConfigFile::GetRuntimeSupportOption(const std::string &key)
 void FlexemuConfigFile::InitializeDebugSupportOptions()
 {
     static const auto validKeys = std::set<std::string>{
-        "presetRAM", "logMdcr", "logMdcrFilePath"
+        "presetRAM",
+        "logMdcr", "logMdcrFilePath",
+        "logMc146818", "logMc146818FilePath",
     };
 
     BIniFile iniFile(path);
@@ -242,6 +244,7 @@ void FlexemuConfigFile::InitializeRuntimeSupportOptions()
 {
     static const auto validKeys = std::set<std::string>{
         "presetRAMPattern",
+        "useHostTimerSpinLock",
     };
     static const auto validRamPatterns = std::set<std::string>{
         "all_zero",
@@ -249,6 +252,9 @@ void FlexemuConfigFile::InitializeRuntimeSupportOptions()
         "lines64",
         "random10", "random20", "random30", "random40", "random50",
         "random60", "random70", "random80", "random90",
+    };
+    static const auto validSpinLockStrings = std::set<std::string>{
+        "0", "1",
     };
 
     BIniFile iniFile(path);
@@ -260,7 +266,10 @@ void FlexemuConfigFile::InitializeRuntimeSupportOptions()
     {
         if (validKeys.find(iter.first) == validKeys.cend() ||
             (iter.first == "presetRAMPattern" &&
-             validRamPatterns.find(iter.second) == validRamPatterns.cend()))
+             validRamPatterns.find(iter.second) == validRamPatterns.cend()) ||
+            (iter.first == "useHostTimerSpinLock" &&
+             validSpinLockStrings.find(iter.second) ==
+             validSpinLockStrings.cend()))
         {
             const auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
@@ -275,6 +284,7 @@ void FlexemuConfigFile::InitializeRuntimeSupportOptions()
     if (runtimeSupportOptionForKey.empty() && !iniFile.HasSection(section))
     {
         runtimeSupportOptionForKey.emplace("presetRAMPattern", "random20");
+        runtimeSupportOptionForKey.emplace("useHostTimerSpinLock", "0");
     }
 }
 

@@ -29,11 +29,16 @@
 #include "iodevice.h"
 #include "bobserv.h"
 #include "bobservd.h"
+#include "fcnffile.h"
 #include <cstdint>
 #include <atomic>
 #include <string>
 #include <array>
+#include <fstream>
+#include <chrono>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 
 class Mc6809;
 
@@ -57,6 +62,9 @@ protected:
     std::atomic<Byte> C{0};
     Byte D{0};
     std::array<Byte, 50> ram{}; // 50 bytes of internal RAM
+    std::chrono::time_point<std::chrono::system_clock> lastTime;
+    int debugLevel{};
+    std::ofstream cdbg;
 
 public:
 
@@ -92,6 +100,9 @@ public:
 
     static const int HOST_TIMER_ID{146818};
 
+protected:
+    void set_debug(const std::string &debugLevel, fs::path logFilePath);
+
 private:
 
     enum class Config : std::uint8_t
@@ -113,7 +124,8 @@ private:
 
 public:
 
-    Mc146818();
+    Mc146818() = delete;
+    explicit Mc146818(const FlexemuConfigFileSPtr &configFile);
     Mc146818(const Mc146818 &src) = delete;
     Mc146818 &operator=(const Mc146818 &src) = delete;
     Mc146818(Mc146818 &&src) = delete;

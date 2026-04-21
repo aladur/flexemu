@@ -65,12 +65,15 @@ static bool createCnfFile(const fs::path &path)
             "mon54-6.s19= # \n"
             "[DebugSupport]\n"
             "presetRAM=1\n"
-            "logMdcr=1\n";
+            "logMdcr=1\n"
+            "logMc146818=2\n";
         ofs <<
 #ifdef _WIN32
-            "logMdcrFilePath=C:\\dir\\subdir\\subdir\\mdcr.log\n";
+            "logMdcrFilePath=C:\\dir\\subdir\\subdir\\mdcr.log\n"
+            "logMc146818FilePath=C:\\dir\\subdir\\subdir\\mc146818.log\n";
 #else
-            "logMdcrFilePath=/dir/subdir/subdir/mdcr.log\n";
+            "logMdcrFilePath=/dir/subdir/subdir/mdcr.log\n"
+            "logMc146818FilePath=/dir/subdir/subdir/mc146818.log\n";
 #endif
         retval = ofs.good();
         ofs.close();
@@ -209,6 +212,14 @@ TEST(test_fcnffile, fct_GetDebugSupportOption)
 #else
     EXPECT_EQ(value, u8"/dir/subdir/subdir/mdcr.log");
 #endif
+    value = cnfFile.GetDebugSupportOption("logMc146818");
+    EXPECT_EQ(value, "2");
+    value = cnfFile.GetDebugSupportOption("logMc146818FilePath");
+#ifdef _WIN32
+    EXPECT_EQ(value, u8"C:\\dir\\subdir\\subdir\\mc146818.log");
+#else
+    EXPECT_EQ(value, u8"/dir/subdir/subdir/mc146818.log");
+#endif
     value = cnfFile.GetDebugSupportOption("invalidKey");
     EXPECT_TRUE(value.empty());
     fs::remove(path);
@@ -237,6 +248,26 @@ TEST(test_fcnffile, fct_GetRuntimeSupportOption)
         ofs.close();
         FlexemuConfigFile cnfFile(path);
         const auto value = cnfFile.GetRuntimeSupportOption("presetRAMPattern");
+        EXPECT_EQ(expectedValue, value);
+        fs::remove(path);
+    }
+
+    static const std::vector<const char *> validFlagStrings
+    {
+        "0", "1",
+    };
+
+    for (const auto &expectedValue : validFlagStrings)
+    {
+        std::fstream ofs(path, std::ios::out | std::ios::trunc);
+        ASSERT_TRUE(ofs.is_open());
+        ofs <<
+            "[RuntimeSupport]\n"
+            "useHostTimerSpinLock=" << expectedValue << "\n";
+        ofs.close();
+        FlexemuConfigFile cnfFile(path);
+        const auto value =
+            cnfFile.GetRuntimeSupportOption("useHostTimerSpinLock");
         EXPECT_EQ(expectedValue, value);
         fs::remove(path);
     }
@@ -487,6 +518,26 @@ TEST(test_fcnffile, fct_GetRuntimeSupportOption_exceptions)
     ofs <<
         "[RuntimeSupport]\n"
         "presetRAMPattern=invalid_value\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[RuntimeSupport]\n"
+        "useHostTimerSpinLock=\n";
+    ofs.close();
+    EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
+            testing::Throws<FlexException>());
+    fs::remove(path);
+
+    ofs.open(path, std::ios::out | std::ios::trunc);
+    ASSERT_TRUE(ofs.is_open());
+    ofs <<
+        "[RuntimeSupport]\n"
+        "useHostTimerSpinLock=invalid_value\n";
     ofs.close();
     EXPECT_THAT([&](){ FlexemuConfigFile cnfFile(path); },
             testing::Throws<FlexException>());

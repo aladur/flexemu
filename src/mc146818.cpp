@@ -36,6 +36,7 @@
 
 
 namespace fs = std::filesystem;
+namespace chron = std::chrono;
 
 constexpr const std::array<Byte, 12> days_per_month{
     31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
@@ -44,8 +45,13 @@ constexpr const std::array<Byte, 12> days_per_month{
 constexpr const auto * const OLDCONFIGBIN = u8".mc146818";
 constexpr const auto * const CONFIGBIN = u8"mc146818.bin";
 
-Mc146818::Mc146818()
+Mc146818::Mc146818(const FlexemuConfigFileSPtr &configFile)
 {
+    auto logLevel = configFile->GetDebugSupportOption("logMc146818");
+    auto logFilePath =
+        fs::u8path(configFile->GetDebugSupportOption("logMc146818FilePath"));
+    set_debug(logLevel, logFilePath);
+
     const auto path = getConfigFilePath(Config::NewOrOld);
 
     if (!path.empty())
@@ -80,6 +86,18 @@ Mc146818::Mc146818()
     day = convert(static_cast<Byte>(lt->tm_mday));
     month = convert(static_cast<Byte>(lt->tm_mon + 1));
     year = convert(static_cast<Byte>(lt->tm_year % 100));
+
+    if (debugLevel > 0)
+    {
+        cdbg << "Mc146818 constructed and initialized\n";
+        cdbg << "system_clock::period=" <<
+            chron::system_clock::period::num << " / " <<
+            chron::system_clock::period::den << "\n";
+        cdbg << "high_resolution_clock::period=" <<
+            chron::high_resolution_clock::period::num << " / " <<
+            chron::high_resolution_clock::period::den << "\n";
+        cdbg.flush();
+    }
 }
 
 std::string Mc146818::getConfigFilePath(Mc146818::Config type)
@@ -98,6 +116,16 @@ std::string Mc146818::getConfigFilePath(Mc146818::Config type)
 
 Mc146818::~Mc146818()
 {
+    if (debugLevel > 0)
+    {
+        cdbg << "Mc146818 destroyed\n";
+    }
+
+    if (cdbg.is_open())
+    {
+        cdbg.close();
+    }
+
     const auto path = getConfigFilePath(Config::New);
     if (path.empty())
     {
@@ -551,6 +579,28 @@ void Mc146818::UpdateFrom(NotifyId id, void *param)
 
     if (id == NotifyId::HostTimerEvent && uniqueTimerId == HOST_TIMER_ID)
     {
+        const auto now = chron::system_clock::now();
+
+        if (debugLevel > 1)
+        {
+            using ns = chron::nanoseconds;
+            using us = chron::microseconds;
+
+            const auto timeDiff = now - lastTime;
+            cdbg << " periodic_interrupt measured_duration=";
+
+            if ((A & 0x0FU) < 7U)
+            {
+                cdbg << chron::duration_cast<ns>(timeDiff).count() << " ns\n";
+            }
+            else
+            {
+                cdbg << chron::duration_cast<us>(timeDiff).count() << " us\n";
+            }
+            cdbg.flush();
+        }
+
+        lastTime = now;
         BSET<Byte>(C, 6U); // set periodic interrupt flag
 
         if (BTST<Byte>(B, 6U)) // Periodic interrupt enable bit
@@ -576,5 +626,49 @@ void Mc146818::updatePeriodicIrqRate()
     }
 
     Notify(NotifyId::SetHostTimer, pParams);
+    lastTime = chron::system_clock::now();
+
+    if (debugLevel > 0)
+    {
+        if (registerSelect != 0U)
+        {
+            cdbg << "Set periodic_interrupt duration=";
+            if (registerSelect < 7)
+            {
+                cdbg << params.cycleTimeNs << " ns\n";
+            }
+            else
+            {
+                cdbg << params.cycleTimeNs / 1000 << " us\n";
+            }
+        }
+        else
+        {
+            cdbg << "Diable periodic_interrupt\n";
+        }
+
+        cdbg.flush();
+    }
+}
+
+void Mc146818::set_debug(const std::string &p_debugLevel, fs::path logFilePath)
+{
+    if (logFilePath.empty())
+    {
+        logFilePath = fs::temp_directory_path() / u8"flexemu_mc146818.log";
+    }
+
+    std::stringstream streamDebugLevel(p_debugLevel);
+    streamDebugLevel >> debugLevel;
+
+    if (cdbg.is_open())
+    {
+        cdbg.close();
+    }
+
+    if (debugLevel > 0)
+    {
+        cdbg.open(logFilePath, std::ios::out);
+    }
 }
 
