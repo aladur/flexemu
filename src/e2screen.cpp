@@ -61,7 +61,7 @@
 #include <array>
 #include <string>
 #if defined(UNIX) && !defined(X_DISPLAY_MISSING)
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0)) && !defined(__APPLE__)
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 #include <QX11Info>
 #endif
     // Qt < 6.0.0

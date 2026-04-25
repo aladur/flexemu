@@ -44,7 +44,9 @@ if(NOT CURSES_FOUND)
     find_package(Curses REQUIRED)
 endif()
 
-find_package(X11 REQUIRED)
+if(NOT APPLE)
+    find_package(X11 REQUIRED)
+endif()
 endif()
 
 # Enable compiler warnings
@@ -714,6 +716,9 @@ endif()
 if(UNIX)
     target_compile_definitions(flexemu PRIVATE UNIX)
 endif()
+if(APPLE)
+    target_compile_definitions(flexemu PRIVATE X_DISPLAY_MISSING)
+endif()
 if(WIN32)
     target_compile_definitions(flexemu PRIVATE _WINDOWS)
 endif()
@@ -760,9 +765,13 @@ target_link_libraries(flexemu PRIVATE
     fmt::fmt
 )
 if(UNIX)
+    if(NOT APPLE)
+        target_link_libraries(flexemu PRIVATE
+            X11::Xkb
+            X11::X11
+        )
+    endif()
     target_link_libraries(flexemu PRIVATE
-        X11::Xkb
-        X11::X11
         ${CURSES_LIBRARIES}
         Threads::Threads
     )
@@ -902,7 +911,6 @@ target_link_libraries(flexplorer PRIVATE
 )
 if(UNIX)
     target_link_libraries(flexplorer PRIVATE
-        X11::X11
         Threads::Threads
     )
 endif()
