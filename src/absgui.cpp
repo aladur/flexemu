@@ -130,10 +130,10 @@ void AbstractGui::CopyToZPixmap(int,
                                 void *dest, const Byte *src,
                                 int depth, const unsigned long *pen)
 {
-    register int j;         /* plane counter                 */
-    register Word srcPixel; /* calculated pixel in video ram */
-    register int i;         /* index into video ram          */
-    register Byte b1 = 0, b3 = 0, b5 = 0; /* byte buffers for each plane */
+    int j;         /* plane counter                 */
+    Word srcPixel; /* calculated pixel in video ram */
+    int i;         /* index into video ram          */
+    Byte b1 = 0, b3 = 0, b5 = 0; /* byte buffers for each plane */
     const Byte *vram;       /* pointer into video ram        */
     Byte     *dest8;        /* destination pointer in image  */
     Word     *dest16;       /* destination pointer in image  */
@@ -147,7 +147,7 @@ void AbstractGui::CopyToZPixmap(int,
 
     for (i = 0; i < YBLOCK_SIZE; i++)
     {
-        register Byte b0, b2, b4;       /* byte buffers for each plane */
+        Byte b0, b2, b4;       /* byte buffers for each plane */
 
         b0 = vram[0];
         b2 = vram[VIDEORAM_SIZE];

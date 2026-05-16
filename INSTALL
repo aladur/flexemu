@@ -5,10 +5,16 @@
 Flexemu supports configure scripts. So there a simply four steps to completely
 install it:
 
-	- ./configure
-	- make
-	- su root (root access needed for installation)
-	- make install
+    ./configure
+    make
+    sudo make install
+
+Build on debian (tested on trixie):
+
+    sudo apt install build-essential libxaw7-dev libwxgtk3.2-dev
+    ./configure
+    make
+    sudo make install
 
 remarks:
 

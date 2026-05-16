@@ -2331,11 +2331,11 @@ inline Word Mc6809::fetch_ea_idx(t_cycles *c)
 
 inline Word Mc6809::do_effective_address(Byte post)
 {
-    register Word addr = 0;
+    Word addr = 0;
 
     if (!BTST7(post))
     {
-        register Word offset = post & 0x1f;
+        Word offset = post & 0x1f;
 
         if (offset & 0x10)
         {
