@@ -32,6 +32,7 @@
 #include <type_traits>
 #include <mutex>
 #include <vector>
+#include <atomic>
 #include <condition_variable>
 
 
@@ -103,7 +104,7 @@ protected:
     tInterruptStatus interrupt_status{};
     void do_reset();
     CpuStatusPtr cpu_status;
-    bool is_status_valid;
+    std::atomic<bool> is_status_valid;
     bool is_resume;
 
     // CPU frequency

@@ -43,6 +43,7 @@
 #include <fmt/format.h>
 #include "warnon.h"
 #include <fstream>
+#include <atomic>
 #endif
 
 
@@ -295,10 +296,10 @@ CpuStatus *Scheduler::get_status()
 {
     CpuStatus *status = nullptr;
 
-    std::lock_guard<std::mutex> guard(status_mutex);
-
     if (is_status_valid)
     {
+        std::lock_guard<std::mutex> guard(status_mutex);
+
         status = cpu_status.get();
         is_status_valid = false;
     }
