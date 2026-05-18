@@ -147,6 +147,7 @@ private:
     QRect mouseNotificationRect;
     unsigned int numLockIndicatorMask;
     std::optional<bool> isInRect;
+    bool hasMouseCoordinatesChanged;
 #ifdef __linux__
     BLinuxSysInfo sysInfo;
 #endif

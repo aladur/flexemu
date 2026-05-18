@@ -98,6 +98,7 @@ E2Screen::E2Screen(Scheduler &p_scheduler,
     , preferredScreenSize(WINDOWWIDTH * p_options.pixelSize,
                           WINDOWHEIGHT * p_options.pixelSize)
     , numLockIndicatorMask(0U)
+    , hasMouseCoordinatesChanged{}
 {
     setAttribute(Qt::WA_OpaquePaintEvent);
     setBaseSize({WINDOWWIDTH, WINDOWHEIGHT});
@@ -163,6 +164,7 @@ void E2Screen::leaveEvent(QEvent * /* event */)
     mouseX = previousMouseX = -1;
     mouseY = previousMouseY = -1;
     mouseButtonState = 0;
+    hasMouseCoordinatesChanged = true;
 }
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
@@ -174,6 +176,7 @@ void E2Screen::enterEvent(QEvent * /*event*/)
     mouseX = previousMouseX = -1;
     mouseY = previousMouseY = -1;
     mouseButtonState = 0;
+    hasMouseCoordinatesChanged = true;
 }
 
 void E2Screen::keyPressEvent(QKeyEvent *event)
@@ -312,6 +315,7 @@ void E2Screen::SetMouseCoordinatesAndButtons(QMouseEvent *event)
     mouseY = event->y();
 #endif
     mouseButtonState = ConvertMouseButtonState(event->buttons());
+    hasMouseCoordinatesChanged = true;
 }
 
 void E2Screen::ReleaseMouseCapture()
@@ -416,32 +420,30 @@ void E2Screen::RepaintScreen()
 
 void E2Screen::UpdateMouse()
 {
-    int dx = 0;
-    int dy = 0;
-
-    if ((previousMouseX != -1) && (mouseX != -1) &&
-        (previousMouseY != -1) && (mouseY != -1))
+    if (hasMouseCoordinatesChanged)
     {
-        if (cursorType == CursorType::Invisible)
+        if ((mouseX != -1) && (mouseY != -1))
         {
-            dx = mouseX - previousMouseX - warpDx;
-            dy = mouseY - previousMouseY - warpDy;
-            SetCursorPosition(warpHomeX - mouseX, warpHomeY - mouseY);
+            if ((previousMouseX != -1) && (previousMouseY != -1))
+            {
+                int dx = 0;
+                int dy = 0;
+
+                if (cursorType == CursorType::Invisible)
+                {
+                    dx = mouseX - previousMouseX - warpDx;
+                    dy = mouseY - previousMouseY - warpDy;
+                    SetCursorPosition(warpHomeX - mouseX, warpHomeY - mouseY);
+                }
+
+                joystickIO.put_values(dx, dy);
+            }
+
+            previousMouseX = mouseX;
+            previousMouseY = mouseY;
         }
 
-        joystickIO.put_values(dx, dy);
-        previousMouseX = mouseX;
-        previousMouseY = mouseY;
-    }
-    else if ((mouseX != -1) && (mouseY != -1))
-    {
-        previousMouseX = mouseX;
-        previousMouseY = mouseY;
-    }
-    else
-    {
-        previousMouseX = mouseX = -1;
-        previousMouseY = mouseY = -1;
+        hasMouseCoordinatesChanged = false;
     }
 
     auto keyModifiers = GetKeyModifiersState();
