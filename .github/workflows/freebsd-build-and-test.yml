@@ -1,0 +1,99 @@
+name: flexemu-freebsd-build-and-test
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: FreeBSD ${{ matrix.freebsd-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        freebsd-version: ['14.3', '15.0']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Run FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.freebsd-version }}
+          usesh: true
+          sync: rsync
+          arch: x86_64
+          mem: 6144
+          # libfmt is not used, flexemu comes with local fmt sources as a git
+          # submodule. But it helps to detect if the wrong fmt header files
+          # are used.
+          prepare: |
+            pkg update -f
+            pkg install -y sudo pkgconf libtool libfmt ncurses cmake ninja qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport qt5-concurrent
+          run: |
+            set -e
+
+            echo "=== System Information ==="
+            sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu|threads_per_core'
+            clang --version
+            clang++ --version
+            cmake --version
+            whoami
+
+            echo "=== Creating build user ==="
+            pw groupadd -n user || true
+            pw useradd -n user -d /home/user -s /bin/sh -G wheel || true
+            mkdir -p /home/user
+            chown -R user:user /home/user
+            chown -R user:user .
+
+            echo "=== Configuring ==="
+            sudo -u user sh -c '
+              mkdir -p bld
+              cd bld
+              cmake .. -G Ninja \
+                -DCMAKE_INSTALL_PREFIX:PATH=$HOME/usr \
+                -DCMAKE_INSTALL_SYSCONFDIR=$HOME/etc \
+                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+              ls -lRa > ls-lRa.txt
+            '
+
+            echo "=== Building ==="
+            sudo -u user sh -c 'cd bld && ninja'
+
+            echo "=== Installing ==="
+            sudo -u user sh -c 'cd bld && ninja install'
+
+            echo "=== Testing ==="
+            sudo -u user sh -ec '
+              cd bld
+              ctest -V --output-log unittests.log
+            '
+
+            sudo -u user bld/bin/test_gccasm
+            sudo -u user ldd bld/bin/flexemu
+            sudo -u user ldd bld/bin/flexplorer
+
+            for tool in dsktool mdcrtool flex2hex hex2flex; do
+              sudo -u user bld/bin/$tool -V
+            done
+
+            sudo -u user bld/bin/dsktool -l disks/games.dsk
+            sudo -u user bld/bin/dsktool -f new.dsk -S 80dsdd
+            sudo -u user bld/bin/dsktool -C disks/system.dsk -T new.dsk
+            sudo -u user bld/bin/dsktool -l new.dsk
+
+      - name: Upload build artefacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: freebsd-${{ matrix.freebsd-version }}-artifacts
+          path: |
+            bld/ls-lRa.txt
+            bld/CMakeCache.txt
+            bld/compile_commands.json
+            bld/unittests.log
