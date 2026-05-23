@@ -129,10 +129,10 @@ private:
     QPixmap scaledScreen;
     Qt::TransformationMode transformationMode;
     Byte firstRasterLine;
-    int mouseX;
-    int mouseY;
-    int previousMouseX;
-    int previousMouseY;
+    std::optional<int> mouseX;
+    std::optional<int> mouseY;
+    std::optional<int> previousMouseX;
+    std::optional<int> previousMouseY;
     int warpDx{};
     int warpDy{};
     int warpHomeX;

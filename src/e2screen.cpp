@@ -85,10 +85,6 @@ E2Screen::E2Screen(Scheduler &p_scheduler,
     , screen(QPixmap(WINDOWWIDTH, WINDOWHEIGHT))
     , transformationMode(Qt::FastTransformation)
     , firstRasterLine(0)
-    , mouseX(-1)
-    , mouseY(-1)
-    , previousMouseX(-1)
-    , previousMouseY(-1)
     , warpHomeX(0)
     , warpHomeY(0)
     , mouseButtonState(0)
@@ -161,8 +157,10 @@ void E2Screen::mouseReleaseEvent(QMouseEvent *event)
 
 void E2Screen::leaveEvent(QEvent * /* event */)
 {
-    mouseX = previousMouseX = -1;
-    mouseY = previousMouseY = -1;
+    mouseX.reset();
+    previousMouseX.reset();
+    mouseY.reset();
+    previousMouseY.reset();
     mouseButtonState = 0;
     hasMouseCoordinatesChanged = true;
 }
@@ -173,8 +171,10 @@ void E2Screen::enterEvent(QEnterEvent * /* event */)
 void E2Screen::enterEvent(QEvent * /*event*/)
 #endif
 {
-    mouseX = previousMouseX = -1;
-    mouseY = previousMouseY = -1;
+    mouseX.reset();
+    previousMouseX.reset();
+    mouseY.reset();
+    previousMouseY.reset();
     mouseButtonState = 0;
     hasMouseCoordinatesChanged = true;
 }
@@ -361,11 +361,12 @@ void E2Screen::SetCursorType(CursorType p_cursorType)
 
 void E2Screen::SetCursorPosition(int dx, int dy)
 {
-    if (warpDx || warpDy || dx || dy)
+    if (mouseX.has_value() && mouseY.has_value() &&
+        (warpDx || warpDy || dx || dy))
     {
         warpDx = dx;
         warpDy = dy;
-        QPoint cursorPos(mouseX + dx, mouseY + dy);
+        QPoint cursorPos(mouseX.value() + dx, mouseY.value() + dy);
         QCursor::setPos(mapToGlobal(cursorPos));
     }
 }
@@ -422,18 +423,19 @@ void E2Screen::UpdateMouse()
 {
     if (hasMouseCoordinatesChanged)
     {
-        if ((mouseX != -1) && (mouseY != -1))
+        if ((mouseX.has_value()) && (mouseY.has_value()))
         {
-            if ((previousMouseX != -1) && (previousMouseY != -1))
+            if ((previousMouseX.has_value()) && (previousMouseY.has_value()))
             {
                 int dx = 0;
                 int dy = 0;
 
                 if (cursorType == CursorType::Invisible)
                 {
-                    dx = mouseX - previousMouseX - warpDx;
-                    dy = mouseY - previousMouseY - warpDy;
-                    SetCursorPosition(warpHomeX - mouseX, warpHomeY - mouseY);
+                    dx = mouseX.value() - previousMouseX.value() - warpDx;
+                    dy = mouseY.value() - previousMouseY.value() - warpDy;
+                    SetCursorPosition(warpHomeX - mouseX.value(),
+                            warpHomeY - mouseY.value());
                 }
 
                 joystickIO.put_values(dx, dy);
