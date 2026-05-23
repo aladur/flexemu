@@ -82,19 +82,9 @@ E2Screen::E2Screen(Scheduler &p_scheduler,
     , keyboardIO(p_keyboardIO)
     , pia1(p_pia1)
     , backgroundColor(p_backgroundColor)
-    , screen(QPixmap(WINDOWWIDTH, WINDOWHEIGHT))
-    , transformationMode(Qt::FastTransformation)
-    , firstRasterLine(0)
-    , warpHomeX(0)
-    , warpHomeY(0)
-    , mouseButtonState(0)
     , pixelSize(p_options.pixelSize)
-    , cursorType(CursorType::Default)
-    , doScaledScreenUpdate(true)
     , preferredScreenSize(WINDOWWIDTH * p_options.pixelSize,
                           WINDOWHEIGHT * p_options.pixelSize)
-    , numLockIndicatorMask(0U)
-    , hasMouseCoordinatesChanged{}
 {
     setAttribute(Qt::WA_OpaquePaintEvent);
     setBaseSize({WINDOWWIDTH, WINDOWHEIGHT});

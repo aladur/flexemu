@@ -24,8 +24,10 @@
 #define E2SCREEN_INCLUDED
 
 #include "typedefs.h"
+#include "e2.h"
 #include "bobservd.h"
 #include "warnoff.h"
+#include <QtGlobal>
 #include <QVector>
 #include <QRect>
 #include <QSize>
@@ -125,29 +127,29 @@ private:
     KeyboardIO &keyboardIO;
     Pia1 &pia1;
     QColor backgroundColor;
-    QPixmap screen;
+    QPixmap screen{QPixmap(WINDOWWIDTH, WINDOWHEIGHT)};
     QPixmap scaledScreen;
-    Qt::TransformationMode transformationMode;
-    Byte firstRasterLine;
+    Qt::TransformationMode transformationMode{Qt::FastTransformation};
+    Byte firstRasterLine{0};
     std::optional<int> mouseX;
     std::optional<int> mouseY;
     std::optional<int> previousMouseX;
     std::optional<int> previousMouseY;
     int warpDx{};
     int warpDy{};
-    int warpHomeX;
-    int warpHomeY;
-    unsigned mouseButtonState;
+    int warpHomeX{0};
+    int warpHomeY{0};
+    unsigned mouseButtonState{0};
     int pixelSize;
-    CursorType cursorType;
-    bool doScaledScreenUpdate;
+    CursorType cursorType{CursorType::Default};
+    bool doScaledScreenUpdate{true};
     QSize preferredScreenSize;
     QSize scaledScreenSize;
     QPoint origin;
     QRect mouseNotificationRect;
-    unsigned int numLockIndicatorMask;
+    unsigned int numLockIndicatorMask{0};
     std::optional<bool> isInRect;
-    bool hasMouseCoordinatesChanged;
+    bool hasMouseCoordinatesChanged{};
 #ifdef __linux__
     BLinuxSysInfo sysInfo;
 #endif
