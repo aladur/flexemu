@@ -48,7 +48,7 @@ jobs:
           echo "Qt version:" $QT_SELECT
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: 'true'
 
@@ -118,7 +118,7 @@ jobs:
           echo "C++-compiler: ${{matrix.compiler[1]}}" > result/context.txt
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: flexemu-build-and-test-${{matrix.os}}-qt${{matrix.qt-version}}-${{matrix.compiler[0]}}-result

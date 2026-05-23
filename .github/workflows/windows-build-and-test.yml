@@ -35,7 +35,7 @@ jobs:
           )
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: 'true'
 
@@ -145,7 +145,7 @@ jobs:
           ./create_installer.sh
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: flexemu-windows-build-result-${{ env.QT_VERSION }}

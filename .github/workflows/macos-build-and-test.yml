@@ -45,7 +45,7 @@ jobs:
           cmake --version
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: 'true'
 
@@ -105,7 +105,7 @@ jobs:
           echo "Log. CPUs:   " `sysctl hw.logicalcpu` >> result/context.txt
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: flexemu-build-and-test-macos-qt6-clang-result
