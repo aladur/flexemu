@@ -73,9 +73,9 @@ Mc146818::Mc146818(const FlexemuConfigFileSPtr &configFile)
         std::memset(ram.data(), '\0', ram.size());
     }
 
-    A = 0;
-    B = 0x06;
-    D |= 0x80U;
+    BSET<Byte>(B, B_DM_BIT);
+    BSET<Byte>(B, B_24_BIT);
+    BSET<Byte>(D, D_VRT_BIT);
 
     // initialize clock registers with system time
     const auto time_now = time(nullptr);
@@ -205,7 +205,7 @@ Byte Mc146818::readIo(Word offset)
         case 0x0d:
             {
                 const Byte temp = D;
-                D |= 0x80U;
+                BSET<Byte>(D, D_VRT_BIT);
                 return temp;
             }
 
@@ -262,15 +262,15 @@ void Mc146818::writeIo(Word offset, Byte val)
 
         case 0x0a:
             A = val;
-            BCLR<Byte>(A, 7U);
+            BCLR<Byte>(A, A_UIP_BIT);
             updatePeriodicIrqRate();
             break;
 
         case 0x0b:
-            if (BTST<Byte>(val, 7U) && !BTST<Byte>(B, 7U))
+            if (BTST<Byte>(val, B_SET_BIT) && !BTST<Byte>(B, B_SET_BIT))
             {
                 B = val;
-                BCLR<Byte>(B, 4U);
+                BCLR<Byte>(B, B_UIE_BIT);
             }
             else
             {
@@ -292,12 +292,12 @@ void Mc146818::writeIo(Word offset, Byte val)
 void Mc146818::update_1_second()
 {
     // update only if SET bit is 0
-    if (!BTST<Byte>(B, 7U))
+    if (!BTST<Byte>(B, B_SET_BIT))
     {
         static Byte dse_october = 0;
 
         // check for last sunday in april 1:59:59
-        if (BTST<Byte>(B, 0U) && hour == 1 &&
+        if (BTST<Byte>(B, B_DSE_BIT) && hour == 1 &&
             convert_bin(minute) == 59 &&
             convert_bin(second) == 59 &&
             month == 4 &&
@@ -309,7 +309,7 @@ void Mc146818::update_1_second()
             second = 0;
             // check for last sunday in october 1:59:59
         }
-        else if (BTST<Byte>(B, 0U) && hour == 1 &&
+        else if (BTST<Byte>(B, B_DSE_BIT) && hour == 1 &&
                  convert_bin(minute) == 59 &&
                  convert_bin(second) == 59 &&
                  convert_bin(month) == 10 &&
@@ -345,11 +345,11 @@ void Mc146818::update_1_second()
             }
         }
 
-        BSET<Byte>(C, 4U); // set update ended interrupt flag
+        BSET<Byte>(C, C_UF_BIT); // set update ended interrupt flag
 
-        if (BTST<Byte>(B, 4U))
+        if (BTST<Byte>(B, B_UIE_BIT))
         {
-            BSET<Byte>(C, 7U);
+            BSET<Byte>(C, C_IRQF_BIT);
             Notify(NotifyId::SetFirq);
         }
 
@@ -358,11 +358,11 @@ void Mc146818::update_1_second()
             (((al_minute & 0xC0U) == 0xC0U) || (al_minute == minute)) &&
             (((al_hour & 0xC0U) == 0xC0U) || (al_hour == hour)))
         {
-            BSET<Byte>(C, 5U); // set alarm interrupt flag
+            BSET<Byte>(C, C_AF_BIT); // set alarm interrupt flag
 
-            if (BTST<Byte>(B, 5U))
+            if (BTST<Byte>(B, B_AIE_BIT))
             {
-                BSET<Byte>(C, 7U);
+                BSET<Byte>(C, C_IRQF_BIT);
                 Notify(NotifyId::SetFirq);
             }
         }
@@ -372,7 +372,7 @@ void Mc146818::update_1_second()
 // convert from binary to binary or bcd
 Byte Mc146818::convert(Byte val) const
 {
-    if (B & 0x04U)
+    if (BTST<Byte>(B, B_DM_BIT))
     {
         return val;
     }
@@ -382,9 +382,9 @@ Byte Mc146818::convert(Byte val) const
 
 Byte Mc146818::convert_hour(Byte val) const
 {
-    switch (B & 0x06U)
+    switch (B & ((1U << B_DM_BIT) | (1U << B_24_BIT)))
     {
-        case 0x00:      //12 hour, BCD
+        case 0x00: // 12 hour, BCD
             if (val >= 12U)
             {
                 return 0x80U | (((val - 12U) / 10U) << 4U) |
@@ -395,10 +395,10 @@ Byte Mc146818::convert_hour(Byte val) const
                 return ((val / 10U) << 4U)  | (val % 10U);
             }
 
-        case 0x02:      //24 hour, BCD
+        case (1U << B_24_BIT): // 24 hour, BCD
             return ((val / 10U) << 4U)  | (val % 10U);
 
-        case 0x04:      //12 hour, binary
+        case (1U << B_DM_BIT): // 12 hour, binary
             if (val >= 12U)
             {
                 return (val - 12U) | 0x80U;
@@ -408,7 +408,7 @@ Byte Mc146818::convert_hour(Byte val) const
                 return val;
             }
 
-        case 0x06:      //24 hour, binary
+        case ((1U << B_DM_BIT) | (1U << B_24_BIT)): // 24 hour, binary
             return val;
     }
 
@@ -418,7 +418,7 @@ Byte Mc146818::convert_hour(Byte val) const
 // convert from bcd or binary to binary
 Byte Mc146818::convert_bin(Byte val) const
 {
-    if (B & 0x04U)
+    if (BTST<Byte>(B, B_DM_BIT))
     {
         return val;
     }
@@ -429,7 +429,7 @@ Byte Mc146818::convert_bin(Byte val) const
 // return 1 on overflow
 bool Mc146818::increment(Byte &reg, Byte min, Byte max)
 {
-    if (B & 0x04U)
+    if (BTST<Byte>(B, B_DM_BIT))
     {
         // binary calculation
         reg++;
@@ -465,9 +465,9 @@ bool Mc146818::increment(Byte &reg, Byte min, Byte max)
 
 bool Mc146818::increment_hour(Byte &p_hour) const
 {
-    switch (B & 0x06U)
+    switch (B & ((1U << B_DM_BIT) | (1U << B_24_BIT)))
     {
-        case 0x00:      //12 hour, BCD
+        case 0x00: // 12 hour, BCD
             if (p_hour == 0x12U)
             {
                 p_hour = 0x81U;
@@ -488,7 +488,7 @@ bool Mc146818::increment_hour(Byte &p_hour) const
 
             break;
 
-        case 0x02:      //24 hour, BCD
+        case (1U << B_24_BIT): // 24 hour, BCD
             if ((p_hour & 0x0FU) == 9U)
             {
                 p_hour = (p_hour & 0xF0U) + 0x10U;
@@ -505,7 +505,7 @@ bool Mc146818::increment_hour(Byte &p_hour) const
 
             break;
 
-        case 0x04:      //12 hour, binary
+        case (1U << B_DM_BIT): // 12 hour, binary
             if (p_hour == 0x0CU)
             {
                 p_hour = 0x81U;
@@ -522,7 +522,7 @@ bool Mc146818::increment_hour(Byte &p_hour) const
 
             break;
 
-        case 0x06:      //24 hour, binary
+        case ((1U << B_DM_BIT) | (1U << B_24_BIT)): // 24 hour, binary
             if (p_hour == 0x17U)
             {
                 p_hour = 0x00U;
@@ -563,7 +563,7 @@ bool Mc146818::increment_day(Byte &p_day, Byte p_month, Byte p_year)
         return true;
     }
 
-    if (B & 0x04U)
+    if (BTST<Byte>(B, B_DM_BIT))
     {
         // binary calculation
         p_day++;
@@ -612,11 +612,11 @@ void Mc146818::UpdateFrom(NotifyId id, void *param)
         }
 
         lastTime = now;
-        BSET<Byte>(C, 6U); // set periodic interrupt flag
+        BSET<Byte>(C, C_PF_BIT); // set periodic interrupt flag
 
-        if (BTST<Byte>(B, 6U)) // Periodic interrupt enable bit
+        if (BTST<Byte>(B, B_PIE_BIT)) // Periodic interrupt enable bit
         {
-            BSET<Byte>(C, 7U);
+            BSET<Byte>(C, C_IRQF_BIT);
             Notify(NotifyId::SetFirq);
         }
     }

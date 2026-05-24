@@ -47,6 +47,32 @@ class Mc146818 : public IoDevice, public BObserver, public BObserved
     // Internal registers:
 
 protected:
+    // Bits in register A
+    static const Byte A_UIP_BIT{7U};
+    static const Byte A_DV2_BIT{6U};
+    static const Byte A_DV1_BIT{5U};
+    static const Byte A_DV0_BIT{4U};
+    static const Byte A_RS3_BIT{3U};
+    static const Byte A_RS2_BIT{2U};
+    static const Byte A_RS1_BIT{1U};
+    static const Byte A_RS0_BIT{0U};
+    // Bits in register B
+    static const Byte B_SET_BIT{7U};
+    static const Byte B_PIE_BIT{6U};
+    static const Byte B_AIE_BIT{5U};
+    static const Byte B_UIE_BIT{4U};
+    static const Byte B_SQWE_BIT{3U};
+    static const Byte B_DM_BIT{2U};
+    static const Byte B_24_BIT{1U};
+    static const Byte B_DSE_BIT{0U};
+    // Bits in register C
+    static const Byte C_IRQF_BIT{7U};
+    static const Byte C_PF_BIT{6U};
+    static const Byte C_AF_BIT{5U};
+    static const Byte C_UF_BIT{4U};
+    // Bits in register D
+    static const Byte D_VRT_BIT{7U};
+
     Byte second{0};
     Byte minute{0};
     Byte hour{0};
