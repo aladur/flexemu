@@ -158,8 +158,6 @@ void Mc146818::resetIo()
 
 Byte Mc146818::readIo(Word offset)
 {
-    Byte temp;
-
     switch (offset & 0x3FU)
     {
         case 0x00:
@@ -199,9 +197,11 @@ Byte Mc146818::readIo(Word offset)
             return B;
 
         case 0x0c:
-            temp = C;
-            C = 0x00;
-            return temp;
+            {
+                const Byte temp = C;
+                C = 0x00;
+                return temp;
+            }
 
         case 0x0d:
             return D;
