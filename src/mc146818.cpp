@@ -75,6 +75,7 @@ Mc146818::Mc146818(const FlexemuConfigFileSPtr &configFile)
 
     A = 0;
     B = 0x06;
+    D |= 0x80U;
 
     // initialize clock registers with system time
     const auto time_now = time(nullptr);
@@ -150,10 +151,8 @@ Mc146818::~Mc146818()
 
 void Mc146818::resetIo()
 {
-    A &= 0x7FU;
     B &= 0x87U;
     C = 0;
-    D = 0x80;
 }
 
 Byte Mc146818::readIo(Word offset)
@@ -204,7 +203,11 @@ Byte Mc146818::readIo(Word offset)
             }
 
         case 0x0d:
-            return D;
+            {
+                const Byte temp = D;
+                D |= 0x80U;
+                return temp;
+            }
 
         default:
             return ram[offset - 0x0e];
@@ -258,16 +261,23 @@ void Mc146818::writeIo(Word offset, Byte val)
             break;
 
         case 0x0a:
-            A = val & 0x7FU;
+            A = val;
+            BCLR<Byte>(A, 7U);
             updatePeriodicIrqRate();
             break;
 
         case 0x0b:
-            B = val;
+            if (BTST<Byte>(val, 7U) && !BTST<Byte>(B, 7U))
+            {
+                B = val;
+                BCLR<Byte>(B, 4U);
+            }
+            else
+            {
+                B = val;
+            }
+            break;
 
-        // a SET bit going 1 clears the UIE bit
-        //if (BSET<Byte>(B, 7U))
-        //   B = val & 0xef;
         case 0x0c:
             [[fallthrough]];
         case 0x0d:
