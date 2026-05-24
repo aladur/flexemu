@@ -269,6 +269,7 @@ void Mc146818::writeIo(Word offset, Byte val)
         //if (BSET<Byte>(B, 7U))
         //   B = val & 0xef;
         case 0x0c:
+            [[fallthrough]];
         case 0x0d:
             break; // Reg. C and D is read only
 
