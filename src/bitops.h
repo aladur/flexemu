@@ -27,41 +27,46 @@
 #include <cassert>
 #include <atomic>
 
+template<typename T> constexpr T BMASK(unsigned bitpos)
+{
+    assert((bitpos >> 3U) < sizeof(T));
+    return static_cast<T>(static_cast<T>(1U) << bitpos);
+}
+
 template<typename T> bool BTST(T value, unsigned bitpos)
 {
     assert((bitpos >> 3U) < sizeof(T));
-    return (value & static_cast<T>(static_cast<T>(1U) << bitpos)) != 0;
+    return (value & BMASK<T>(bitpos)) != 0;
 }
 
 template<typename T> void BSET(T &value, unsigned bitpos)
 {
     assert((bitpos >> 3U) < sizeof(T));
-    value |= static_cast<T>(static_cast<T>(1U) << bitpos);
+    value |= BMASK<T>(bitpos);
 }
 
 template<typename T> void BCLR(T &value, unsigned bitpos)
 {
     assert((bitpos >> 3U) < sizeof(T));
-    value &= static_cast<T>(~static_cast<T>(static_cast<T>(1U) << bitpos));
+    value &= static_cast<T>(~BMASK<T>(bitpos));
 }
 
 template<typename T> bool BTST(std::atomic<T> &value, unsigned bitpos)
 {
     assert((bitpos >> 3U) < sizeof(T));
-    return (value.load() & static_cast<T>(static_cast<T>(1U) << bitpos)) != 0;
+    return (value.load() & BMASK<T>(bitpos)) != 0;
 }
 
 template<typename T> void BSET(std::atomic<T> &value, unsigned bitpos)
 {
     assert((bitpos >> 3U) < sizeof(T));
-    value.fetch_or(static_cast<T>(static_cast<T>(1U) << bitpos));
+    value.fetch_or(BMASK<T>(bitpos));
 }
 
 template<typename T> void BCLR(std::atomic<T> &value, unsigned bitpos)
 {
     assert((bitpos >> 3U) < sizeof(T));
-    value.fetch_and(
-            static_cast<T>(~static_cast<T>(static_cast<T>(1U) << bitpos)));
+    value.fetch_and(static_cast<T>(~BMASK<T>(bitpos)));
 }
 
 inline Word EXTEND8(Byte value)

@@ -382,7 +382,8 @@ Byte Mc146818::convert(Byte val) const
 
 Byte Mc146818::convert_hour(Byte val) const
 {
-    switch (B & ((1U << B_DM_BIT) | (1U << B_24_BIT)))
+    switch (B & static_cast<Byte>(
+            (BMASK<Byte>(B_DM_BIT) | BMASK<Byte>(B_24_BIT))))
     {
         case 0x00: // 12 hour, BCD
             if (val >= 12U)
@@ -395,10 +396,10 @@ Byte Mc146818::convert_hour(Byte val) const
                 return ((val / 10U) << 4U)  | (val % 10U);
             }
 
-        case (1U << B_24_BIT): // 24 hour, BCD
+        case BMASK<Byte>(B_24_BIT): // 24 hour, BCD
             return ((val / 10U) << 4U)  | (val % 10U);
 
-        case (1U << B_DM_BIT): // 12 hour, binary
+        case BMASK<Byte>(B_DM_BIT): // 12 hour, binary
             if (val >= 12U)
             {
                 return (val - 12U) | 0x80U;
@@ -408,7 +409,7 @@ Byte Mc146818::convert_hour(Byte val) const
                 return val;
             }
 
-        case ((1U << B_DM_BIT) | (1U << B_24_BIT)): // 24 hour, binary
+        case (BMASK<Byte>(B_DM_BIT) | BMASK<Byte>(B_24_BIT)): // 24 hour, bin.
             return val;
     }
 
@@ -465,7 +466,8 @@ bool Mc146818::increment(Byte &reg, Byte min, Byte max)
 
 bool Mc146818::increment_hour(Byte &p_hour) const
 {
-    switch (B & ((1U << B_DM_BIT) | (1U << B_24_BIT)))
+    switch (B & static_cast<Byte>(
+            (BMASK<Byte>(B_DM_BIT) | BMASK<Byte>(B_24_BIT))))
     {
         case 0x00: // 12 hour, BCD
             if (p_hour == 0x12U)
@@ -488,7 +490,7 @@ bool Mc146818::increment_hour(Byte &p_hour) const
 
             break;
 
-        case (1U << B_24_BIT): // 24 hour, BCD
+        case BMASK<Byte>(B_24_BIT): // 24 hour, BCD
             if ((p_hour & 0x0FU) == 9U)
             {
                 p_hour = (p_hour & 0xF0U) + 0x10U;
@@ -505,7 +507,7 @@ bool Mc146818::increment_hour(Byte &p_hour) const
 
             break;
 
-        case (1U << B_DM_BIT): // 12 hour, binary
+        case BMASK<Byte>(B_DM_BIT): // 12 hour, binary
             if (p_hour == 0x0CU)
             {
                 p_hour = 0x81U;
@@ -522,7 +524,7 @@ bool Mc146818::increment_hour(Byte &p_hour) const
 
             break;
 
-        case ((1U << B_DM_BIT) | (1U << B_24_BIT)): // 24 hour, binary
+        case (BMASK<Byte>(B_DM_BIT) | BMASK<Byte>(B_24_BIT)): // 24 hour, bin.
             if (p_hour == 0x17U)
             {
                 p_hour = 0x00U;
