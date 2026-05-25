@@ -27,6 +27,7 @@
 #include "typedefs.h"
 #include "bytereg.h"
 #include "bobservd.h"
+#include <atomic>
 
 // VideoControl2 emulates the Eurocom II VICO2 register,
 // a single byte write-only register (SN74LS377, Octal
@@ -38,10 +39,10 @@ class VideoControl2 : public ByteRegister, public BObserved
 {
 private:
 
-    Byte value{0};
+    std::atomic<Byte> value{0};
     bool isFirstWrite{true};
 
-    void requestWriteValue(Byte value) override;
+    void requestWriteValue(Byte new_value) override;
 
 public:
 
@@ -58,7 +59,7 @@ public:
 
     Byte get_value() const
     {
-        return value;
+        return value.load(std::memory_order_acquire);
     }
 };
 

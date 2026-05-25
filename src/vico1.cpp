@@ -24,18 +24,20 @@
 #include "typedefs.h"
 #include "vico1.h"
 #include "bobshelp.h"
+#include <atomic>
 
 
 void VideoControl1::requestWriteValue(Byte new_value)
 {
-    bool isUpdate = isFirstWrite || (value != new_value);
+    const bool isUpdate = isFirstWrite ||
+        (value.load(std::memory_order_acquire) != new_value);
 
-    value = new_value;
+    value.store(new_value, std::memory_order_release);
 
     if (isUpdate)
     {
         isFirstWrite = false;
-        Notify(NotifyId::VideoRamBankChanged, &value);
+        Notify(NotifyId::VideoRamBankChanged, &new_value);
     }
 }
 
