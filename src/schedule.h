@@ -105,6 +105,7 @@ protected:
     void do_reset();
     CpuStatusPtr cpu_status;
     std::atomic<bool> is_status_valid;
+    std::atomic<bool> is_state_exit;
     bool is_resume;
 
     // CPU frequency

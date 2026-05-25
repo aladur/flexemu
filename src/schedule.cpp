@@ -51,7 +51,7 @@ Scheduler::Scheduler(ScheduledCpu &p_cpu, Inout &p_inout) :
     cpu(p_cpu), inout(p_inout),
     state(CpuState::Run), events(Event::NONE), user_state(CpuState::NONE),
     total_cycles(0), time0sec(0),
-    is_status_valid(false), is_resume(false),
+    is_status_valid(false), is_state_exit(false), is_resume(false),
     target_frequency(ORIGINAL_FREQUENCY), frequency(0.0), time0(0), cycles0(0)
 {
     std::memset(&interrupt_status, 0, sizeof(tInterruptStatus));
@@ -69,7 +69,7 @@ void Scheduler::request_new_state(CpuState p_user_state)
 bool Scheduler::is_finished()
 {
     // this is the final state. program can safely be shutdown.
-    return state == CpuState::Exit;
+    return is_state_exit.load(std::memory_order_acquire);
 }
 
 void Scheduler::process_events()
@@ -240,6 +240,8 @@ CpuState Scheduler::statemachine(CpuState initial_state)
             events |= Event::SetStatus;
         }
     }
+
+    is_state_exit.store(state == CpuState::Exit, std::memory_order_release);
 
     return state;
 }
