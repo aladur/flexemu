@@ -1659,3 +1659,102 @@ Code Maintenance:
  10857b47 Replace magic number by std::optional.
  7480fce8 Use assertion for expected value.
  5d131588 build script: Support Qt 6.10.1 md5sums file.
+
+V3.32 (20260626)
+Feature Summary:
+* flexemu: Can start in fullscreen mode (mode gets persisted)
+* flexemu: Add second fullscreen mode with floating toolbar, pure E2 screen
+* flexemu: Increase maximum emulation speed
+* Support *.ima disk image format
+* fromflex, toflex: Optionally copy date/time of input file to output file
+* RAM content before booting can be configured in flexemu.conf
+* New command line utility hex2flex to convert a HEX file into FLEX binary
+* PDF printer: Set creator property
+* Windows installer: Use newest Qt5 open-source libraries V5.15.19
+New Features:
+ 33057aa4 New command line utility hex2flex.
+ 7d094938 flexemu: Add creator to pdf printer.
+ 1df5f6ba flexemu: One click to enter or leave fullscreen mode.
+ 13445849 flexemu: Persist fullscreen mode, #17
+ ddd134a9 flexemu: Add fullscreen mode with floating toolbar, #18
+ 20ed4e1a flexemu: preinitialize memory with pseudo random numbers.
+ 98e3fb43 tools: Improve fromflex and toflex #23.
+ a0d87743 flexemu: Directory disk boot improvement #22.
+ 0c246b45 flexemu: Preset RAM pattern configurable in flexemu.conf
+ 64cc10fe Add more predefined FLEX disk formats.
+ 947a8f5d Support *.ima disk image file format.
+ b4df2ff5 Support *.ima disk image files with 255 tracks.
+ d507c7f8 In disk info display sector count on track 0.
+ ba42542a flexemu: Improve emulation speed.
+ 8aa99378 flexemu: Host timer support for RTC, UNIX only, #20.
+ 935bb039 flexemu: Host timer support for RTC on Windows #20.
+ 91b2aa4b flexemu: Improve host timer support for RTC on Windows #20.
+ 289efb20 flexemu: Improve emulation speed.
+ 27c8222f flexemu: Improve emulation speed (2).
+Bug Fixes:
+ a376f505 Avoid memory leak.
+ 76b930a0 Bugfix flexemu: CPU View stack position marker.
+ 650f171c flexemu bugfix: Make floating toolbar more robust, #18 .
+ 2ffda659 bugfix flexemu: Correct display of floating toolbar.
+ 20af9437 bugfix flexemu: Stabilize User Interface.
+ 7d97e7e9 Bugfix flexemu: Avoid syntax error in flexemu.conf
+ 8cc8e61a Bugfix: Documentation html validation error.
+ 25a56bab Bugfix flexemu on Windows: File Selection Dialog.
+ 935fc326 Bugfix: Show right file size in Disk Info Dialog.
+ 3884d42c dsktool: Summary command, improve column alignment.
+ b6c9b063 Bugfix flexemu: Avoid deadlock on exit.
+ 1e48c5c9 Bugfix flexemu: Avoid compile error if POSIX timers not supp. #20
+ 22b81053 Bugfix flexplorer, dsktool: Avdoid wrong record count.
+ 170e3c73 Make disk image file laycad.dsk bootable.
+Code Maintenance:
+ dff9f95c Update Version to V3.32
+ 02839a12 Remove autotools support.
+ 87a0ff46 CI: Use ninja for FreeBSD build.
+ cc9d3e62 CI: Add FreeBSD 15.0.0 build image.
+ 0ae49076 Remove unused code.
+ c4e7ca49 Remove unused code.
+ d4f2ea9b Add new clang-tidy rules.
+ 44f60f39 Test: Avoid checking content of moved-from objects.
+ ad4ba7ef Improve special member functions support.
+ 3fc2279a flex2hex: Avoid two double quotes around a path name.
+ 72bd4342 tools: Update source code format.
+ 103dc491 Update copyright year to 2026.
+ 1d7ee141 flexemu: Use shared_ptr for class FlexemuConfigFile.
+ ada08e89 Add member function HasSection() to class BIniFile.
+ 0f13940d class FlexemuConfigFile: Parse whole file in constructor.
+ 581e12be class FlexemuConfigFile refactoring.
+ 79c7df82 class BIniFile, add type for section content.
+ 5b6433cf class BIniFile, read section content, keep order.
+ 07734694 Consistent identifier naming.
+ b132dc09 Set assertion before first use.
+ 1a859fbb test: Use ASSERT (instead of EXPECT) for size test.
+ aaf35d86 test class BIniFile: Use unique test file names.
+ d8bb0384 Use dot separated version in Windows resource files.
+ ba488379 Rename variables in class QtGui.
+ f07ebdcc Remove superfluous code.
+ d1cc7e91 Reduce compiler warnings.
+ e19d5816 Remove unused member variable.
+ 76770117 flexplorer, dsktool: Force *.ima file ext. formatting disk
+ df3b1ff2 Documentation: Use right html entity for "greater equal"
+ 060570bf uinttest: Improve failed uinttest output.
+ 7d6ab0fa Remove unused code.
+ cf8376be documentation: Add table captions.
+ 41737e34 Add bit operation templates for atomic values.
+ 362d0c4d Reduce compiler warnings.
+ c4364a1b MacOS build: Remove X11 dependency.
+ db182e96 CI: Add FreeBSD build on github actions.
+ bad10b29 CI: Remove FreeBSD build on Cirrus CI
+ 78dc2b72 CI: Update github action to newest version
+ 8a78d973 Replace magic number by std::optional.
+ 3086c535 class E2Screen, use in-class member initializer.
+ bf26e4a5 CI: Update from FreeBSD 14.3 to 14.4, add 13.5.
+ 2e1af069 class Mc146818: Add fallthrough attribute.
+ 3a7aa0c5 class Mc146818: Minimize scope of local variable.
+ 2f6a996e class Mc146818: Improve reset logic and others.
+ fb6ed05c class Mc146818: Use names for register bits.
+ e26c6c0e class Scheduler: Make is_finished() thread safe.
+ ad0e2851 class VideoControl1/2: Make getter/setter thread safe.
+ cdfb787a Add template to create a bitmask from a bit position.
+ d88bb39b In flexemu.conf replace "Linux" by "UNIX like OS".
+ e4868770 class Scheduler: Prefer in-class member initializer
+ fbcd15c8 docker: Move Dockerfile's to subdirectory "autotools"
