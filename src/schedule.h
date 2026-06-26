@@ -26,6 +26,7 @@
 #define SCHEDULE_INCLUDED
 
 #include "typedefs.h"
+#include "e2.h"
 #include "cpustate.h"
 #include "schedcpu.h"
 #include "bcommand.h"
@@ -90,11 +91,11 @@ protected:
 
     ScheduledCpu &cpu;
     Inout &inout;
-    CpuState state;
-    Event events;
-    CpuState user_state;
-    QWord total_cycles;
-    QWord time0sec;
+    CpuState state{CpuState::Run};
+    Event events{Event::NONE};
+    CpuState user_state{CpuState::NONE};
+    QWord total_cycles{};
+    QWord time0sec{};
 
     // CPU status
 public:
@@ -104,9 +105,9 @@ protected:
     tInterruptStatus interrupt_status{};
     void do_reset();
     CpuStatusPtr cpu_status;
-    std::atomic<bool> is_status_valid;
-    std::atomic<bool> is_state_exit;
-    bool is_resume;
+    std::atomic<bool> is_status_valid{};
+    std::atomic<bool> is_state_exit{};
+    bool is_resume{};
 
     // CPU frequency
 public:
@@ -122,10 +123,10 @@ public:
 protected:
     void update_frequency();
     void frequency_control(QWord time1);
-    float target_frequency;
-    float frequency; // current frequency
-    QWord time0; // time for freq control
-    QWord cycles0; // cycle count for freq calc
+    float target_frequency{ORIGINAL_FREQUENCY};
+    float frequency{}; // current frequency
+    QWord time0{}; // time for freq control
+    QWord cycles0{}; // cycle count for freq calc
 };
 
 inline Scheduler::Event operator| (Scheduler::Event lhs, Scheduler::Event rhs)

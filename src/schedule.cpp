@@ -28,6 +28,7 @@
 #include <windows.h>
 #endif
 #include "typedefs.h"
+#include "e2.h"
 #include "schedule.h"
 #include "schedcpu.h"
 #include "cpustate.h"
@@ -47,12 +48,9 @@
 #endif
 
 
-Scheduler::Scheduler(ScheduledCpu &p_cpu, Inout &p_inout) :
-    cpu(p_cpu), inout(p_inout),
-    state(CpuState::Run), events(Event::NONE), user_state(CpuState::NONE),
-    total_cycles(0), time0sec(0),
-    is_status_valid(false), is_state_exit(false), is_resume(false),
-    target_frequency(ORIGINAL_FREQUENCY), frequency(0.0), time0(0), cycles0(0)
+Scheduler::Scheduler(ScheduledCpu &p_cpu, Inout &p_inout)
+    : cpu(p_cpu)
+    , inout(p_inout)
 {
     std::memset(&interrupt_status, 0, sizeof(tInterruptStatus));
 }
