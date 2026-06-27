@@ -14,6 +14,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(PROJECT_VERSION_FULL "${PROJECT_VERSION}${VERSION_PRERELEASE}")
+
+message(STATUS "Building version: ${PROJECT_VERSION_FULL}")
+
 #################################
 # Find libraries.
 #################################

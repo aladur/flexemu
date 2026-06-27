@@ -143,7 +143,7 @@ void MemoryWindowManager::OpenMemoryWindow(bool isReadOnly,
                 "A maximum of %1 Memory Windows are open.\n"
                 "No more Memory Windows can be opened.")
                  .arg(sOptions::maxMemoryWindows);
-         QMessageBox::warning(parent, PACKAGE_NAME " warning", msg);
+         QMessageBox::warning(parent, PROJECT_NAME " warning", msg);
          return;
      }
 

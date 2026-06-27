@@ -177,7 +177,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     if (dialog == nullptr)
     {
-        QMessageBox::critical(nullptr, PACKAGE_NAME " Logic Error",
+        QMessageBox::critical(nullptr, PROJECT_NAME " Logic Error",
                               "setupUi(dialog) with a valid dialog instance "
                               "has to be called before.");
         return;
@@ -1223,7 +1223,7 @@ void FlexemuOptionsUi::SetTabIndex(int index)
 {
     if (c_tabWidget == nullptr)
     {
-        QMessageBox::critical(nullptr, PACKAGE_NAME " Logic Error",
+        QMessageBox::critical(nullptr, PROJECT_NAME " Logic Error",
                               "setupUi(dialog) with a valid dialog instance "
                               "has to be called before.");
         return;
@@ -1236,7 +1236,7 @@ int FlexemuOptionsUi::GetTabIndex() const
 {
     if (c_tabWidget == nullptr)
     {
-        QMessageBox::critical(nullptr, PACKAGE_NAME " Logic Error",
+        QMessageBox::critical(nullptr, PROJECT_NAME " Logic Error",
                               "setupUi(dialog) with a valid dialog instance "
                               "has to be called before.");
         return 0;

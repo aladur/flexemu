@@ -63,7 +63,7 @@ constexpr const char * const FLEXPLORERVERSION = "Version";
 
 void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 {
-    options.version = VERSION;
+    options.version = Flexemu_VERSION_FULL;
     options.ft_access = FileTimeAccess::NONE;
     options.iconSize = 32;
 #ifdef _WIN32
@@ -90,7 +90,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
 {
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
-    reg.SetValue(FLEXPLORERVERSION, std::string(VERSION));
+    reg.SetValue(FLEXPLORERVERSION, std::string(Flexemu_VERSION_FULL));
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
     reg.SetValue(FLEXPLORERFILETIMEACCESS,
                  static_cast<int>(options.ft_access));
@@ -126,7 +126,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
 
     BRcFile rcFile(rcFilePath);
     rcFile.Initialize(); // truncate file
-    rcFile.SetValue(FLEXPLORERVERSION, std::string(VERSION));
+    rcFile.SetValue(FLEXPLORERVERSION, std::string(Flexemu_VERSION_FULL));
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
     rcFile.SetValue(FLEXPLORERFILETIMEACCESS,
                     static_cast<int>(options.ft_access));

@@ -597,7 +597,7 @@ void PrintOutputWindow::OnPaintRequested(QPrinter *p) const
     layout.setPageSize(QPageSize(pageSizeId));
     layout.setMargins(margins);
     p->setPageLayout(layout);
-    p->setCreator(PACKAGE_NAME " V" VERSION);
+    p->setCreator(PROJECT_NAME " V" Flexemu_VERSION_FULL);
     p->setFontEmbeddingEnabled(true);
 
     bool isInvalid = !p->setPageMargins(margins, QPageLayout::Millimeter);

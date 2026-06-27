@@ -429,7 +429,7 @@ void FlexemuOptions::GetCommandlineOptions(
                 break;
 
             case 'V':
-                flx::print_versions(std::cout, PACKAGE_NAME);
+                flx::print_versions(std::cout, PROJECT_NAME);
                 exit(EXIT_SUCCESS);
 
             case '?':
@@ -942,13 +942,13 @@ void FlexemuOptions::WriteOptionsToFile(
             break;
         }
 
-        optionsToWrite.version = VERSION;
+        optionsToWrite.version = Flexemu_VERSION_FULL;
     }
 
     BRcFile rcFile(path);
     bool ok;
     rcFile.Initialize(); // truncate file
-    rcFile.SetValue(FLEXVERSION, std::string(VERSION));
+    rcFile.SetValue(FLEXVERSION, std::string(Flexemu_VERSION_FULL));
     rcFile.SetValue(FLEXINVERSE, optionsToWrite.isInverse ? 1 : 0);
     rcFile.SetValue(FLEXDISPLAYSMOOTH, optionsToWrite.isSmooth ? 1 : 0);
     rcFile.SetValue(FLEXISCONFIRMEXIT, optionsToWrite.isConfirmExit ? 1 : 0);

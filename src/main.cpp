@@ -59,7 +59,7 @@ int flexemu_new_handler(size_t /* [[maybe_unused]] size_t n */)
 static void flexemu_new_handler()
 #endif
 {
-    if (QMessageBox::warning(nullptr, PACKAGE_NAME " warning",
+    if (QMessageBox::warning(nullptr, PROJECT_NAME " warning",
         "<b>Memory allocation failed.</b><br>\n"
         "Increasing available memory by e.g.<br>\n"
         "closing other applications may<br>\n"
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 
             msg << "<b>An exception has occured.</b><br>" << ex.what();
 
-            QMessageBox::critical(nullptr, PACKAGE_NAME " critical",
+            QMessageBox::critical(nullptr, PROJECT_NAME " critical",
                 QString::fromStdString(msg.str()),
                 QMessageBox::Abort, QMessageBox::Abort);
 

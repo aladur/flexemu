@@ -382,11 +382,11 @@ QString E2Screen::GetTitle()
 {
     if (cursorType == CursorType::Default)
     {
-        return QString(PACKAGE_NAME " V" VERSION " - ") +
+        return QString(PROJECT_NAME " V" Flexemu_VERSION_FULL " - ") +
                tr("Press CTRL F10 to capture mouse");
     }
 
-    return QString(PACKAGE_NAME " V" VERSION " - ") +
+    return QString(PROJECT_NAME " V" Flexemu_VERSION_FULL " - ") +
            tr("Press CTRL F10 to release mouse");
 }
 

@@ -914,7 +914,7 @@ QString FlexplorerTableModel::AsHtml(const QModelIndexList &indexList) const
         "<meta http-equiv=\"content-type\""
             "content=\"text/html; charset=utf-8\">\n" <<
         "<meta name=\"generator\" "
-        "content=\"Flexplorer " VERSION " (" OSTYPE ")\">\n" <<
+        "content=\"Flexplorer " Flexemu_VERSION_FULL " (" OSTYPE ")\">\n" <<
         "<title></title>\n" <<
         "<style type=\"text/css\">\n" <<
         "body,table,tr,th,td { font-family:\"Courier\"; font-size:x-small }\n"<<

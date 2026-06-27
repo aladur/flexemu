@@ -696,7 +696,7 @@ void QtGui::OnAbout()
     dialog.resize({0, 0});
     dialog.setModal(true);
     dialog.setSizeGripEnabled(true);
-    auto title = tr("About %1").arg(PACKAGE_NAME);
+    auto title = tr("About %1").arg(PROJECT_NAME);
     dialog.setWindowTitle(title);
     auto *scene = new QGraphicsScene(ui.w_icon);
     scene->setSceneRect(0, 0, 32, 32);
@@ -734,7 +734,7 @@ void QtGui::AboutTabChanged(QTextBrowser *browser) const
     }
     else if (browser->objectName() == "e_versions")
     {
-        browser->setHtml(GetVersionsHtmlText(PACKAGE_NAME));
+        browser->setHtml(GetVersionsHtmlText(PROJECT_NAME));
     }
     else if (browser->objectName() == "e_configuration")
     {
@@ -771,13 +771,13 @@ QString QtGui::GetAboutHtmlText() const
        "Wolfgang Schwotzer</a><p>"
        "<a href=\"http://flexemu.neocities.org\">"
        "http://flexemu.neocities.org</a>")
-    .arg(PACKAGE_NAME).arg(VERSION);
+    .arg(PROJECT_NAME).arg(Flexemu_VERSION_FULL);
 }
 
 QString QtGui::GetConfigurationHtmlText() const
 {
     auto result = tr("<b>%1 V%2</b><p>Guest Configuration:\n")
-        .arg(PACKAGE_NAME).arg(VERSION);
+        .arg(PROJECT_NAME).arg(Flexemu_VERSION_FULL);
 
     result.append(ConvertItemPairListToHtml(GetConfiguration()));
 
@@ -1614,7 +1614,7 @@ bool QtGui::IsClosingConfirmed()
         auto message = isRestartNeeded ?
             tr("Do you want to restart %1 now?") :
             tr("Do you want to close %1?");
-        message = message.arg(PACKAGE_NAME);
+        message = message.arg(PROJECT_NAME);
         auto result = QMessageBox::question(this, tr("Flexemu"), message,
                           QMessageBox::Yes | QMessageBox::No);
         return (result == QMessageBox::Yes);

@@ -605,7 +605,7 @@ void FLEXplorer::OnAbout()
            "Wolfgang Schwotzer</a><p>"
            "<a href=\"http://flexemu.neocities.org\">"
            "http://flexemu.neocities.org</a>")
-        .arg(VERSION);
+        .arg(Flexemu_VERSION_FULL);
     ui.e_about->setOpenExternalLinks(true);
     ui.e_about->setHtml(aboutText);
 

@@ -94,7 +94,7 @@ bool flx::is_range_in_ranges(const BInterval<DWord> &range,
 void flx::print_versions(std::ostream &os, const std::string &program_name)
 {
     os <<
-        program_name << " " << VERSION << "\n" <<
+        program_name << " " << Flexemu_VERSION_FULL << "\n" <<
         "compiled for " << OSTYPE << ", using:\n";
     for (const auto &pair : FlexemuVersions::GetVersions())
     {

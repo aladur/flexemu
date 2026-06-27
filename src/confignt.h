@@ -125,14 +125,19 @@
 /* Define if you have the <unistd.h> header file.  */
 /* undef HAVE_UNISTD_H */
 
-/* Name of package */
-#define PACKAGE "flexemu"
-
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "Flexemu"
-
-/* Version number of package */
-#define VERSION "3.32"
+#ifndef PROJECT_NAME
+#define PROJECT_NAME "Flexemu"
+#endif
+#ifndef Flexemu_VERSION
+#define Flexemu_VERSION "3.33.0"
+#endif
+#ifndef VERSION_PRERELEASE
+#define VERSION_PRERELEASE "-alpha"
+#endif
+#ifndef Flexemu_VERSION_FULL
+#define Flexemu_VERSION_FULL Flexemu_VERSION VERSION_PRERELEASE
+#endif
 
 #endif /* CONFIG_INCLUDED */
 

@@ -191,7 +191,7 @@ void FindSettingsUi::OnSearchForChanged(const QString &newText) const
 
 void FindSettingsUi::OnValidationCheckClicked() const
 {
-    QMessageBox::critical(dialog, PACKAGE_NAME " Error", validationError);
+    QMessageBox::critical(dialog, PROJECT_NAME " Error", validationError);
     e_searchFor->setFocus(Qt::OtherFocusReason);
 }
 

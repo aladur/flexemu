@@ -387,7 +387,7 @@ QString ConvertItemPairListToHtml(const ItemPairList_t &pairs)
 QString GetVersionsHtmlText(const QString &programName)
 {
     auto result = QObject::tr("<b>%1 V%2</b><p>compiled for " OSTYPE ", uses:")
-        .arg(programName).arg(VERSION);
+        .arg(programName).arg(Flexemu_VERSION_FULL);
 
     result.append(ConvertItemPairListToHtml(FlexemuVersions::GetVersions()));
 

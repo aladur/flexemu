@@ -130,9 +130,6 @@ function(CREATE_CONFIG_FILE inFile outFile)
     # or if not cross compiling by estimation by a *.cpp code snippet.
     estimate_bitfield_byte_order(FLEXEMU_BITFIELD_BYTE_ORDER BITFIELDS_LSB_FIRST)
 
-    set(PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
-    set(VERSION "${CMAKE_PROJECT_VERSION}")
-
     configure_file(${inFile} ${outFile} NO_SOURCE_PERMISSIONS @ONLY)
 
 endfunction()

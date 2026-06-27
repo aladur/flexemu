@@ -394,7 +394,7 @@ void MemoryWindow::OnFindNext()
                 message = message
                     .arg(QString::fromStdString(findConfig.searchFor))
                     .arg(QString::fromStdString(findData.GetErrorMessage()));
-                QMessageBox::critical(this, PACKAGE_NAME, message);
+                QMessageBox::critical(this, PROJECT_NAME, message);
                 UpdateFindActionsEnabled();
             }
             return;
@@ -409,11 +409,11 @@ void MemoryWindow::OnFindNext()
         message = message.arg(QString::fromStdString(findConfig.searchFor));
         if (isCritical)
         {
-            QMessageBox::critical(this, PACKAGE_NAME " Error", message);
+            QMessageBox::critical(this, PROJECT_NAME " Error", message);
         }
         else
         {
-            QMessageBox::information(this, PACKAGE_NAME, message);
+            QMessageBox::information(this, PROJECT_NAME, message);
         }
     }
     UpdateFindActionsEnabled();

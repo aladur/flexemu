@@ -80,7 +80,12 @@
 /* define if <ncursesw/curses.h> is present */
 #cmakedefine HAVE_NCURSESW_CURSES_H 1
 
-#cmakedefine PACKAGE_NAME "@PACKAGE_NAME@"
-#cmakedefine VERSION "@VERSION@"
+#define PROJECT_NAME "@PROJECT_NAME@"
+#define @PROJECT_NAME@_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define @PROJECT_NAME@_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define @PROJECT_NAME@_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define @PROJECT_NAME@_VERSION "@PROJECT_VERSION@"
+#define @PROJECT_NAME@_VERSION_STR "@PROJECT_VERSION@"
+#define @PROJECT_NAME@_VERSION_FULL "@PROJECT_VERSION_FULL@"
 
 /* NOLINTEND(modernize-macro-to-enum, cppcoreguidelines-macro-usage) */
