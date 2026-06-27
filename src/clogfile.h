@@ -45,7 +45,7 @@ public:
 
     void Execute() override;
 
-protected:
+private:
     Mc6809 &cpu;
     Mc6809LoggerConfig cpuLoggerConfig;
 };

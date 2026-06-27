@@ -34,12 +34,9 @@ class Memory;
 class Mmu : public IoDevice
 {
 
-    // Internal registers
-
-protected:
+private:
 
     Memory &memory;
-
 
 public:
 

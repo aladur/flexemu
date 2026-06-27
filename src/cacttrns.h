@@ -41,7 +41,7 @@ public:
 
     void Execute() override;
 
-protected:
+private:
     Mc6821 &mc6821;
     Mc6821::ControlLine control_line;
 };

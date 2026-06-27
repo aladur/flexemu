@@ -73,7 +73,7 @@ public:
         return executable;
     };
 
-protected:
+private:
     fs::path executable;
     fs::path directory;
     std::vector<std::string> arguments;

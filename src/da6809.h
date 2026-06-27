@@ -16,7 +16,7 @@ namespace fs = std::filesystem;
 class Da6809 : public AbstractDisassembler
 {
 
-protected:
+private:
 
     Word pc{};
     const Byte *memory{}; // non-owning

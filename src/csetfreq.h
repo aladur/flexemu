@@ -39,7 +39,7 @@ public:
     CSetFrequency &operator=(CSetFrequency &&src) = delete;
     void Execute() override;
 
-protected:
+private:
     Scheduler &scheduler;
     float frequency;
 };

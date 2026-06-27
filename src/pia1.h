@@ -38,7 +38,7 @@ class Pia1 : public Mc6821, public BObserved
 
     // Terminal connected to port A of pia1
 
-protected:
+private:
 
     Scheduler &scheduler;
     KeyboardIO &keyboardIO;

@@ -52,8 +52,7 @@ using command_t = std::array<char, MAX_COMMAND>;
 class Command : public IoDevice, public BObserved
 {
 
-    // Internal registers
-protected:
+private:
 
     Inout &inout;
     Scheduler &scheduler;
@@ -64,12 +63,10 @@ protected:
     std::string answer;
     const sOptions &options;
 
-    // private interface:
 private:
     std::string next_token(command_t::iterator &iter, int &count);
     static fs::path convert_path(const std::string& path);
 
-    // public interface
 public:
 
     void resetIo() override;

@@ -35,7 +35,7 @@ class Inout;
 class Acia1 : public Mc6850, public BObserved
 {
 
-protected:
+private:
 
     TerminalIO &terminalIO;
     Inout &inout;

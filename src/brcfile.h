@@ -57,10 +57,11 @@ public:
             std::map<std::string, std::string> &values);
     int Initialize();
 
-private:
+protected:
     int GetValue(const char *key, std::string &value,
             std::optional<bool> &isInteger);
 
+private:
     fs::path path;
 };
 

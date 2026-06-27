@@ -154,7 +154,7 @@ protected:
     void dropEvent(QDropEvent *event) override;
     bool event(QEvent *event) override;
 
-
+private:
     QMdiArea *mdiArea{};
     QMenu *windowMenu{};
     QMenu *recentDisksMenu{};

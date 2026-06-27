@@ -46,7 +46,7 @@ class Mc146818 : public IoDevice, public BObserver, public BObserved
 {
     // Internal registers:
 
-protected:
+private:
     // Bits in register A
     static const Byte A_UIP_BIT{7U};
     static const Byte A_DV2_BIT{6U};

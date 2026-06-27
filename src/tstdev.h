@@ -33,7 +33,7 @@
 
 class TestDevice : public IoDevice
 {
-protected:
+private:
     std::vector<Byte> data;
 
 public:

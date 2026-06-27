@@ -215,7 +215,7 @@ protected:
     };
 
     // Processor registers
-protected:
+private:
 
     std::array<Byte, 256> indexed_cycles{}; // add. cycles for
     // indexed addr.
@@ -256,8 +256,6 @@ protected:
     Byte &dp;
     union ucc cc{0};
 #endif // #ifndef ALTERNATE_MC6809
-
-protected:
 
     Da6809 *disassembler{nullptr}; // non-owning
 
@@ -947,14 +945,14 @@ public:
     void set_firq();
     void set_irq();
 
-protected:
+private:
     std::atomic<QWord> total_cycles{}; // total cycle count with 64 Bit resolution
     cycles_t cycles{}; // cycle cnt for one timer tick
     std::atomic<cycles_t> required_cyclecount{};//cycle count for freq ctrl
 
     // breakpoint support
-protected:
     std::array<OptionalWord, 3> bp;
+
 public:
     void set_bp(int which, Word address);
     OptionalWord get_bp(int which);
@@ -988,6 +986,8 @@ protected:
     unsigned Disassemble(Word address, InstFlg &p_flags,
                     std::string &code, std::string &mnemonic,
                     std::string &operands);
+
+private:
     Mc6809Logger logger;
     Memory &memory;
 

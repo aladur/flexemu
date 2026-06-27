@@ -93,7 +93,7 @@ FERR_INVALID_TERMINAL_TYPE = 50,
 
 class FlexException : public std::exception
 {
-protected:
+private:
 
     int errorCode;
     std::string errorString;

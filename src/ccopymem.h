@@ -49,7 +49,7 @@ public:
     std::vector<Byte> GetData() const;
     bool HasUpdate();
 
-protected:
+private:
     Memory &memory;
     BInterval<DWord> addressRange;
     std::vector<Byte> data;

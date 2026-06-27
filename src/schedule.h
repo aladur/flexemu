@@ -71,12 +71,7 @@ protected:
     void execute_commands();
     void suspend();
     void resume();
-    std::mutex condition_mutex;
-    std::condition_variable condition;
-    std::mutex command_mutex;
-    std::mutex status_mutex;
-    std::mutex irq_status_mutex;
-    std::vector<BCommandSPtr> commands;
+
 
     // Timer interface:
 public:
@@ -85,10 +80,14 @@ public:
         return total_cycles;
     }
     void timer_elapsed();
-protected:
-//    static void timer_elapsed(void *p);
-//    void set_timer();
 
+private:
+    std::mutex condition_mutex;
+    std::condition_variable condition;
+    std::mutex command_mutex;
+    std::mutex status_mutex;
+    std::mutex irq_status_mutex;
+    std::vector<BCommandSPtr> commands;
     ScheduledCpu &cpu;
     Inout &inout;
     CpuState state{CpuState::Run};
@@ -96,18 +95,18 @@ protected:
     CpuState user_state{CpuState::NONE};
     QWord total_cycles{};
     QWord time0sec{};
+    tInterruptStatus interrupt_status{};
+    CpuStatusPtr cpu_status;
+    std::atomic<bool> is_status_valid{};
+    std::atomic<bool> is_state_exit{};
+    bool is_resume{};
 
     // CPU status
 public:
     void get_interrupt_status(tInterruptStatus &s);
     CpuStatus  *get_status();
 protected:
-    tInterruptStatus interrupt_status{};
     void do_reset();
-    CpuStatusPtr cpu_status;
-    std::atomic<bool> is_status_valid{};
-    std::atomic<bool> is_state_exit{};
-    bool is_resume{};
 
     // CPU frequency
 public:
