@@ -755,9 +755,11 @@ void QtGui::AboutTabChanged(QTextBrowser *browser) const
 QString QtGui::GetAboutHtmlText() const
 {
     return tr("<b>%1 V%2</b><p>"
-       "%1 is an MC6809 emulator running "
+       "%1 is an MC6809 emulator running FLEX operating system (see "
        "<a href=\"https://en.wikipedia.org/wiki/FLEX_(operating_system)\">"
-       "FLEX operating system</a>.<p>"
+       "Wikipedia</a> or "
+       "<a href=\"https://grokipedia.com/page/flex_operating_system\">"
+       "Grokipedia</a>).<p>"
        "%1 comes with "
        "ABSOLUTELY NO WARRANTY. This is free software, and You "
        "are welcome to redistribute it under certain conditions.<p>"
