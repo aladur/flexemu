@@ -46,6 +46,7 @@ namespace fs = std::filesystem;
 class test_FlexDiskFixture : public ::testing::Test
 {
 protected:
+// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     FileTimeAccess no_ft{FileTimeAccess::NONE};
     FileTimeAccess with_ft{FileTimeAccess::Get | FileTimeAccess::Set};
 
@@ -89,6 +90,7 @@ protected:
     // For details see:
     // https://docs.microsoft.com/en-us/cpp/standard-library/filesystem-enumerations?view=vs-2017#perms
     // https://docs.microsoft.com/en-us/cpp/standard-library/filesystem?view=vs-2017
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 #ifdef _WIN32
     static const auto write_perms = fs::perms::all;
 #else

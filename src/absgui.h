@@ -37,8 +37,12 @@ class TerminalIO;
 class AbstractGui
 {
 protected:
+// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     Mc6809 &cpu; // Reference to cpu to send interrupts
     Memory &memory; // Reference to memory (incl. video memory access)
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+
+private:
     Inout &inout; // Reference to IO-class handling input/output
     TerminalIO &terminalIO; // Reference to terminal data provider.
     std::string cpustring;
@@ -49,6 +53,7 @@ protected:
     void redraw_cpuview(const Mc6809CpuStatus &status);
     void redraw_cpuview_contents(const Mc6809CpuStatus &status);
     void text(int x, int y, const std::string &str);
+    const std::string &GetCpuString() const;
 
 public:
     virtual void update_cpuview(const Mc6809CpuStatus &status);

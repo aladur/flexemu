@@ -119,7 +119,7 @@ public:
     {
         return target_frequency;
     }
-protected:
+private:
     void update_frequency();
     void frequency_control(QWord time1);
     float target_frequency{ORIGINAL_FREQUENCY};

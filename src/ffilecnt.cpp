@@ -130,9 +130,9 @@ FlexDisk::FlexDisk(
         std::ios::openmode mode,
         const FileTimeAccess &fileTimeAccess)
     : path(std::move(p_path))
-    , fstream(path, mode)
     , ft_access(fileTimeAccess)
     , is_flex_format(true)
+    , fstream(path, mode)
 {
     const auto status = fs::status(path);
     if (!fs::exists(status) || !fs::is_regular_file(status))
@@ -289,11 +289,6 @@ bool FlexDisk::IsSectorValid(int track, int sector) const
     }
 
     return (sector > 0 && sector <= param.max_sector0);
-}
-
-bool FlexDisk::IsFlexFormat() const
-{
-    return is_flex_format;
 }
 
 FlexDisk *FlexDisk::Create(

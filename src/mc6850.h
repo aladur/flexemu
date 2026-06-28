@@ -37,7 +37,7 @@ class Mc6850 : public IoDevice
     // sr status register  (read only)
     // rdr, tdr receive/transmit data register (read only/write only)
 
-protected:
+private:
 
     Byte cr{};
     Byte sr{};

@@ -46,7 +46,9 @@ namespace fs = std::filesystem;
 class test_IFlexDiskBySector : public test_FlexDiskFixture
 {
 protected:
+// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     std::array<std::array<IFlexDiskBySectorPtr, 4>, 8> disks{};
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
      int GetMaxDiskIndex() override
      {

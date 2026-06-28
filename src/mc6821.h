@@ -44,6 +44,7 @@ public:
     };
 
 protected:
+// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
 
     // Internal registers:
     //
@@ -57,6 +58,9 @@ protected:
     Byte crb{0};
     Byte orb{0};
     Byte ddrb{0};
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+
+private:
     Mc6821::ControlLine cls{ControlLine::NONE};
 
 public:

@@ -156,6 +156,11 @@ void AbstractGui::text(int x, int y, const std::string &str)
     std::copy(str.begin(), str.cend(), cpustring.begin() + index);
 }
 
+const std::string &AbstractGui::GetCpuString() const
+{
+    return cpustring;
+}
+
 void AbstractGui::clear_cpuview()
 {
     const std::string delim("\n");

@@ -41,10 +41,12 @@ namespace fs = std::filesystem;
 class test_filfschk : public ::testing::Test
 {
 protected:
+// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     const std::string fileNameOnDisk{ u8"cat.cmd" };
     const fs::path diskPath{fs::temp_directory_path() / u8"disk.dsk"};
     const fs::path filePath{fs::path(F_TESTDATADIR) / fileNameOnDisk};
     std::unique_ptr<FlexDisk> disk;
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
     void SetUp() override
     {

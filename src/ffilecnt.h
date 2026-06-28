@@ -72,13 +72,9 @@ class FlexDisk : public IFlexDiskBySector, public IFlexDiskByFile
         Byte idx; // index within the directory sector.
     };
 
-protected:
     fs::path path;
-    mutable std::fstream fstream;
-    s_floppy param{};
     DWord file_size{};
     const FileTimeAccess &ft_access{};
-
     // Variables only used for FLX format when formatting a disk
     bool is_flex_format{false}; // true when this is a FLEX compatible format.
     bool is_filenames_initialized{false}; // Used to lazy init. filenames.
@@ -89,9 +85,13 @@ protected:
     s_flex_header flx_header{};
     // All filenames available and their position in the directory.
     std::unordered_map<std::string, s_dir_pos> filenames;
-
-private:
     Byte attributes{};
+
+protected:
+// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+    mutable std::fstream fstream;
+    s_floppy param{};
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 public:
     FlexDisk() = delete;
@@ -129,7 +129,10 @@ public:
             std::optional<int> side = std::nullopt) override;
     bool FormatSector(const Byte *target, int track, int sector, int side,
                       unsigned sizecode) override;
-    bool IsFlexFormat() const override;
+    bool IsFlexFormat() const override
+    {
+        return is_flex_format;
+    }
     bool IsTrackValid(int track) const override;
     bool IsSectorValid(int track, int sector) const override;
     unsigned GetBytesPerSector() const override;
@@ -199,6 +202,10 @@ protected:
     void DeleteFromFilenames(const std::string &filename);
     void AddToFilenames(const std::string &filename, const s_dir_pos &dir_pos);
     bool FindInFilenames(const std::string &filename);
+    DWord GetFileSize() const
+    {
+        return file_size;
+    }
 
 private:
     IFlexDiskIteratorImpPtr IteratorFactory() override;

@@ -47,6 +47,7 @@ namespace fs = std::filesystem;
 class test_FlexRandomFileFixture : public ::testing::Test
 {
 protected:
+// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     const int RO{0}; // read-only disk directory with random list file
                      // (random).
     const int RW{1}; // read-write disk directory with random list file
@@ -69,6 +70,7 @@ protected:
     }};
     std::vector<fs::path> randomListFiles;
     const fs::path temp_dir{ fs::temp_directory_path() };
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 #ifdef _WIN32
     static const auto write_perms = fs::perms::all;
 #else

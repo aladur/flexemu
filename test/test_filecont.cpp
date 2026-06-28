@@ -53,7 +53,9 @@ using FlexDiskByFilePtr = std::unique_ptr<IFlexDiskByFile>;
 class test_IFlexDiskByFile : public test_FlexDiskFixture
 {
 protected:
+// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     std::array<std::array<FlexDiskByFilePtr, 4>, 8> disks;
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
     void SetUp() override
     {

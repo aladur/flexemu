@@ -40,14 +40,14 @@ FlexRamDisk::FlexRamDisk(const fs::path &p_path, std::ios::openmode mode,
 {
     unsigned int sectors;
 
-    if (!is_flex_format)
+    if (!IsFlexFormat())
     {
         // This file container only supports compatible FLEX file formats.
         throw FlexException(FERR_CONTAINER_UNFORMATTED, GetPath());
     }
 
     param.options |= DiskOptions::RAM;
-    sectors = (file_size - param.offset) / param.byte_p_sector;
+    sectors = (GetFileSize() - param.offset) / param.byte_p_sector;
     file_buffer.resize(sectors * param.byte_p_sector);
 
     // For FLX file format skip the header, it will never be changed.
@@ -92,7 +92,7 @@ bool FlexRamDisk::close()
         {
             unsigned int sectors;
 
-            sectors = (file_size - param.offset) / param.byte_p_sector;
+            sectors = (GetFileSize() - param.offset) / param.byte_p_sector;
 
             fstream.seekg(param.offset);
             if (fstream.fail())
