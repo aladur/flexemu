@@ -134,10 +134,8 @@ HostTimer::~HostTimer()
     DisableTimer();
 
 #ifdef _WIN32
-    SetEvent(hWait);
-    CloseHandle(hTimer);
-    hTimer = nullptr;
     isFinalize.store(true);
+    SetEvent(hWait);
 
     if (timerThread)
     {
@@ -145,10 +143,23 @@ HostTimer::~HostTimer()
         timerThread.reset();
     }
 
-    CloseHandle(hWait);
-    hWait = nullptr;
-    CloseHandle(hCancel);
-    hCancel = nullptr;
+    if (hTimer != nullptr)
+    {
+        CloseHandle(hTimer);
+        hTimer = nullptr;
+    }
+
+    if (hWait != nullptr)
+    {
+        CloseHandle(hWait);
+        hWait = nullptr;
+    }
+
+    if (hCancel != nullptr)
+    {
+        CloseHandle(hCancel);
+        hCancel = nullptr;
+    }
 #endif
 #ifdef USE_POSIX_TIMERS
     timer_delete(timerId);
