@@ -1,0 +1,120 @@
+name: openbsd-build-and-test
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: OpenBSD ${{ matrix.osversion }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        osversion: ['7.9']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Run OpenBSD VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.osversion }}
+          sync: rsync
+          arch: x86_64
+          mem: 6144
+          prepare: |
+            echo "==== timestamp" `date`
+            pkg_add -I -u -v
+            echo "==== timestamp" `date`
+            pkg_add -I -v sudo-- git pkglocatedb libtool cmake ninja
+            echo "==== timestamp" `date`
+            pkg_add -I -v qtbase qttools qtx11extras
+            echo "==== timestamp" `date`
+          run: |
+            set -e
+
+            echo "=== Log System Information ==="
+            echo "OS: " `uname -sr` >sys_info.txt
+            sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu|threads_per_core' >>sys_info.txt
+            echo "whoami: " `whoami` >>sys_info.txt
+            echo "pwd:" `pwd` >>sys_info.txt
+            echo "SHELL: " $SHELL >>sys_info.txt
+            echo "PATH: " $PATH >>sys_info.txt
+            echo "==== VERSIONS ====" >>sys_info.txt
+            git --version >>sys_info.txt
+            cmake --version >>sys_info.txt
+            echo "ninja version" `ninja --version` >>sys_info.txt
+            clang --version >>sys_info.txt
+            clang++ --version >>sys_info.txt
+            echo "==== MANUALLY INSTALLED PACKAGES ====" >>sys_info.txt
+            pkg_info -m >>sys_info.txt
+            echo "==== END ====" >>sys_info.txt
+
+            echo "=== Creating build user ==="
+            useradd -m -s /bin/ksh -g users -G wheel user
+            mkdir -p /home/user
+            chown -R user:wheel /home/user
+            chown -R user:wheel .
+            echo "passwd line for user: " `cat /etc/passwd | grep "^user:"` >>sys_info.txt
+
+            echo "=== Configuring ==="
+            sudo -u user sh -c '
+              echo "==== timestamp" `date`
+              mkdir -p bld
+              cd bld
+              Qt5_DIR=/usr/local/lib/qt5/cmake cmake .. -G Ninja \
+                -DCMAKE_INSTALL_PREFIX:PATH=$HOME/usr \
+                -DCMAKE_INSTALL_SYSCONFDIR=$HOME/etc \
+                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+              ls -lRa > ls-lRa.txt
+            '
+
+            echo "=== Building ==="
+            sudo -u user sh -c 'cd bld
+              echo "==== timestamp" `date`
+              ninja'
+
+            echo "=== Installing ==="
+            sudo -u user sh -c 'cd bld
+              echo "==== timestamp" `date`
+              ninja install'
+
+            echo "=== Testing ==="
+            sudo -u user sh -ec '
+              cd bld
+              echo "==== timestamp" `date`
+              ctest -V --output-log unittests.log
+              echo "==== timestamp" `date`
+            '
+
+            sudo -u user bld/bin/test_gccasm
+            sudo -u user ldd bld/bin/flexemu
+            sudo -u user ldd bld/bin/flexplorer
+            echo "==== timestamp" `date`
+
+            for tool in dsktool mdcrtool flex2hex hex2flex; do
+              sudo -u user bld/bin/$tool -V
+            done
+
+            sudo -u user bld/bin/dsktool -l disks/games.dsk
+            sudo -u user bld/bin/dsktool -f new.dsk -S 80dsdd
+            sudo -u user bld/bin/dsktool -C disks/system.dsk -T new.dsk
+            sudo -u user bld/bin/dsktool -l new.dsk
+            echo "==== timestamp" `date`
+
+      - name: Upload build artefacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: openbsd-${{ matrix.osversion }}-artifacts
+          path: |
+            sys_info.txt
+            bld/ls-lRa.txt
+            bld/CMakeCache.txt
+            bld/compile_commands.json
+            bld/unittests.log
