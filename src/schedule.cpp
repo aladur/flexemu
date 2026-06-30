@@ -29,6 +29,7 @@
 #endif
 #include "typedefs.h"
 #include "e2.h"
+#include "misc1.h"
 #include "schedule.h"
 #include "schedcpu.h"
 #include "cpustate.h"
@@ -268,6 +269,7 @@ void Scheduler::run()
     SetThreadPriority(hThread, GetThreadPriority(hThread) - 1);
 #endif
 
+    flx::setCurrentThreadName(cpu.get_name() + "Thread");
     time0sec = BRelativeTime::GetTimeUsll();
     statemachine(CpuState::Run);
 }

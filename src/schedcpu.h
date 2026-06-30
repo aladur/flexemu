@@ -27,6 +27,7 @@
 
 #include "typedefs.h"
 #include "cpustate.h"
+#include <string>
 
 
 enum tIrqType : uint8_t
@@ -70,6 +71,7 @@ public:
     virtual CpuStatusPtr create_status_object() = 0;
     virtual void get_interrupt_status(tInterruptStatus &s) = 0;
     virtual void set_required_cyclecount(cycles_t required_cyclecount) = 0;
+    virtual std::string get_name() = 0;
 };
 
 #endif // SCHEDCPU_INCLUDED

@@ -34,6 +34,10 @@
 #ifdef UNIX
 #include <netdb.h>
 #include <pwd.h>
+#include <pthread.h>
+#if defined(__FreeBSD__) || defined(__OpenBSD__)
+#include <pthread_np.h>
+#endif
 #endif
 #include "warnoff.h"
 #include <fmt/format.h>
@@ -740,4 +744,24 @@ std::time_t flx::to_time_t(fs::file_time_type file_time)
     const auto sys_time = time_point_cast<system_clock::duration>(duration);
 
     return system_clock::to_time_t(sys_time);
+}
+
+void flx::setCurrentThreadName(const std::string &threadName)
+{
+#if defined(_WIN32)
+    std::wstring wname(threadName.begin(), threadName.end());
+    SetThreadDescription(GetCurrentThread(), wname.c_str());
+
+#elif defined(__linux__)
+    pthread_setname_np(pthread_self(), threadName.substr(0, 15).c_str());
+
+#elif defined(__APPLE__)
+    pthread_setname_np(threadName.c_str());
+
+#elif defined(__FreeBSD__) || defined(__OpenBSD__)
+    pthread_set_name_np(pthread_self(), threadName.c_str());
+
+#elif defined(__NetBSD__)
+    pthread_setname_np(pthread_self(), threadName.c_str(), nullptr);
+#endif
 }

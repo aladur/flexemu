@@ -30,6 +30,7 @@
 #include <csignal>
 #endif
 #ifdef _WIN32
+#include "misc1.h"
 #include <thread>
 #include <memory>
 #include <string>
@@ -263,7 +264,10 @@ void HostTimer::Run()
     LARGE_INTEGER frequency;
     LONGLONG maxTicks{};
     std::int64_t startTicks{};
+    std::stringstream threadName;
 
+    threadName << "HostTimerThread" << uniqueTimerId;
+    flx::setCurrentThreadName(threadName.str());
     SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
     SetThreadAffinityMask(hThread, threadAffinityMask);
     QueryPerformanceFrequency(&frequency);

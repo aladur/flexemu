@@ -916,7 +916,7 @@ public:
     }
     // Implementation may change in future.
     // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-    std::string get_name()
+    std::string get_name() override
     {
         return "MC6809";
     }

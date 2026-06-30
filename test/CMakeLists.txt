@@ -2,6 +2,9 @@
 # Common declarations.
 #################################
 
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
 enable_testing()
 
 # Compiler tests
@@ -252,6 +255,7 @@ if(UNIX)
     target_link_libraries(test_gccasm PRIVATE
         flexemu::libflex
         fmt::fmt
+        Threads::Threads
     )
 
 # Add custom target always executed to update test/metadata.json.

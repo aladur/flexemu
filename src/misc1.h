@@ -112,6 +112,7 @@ extern std::string getHostName();
 extern std::string updateFilename(std::string path,
         const std::string &defaultFilestem, const std::string &fileExtension);
 extern bool isFlexFilename(const std::string &filename);
+extern void setCurrentThreadName(const std::string &threadName);
 
 extern const char * const white_space;
 
