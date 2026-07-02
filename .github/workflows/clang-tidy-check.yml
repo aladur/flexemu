@@ -1,4 +1,4 @@
-name: flexemu-clang-tidy-check
+name: clang-tidy-check
 on:
   push:
     branches: [ master ]

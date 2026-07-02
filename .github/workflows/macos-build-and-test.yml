@@ -1,4 +1,4 @@
-name: flexemu-macos-build-and-test
+name: macos-build-and-test
 on:
   push:
     branches: [ master ]
@@ -18,6 +18,11 @@ jobs:
       CXX: clang++
       QT_SELECT: qt6
     steps:
+
+      - name: Environment Variables
+        run: |
+          echo "RELEASE=$(uname -r)" >> $GITHUB_ENV
+          echo
 
       - name: Install packages
         run: |
@@ -95,20 +100,26 @@ jobs:
             cp *.log ../../result
           fi
           cd ../..
-          echo "OS:          " `uname -a` > result/context.txt
-          echo "SHELL:       " echo $SHELL >> result/context.txt
-          echo "Qt-version:  " $QT_SELECT >> result/context.txt
-          echo "C-compiler:  " `$CC --version` >> result/context.txt
-          echo "C++-compiler:" `$CXX --version` >> result/context.txt
-          echo "cmake:       " `cmake --version` >> result/context.txt
-          echo "Phys. CPUs:  " `sysctl hw.physicalcpu` >> result/context.txt
-          echo "Log. CPUs:   " `sysctl hw.logicalcpu` >> result/context.txt
+          echo "OS: " `uname -sr` > result/sys_info.txt
+          echo "Phys. CPUs: " `sysctl hw.physicalcpu` >> result/sys_info.txt
+          echo "Log. CPUs: " `sysctl hw.logicalcpu` >> result/sys_info.txt
+          echo "whoami: " echo `whoami` >> result/sys_info.txt
+          echo "pwd: " echo `pwd` >> result/sys_info.txt
+          echo "SHELL: " echo $SHELL >> result/sys_info.txt
+          echo "PATH: " echo $PATH >> result/sys_info.txt
+          echo "==== VERSIONS ====" >> result/sys_info.txt
+          git --version >> result/sys_info.txt
+          cmake --version >> result/sys_info.txt
+          make --version >> result/sys_info.txt
+          $CC --version >> result/sys_info.txt
+          $CXX --version >> result/sys_info.txt
+          echo "Qt-version: " $QT_SELECT >> result/sys_info.txt
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: flexemu-build-and-test-macos-qt6-clang-result
+          name: flexemu-build-and-test-macos-${{ env.RELEASE }}-qt6-clang-result
           path: result
           if-no-files-found: error
 

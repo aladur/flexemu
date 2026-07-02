@@ -1,4 +1,4 @@
-name: flexemu-windows-build-and-test
+name: windows-build-and-test
 on:
   push:
     branches: [ master ]
@@ -148,6 +148,6 @@ jobs:
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: flexemu-windows-build-result-${{ env.QT_VERSION }}
+          name: flexemu-windows-build-and-test-${{matrix.os}}-qt${{env.QT_VERSION}}-msvc-result
           path: result
           if-no-files-found: error

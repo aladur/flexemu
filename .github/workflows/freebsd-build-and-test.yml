@@ -1,4 +1,4 @@
-name: flexemu-freebsd-build-and-test
+name: freebsd-build-and-test
 on:
   push:
     branches: [ master ]
@@ -7,11 +7,11 @@ on:
 
 jobs:
   build:
-    name: FreeBSD ${{ matrix.freebsd-version }}
+    name: FreeBSD ${{ matrix.osversion }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        freebsd-version: ['13.5', '14.4', '15.1']
+        osversion: ['13.5', '14.4', '15.1']
       fail-fast: false
 
     steps:
@@ -23,7 +23,7 @@ jobs:
       - name: Run FreeBSD VM
         uses: vmactions/freebsd-vm@v1
         with:
-          release: ${{ matrix.freebsd-version }}
+          release: ${{ matrix.osversion }}
           usesh: true
           sync: rsync
           arch: x86_64
@@ -33,16 +33,27 @@ jobs:
           # are used.
           prepare: |
             pkg update -f
-            pkg install -y sudo pkgconf libtool libfmt ncurses cmake ninja qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport qt5-concurrent
+            pkg install -y sudo pkgconf libtool libfmt ncurses cmake ninja
+            pkg install -y qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport qt5-concurrent
           run: |
             set -e
 
+            mkdir -p result
             echo "=== System Information ==="
-            sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu|threads_per_core'
-            clang --version
-            clang++ --version
-            cmake --version
-            whoami
+            echo "OS: " `uname -sr` > result/sys_info.txt
+            sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu|threads_per_core' >> result/sys_info.txt
+            echo "whoami: " `whoami` >> result/sys_info.txt
+            echo "pwd:" `pwd` >> result/sys_info.txt
+            echo "SHELL: " $SHELL >> result/sys_info.txt
+            echo "PATH: " $PATH >> result/sys_info.txt
+            echo "==== VERSIONS ====" >> result/sys_info.txt
+            cmake --version >> result/sys_info.txt
+            echo "ninja version" `ninja --version` >> result/sys_info.txt
+            clang --version >> result/sys_info.txt
+            clang++ --version >> result/sys_info.txt
+            echo "==== MANUALLY INSTALLED PACKAGES ====" >> result/sys_info.txt
+            pkg prime-list >> result/sys_info.txt
+            echo "==== END ====" >> result/sys_info.txt
 
             echo "=== Creating build user ==="
             pw groupadd -n user || true
@@ -91,8 +102,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: freebsd-${{ matrix.freebsd-version }}-artifacts
+          name: freebsd-build-and-test-freebsd-${{ matrix.osversion }}-qt5-clang-results
           path: |
+            result/sys_info.txt
             bld/ls-lRa.txt
             bld/CMakeCache.txt
             bld/compile_commands.json

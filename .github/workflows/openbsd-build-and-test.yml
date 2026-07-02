@@ -31,36 +31,36 @@ jobs:
             echo "==== timestamp" `date`
             pkg_add -I -u -v
             echo "==== timestamp" `date`
-            pkg_add -I -v sudo-- git pkglocatedb libtool cmake ninja
+            pkg_add -I -v sudo-- pkglocatedb libtool cmake ninja
             echo "==== timestamp" `date`
             pkg_add -I -v qtbase qttools qtx11extras
             echo "==== timestamp" `date`
           run: |
             set -e
 
+            mkdir -p result
             echo "=== Log System Information ==="
-            echo "OS: " `uname -sr` >sys_info.txt
-            sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu|threads_per_core' >>sys_info.txt
-            echo "whoami: " `whoami` >>sys_info.txt
-            echo "pwd:" `pwd` >>sys_info.txt
-            echo "SHELL: " $SHELL >>sys_info.txt
-            echo "PATH: " $PATH >>sys_info.txt
-            echo "==== VERSIONS ====" >>sys_info.txt
-            git --version >>sys_info.txt
-            cmake --version >>sys_info.txt
-            echo "ninja version" `ninja --version` >>sys_info.txt
-            clang --version >>sys_info.txt
-            clang++ --version >>sys_info.txt
-            echo "==== MANUALLY INSTALLED PACKAGES ====" >>sys_info.txt
-            pkg_info -m >>sys_info.txt
-            echo "==== END ====" >>sys_info.txt
+            echo "OS: " `uname -sr` > result/sys_info.txt
+            sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu|threads_per_core' >> result/sys_info.txt
+            echo "whoami: " `whoami` >> result/sys_info.txt
+            echo "pwd:" `pwd` >> result/sys_info.txt
+            echo "SHELL: " $SHELL >> result/sys_info.txt
+            echo "PATH: " $PATH >> result/sys_info.txt
+            echo "==== VERSIONS ====" >> result/sys_info.txt
+            cmake --version >> result/sys_info.txt
+            echo "ninja version" `ninja --version` >> result/sys_info.txt
+            clang --version >> result/sys_info.txt
+            clang++ --version >> result/sys_info.txt
+            echo "==== MANUALLY INSTALLED PACKAGES ====" >> result/sys_info.txt
+            pkg_info -m >> result/sys_info.txt
+            echo "==== END ====" >> result/sys_info.txt
 
             echo "=== Creating build user ==="
             useradd -m -s /bin/ksh -g users -G wheel user
             mkdir -p /home/user
             chown -R user:wheel /home/user
             chown -R user:wheel .
-            echo "passwd line for user: " `cat /etc/passwd | grep "^user:"` >>sys_info.txt
+            echo "passwd line for user: " `cat /etc/passwd | grep "^user:"` >>result/sys_info.txt
 
             echo "=== Configuring ==="
             sudo -u user sh -c '
@@ -111,9 +111,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: openbsd-${{ matrix.osversion }}-artifacts
+          name: flexemu-build-and-test-openbsd-${{ matrix.osversion }}-qt5-clang-result
           path: |
-            sys_info.txt
+            result/sys_info.txt
             bld/ls-lRa.txt
             bld/CMakeCache.txt
             bld/compile_commands.json

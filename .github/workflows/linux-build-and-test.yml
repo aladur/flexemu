@@ -1,4 +1,4 @@
-name: flexemu-linux-build-and-test
+name: linux-build-and-test
 on:
   push:
     branches: [ master ]
@@ -111,11 +111,20 @@ jobs:
             cp ../CMakeFiles/CMakeOutput.log ../result/test
           fi
           cd ..
-          echo "OS:           ${{matrix.os}}" > result/context.txt
-          echo "SHELL:        $SHELL" > result/context.txt
-          echo "Qt-version:   Qt${{matrix.qt-version}}" > result/context.txt
-          echo "C-compiler:   ${{matrix.compiler[0]}}" > result/context.txt
-          echo "C++-compiler: ${{matrix.compiler[1]}}" > result/context.txt
+          echo "OS: ${{matrix.os}}" > result/sys_info.txt
+          echo "hw.arch=" `uname -m` >> result/sys_info.txt
+          echo "nproc=" `nproc` >> result/sys_info.txt
+          echo "whoami: " `whoami` >>sys_info.txt
+          echo "pwd:" `pwd` >>sys_info.txt
+          echo "SHELL: $SHELL" >> result/sys_info.txt
+          echo "PATH: $PATH" >> result/sys_info.txt
+          echo "==== VERSIONS ====" >> result/sys_info.txt
+          git --version >> result/sys_info.txt
+          cmake --version >> result/sys_info.txt
+          ninja --version >> result/sys_info.txt
+          echo "C-compiler: ${{matrix.compiler[0]}}" >> result/sys_info.txt
+          echo "C++-compiler: ${{matrix.compiler[1]}}" >> result/sys_info.txt
+          echo "Qt-version: Qt${{matrix.qt-version}}" >> result/sys_info.txt
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
