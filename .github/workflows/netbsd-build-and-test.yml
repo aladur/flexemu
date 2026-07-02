@@ -1,0 +1,129 @@
+name: netbsd-build-and-test
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: NetBSD ${{ matrix.osversion }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        osversion: ['10.0']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Run NetBSD VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.osversion }}
+          usesh: true
+          sync: rsync
+          arch: x86_64
+          mem: 6144
+          prepare: |
+            echo "==== timestamp" `date`
+            export PKG_PATH="https://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r | cut -f1,2 -d.)/All/"
+            pkg_add -u pkgin
+            pkgin -y update
+            echo "==== timestamp" `date`
+            # pkg-config is needed for cmake to find X11.
+            pkgin -y install sudo curl libtool ncurses cmake ninja-build pkg-config
+            # Install X11 binary sets
+            curl -s -L https://ftp.netbsd.org/pub/NetBSD/NetBSD-${{ matrix.osversion }}/amd64/binary/sets/xbase.tar.xz | tar xzf - -C /
+            curl -s -L https://ftp.netbsd.org/pub/NetBSD/NetBSD-${{ matrix.osversion }}/amd64/binary/sets/xcomp.tar.xz | tar xzf - -C /
+            curl -s -L https://ftp.netbsd.org/pub/NetBSD/NetBSD-${{ matrix.osversion }}/amd64/binary/sets/xetc.tar.xz | tar xzf - -C /
+            pkgin -y install qt5-qtbase qt5-qttools qt5-qtx11extras || true
+            cat /var/db/pkgin/pkg_install-err.log
+            echo "==== timestamp" `date`
+
+          run: |
+            set -e
+
+            mkdir -p result
+            echo "=== System Information ==="
+            echo "OS: " `uname -sr` > result/sys_info.txt
+            sysctl -a | egrep -i 'hw\.machine|hw\.model|hw\.ncpu|hw\.ncpu' >> result/sys_info.txt
+            echo "whoami: " `whoami` >> result/sys_info.txt
+            echo "pwd:" `pwd` >> result/sys_info.txt
+            echo "SHELL: " $SHELL >> result/sys_info.txt
+            echo "PATH: " $PATH >> result/sys_info.txt
+            echo "==== VERSIONS ====" >> result/sys_info.txt
+            cmake --version >> result/sys_info.txt
+            echo "ninja version" `ninja --version` >> result/sys_info.txt
+            gcc --version >> result/sys_info.txt
+            g++ --version >> result/sys_info.txt
+            echo "==== ENVIRONMENT ====" >> result/sys_info.txt
+            env >> result/sys_info.txt
+            echo "==== END ====" >> result/sys_info.txt
+
+            echo "=== Creating build user ==="
+            useradd -m -s /bin/ksh -G wheel user
+            mkdir -p /home/user
+            chown -R user:wheel /home/user
+            chown -R user:wheel .
+            echo "passwd line for user: " `cat /etc/passwd | grep "^user:"` >>result/sys_info.txt
+
+            echo "=== Configuring ==="
+            sudo -u user sh -c '
+              echo "==== timestamp" `date`
+              mkdir -p bld
+              cd bld
+              cmake .. -G Ninja \
+                -DCMAKE_INSTALL_PREFIX:PATH=$HOME/usr \
+                -DCMAKE_INSTALL_SYSCONFDIR=$HOME/etc \
+                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+              ls -lRa > ls-lRa.txt
+            '
+
+            echo "=== Building ==="
+            sudo -u user sh -c 'cd bld
+              echo "==== timestamp" `date`
+              ninja'
+
+            echo "=== Installing ==="
+            sudo -u user sh -c 'cd bld
+              echo "==== timestamp" `date`
+              ninja install'
+
+            echo "=== Testing ==="
+            sudo -u user sh -ec 'cd bld
+              echo "==== timestamp" `date`
+              ctest -V --output-log unittests.log
+              echo "==== timestamp" `date`
+            '
+
+            sudo -u user bld/bin/test_gccasm
+            sudo -u user ldd bld/bin/flexemu
+            sudo -u user ldd bld/bin/flexplorer
+            echo "==== timestamp" `date`
+
+            for tool in dsktool mdcrtool flex2hex hex2flex; do
+              sudo -u user bld/bin/$tool -V
+            done
+
+            sudo -u user bld/bin/dsktool -l disks/games.dsk
+            sudo -u user bld/bin/dsktool -f new.dsk -S 80dsdd
+            sudo -u user bld/bin/dsktool -C disks/system.dsk -T new.dsk
+            sudo -u user bld/bin/dsktool -l new.dsk
+            echo "==== timestamp" `date`
+
+      - name: Upload build artefacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: flexemu-build-and-test-netbsd-${{ matrix.osversion }}-qt5-clang-results
+          path: |
+            result/sys_info.txt
+            result/pkg_list.txt
+            bld/ls-lRa.txt
+            bld/CMakeCache.txt
+            bld/compile_commands.json
+            bld/unittests.log
