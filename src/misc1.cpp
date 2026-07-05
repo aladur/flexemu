@@ -57,6 +57,7 @@
 #include <utility>
 #include <regex>
 #include <string>
+#include <string_view>
 #include <array>
 #include <vector>
 #include <iostream>
@@ -765,3 +766,42 @@ void flx::setCurrentThreadName(const std::string &threadName)
     pthread_setname_np(pthread_self(), threadName.c_str(), nullptr);
 #endif
 }
+
+std::string_view flx::nextUtf8Char(const std::string &src, std::size_t &pos)
+{
+    if (pos >= src.size())
+    {
+        return {};
+    }
+
+    const auto ch = static_cast<Byte>(src[pos]);
+    size_t len = 1U;
+
+    if ((ch & 0x80U) == 0x00U)
+    {
+        len = 1U;
+    }
+    else if ((ch & 0xE0U) == 0xC0U)
+    {
+        len = 2U;
+    }
+    else if ((ch & 0xF0U) == 0xE0U)
+    {
+        len = 3U;
+    }
+    else if ((ch & 0xF8U) == 0xF0U)
+    {
+        len = 4U;
+    }
+
+    if (pos + len > src.size())
+    {
+        len = src.size() - pos;
+    }
+
+    std::string_view result(src.data() + pos, len);
+    pos += len;
+
+    return result;
+}
+

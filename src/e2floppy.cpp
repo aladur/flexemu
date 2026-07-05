@@ -21,6 +21,7 @@
 
 
 #include "typedefs.h"
+#include "misc1.h"
 #include "e2.h"
 #include "e2floppy.h"
 #include "filecnts.h"
@@ -36,13 +37,11 @@
 #include "soptions.h"
 #include "wd1793.h"
 #include <cassert>
-#include <locale>
 #include <mutex>
 #include <string>
 #include <array>
 #include <sstream>
 #include <filesystem>
-#include <codecvt>
 
 namespace fs = std::filesystem;
 
@@ -292,23 +291,28 @@ bool E2floppy::umount_all_drives()
 // characters are replaced by an underscore.
 std::string E2floppy::to_ascii_path(const fs::path &path)
 {
-    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
-    const auto u32path = convert.from_bytes(path.u8string());
+    std::string pathString = path.u8string();
     std::string ascii_path;
+    std::size_t pos = 0U;
 
-    for (auto ch : u32path)
+    ascii_path.reserve(pathString.size());
+    while (true)
     {
-        if (ch < ' ')
+        const auto ch_str = flx::nextUtf8Char(pathString, pos);
+
+        if (ch_str.empty())
         {
+            break;
+        }
+
+        if (ch_str.size() > 1U ||
+            (ch_str.size() == 1U && (ch_str[0] < ' ' || ch_str[0] > '~')))
+        {
+            ascii_path.push_back('_');
             continue;
         }
 
-        if (ch > '~')
-        {
-            ch = '_';
-        }
-
-        ascii_path.push_back(static_cast<char>(ch));
+        ascii_path.append(ch_str);
     }
 
     return ascii_path;

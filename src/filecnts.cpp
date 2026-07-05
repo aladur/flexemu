@@ -20,16 +20,16 @@
 */
 
 #include "typedefs.h"
+#include "misc1.h"
 #include "filecntb.h"
 #include "filecnts.h"
 #include <cstdint>
 #include <cstddef>
 #include <cctype>
-#include <locale>
 #include <algorithm>
 #include <string>
+#include <string_view>
 #include <ostream>
-#include <codecvt>
 #include "warnoff.h"
 #include <fmt/format.h>
 #include "warnon.h"
@@ -143,36 +143,32 @@ size_t getFileSize(const s_flex_header &header)
 
 std::string getDiskName(const std::string &filename)
 {
-    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
-    const auto u32name = convert.from_bytes(filename);
-    std::string diskname;
-    int i = 0;
-
     if (!filename.empty() && filename[0] == '.')
     {
         return "FLEXDISK";
     }
 
-    for (auto ch : u32name)
+    std::string diskname;
+    std::size_t pos = 0U;
+
+    diskname.reserve(FLEX_DISKNAME_LENGTH);
+    while (true)
     {
-        if (i == FLEX_DISKNAME_LENGTH || ch == '.' || ch == '\0')
+        const auto ch_str = flx::nextUtf8Char(filename, pos);
+
+        if (diskname.size() >= FLEX_DISKNAME_LENGTH || ch_str.empty() ||
+            (ch_str.size() == 1U && ch_str[0] == '.'))
         {
             break;
         }
 
-        if (ch < ' ')
+        if (ch_str.size() == 1 && (ch_str[0] >= ' ' && ch_str[0] <= '~'))
         {
+            diskname.push_back(static_cast<char>(std::toupper(ch_str[0])));
             continue;
         }
 
-        if (ch > '~')
-        {
-            ch = '_';
-        }
-
-        const auto ascii_ch = std::toupper(static_cast<int>(ch));
-        diskname.push_back(static_cast<char>(ascii_ch));
-         ++i;
+        diskname.push_back('_');
     }
 
     return diskname;

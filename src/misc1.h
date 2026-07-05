@@ -38,6 +38,7 @@
 #include <locale>
 #include <utility>
 #include <string>
+#include <string_view>
 #include <array>
 #include <vector>
 #include <sstream>
@@ -113,6 +114,7 @@ extern std::string updateFilename(std::string path,
         const std::string &defaultFilestem, const std::string &fileExtension);
 extern bool isFlexFilename(const std::string &filename);
 extern void setCurrentThreadName(const std::string &threadName);
+extern std::string_view nextUtf8Char(const std::string &src, std::size_t &pos);
 
 extern const char * const white_space;
 
