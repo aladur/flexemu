@@ -30,14 +30,12 @@ jobs:
           prepare: |
             echo "==== timestamp" `date`
             pkg_add -I -u -v
-            echo "==== timestamp" `date`
             pkg_add -I -v sudo-- pkglocatedb libtool cmake ninja
-            echo "==== timestamp" `date`
             pkg_add -I -v qtbase qttools qtx11extras
             echo "==== timestamp" `date`
+
           run: |
             set -e
-
             mkdir -p result
             echo "=== Log System Information ==="
             echo "OS: " `uname -sr` > result/sys_info.txt
@@ -75,12 +73,14 @@ jobs:
             '
 
             echo "=== Building ==="
-            sudo -u user sh -c 'cd bld
+            sudo -u user sh -c '
+              cd bld
               echo "==== timestamp" `date`
               ninja'
 
             echo "=== Installing ==="
-            sudo -u user sh -c 'cd bld
+            sudo -u user sh -c '
+              cd bld
               echo "==== timestamp" `date`
               ninja install'
 
@@ -89,13 +89,12 @@ jobs:
               cd bld
               echo "==== timestamp" `date`
               ctest -V --output-log unittests.log
-              echo "==== timestamp" `date`
             '
 
+            echo "==== timestamp" `date`
             sudo -u user bld/bin/test_gccasm
             sudo -u user ldd bld/bin/flexemu
             sudo -u user ldd bld/bin/flexplorer
-            echo "==== timestamp" `date`
 
             for tool in dsktool mdcrtool flex2hex hex2flex; do
               sudo -u user bld/bin/$tool -V

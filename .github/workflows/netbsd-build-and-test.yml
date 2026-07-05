@@ -30,23 +30,20 @@ jobs:
           mem: 6144
           prepare: |
             echo "==== timestamp" `date`
-            export PKG_PATH="https://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r | cut -f1,2 -d.)/All/"
             pkg_add -u pkgin
             pkgin -y update
-            echo "==== timestamp" `date`
             # pkg-config is needed for cmake to find X11.
             pkgin -y install sudo curl libtool ncurses cmake ninja-build pkg-config
             # Install X11 binary sets
-            curl -s -L https://ftp.netbsd.org/pub/NetBSD/NetBSD-${{ matrix.osversion }}/amd64/binary/sets/xbase.tar.xz | tar xzf - -C /
-            curl -s -L https://ftp.netbsd.org/pub/NetBSD/NetBSD-${{ matrix.osversion }}/amd64/binary/sets/xcomp.tar.xz | tar xzf - -C /
-            curl -s -L https://ftp.netbsd.org/pub/NetBSD/NetBSD-${{ matrix.osversion }}/amd64/binary/sets/xetc.tar.xz | tar xzf - -C /
-            pkgin -y install qt5-qtbase qt5-qttools qt5-qtx11extras || true
-            cat /var/db/pkgin/pkg_install-err.log
+            DOWNLOAD_URL=https://ftp.netbsd.org/pub/NetBSD/NetBSD-${{ matrix.osversion }}/amd64/binary/sets
+            curl -s -L $DOWNLOAD_URL/xbase.tar.xz | tar xzf - -C /
+            curl -s -L $DOWNLOAD_URL/xcomp.tar.xz | tar xzf - -C /
+            curl -s -L $DOWNLOAD_URL/xetc.tar.xz | tar xzf - -C /
+            pkgin -y install qt5-qtbase qt5-qttools qt5-qtx11extras
             echo "==== timestamp" `date`
 
           run: |
             set -e
-
             mkdir -p result
             echo "=== System Information ==="
             echo "OS: " `uname -sr` > result/sys_info.txt
@@ -84,26 +81,28 @@ jobs:
             '
 
             echo "=== Building ==="
-            sudo -u user sh -c 'cd bld
+            sudo -u user sh -c '
+              cd bld
               echo "==== timestamp" `date`
               ninja'
 
             echo "=== Installing ==="
-            sudo -u user sh -c 'cd bld
+            sudo -u user sh -c '
+              cd bld
               echo "==== timestamp" `date`
               ninja install'
 
             echo "=== Testing ==="
-            sudo -u user sh -ec 'cd bld
+            sudo -u user sh -ec '
+              cd bld
               echo "==== timestamp" `date`
               ctest -V --output-log unittests.log
-              echo "==== timestamp" `date`
             '
 
+            echo "==== timestamp" `date`
             sudo -u user bld/bin/test_gccasm
             sudo -u user ldd bld/bin/flexemu
             sudo -u user ldd bld/bin/flexplorer
-            echo "==== timestamp" `date`
 
             for tool in dsktool mdcrtool flex2hex hex2flex; do
               sudo -u user bld/bin/$tool -V
