@@ -41,6 +41,7 @@
 #include <QVarLengthArray>
 #include "warnon.h"
 #include <cassert>
+#include <stdexcept>
 
 
 class FileAttributesUi
