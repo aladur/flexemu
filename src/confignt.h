@@ -130,10 +130,10 @@
 #define PROJECT_NAME "Flexemu"
 #endif
 #ifndef Flexemu_VERSION
-#define Flexemu_VERSION "3.32.1"
+#define Flexemu_VERSION "3.33.0"
 #endif
 #ifndef VERSION_PRERELEASE
-#define VERSION_PRERELEASE ""
+#define VERSION_PRERELEASE "-alpha"
 #endif
 #ifndef Flexemu_VERSION_FULL
 #define Flexemu_VERSION_FULL Flexemu_VERSION VERSION_PRERELEASE

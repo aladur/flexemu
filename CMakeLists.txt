@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.16)
 cmake_policy(SET CMP0115 NEW)
 
 project(Flexemu
-    VERSION 3.32.1
+    VERSION 3.33.0
     DESCRIPTION "A Motorola MC6809 emulator running FLEX"
     HOMEPAGE_URL "https://flexemu.neocities.org/"
     LANGUAGES C CXX
@@ -15,7 +15,7 @@ project(Flexemu
 
 # Optionally a pre-release version like "-rc", "-alpha", "-beta" can
 # be defined.
-set(VERSION_PRERELEASE "")
+set(VERSION_PRERELEASE "-alpha")
 
 # Optionally enable precompiled header support. Default is OFF.
 # Using precompiled headers significantly increase the needed disk space
