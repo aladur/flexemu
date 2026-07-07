@@ -1758,3 +1758,26 @@ Code Maintenance:
  d88bb39b In flexemu.conf replace "Linux" by "UNIX like OS".
  e4868770 class Scheduler: Prefer in-class member initializer
  fbcd15c8 docker: Move Dockerfile's to subdirectory "autotools"
+V3.32.1 (20260707)
+Feature Summary:
+* Bugfix flexemu on Windows: reliable restart.
+* flexemu About Dialog: Add link to Grokipedia.
+New Feautures:
+ dceb3a68 flexemu About Dialog: Add link to Grokipedia.
+ 859665d3 flexemu: Give created threads a name.
+Bug Fixes:
+ 2bd36333 Bugfix flexemu on Windows: Reliable flexemu restart #20.
+Code Maintenance:
+ e9b0e78c Update ChangeLog.
+ fe3270e9 Update version to 3.33.0, use samantic versioning.
+ 51ef82fe Prefer private member variables.
+ dc1be5de clang-tidy: Check for non-private member variables.
+ 28d7dc1f CI: Move from FreeBSD 15.0 to 15.1 runner.
+ 1f3129c6 clang-tidy rules: Sort and remove duplicates.
+ 42e75eae CI: Add OpenBSD 7.9 build and test.
+ fc88ce9f CI: Add sys_info.txt to uploaded artifacts
+ 85724e13 CI: Add NetBSD 10.0 build and test.
+ 456503a3 CI: Add build badges for OpenBSD and NetBSD.
+ 8b610720 CI: Update BSD workflows for comparison reasons.
+ 436fa998 Replace codecvt by UTF-8 character iterator.
+ 0cf73b7f Change version to 3.32.1
