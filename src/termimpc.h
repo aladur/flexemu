@@ -40,7 +40,7 @@
 #elif defined HAVE_NCURSES_H
 #include <ncurses.h>
 #else
-#  error "SysV or X/Open-compatible Curses header file required"
+#include <curses.h>
 #endif
 #endif
 #include <mutex>

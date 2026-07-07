@@ -33,7 +33,7 @@ if(UNIX)
 set(CURSES_NEED_NCURSES TRUE)
 set(CURSES_NEED_WIDE TRUE)
 find_package(Curses)
-if(NOT CURSES_FOUND)
+if(NOT Curses_FOUND)
     # Having a second try is at least needed for FreeBSD for
     # non wide character support which never the less results in
     # wide character support :-)).
@@ -46,6 +46,20 @@ if(NOT CURSES_FOUND)
     unset(CURSES_HAVE_NCURSES_NCURSES_H)
     set(CURSES_NEED_WIDE FALSE)
     find_package(Curses REQUIRED)
+endif()
+
+message("--   NCURSES_LIBRARIES=${NCURSES_LIBRARIES}")
+message("--   NCURSES_INCLUDE_DIRS=${NCURSES_INCLUDE_DIRS}")
+if (NOT TARGET Curses::Curses)
+    add_library(Curses::Curses INTERFACE IMPORTED)
+    target_link_libraries(Curses::Curses INTERFACE ${NCURSES_LIBRARIES})
+    target_include_directories(Curses::Curses INTERFACE ${NCURSES_INCLUDE_DIRS})
+    target_compile_options(Curses::Curses INTERFACE ${NCURSES_CFLAGS_OTHER})
+
+    if(NCURSES_MODULE_NAME MATCHES "ncursesw" OR
+       NCURSES_LIBRARIES MATCHES "ncursesw")
+        target_compile_definitions(Curses::Curses INTERFACE HAVE_NCURSESW=1)
+   endif()
 endif()
 
 if(NOT APPLE)
