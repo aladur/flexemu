@@ -62,6 +62,8 @@ slackpkg -batch=on -default_answer=y install \
     graphite2 \
     dejavu-fonts-ttf \
     cyrus-sasl \
+    ncurses \
+    pkg-config \
     vim \
     git \
     flex \

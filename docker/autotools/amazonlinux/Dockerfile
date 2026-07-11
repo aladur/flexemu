@@ -6,6 +6,7 @@
 
 FROM amazonlinux:2023
 
+ARG GIT_COMMIT
 RUN yum update -y && \
     yum upgrade -y && \
     yum install -y \
@@ -22,6 +23,8 @@ RUN yum update -y && \
      qt5-qtx11extras-devel && \
      useradd --create-home --shell /bin/bash user && \
      echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+COPY ../buildAndTestFlexemu.sh /tmp/buildAndTestFlexemu.sh
 RUN curl https://ftp.gnu.org/gnu/make/make-4.4.tar.gz >make-4.4.tar.gz
     tar xzf make-4.4.tar.gz
     cd make-4.4
@@ -30,11 +33,6 @@ RUN curl https://ftp.gnu.org/gnu/make/make-4.4.tar.gz >make-4.4.tar.gz
     sudo make install
     export PATH=/usr/local/bin:$PATH
     cd ..
-    git clone https://github.com/aladur/flexemu.git && \
-    cd flexemu && \
-    git submodule update --init --recursive && \
-    ./configure --prefix=/usr --sysconfdir=/etc && \
-    make -j8 check && \
-    sudo make install
+    /tmp/buildAndTestFlexemu.sh $GIT_COMMIT
 CMD ["/bin/bash"]
 

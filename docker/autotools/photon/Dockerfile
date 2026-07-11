@@ -3,6 +3,7 @@
 
 FROM photon:5.0
 
+ARG GIT_COMMIT
 RUN tdnf update -y && \
     tdnf upgrade -y && \
     tdnf install -y \
@@ -17,13 +18,10 @@ RUN tdnf update -y && \
      qt5-qtx11extras-devel && \
     useradd --create-home --shell /bin/bash user && \
     echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+COPY ../buildAndTestFlexemu.sh /tmp/buildAndTestFlexemu.sh
 USER user
 WORKDIR /home/user
-RUN git clone https://github.com/aladur/flexemu.git && \
-    cd flexemu && \
-    git submodule update --init --recursive && \
-    ./configure --prefix=/usr --sysconfdir=/etc && \
-    make -j8 check && \
-    sudo make install
+RUN /tmp/buildAndTestFlexemu.sh $GIT_COMMIT
 CMD ["/bin/bash"]
 

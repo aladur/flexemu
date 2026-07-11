@@ -4,7 +4,7 @@ Build time and docker image size for different linux distributions.
 The build command is:
 
 ```
-   docker build --rm --no-cache -t <image-name>:<tag> .
+    docker build --rm --no-cache --build-arg GIT_COMMIT=<git_commit> -f <distribution</Dockerfile -t <image-name>:<tag> .
 ```
 
 |build time<br>[s]|docker image|image size<br>[GByte]|Qt version|user name|remark|

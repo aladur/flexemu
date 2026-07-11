@@ -6,6 +6,7 @@
 
 FROM mageia:9
 
+ARG GIT_COMMIT
 RUN dnf upgrade -y && \
     dnf install -y \
      sudo \
@@ -16,6 +17,7 @@ RUN dnf upgrade -y && \
      autoconf \
      gcc \
      gcc-c++ \
+     lib64ncursesw-devel \
      qtbase5-common-devel \
      libqt5core-devel \
      libqt5gui-devel \
@@ -30,6 +32,8 @@ RUN dnf upgrade -y && \
      fonts-ttf-dejavu && \
     useradd --create-home --shell /bin/bash user && \
     echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+COPY ../buildAndTestFlexemu.sh /tmp/buildAndTestFlexemu.sh
 ENV QT_XCB_GL_INTEGRATION=none
 USER user
 WORKDIR /home/user
@@ -37,11 +41,6 @@ RUN cd /usr/lib64 && \
     sudo ln -s libQt5Network.so.5.15.7 libQt5Network.so && \
     export PATH=$PATH:/usr/lib64/qt5/bin && \
     cd /home/user && \
-    git clone https://github.com/aladur/flexemu.git && \
-    cd flexemu && \
-    git submodule update --init --recursive && \
-    ./configure --prefix=/usr --sysconfdir=/etc && \
-    make -j8 check && \
-    sudo make install
+    /tmp/buildAndTestFlexemu.sh $GIT_COMMIT
 CMD ["/bin/bash"]
 

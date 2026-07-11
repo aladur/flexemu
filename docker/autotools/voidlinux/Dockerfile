@@ -16,6 +16,7 @@ FROM voidlinux/voidlinux
 #   is touched but in the docker image it is read-only.
 #   Solution: Add a noextract policy for file /etc/hosts
 
+ARG GIT_COMMIT
 RUN echo repository=https://repo-default.voidlinux.org/current/ > /usr/share/xbps.d/00-repository-main.conf
 RUN echo noextract=/etc/hosts > /usr/share/xbps.d/01-noextract-policy.conf
 RUN xbps-install -Sy && \
@@ -34,6 +35,7 @@ RUN xbps-install -Sy && \
      automake \
      autoconf \
      gcc \
+     ncurses-devel \
      qt5-core \
      qt5-gui \
      qt5-widgets \
@@ -43,14 +45,11 @@ RUN xbps-install -Sy && \
      dejavu-fonts-ttf && \
     useradd --create-home --shell /bin/bash user && \
     echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+COPY ../buildAndTestFlexemu.sh /tmp/buildAndTestFlexemu.sh
 ENV QT_XCB_GL_INTEGRATION=none
 USER user
 WORKDIR /home/user
-RUN git clone https://github.com/aladur/flexemu.git && \
-    cd flexemu && \
-    git submodule update --init --recursive && \
-    ./configure --prefix=/usr --sysconfdir=/etc && \
-    make -j8 check && \
-    sudo make install
+RUN /tmp/buildAndTestFlexemu.sh $GIT_COMMIT
 CMD ["/bin/bash"]
 

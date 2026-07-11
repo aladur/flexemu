@@ -6,6 +6,7 @@
 
 FROM asappinc/ubuntu18:18.04.0
 
+ARG GIT_COMMIT
 RUN apt-get -y update && apt-get -y install \
      sudo \
      xxd \
@@ -21,12 +22,14 @@ RUN apt-get -y update && apt-get -y install \
      libqt5x11extras5-dev && \
     useradd -m -d /home/username -s /bin/bash ubuntu && \
     echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
 ENV QT_XCB_GL_INTEGRATION=none
 USER ubuntu
 WORKDIR /home/ubuntu
 ENV QT_SELECT=qt5
 RUN git clone https://github.com/aladur/flexemu.git && \
     cd flexemu && \
+    git checkout $GIT_COMMIT && \
     git submodule update --init --recursive && \
     ./configure --prefix=/usr --sysconfdir=/etc CC=gcc-8 CXX=g++-8 && \
     make -j8 LIBS=-lstdc++fs && \
