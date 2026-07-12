@@ -617,7 +617,7 @@ void FLEXplorer::OnAbout()
     {
         if (ui.c_tabWidget->tabText(index) == "Configuration")
         {
-            ui.c_tabWidget->setTabVisible(2, false);
+            ui.c_tabWidget->removeTab(index);
             break;
         }
     }
