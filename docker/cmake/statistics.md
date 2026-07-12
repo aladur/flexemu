@@ -33,6 +33,7 @@ The build command is:
 624|oraclelinux|2.33|6.9.1|user|[3]|
 428|rockylinux|1.84|6.10.1|user|[3]|
 509|slackware|3.29|5.15.3|user||
+589|ubuntu20|2.97|5.12.8|ubunutu||
 1477|ubuntu|2.09|5.15.18|ubunutu||
 917|voidlinux|3.63|5.15.11|user||
 
