@@ -16,10 +16,10 @@ The build command is:
 266|biglinux|2.51|5.15.14|builder|[4]|
 321|cachyos|3.36|5.15.19|user||
 274|centos|2.13|5.15.9|user||
-1094|debian_trixie|1.94|5.15.15|user||
-1373|debian_trixie_be|1.52|5.15.8|user|[1][5]|
-1057|debian_trixie_i386|2.00|5.15.8|user|[2][6]|
-1146|debian_trixie_qt6|1.95|6.8.2|user||
+1094|debian13|1.94|5.15.15|user||
+1373|debian13_be|1.52|5.15.8|user|[1][5]|
+1057|debian13_i386|2.00|5.15.8|user|[2][6]|
+1146|debian13_qt6|1.95|6.8.2|user||
 1631|debian_testing|2.17|5.15.19|user||
 1217|debian_unstable|2.17|5.15.19|user||
 1180|debian_unstable_qt6|2.20|6.10.2|user||
@@ -38,10 +38,10 @@ The build command is:
 
 [1] use additional parameter `--platform=linux/s390x`<br>
 [2] use additional parameter `--platform=linux/386`<br>
-[3] only Qt6 supported
-[4] Fails: 20260709 reproducible PROTOCOL_ERROR issues
-[5] Fails: 20260709 reproducible segmentation fault compiling joystick.cpp
-[6] Fails: 20260709 image is generated but not usable
+[3] only Qt6 supported<br>
+[4] Fails: 20260709 reproducible PROTOCOL_ERROR issues<br>
+[5] Fails: 20260709 reproducible segmentation fault compiling joystick.cpp<br>
+[6] Fails: 20260709 image is generated but not usable<br>
 
 ## Linux distribution dependency tree
 
