@@ -44,22 +44,30 @@ The build command is:
 [5] Fails: 20260709 reproducible segmentation fault compiling joystick.cpp<br>
 [6] Fails: 20260709 image is generated but not usable<br>
 
-## Linux distribution dependency tree
+## Linux distributions as graph
 
 ```
-alpine
-altlinux
-archlinux -+-> manjaro ---> biglinux
-           +-> cachyos
-debian -+-> ubuntu ---> linuxmint
-        +-> kalilinux
-        +-> endlessos
-opensuse
-(redhat) -+-> fedora -+-> almalinux
-          |           +-> centos
-          +-> oraclelinux
-          +-> rockylinux
-          +-> (mandrake) ---> (mandriva) ---> mageia
-slackware
-voidlinux
+├── alpine
+├── altlinux
+├── archlinux
+│   ├── manjaro
+│   │   └──biglinux
+│   └── cachyos
+├── debian
+│   ├── ubuntu
+│   │   └── linuxmint
+│   ├── kalilinux
+│   └── endlessos
+├── opensuse
+├── (redhat)
+│   ├── fedora
+│   │   ├── almalinux
+│   │   └── centos
+│   ├── oraclelinux
+│   ├── rockylinux
+│   └── (mandrake)
+│       └──(mandriva)
+│          └──mageia
+├── slackware
+└── voidlinux
 ```

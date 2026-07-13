@@ -42,22 +42,30 @@ The build command is:
 1) use additional parameter <code>--platform=linux/s390x</code><br>
 2) use additional parameter <code>--platform=linux/386</code><br>
 
-## Linux distribution dependency tree
+## Linux distributions as graph
 
 ```
-alpine
-altlinux
-archlinux -+-> manjaro ---> biglinux
-           +-> cachyos
-debian -+-> ubuntu ---> linuxmint
-        +-> kalilinux
-        +-> endlessos
-opensuse
-(redhat) -+-> fedora -+-> almalinux
-          |           +-> centos
-          +-> oraclelinux
-          +-> rockylinux
-          +-> (mandrake) ---> (mandriva) ---> mageia
-slackware
-voidlinux
+├── alpine
+├── altlinux
+├── archlinux
+│   ├── manjaro
+│   │   └──biglinux
+│   └── cachyos
+├── debian
+│   ├── ubuntu
+│   │   └── linuxmint
+│   ├── kalilinux
+│   └── endlessos
+├── opensuse
+├── (redhat)
+│   ├── fedora
+│   │   ├── almalinux
+│   │   └── centos
+│   ├── oraclelinux
+│   ├── rockylinux
+│   └── (mandrake)
+│       └──(mandriva)
+│          └──mageia
+├── slackware
+└── voidlinux
 ```
