@@ -396,8 +396,8 @@ qtos=""
 # In qtosversions define an array with major.minor versions.
 # In qtospatchver define an array with the minimum patch version,
 # for which to use the "-opensource" substring.
-qtosversions=("5.15" "6.2" "6.5")
-qtospatchver=( 3      5     4   )
+qtosversions=("5.15" "6.2" "6.5" "6.8")
+qtospatchver=( 3      5     4     4)
 for (( i=0; i<${#qtosversions[@]}; i++ ))
 do
     if [ "${qtosversions[$i]}" == "$qtmamiversion" ] && [ $qtpatch -ge ${qtospatchver[$i]} ]; then
