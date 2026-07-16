@@ -27,6 +27,7 @@ jobs:
           sync: rsync
           arch: x86_64
           mem: 6144
+          cache-after-prepare: true
           prepare: |
             echo "==== timestamp" `date`
             pkg_add -I -u -v
