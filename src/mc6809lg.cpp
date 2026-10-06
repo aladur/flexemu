@@ -46,7 +46,7 @@ Mc6809Logger::~Mc6809Logger()
 
 bool Mc6809Logger::doLogging(Word pc) const
 {
-    if (logOfs.is_open())
+    if (isLoggingEnabled && logOfs.is_open())
     {
         if (!config.startAddr.has_value() || pc == config.startAddr.value())
         {
@@ -155,7 +155,7 @@ void Mc6809Logger::doLoopOptimization(const Mc6809CpuStatus &state)
 
 void Mc6809Logger::logCpuState(const CpuStatus &state)
 {
-    if (!isLoggingActive || !logOfs.is_open())
+    if (!isLoggingEnabled || !isLoggingActive || !logOfs.is_open())
     {
         return;
     }
@@ -441,6 +441,7 @@ bool Mc6809Logger::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
         logOfs.close();
     }
 
+    isLoggingEnabled = false;
     config = loggerConfig;
     isLoggingActive = !config.startAddr.has_value();
     if (config.format == Mc6809LoggerConfig::Format::Csv)
@@ -457,10 +458,10 @@ bool Mc6809Logger::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
             config.logFilePath.clear();
         }
 
-        return logOfs.is_open();
+        isLoggingEnabled = logOfs.is_open();
     }
 
-    return false;
+    return isLoggingEnabled;
 }
 
 size_t Mc6809Logger::getLogRegisterCount() const

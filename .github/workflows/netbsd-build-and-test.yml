@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        osversion: ['10.0']
+        osversion: ['10.2']
       fail-fast: false
 
     steps:

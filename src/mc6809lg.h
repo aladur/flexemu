@@ -46,6 +46,11 @@ public:
     Mc6809Logger &operator=(Mc6809Logger &&src) = delete;
     virtual ~Mc6809Logger();
 
+    inline bool isEnabled() const
+    {
+        return isLoggingEnabled;
+    }
+
     bool doLogging(Word pc) const;
     void logCpuState(const CpuStatus &state);
     bool setLoggerConfig(const Mc6809LoggerConfig &loggerConfig);
@@ -73,6 +78,7 @@ private:
 
     Mc6809LoggerConfig config;
     std::ofstream logOfs;
+    mutable bool isLoggingEnabled{};
     mutable bool isLoggingActive{};
     bool doPrintCsvHeader{};
     std::deque<Mc6809CpuStatus> cpuStates;

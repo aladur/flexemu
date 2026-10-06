@@ -416,7 +416,7 @@ CpuState Mc6809::runloop()
             }
         }
 
-        if (logger.doLogging(PC) && disassembler != nullptr)
+        if (logger.isEnabled() && logger.doLogging(PC))
         {
             Mc6809CpuStatus cpuState;
 
